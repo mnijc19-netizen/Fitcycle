@@ -1,5 +1,6 @@
-﻿<template>
-  <div class="pb-24 px-4 pt-2 max-w-md mx-auto space-y-4">
+<template>
+  <div class="pb-32 px-4 pt-2 max-w-md mx-auto space-y-4">
+
     
     <!-- Top Header -->
     <div>

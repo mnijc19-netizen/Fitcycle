@@ -1,6 +1,8 @@
-﻿<template>
-  <nav class="fixed bottom-0 left-0 right-0 z-30 bg-zinc-950/90 backdrop-blur-xl border-t border-zinc-800/80 safe-area-bottom">
-    <div class="max-w-md mx-auto grid grid-cols-5 py-1.5 px-2">
+<template>
+  <nav class="fixed bottom-0 left-0 right-0 z-30 bg-zinc-950/90 backdrop-blur-xl border-t border-zinc-800/80 px-2 pt-1.5"
+       style="padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);">
+    <div class="max-w-md mx-auto grid grid-cols-5">
+
       
       <!-- Tab 1: Today -->
       <button @click="switchTab('today')" 

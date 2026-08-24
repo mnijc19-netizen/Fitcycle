@@ -1,7 +1,9 @@
-﻿<template>
+<template>
   <div v-if="store.restTimer.running || store.restTimer.remaining > 0" 
-       class="fixed bottom-20 left-4 right-4 z-40 max-w-md mx-auto transition-all duration-300 transform"
+       class="fixed left-4 right-4 z-40 max-w-md mx-auto transition-all duration-300 transform"
+       :style="{ bottom: 'max(calc(env(safe-area-inset-bottom, 0px) + 64px), 74px)' }"
        :class="[store.restTimer.minimized ? 'translate-y-2' : 'translate-y-0']">
+
     
     <!-- Expanded view -->
     <div v-if="!store.restTimer.minimized" 

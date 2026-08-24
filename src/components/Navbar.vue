@@ -1,6 +1,8 @@
 <template>
-  <header class="sticky top-0 z-30 bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-800/80 px-4 py-3 safe-area-top">
+  <header class="sticky top-0 z-30 bg-zinc-950/90 backdrop-blur-xl border-b border-zinc-800/80 px-4 pb-3"
+          style="padding-top: max(calc(env(safe-area-inset-top, 0px) + 8px), 14px);">
     <div class="max-w-md mx-auto flex items-center justify-between">
+
       
       <!-- Brand & Status -->
       <div class="flex items-center gap-2.5">
