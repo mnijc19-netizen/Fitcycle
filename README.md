@@ -1,5 +1,11 @@
-# Vue 3 + Vite
+# 包皮健身 (FitCycle) - 健身计划与训练记录手机网页
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+专为手机端打造的极简、直观、高自由度的健身训练打卡与分化循环追踪网页应用。
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## 🌟 核心功能
+- **今日训练打卡**：自动推导今日分化，单组极速记录【重量 × 次数】，自动带出历史数据，组间休息倒计时。
+- **自定义分化循环**：支持推拉腿休（4日）、推拉休（3日）或任意自定义天数轮转。
+- **动作科学指导**：内置动作美学目的与科学发力细节（拉伸区肥大、增厚上背、哈克深蹲等）。
+- **训练日历看板**：月历视图彩色标注每日训练足迹，支持随时补打卡。
+- **纯本地离线优先**：数据存储在本地浏览器，离线可用，支持一键导出/导入 JSON 备份。
+
