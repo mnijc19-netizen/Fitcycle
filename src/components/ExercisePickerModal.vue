@@ -46,18 +46,13 @@
              @click="selectExercise(ex)"
              class="p-2.5 bg-zinc-950/60 hover:bg-zinc-800/70 active:bg-zinc-800 border border-zinc-800/80 hover:border-amber-500/50 rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-3">
           
-          <!-- 3D Thumbnail -->
-          <div class="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden flex-shrink-0 flex items-center justify-center relative">
-            <img v-if="ex.gifUrl" 
-                 :src="ex.gifUrl" 
-                 :alt="ex.name"
-                 loading="lazy" 
-                 class="w-full h-full object-contain mix-blend-screen" />
-            <span v-else class="text-sm">🏋️</span>
-            <span class="absolute bottom-0 right-0 px-0.5 py-0 rounded bg-black/80 text-[6px] font-mono text-amber-400 font-bold">
-              3D
-            </span>
-          </div>
+          <!-- 3D Thumbnail with Zero-Broken fallback -->
+          <ExerciseImage :src="ex.gifUrl" 
+                         :name="ex.name" 
+                         :category="ex.category" 
+                         :target="ex.target" 
+                         customClass="w-12 h-12 rounded-xl border border-zinc-800 flex-shrink-0" />
+
 
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
@@ -142,6 +137,8 @@
 <script setup>
 import { ref, computed } from "vue";
 import { store, uid } from "../store/fitnessStore.js";
+import ExerciseImage from "./ExerciseImage.vue";
+
 
 const props = defineProps({
   visible: Boolean,

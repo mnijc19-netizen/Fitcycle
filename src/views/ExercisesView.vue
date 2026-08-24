@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="pb-32 px-4 pt-2 max-w-md mx-auto space-y-4">
     
     <!-- Top Header -->
@@ -44,20 +44,13 @@
            @click="openExerciseDetail(ex)"
            class="p-3 bg-zinc-900/80 hover:bg-zinc-850 active:bg-zinc-800 border border-zinc-800 hover:border-amber-500/40 rounded-2xl cursor-pointer transition-all shadow-md flex items-center gap-3">
         
-        <!-- Left 3D Animated Thumbnail -->
-        <div class="w-16 h-16 rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden flex-shrink-0 flex items-center justify-center relative">
-          <img v-if="ex.gifUrl" 
-               :src="ex.gifUrl" 
-               :alt="ex.name"
-               loading="lazy" 
-               class="w-full h-full object-contain mix-blend-screen" />
-          <div v-else class="text-xl">
-            {{ getCategoryEmoji(ex.category) }}
-          </div>
-          <span class="absolute bottom-0.5 right-0.5 px-1 py-0.2 rounded bg-black/70 text-[7px] font-mono text-amber-400 font-bold">
-            3D
-          </span>
-        </div>
+        <!-- Left 3D Animated Thumbnail with Zero-Broken fallback -->
+        <ExerciseImage :src="ex.gifUrl" 
+                       :name="ex.name" 
+                       :category="ex.category" 
+                       :target="ex.target" 
+                       customClass="w-16 h-16 rounded-xl border border-zinc-800 flex-shrink-0" />
+
 
         <!-- Center Details -->
         <div class="flex-1 min-w-0">
@@ -160,6 +153,8 @@
 import { ref, computed } from "vue";
 import { store, uid } from "../store/fitnessStore.js";
 import ExerciseDetailModal from "../components/ExerciseDetailModal.vue";
+import ExerciseImage from "../components/ExerciseImage.vue";
+
 
 const searchQuery = ref("");
 const activeCategory = ref("全部");

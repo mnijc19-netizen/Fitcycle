@@ -54,18 +54,14 @@
           <div class="p-3.5 bg-zinc-900/90 border-b border-zinc-800/80 flex items-center justify-between gap-2">
             <div class="flex items-center gap-2.5 flex-1 min-w-0">
               <!-- Exercise 3D Thumbnail -->
-              <div @click="openExerciseDetail(ex)" 
-                   class="w-12 h-12 rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden flex-shrink-0 flex items-center justify-center relative cursor-pointer active:scale-95 shadow-inner">
-                <img v-if="getExerciseGif(ex.name)" 
-                     :src="getExerciseGif(ex.name)" 
-                     :alt="ex.name"
-                     loading="lazy" 
-                     class="w-full h-full object-contain mix-blend-screen" />
-                <span v-else class="text-sm">🏋️</span>
-                <span class="absolute bottom-0.5 right-0.5 px-0.5 py-0.1 rounded bg-black/80 text-[6px] font-mono text-amber-400 font-bold">
-                  3D
-                </span>
+              <div @click="openExerciseDetail(ex)" class="flex-shrink-0 cursor-pointer active:scale-95">
+                <ExerciseImage :src="getExerciseGif(ex.name)" 
+                               :name="ex.name" 
+                               :category="ex.category" 
+                               :target="ex.targetReps" 
+                               customClass="w-12 h-12 rounded-xl border border-zinc-800" />
               </div>
+
 
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-1.5">
@@ -305,17 +301,11 @@
                class="p-2.5 bg-zinc-950/70 hover:bg-zinc-800/80 border border-zinc-800/80 rounded-xl flex items-center justify-between text-xs cursor-pointer transition-all gap-2">
             <div class="flex items-center gap-2.5 min-w-0">
               <!-- Mini 3D Thumbnail -->
-              <div class="w-9 h-9 rounded-lg bg-zinc-900 border border-zinc-800 overflow-hidden flex-shrink-0 flex items-center justify-center relative">
-                <img v-if="getExerciseGif(ex.name)" 
-                     :src="getExerciseGif(ex.name)" 
-                     :alt="ex.name"
-                     loading="lazy"
-                     class="w-full h-full object-contain mix-blend-screen" />
-                <span v-else class="text-xs">🏋️</span>
-                <span class="absolute bottom-0 right-0 px-0.5 py-0 rounded bg-black/80 text-[6px] font-mono text-amber-400 font-bold">
-                  3D
-                </span>
-              </div>
+              <ExerciseImage :src="getExerciseGif(ex.name)" 
+                             :name="ex.name" 
+                             :category="ex.category" 
+                             :target="ex.targetReps" 
+                             customClass="w-9 h-9 rounded-lg border border-zinc-800 flex-shrink-0" />
               <span class="font-medium text-zinc-200 truncate">{{ ex.name }}</span>
             </div>
             <div class="flex items-center gap-2 flex-shrink-0">
@@ -323,6 +313,7 @@
               <span class="text-amber-400 text-xs">🔬</span>
             </div>
           </div>
+
 
         </div>
 
@@ -490,6 +481,8 @@ import ExercisePickerModal from "../components/ExercisePickerModal.vue";
 import ExerciseDetailModal from "../components/ExerciseDetailModal.vue";
 import CycleEditorModal from "../components/CycleEditorModal.vue";
 import WorkoutSummaryModal from "../components/WorkoutSummaryModal.vue";
+import ExerciseImage from "../components/ExerciseImage.vue";
+
 
 // State
 const showAddExerciseModal = ref(false);
