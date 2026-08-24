@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div v-if="visible" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-sm p-0 sm:p-4">
     
     <!-- Backdrop dismiss -->
@@ -28,26 +28,28 @@
            style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
         
         <!-- 3D Muscle Diagram / Animation Display Box -->
-        <div class="w-full h-48 bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden flex items-center justify-center relative p-3 shadow-inner">
+        <div class="w-full h-60 bg-zinc-950 border border-zinc-800 rounded-3xl overflow-hidden flex items-center justify-center relative p-2 shadow-2xl">
           <img v-if="exercise?.gifUrl && !gifError" 
                :src="exercise.gifUrl" 
                :alt="exercise.name" 
                @error="gifError = true"
-               class="w-full h-full object-contain mix-blend-screen" />
+               class="w-full h-full object-contain mix-blend-screen transition-all" />
           
           <!-- Guaranteed 3D Muscle Diagram fallback -->
           <div v-show="!exercise?.gifUrl || gifError" class="w-full h-full flex items-center justify-center">
-            <div v-html="muscleSvg" class="w-full h-full max-h-40 max-w-40 flex items-center justify-center"></div>
+            <div v-html="muscleSvg" class="w-full h-full max-h-48 max-w-48 flex items-center justify-center"></div>
           </div>
 
           <!-- 3D Badges -->
-          <span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-bold text-zinc-300 border border-zinc-700/60">
-            3D 模型解剖
+          <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-[10px] font-bold text-amber-400 border border-amber-500/40 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+            3D 动作循环演示
           </span>
-          <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-mono font-bold text-amber-400 border border-amber-500/40">
-            标准轨迹
+          <span class="absolute bottom-2.5 right-2.5 px-2.5 py-0.5 rounded-lg bg-black/70 backdrop-blur-md text-[10px] font-mono font-bold text-zinc-300 border border-zinc-700/60">
+            标准发力轨迹
           </span>
         </div>
+
 
         <!-- Title & Targets -->
         <div>
