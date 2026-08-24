@@ -208,7 +208,11 @@ export function stopRestTimer() {
     timerInterval = null;
   }
   store.restTimer.running = false;
+  store.restTimer.remaining = 0;
+  store.restTimer.duration = 0;
+  store.restTimer.minimized = false;
 }
+
 
 export function adjustRestTimer(deltaSeconds) {
   if (!store.restTimer.running) {
