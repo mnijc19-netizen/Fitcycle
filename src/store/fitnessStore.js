@@ -1,4 +1,4 @@
-﻿import { reactive, watch } from "vue";
+import { reactive, watch } from "vue";
 import { DEFAULT_EXERCISES, DEFAULT_PLANS, PRESET_CYCLES, SCIENCE_PRINCIPLES } from "../data/defaultPlans.js";
 import { playSetCompleteSound, playRestCompleteSound, playWorkoutDoneSound } from "../utils/audio.js";
 import { triggerHaptic } from "../utils/vibrate.js";
@@ -22,6 +22,16 @@ function loadSavedState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
+      // Merge saved exercises with newest DEFAULT_EXERCISES to bring in new GIFs & tips
+      if (parsed.exercises) {
+        const mergedExercises = DEFAULT_EXERCISES.map(defEx => {
+          const customMatch = parsed.exercises.find(e => e.id === defEx.id || e.name === defEx.name);
+          return customMatch ? { ...defEx, ...customMatch, gifUrl: defEx.gifUrl, tips: defEx.tips, substitutes: defEx.substitutes, scienceDetail: defEx.scienceDetail || customMatch.scienceDetail } : defEx;
+        });
+        // Also keep any purely custom exercises added by user
+        const customOnly = parsed.exercises.filter(e => !DEFAULT_EXERCISES.some(d => d.id === e.id || d.name === e.name));
+        parsed.exercises = [...mergedExercises, ...customOnly];
+      }
       return parsed;
     }
   } catch (e) {
@@ -29,6 +39,7 @@ function loadSavedState() {
   }
   return null;
 }
+
 
 const todayStr = getInitialDateStr();
 

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div v-if="visible" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4">
     <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
       
@@ -44,7 +44,21 @@
       <div class="overflow-y-auto flex-1 p-3 space-y-2">
         <div v-for="ex in filteredExercises" :key="ex.id"
              @click="selectExercise(ex)"
-             class="p-3 bg-zinc-950/60 hover:bg-zinc-800/70 active:bg-zinc-800 border border-zinc-800/80 hover:border-amber-500/50 rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-3">
+             class="p-2.5 bg-zinc-950/60 hover:bg-zinc-800/70 active:bg-zinc-800 border border-zinc-800/80 hover:border-amber-500/50 rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-3">
+          
+          <!-- 3D Thumbnail -->
+          <div class="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden flex-shrink-0 flex items-center justify-center relative">
+            <img v-if="ex.gifUrl" 
+                 :src="ex.gifUrl" 
+                 :alt="ex.name"
+                 loading="lazy" 
+                 class="w-full h-full object-contain mix-blend-screen" />
+            <span v-else class="text-sm">🏋️</span>
+            <span class="absolute bottom-0 right-0 px-0.5 py-0 rounded bg-black/80 text-[6px] font-mono text-amber-400 font-bold">
+              3D
+            </span>
+          </div>
+
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
               <span class="font-bold text-sm text-zinc-100 truncate">{{ ex.name }}</span>
@@ -52,17 +66,15 @@
                 {{ ex.category }}
               </span>
             </div>
-            <div class="text-xs text-zinc-400 mt-1 flex items-center gap-2">
+            <div class="text-xs text-zinc-400 mt-0.5 flex items-center gap-1 truncate">
               <span class="text-zinc-500">目标:</span>
               <span class="text-zinc-300 truncate">{{ ex.target }}</span>
             </div>
-            <div v-if="ex.tags && ex.tags.length" class="flex items-center gap-1 mt-1.5">
-              <span v-for="tag in ex.tags" :key="tag" 
-                    class="text-[9px] px-1.5 py-0.2 bg-zinc-900 text-zinc-400 rounded">
-                #{{ tag }}
-              </span>
+            <div v-if="ex.substitutes?.length" class="text-[9px] text-amber-400/90 mt-0.5">
+              含 {{ ex.substitutes.length }} 个平替推荐
             </div>
           </div>
+
           <button class="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-zinc-950 text-xs font-bold rounded-xl border border-amber-500/30 transition-colors flex-shrink-0">
             选择
           </button>

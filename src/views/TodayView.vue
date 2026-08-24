@@ -52,20 +52,34 @@
           
           <!-- Exercise Header -->
           <div class="p-3.5 bg-zinc-900/90 border-b border-zinc-800/80 flex items-center justify-between gap-2">
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2">
-                <span class="w-5 h-5 rounded-md bg-zinc-800 text-zinc-400 text-xs font-mono font-bold flex items-center justify-center flex-shrink-0">
-                  {{ exIdx + 1 }}
+            <div class="flex items-center gap-2.5 flex-1 min-w-0">
+              <!-- Exercise 3D Thumbnail -->
+              <div @click="openExerciseDetail(ex)" 
+                   class="w-12 h-12 rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden flex-shrink-0 flex items-center justify-center relative cursor-pointer active:scale-95 shadow-inner">
+                <img v-if="getExerciseGif(ex.name)" 
+                     :src="getExerciseGif(ex.name)" 
+                     :alt="ex.name"
+                     loading="lazy" 
+                     class="w-full h-full object-contain mix-blend-screen" />
+                <span v-else class="text-sm">🏋️</span>
+                <span class="absolute bottom-0.5 right-0.5 px-0.5 py-0.1 rounded bg-black/80 text-[6px] font-mono text-amber-400 font-bold">
+                  3D
                 </span>
-                <h3 class="font-bold text-sm text-zinc-100 truncate">{{ ex.name }}</h3>
               </div>
-              <div class="text-[11px] text-zinc-400 mt-1 flex items-center gap-2">
-                <span class="text-amber-400/90 font-medium">建议: {{ ex.targetReps }}</span>
-                <span v-if="getLastExercisePerformance(ex.name)" class="text-zinc-500 font-mono">
-                  上次: {{ formatLastPerf(ex.name) }}
-                </span>
+
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <h3 class="font-bold text-sm text-zinc-100 truncate cursor-pointer hover:text-amber-400" @click="openExerciseDetail(ex)">{{ ex.name }}</h3>
+                </div>
+                <div class="text-[11px] text-zinc-400 mt-0.5 flex items-center gap-2">
+                  <span class="text-amber-400/90 font-medium">建议: {{ ex.targetReps }}</span>
+                  <span v-if="getLastExercisePerformance(ex.name)" class="text-zinc-500 font-mono">
+                    上次: {{ formatLastPerf(ex.name) }}
+                  </span>
+                </div>
               </div>
             </div>
+
 
             <!-- Action buttons: Science Tips, Swap, Delete -->
             <div class="flex items-center gap-1">
@@ -288,18 +302,28 @@
 
           <div v-for="(ex, idx) in currentPlan.exercises" :key="idx"
                @click="openExerciseDetailByName(ex.name)"
-               class="p-2.5 bg-zinc-950/70 hover:bg-zinc-800/80 border border-zinc-800/80 rounded-xl flex items-center justify-between text-xs cursor-pointer transition-all">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="w-4 h-4 rounded bg-zinc-800 text-zinc-400 text-[10px] font-mono flex items-center justify-center flex-shrink-0">
-                {{ idx + 1 }}
-              </span>
+               class="p-2.5 bg-zinc-950/70 hover:bg-zinc-800/80 border border-zinc-800/80 rounded-xl flex items-center justify-between text-xs cursor-pointer transition-all gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <!-- Mini 3D Thumbnail -->
+              <div class="w-9 h-9 rounded-lg bg-zinc-900 border border-zinc-800 overflow-hidden flex-shrink-0 flex items-center justify-center relative">
+                <img v-if="getExerciseGif(ex.name)" 
+                     :src="getExerciseGif(ex.name)" 
+                     :alt="ex.name"
+                     loading="lazy"
+                     class="w-full h-full object-contain mix-blend-screen" />
+                <span v-else class="text-xs">🏋️</span>
+                <span class="absolute bottom-0 right-0 px-0.5 py-0 rounded bg-black/80 text-[6px] font-mono text-amber-400 font-bold">
+                  3D
+                </span>
+              </div>
               <span class="font-medium text-zinc-200 truncate">{{ ex.name }}</span>
             </div>
             <div class="flex items-center gap-2 flex-shrink-0">
               <span class="text-[11px] text-amber-400/90 font-mono">{{ ex.setsCount }}组 × {{ ex.targetReps }}</span>
-              <span class="text-zinc-500 text-xs">🔬</span>
+              <span class="text-amber-400 text-xs">🔬</span>
             </div>
           </div>
+
         </div>
 
         <!-- Rest Day Inspiration Card -->
@@ -546,6 +570,12 @@ function formatLastPerf(name) {
   const first = last.sets[0];
   return `${first.weight}kg×${first.reps}`;
 }
+
+function getExerciseGif(name) {
+  const ex = getExerciseDetails(name);
+  return ex?.gifUrl || "";
+}
+
 
 function handleStartTodayWorkout() {
   if (currentPlan.value) {

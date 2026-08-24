@@ -1,15 +1,14 @@
-<template>
+﻿<template>
   <div class="pb-32 px-4 pt-2 max-w-md mx-auto space-y-4">
-
     
     <!-- Top Header -->
     <div class="flex items-center justify-between">
       <div>
         <h2 class="text-lg font-black text-white flex items-center gap-2">
-          <span>🏋️</span> 动作库与科学细节
+          <span>🏋️</span> 动作库与 3D 动图
         </h2>
         <p class="text-xs text-zinc-400">
-          每个动作的力学拉伸原理、目标肌群与发力技巧
+          全套 3D 动作轨迹演示、发力要点与平替库
         </p>
       </div>
       <button @click="openCreateExercise" 
@@ -23,7 +22,7 @@
       <div class="relative">
         <input v-model="searchQuery" 
                type="text" 
-               placeholder="搜索动作名称、目标部位、标签..." 
+               placeholder="搜索动作名称、目标肌群、标签..." 
                class="w-full bg-zinc-950 border border-zinc-700/80 rounded-xl px-3.5 py-2 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-amber-500" />
         <span v-if="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-2 text-xs text-zinc-400 cursor-pointer">✕</span>
       </div>
@@ -39,48 +38,62 @@
       </div>
     </div>
 
-    <!-- Exercises List -->
+    <!-- Exercises List with 3D Animated Thumbnails -->
     <div class="space-y-2.5">
       <div v-for="ex in filteredExercises" :key="ex.id"
            @click="openExerciseDetail(ex)"
-           class="p-4 bg-zinc-900/80 hover:bg-zinc-850 active:bg-zinc-800 border border-zinc-800 rounded-2xl cursor-pointer transition-all shadow-md space-y-2">
+           class="p-3 bg-zinc-900/80 hover:bg-zinc-850 active:bg-zinc-800 border border-zinc-800 hover:border-amber-500/40 rounded-2xl cursor-pointer transition-all shadow-md flex items-center gap-3">
         
-        <div class="flex items-start justify-between gap-2">
-          <div>
-            <div class="flex items-center gap-2">
-              <h3 class="font-bold text-sm text-zinc-100">{{ ex.name }}</h3>
-              <span class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-amber-400 border border-zinc-700/60 font-semibold">
-                {{ ex.category }}
-              </span>
-            </div>
-            <div class="text-xs text-zinc-400 mt-1 flex items-center gap-1">
-              <span class="text-zinc-500">主要目标:</span>
-              <span class="text-zinc-300 font-medium">{{ ex.target }}</span>
-            </div>
+        <!-- Left 3D Animated Thumbnail -->
+        <div class="w-16 h-16 rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden flex-shrink-0 flex items-center justify-center relative">
+          <img v-if="ex.gifUrl" 
+               :src="ex.gifUrl" 
+               :alt="ex.name"
+               loading="lazy" 
+               class="w-full h-full object-contain mix-blend-screen" />
+          <div v-else class="text-xl">
+            {{ getCategoryEmoji(ex.category) }}
           </div>
-
-          <button class="p-1.5 bg-zinc-800 text-amber-400 rounded-lg text-xs font-bold flex-shrink-0">
-            🔬 详情
-          </button>
+          <span class="absolute bottom-0.5 right-0.5 px-1 py-0.2 rounded bg-black/70 text-[7px] font-mono text-amber-400 font-bold">
+            3D
+          </span>
         </div>
 
-        <!-- Science Note excerpt -->
-        <p v-if="ex.scienceDetail" class="text-xs text-zinc-400 line-clamp-2 leading-relaxed bg-zinc-950/60 p-2 rounded-xl border border-zinc-800/80">
-          {{ ex.scienceDetail }}
-        </p>
+        <!-- Center Details -->
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <h3 class="font-bold text-sm text-zinc-100 truncate">{{ ex.name }}</h3>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-amber-400 border border-zinc-700/60 font-semibold flex-shrink-0">
+              {{ ex.category }}
+            </span>
+          </div>
+          <div class="text-xs text-zinc-400 mt-0.5 truncate">
+            🎯 <span class="text-zinc-300">{{ ex.target }}</span>
+          </div>
 
-        <!-- Tags -->
-        <div v-if="ex.tags && ex.tags.length" class="flex flex-wrap gap-1 pt-0.5">
-          <span v-for="tag in ex.tags" :key="tag" 
-                class="text-[9px] px-2 py-0.5 rounded bg-zinc-950 text-zinc-400 border border-zinc-800">
-            #{{ tag }}
-          </span>
+          <!-- Tags -->
+          <div v-if="ex.tags && ex.tags.length" class="flex flex-wrap gap-1 mt-1">
+            <span v-for="tag in ex.tags.slice(0, 2)" :key="tag" 
+                  class="text-[9px] px-1.5 py-0.2 rounded bg-zinc-950 text-zinc-400 border border-zinc-800">
+              #{{ tag }}
+            </span>
+            <span v-if="ex.substitutes?.length" class="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              {{ ex.substitutes.length }}个平替
+            </span>
+          </div>
+        </div>
+
+        <!-- Right action icon -->
+        <div class="flex-shrink-0 text-zinc-500 hover:text-amber-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
         </div>
 
       </div>
 
       <div v-if="filteredExercises.length === 0" class="py-12 text-center text-zinc-500 text-xs">
-        没有找到相关动作
+        没有找到相关动作，可点击右上角创建自定义动作
       </div>
     </div>
 
@@ -150,7 +163,7 @@ import ExerciseDetailModal from "../components/ExerciseDetailModal.vue";
 
 const searchQuery = ref("");
 const activeCategory = ref("全部");
-const categories = ["全部", "胸部", "背部", "肩部", "腿部", "手臂", "核心", "其它"];
+const categories = ["全部", "胸部", "背部", "肩部", "手臂", "腿部", "核心", "其它"];
 
 const showDetailModal = ref(false);
 const selectedExercise = ref(null);
@@ -164,6 +177,18 @@ const newEx = ref({
   defaultSets: 3,
   defaultReps: "10-12"
 });
+
+function getCategoryEmoji(cat) {
+  switch (cat) {
+    case "胸部": return "🥋";
+    case "背部": return "🦅";
+    case "肩部": return "🛡️";
+    case "手臂": return "💪";
+    case "腿部": return "🦵";
+    case "核心": return "⚡";
+    default: return "🏋️";
+  }
+}
 
 const filteredExercises = computed(() => {
   return store.exercises.filter(ex => {
