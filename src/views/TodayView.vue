@@ -453,6 +453,32 @@
       @close="showSummaryModal = false" 
     />
 
+    <!-- 7. Auto Workout Finish Celebration Modal (智能防漏结算弹窗) -->
+    <div v-if="showAutoFinishModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-black/80 backdrop-blur-md" @click="showAutoFinishModal = false"></div>
+      <div class="relative w-full max-w-sm bg-zinc-950 border border-amber-500/50 rounded-3xl p-5 shadow-2xl space-y-4 text-center animate-in zoom-in-95 duration-200">
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-center text-3xl shadow-lg shadow-amber-500/20">
+          🏆
+        </div>
+        <div class="space-y-1">
+          <h3 class="text-base font-black text-white">所有动作组已全部达成！</h3>
+          <p class="text-xs text-zinc-400 leading-relaxed">
+            今日计划共 {{ completedSetsCount }} 组全部打卡完毕！是否立即保存训练并生成战绩？
+          </p>
+        </div>
+        <div class="space-y-2 pt-1">
+          <button @click="showAutoFinishModal = false; handleFinishWorkout();"
+                  class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/30 active:scale-95 transition-all flex items-center justify-center gap-1.5">
+            <span>💾</span> 立即结算保存并查看战绩
+          </button>
+          <button @click="showAutoFinishModal = false"
+                  class="w-full py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 text-xs font-semibold rounded-xl border border-zinc-800 transition-colors">
+            稍后再说 / 继续加练
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -493,6 +519,7 @@ const showCycleEditorModal = ref(false);
 const showPlanPicker = ref(false);
 const showSummaryModal = ref(false);
 const latestSummary = ref(null);
+const showAutoFinishModal = ref(false);
 
 // Timer for elapsed workout time
 const nowTimestamp = ref(Date.now());
@@ -629,6 +656,14 @@ function markRestDayCompleted() {
 
 function toggleSet(exIdx, sIdx) {
   toggleSetCompletion(exIdx, sIdx);
+  // Auto-detect if all sets are now completed
+  if (completedSetsCount.value > 0 && completedSetsCount.value === totalSetsCount.value) {
+    setTimeout(() => {
+      if (completedSetsCount.value === totalSetsCount.value && store.activeWorkout && !showSummaryModal.value) {
+        showAutoFinishModal.value = true;
+      }
+    }, 600);
+  }
 }
 
 function addSet(exIdx) {

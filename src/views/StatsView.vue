@@ -93,15 +93,22 @@
       <!-- Rest Timer Duration Setting -->
       <div class="space-y-1.5">
         <div class="flex items-center justify-between text-xs">
-          <span class="text-zinc-200 font-medium">默认组间休息时间</span>
+          <span class="text-zinc-200 font-medium">默认组间休息时长</span>
           <span class="font-bold text-amber-400 font-mono">{{ store.settings.defaultRestSeconds }} 秒</span>
         </div>
         <div class="grid grid-cols-4 gap-1.5">
-          <button v-for="sec in [45, 60, 90, 120]" :key="sec"
-                  @click="store.settings.defaultRestSeconds = sec"
-                  class="py-2 rounded-xl border text-xs font-mono font-bold transition-all"
-                  :class="[store.settings.defaultRestSeconds === sec ? 'bg-amber-500 text-zinc-950 border-amber-500' : 'bg-zinc-950 border-zinc-800 text-zinc-300']">
-            {{ sec }}s
+          <button v-for="item in [
+                    { sec: 60, label: '泵感' },
+                    { sec: 90, label: '标准推荐' },
+                    { sec: 120, label: '大肌群' },
+                    { sec: 180, label: '力量' }
+                  ]" 
+                  :key="item.sec"
+                  @click="store.settings.defaultRestSeconds = item.sec"
+                  class="py-2 px-1 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-0.5"
+                  :class="[store.settings.defaultRestSeconds === item.sec ? 'bg-amber-500 text-zinc-950 border-amber-500 font-bold shadow-md shadow-amber-500/20' : 'bg-zinc-950 border-zinc-800 text-zinc-300 hover:border-zinc-700']">
+            <span class="text-xs font-mono font-black leading-none">{{ item.sec }}s</span>
+            <span class="text-[9px] leading-none opacity-85 font-medium">{{ item.label }}</span>
           </button>
         </div>
       </div>
@@ -123,8 +130,8 @@
       <!-- Vibration Toggle -->
       <div class="flex items-center justify-between py-1 border-t border-zinc-800/80">
         <div>
-          <div class="text-xs font-medium text-zinc-200">触感震动反馈 (Haptic)</div>
-          <div class="text-[10px] text-zinc-500">点击打勾与按键时提供微震动反馈</div>
+          <div class="text-xs font-medium text-zinc-200">触感强震动反馈 (Haptic)</div>
+          <div class="text-[10px] text-zinc-500">休息倒计时结束与打卡时提供穿透震动</div>
         </div>
         <button @click="store.settings.vibrationEnabled = !store.settings.vibrationEnabled"
                 class="w-12 h-6 rounded-full transition-colors relative p-0.5"
@@ -137,25 +144,25 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- Personalized Appearance / Hidden Skin Settings -->
+    <!-- Personalized Appearance / Compact Skin Carousel -->
     <!-- ============================================== -->
-    <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3.5 transition-all">
+    <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3 transition-all">
       <div class="flex items-center justify-between">
         <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
           <span>🎨</span> 个性化外观
         </div>
         <span v-if="store.settings.unlockedSkins.length > 1" 
               class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 font-medium">
-          已解锁 {{ store.settings.unlockedSkins.length - 1 }} 款隐藏皮肤
+          已解锁 {{ store.settings.unlockedSkins.length }} 款皮肤 (可横向滑动)
         </span>
       </div>
 
-      <!-- Skin Selector Cards (Shown when any skin is unlocked) -->
-      <div v-if="store.settings.unlockedSkins.length > 1" class="space-y-3">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      <!-- Horizontal Scrollable Skin Carousel -->
+      <div v-if="store.settings.unlockedSkins.length > 1" class="space-y-2.5">
+        <div class="flex gap-2.5 overflow-x-auto pb-1.5 pt-0.5 scrollbar-none snap-x snap-mandatory">
           <!-- Option 1: Default Skin -->
           <button @click="handleSelectSkin('default')"
-                  class="p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[90px]"
+                  class="flex-shrink-0 w-[165px] snap-start p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[96px]"
                   :class="[
                     store.settings.uiSkin === 'default' 
                       ? 'bg-zinc-800/90 border-amber-500/80 shadow-md ring-1 ring-amber-500/40' 
@@ -171,8 +178,8 @@
               经典深灰黑 · 活力琥珀金
             </div>
             <div class="flex items-center gap-1 mt-1">
-              <span class="w-3 h-3 rounded-full bg-zinc-950 border border-zinc-700"></span>
-              <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-zinc-950 border border-zinc-700"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
               <span v-if="store.settings.uiSkin === 'default'" class="text-[9px] text-amber-400 font-bold ml-auto font-mono">当前生效</span>
             </div>
           </button>
@@ -180,7 +187,7 @@
           <!-- Option 2: Chamber Skin (if unlocked) -->
           <button v-if="store.settings.unlockedSkins.includes('chamber')"
                   @click="handleSelectSkin('chamber')"
-                  class="p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[90px]"
+                  class="flex-shrink-0 w-[165px] snap-start p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[96px]"
                   :class="[
                     store.settings.uiSkin === 'chamber' 
                       ? 'bg-[#0D1627] border-[#E5C378] shadow-md ring-1 ring-[#E5C378]/50' 
@@ -188,7 +195,7 @@
                   ]">
             <div class="flex items-center justify-between w-full">
               <span class="text-xs font-bold text-zinc-100 flex items-center gap-1">
-                <span>⚜️</span> 尚博勒 (Chamber)
+                <span>⚜️</span> 尚博勒
               </span>
               <span v-if="store.settings.uiSkin === 'chamber'" class="w-2 h-2 rounded-full bg-[#E5C378]"></span>
             </div>
@@ -196,8 +203,8 @@
               法式精密深蓝 · 香槟流金
             </div>
             <div class="flex items-center gap-1 mt-1">
-              <span class="w-3 h-3 rounded-full bg-[#070B14] border border-[#1E3052]"></span>
-              <span class="w-3 h-3 rounded-full bg-[#E5C378]"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#070B14] border border-[#1E3052]"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#E5C378]"></span>
               <span v-if="store.settings.uiSkin === 'chamber'" class="text-[9px] text-[#E5C378] font-bold ml-auto font-mono">当前生效</span>
             </div>
           </button>
@@ -205,7 +212,7 @@
           <!-- Option 3: CS2 Skin (if unlocked) -->
           <button v-if="store.settings.unlockedSkins.includes('cs')"
                   @click="handleSelectSkin('cs')"
-                  class="p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[90px]"
+                  class="flex-shrink-0 w-[165px] snap-start p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[96px]"
                   :class="[
                     store.settings.uiSkin === 'cs' 
                       ? 'bg-[#0F172A] border-[#F97316] shadow-md ring-1 ring-[#F97316]/50' 
@@ -213,23 +220,23 @@
                   ]">
             <div class="flex items-center justify-between w-full">
               <span class="text-xs font-bold text-zinc-100 flex items-center gap-1">
-                <span>🎯</span> CS2 · 完美特训
+                <span>🎯</span> CS2 特训
               </span>
               <span v-if="store.settings.uiSkin === 'cs'" class="w-2 h-2 rounded-full bg-[#F97316]"></span>
             </div>
             <div class="text-[10px] text-zinc-400 leading-tight">
-              官方反恐精英 · 全景战术 & 100% 官方原画
+              官方正版全景 · 索尔曼&戴劳
             </div>
             <div class="flex items-center gap-1 mt-1">
-              <span class="w-3 h-3 rounded-full bg-[#080C14] border border-[#1E293B]"></span>
-              <span class="w-3 h-3 rounded-full bg-[#F97316]"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#080C14] border border-[#1E293B]"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-[#F97316]"></span>
               <span v-if="store.settings.uiSkin === 'cs'" class="text-[9px] text-[#F97316] font-bold ml-auto font-mono">当前生效</span>
             </div>
           </button>
         </div>
 
         <!-- Restore Default Skin Button (Visible when custom skin is active) -->
-        <div v-if="store.settings.uiSkin !== 'default'" class="pt-1">
+        <div v-if="store.settings.uiSkin !== 'default'" class="pt-0.5">
           <button @click="handleRestoreDefaultSkin"
                   class="w-full py-2 bg-zinc-950 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 text-xs font-medium rounded-xl border border-zinc-800 transition-colors flex items-center justify-center gap-1.5">
             <span>↩️</span> 恢复默认外观

@@ -191,7 +191,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { store, stopRestTimer, adjustRestTimer } from "../store/fitnessStore.js";
+import { store, startRestTimer, stopRestTimer, adjustRestTimer } from "../store/fitnessStore.js";
 
 const csC4TimerImg = "./themes/cs/hud/bomb_planted.svg";
 

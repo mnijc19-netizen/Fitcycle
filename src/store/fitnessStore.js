@@ -2,6 +2,7 @@ import { reactive, watch } from "vue";
 import { DEFAULT_EXERCISES, DEFAULT_PLANS, PRESET_CYCLES, SCIENCE_PRINCIPLES } from "../data/defaultPlans.js";
 import { playSetCompleteSound, playRestCompleteSound, playWorkoutDoneSound } from "../utils/audio.js";
 import { triggerHaptic } from "../utils/vibrate.js";
+import { requestNotificationPermission, sendRestCompleteNotification, updateDocumentTitleForTimer, setRestCompleteTitle, resetDocumentTitle } from "../utils/notification.js";
 import { DEFAULT_SETTINGS, sanitizeSettings, verifyPasscode, getPasscodeSkin, VALID_SKINS, applySkinToDOM } from "../utils/themeManager.js";
 
 const STORAGE_KEY = "fitcycle_app_data_v1";
@@ -207,24 +208,31 @@ watch(
 // --- REST TIMER CONTROLS ---
 let timerInterval = null;
 
-export function startRestTimer(seconds = store.settings.defaultRestSeconds) {
+export function startRestTimer(seconds = store.settings.defaultRestSeconds || 90) {
   if (timerInterval) clearInterval(timerInterval);
   
+  requestNotificationPermission();
+
   store.restTimer.duration = seconds;
   store.restTimer.remaining = seconds;
   store.restTimer.endTime = Date.now() + seconds * 1000;
   store.restTimer.running = true;
   store.restTimer.minimized = false;
 
+  updateDocumentTitleForTimer(seconds);
+
   timerInterval = setInterval(() => {
     const left = Math.round((store.restTimer.endTime - Date.now()) / 1000);
     if (left <= 0) {
       stopRestTimer();
       store.restTimer.remaining = 0;
+      setRestCompleteTitle();
+      sendRestCompleteNotification(store.settings.uiSkin);
       if (store.settings.soundEnabled) playRestCompleteSound();
-      if (store.settings.vibrationEnabled) triggerHaptic("success");
+      if (store.settings.vibrationEnabled) triggerHaptic("restComplete");
     } else {
       store.restTimer.remaining = left;
+      updateDocumentTitleForTimer(left);
     }
   }, 500);
 }
@@ -238,6 +246,7 @@ export function stopRestTimer() {
   store.restTimer.remaining = 0;
   store.restTimer.duration = 0;
   store.restTimer.minimized = false;
+  resetDocumentTitle();
 }
 
 
