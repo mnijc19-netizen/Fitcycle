@@ -301,17 +301,26 @@
     </div>
 
     <!-- Full AI Settings Modal Sheet -->
-    <div v-if="showAISettingsModal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" @click="showAISettingsModal = false"></div>
-      <div class="relative w-full max-w-lg max-h-[85vh] overflow-y-auto bg-zinc-950 border border-zinc-800 rounded-t-3xl sm:rounded-3xl p-4 shadow-2xl space-y-3 z-10">
-        <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
-          <div class="text-xs font-bold text-zinc-100 flex items-center gap-1.5">
-            <span class="text-amber-400">✦</span> 智能教练详细配置
+    <div v-if="showAISettingsModal" class="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <!-- Backdrop -->
+      <div class="absolute inset-0 bg-black/80 backdrop-blur-md" @click="showAISettingsModal = false"></div>
+      
+      <!-- Modal Container with Fixed Header and Scrollable Body -->
+      <section class="relative w-full max-w-lg h-[min(88dvh,720px)] bg-zinc-950 border border-zinc-700 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in fade-in slide-in-from-bottom-6 duration-200">
+        <!-- Fixed Header -->
+        <header class="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-900/95 flex-shrink-0">
+          <div class="flex items-center gap-2">
+            <span class="text-amber-400 font-bold text-sm">✦</span>
+            <h2 class="text-xs font-bold text-zinc-100 uppercase tracking-wider">智能教练配置 (Fitcycle AI)</h2>
           </div>
-          <button type="button" @click="showAISettingsModal = false" class="w-7 h-7 rounded-full bg-zinc-900 text-zinc-400 hover:text-white flex items-center justify-center text-xs">✕</button>
+          <button type="button" @click="showAISettingsModal = false" class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center text-xs transition-colors">✕</button>
+        </header>
+
+        <!-- Scrollable Content Area with Generous Bottom Padding -->
+        <div class="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4" style="padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 6rem), 5rem);">
+          <AISettingsPanel @open-chat="handleOpenChatFromSettings" />
         </div>
-        <AISettingsPanel />
-      </div>
+      </section>
     </div>
 
     <!-- Data Backup & Reset -->
@@ -379,6 +388,11 @@ const activeAIProvider = computed(getActiveProvider);
 const activeAIModels = computed(getActiveModels);
 const aiConnected = computed(() => Boolean(getActiveApiKey() && activeAIModels.value.length));
 const activeAIModel = computed(() => activeAIModels.value.find((m) => m.id === getActiveModelId()));
+
+function handleOpenChatFromSettings() {
+  showAISettingsModal.value = false;
+  aiSession.drawerOpen = true;
+}
 
 const fileInput = ref(null);
 const passcodeInput = ref("");

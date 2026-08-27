@@ -1,8 +1,8 @@
 <template>
-  <section class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-4" aria-labelledby="ai-settings-title">
-    <div class="flex items-start justify-between gap-3">
+  <div class="space-y-4 pb-12" aria-labelledby="ai-settings-title">
+    <div class="flex items-start justify-between gap-3 bg-zinc-900/80 border border-zinc-800 rounded-2xl p-3.5">
       <div>
-        <h3 id="ai-settings-title" class="text-xs font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
+        <h3 id="ai-settings-title" class="text-xs font-bold text-zinc-200 flex items-center gap-1.5">
           <span class="text-amber-400">✦</span> 智能教练设置 (Fitcycle AI)
         </h3>
         <p class="mt-1 text-[11px] text-zinc-400 leading-relaxed">
@@ -107,16 +107,23 @@
         </p>
       </div>
 
-      <button type="button" data-testid="open-ai-assistant" @click="aiSession.drawerOpen = true"
-              class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-black shadow-md shadow-amber-500/20 active:scale-95 transition-all">
+      <button type="button" data-testid="open-ai-assistant" @click="handleOpenChat"
+              class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-black shadow-md shadow-amber-500/20 active:scale-95 transition-all">
         ✦ 打开 AI 教练对话
       </button>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup>
 import { computed, ref, watch } from "vue";
+
+const emit = defineEmits(["open-chat"]);
+
+function handleOpenChat() {
+  aiSession.drawerOpen = true;
+  emit("open-chat");
+}
 import {
   AI_PROVIDERS,
   aiSession,
