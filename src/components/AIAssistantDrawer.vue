@@ -16,7 +16,22 @@
     <button type="button" class="absolute inset-0 bg-black/65 backdrop-blur-sm" aria-label="关闭 AI 助手" @click="aiSession.drawerOpen = false"></button>
     <section class="relative w-full max-w-md h-[min(760px,calc(100dvh-24px))] bg-zinc-950 border border-zinc-700 rounded-t-3xl shadow-2xl flex flex-col overflow-hidden"
              aria-label="Fitcycle AI 助手">
-      <header class="flex items-center justify-between gap-3 px-4 py-3 border-b border-zinc-800 bg-zinc-900/95 flex-shrink-0">
+
+      <!-- CS2 Tactical Background Backdrop -->
+      <div v-if="store.settings.uiSkin === 'cs'" 
+           class="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-20">
+        <img :src="csAiBg" alt="CS2 AI Backdrop" class="w-full h-full object-cover object-bottom filter contrast-125" />
+        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-zinc-950/80"></div>
+      </div>
+
+      <!-- Chamber Luxury Background Backdrop -->
+      <div v-else-if="store.settings.uiSkin === 'chamber'" 
+           class="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-15">
+        <img :src="chamberAiBg" alt="Chamber AI Backdrop" class="w-full h-full object-cover object-center" />
+        <div class="absolute inset-0 bg-gradient-to-t from-[#070B14] via-[#070B14]/40 to-[#070B14]/80"></div>
+      </div>
+
+      <header class="relative z-10 flex items-center justify-between gap-3 px-4 py-3 border-b border-zinc-800 bg-zinc-900/95 flex-shrink-0">
         <div class="min-w-0 flex-1">
           <div class="text-sm font-black text-zinc-100 flex items-center gap-2">
             <span class="text-amber-400 font-black">✦</span> Fitcycle AI
@@ -81,7 +96,7 @@
         </div>
       </div>
 
-      <div ref="messageList" class="flex-1 overflow-y-auto overscroll-contain px-3 py-4 space-y-3" data-testid="ai-messages">
+      <div ref="messageList" class="relative z-10 flex-1 overflow-y-auto overscroll-contain px-3 py-4 space-y-3" data-testid="ai-messages">
         <!-- Empty State with Quick Action Chips -->
         <div v-if="!aiSession.conversation.length" class="h-full min-h-52 flex flex-col items-center justify-center text-center px-4 py-6 space-y-4">
           <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl shadow-lg shadow-amber-500/10">🤖</div>
@@ -193,7 +208,7 @@
         </div>
       </div>
 
-      <footer class="flex-shrink-0 border-t border-zinc-800 bg-zinc-900/95 px-3 pt-2.5" style="padding-bottom:max(env(safe-area-inset-bottom, 0px), 10px)">
+      <footer class="relative z-10 flex-shrink-0 border-t border-zinc-800 bg-zinc-900/95 px-3 pt-2.5" style="padding-bottom:max(env(safe-area-inset-bottom, 0px), 10px)">
         <!-- Attached Images Thumbnail Strip -->
         <div v-if="attachments.length" class="flex gap-2 overflow-x-auto pb-2">
           <div v-for="(image, index) in attachments" :key="image.name + image.size" class="relative flex-shrink-0">
@@ -281,6 +296,9 @@ function goToSettingsTab() {
   aiSession.drawerOpen = false;
   store.activeTab = "stats";
 }
+
+const csAiBg = "./themes/cs/background.jpg";
+const chamberAiBg = "./themes/chamber/hero/chamber-hero.webp";
 
 const defaultChips = [
   {

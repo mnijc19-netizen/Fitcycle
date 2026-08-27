@@ -121,10 +121,10 @@
   [data-skin="cs"] body {
     background-color: #080C14;
     background-image: 
-      radial-gradient(ellipse 70% 40% at 50% -10%, rgba(56, 189, 248, 0.12), transparent 70%),
-      linear-gradient(rgba(249, 115, 22, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(249, 115, 22, 0.03) 1px, transparent 1px);
-    background-size: 100% 100%, 32px 32px, 32px 32px;
+      linear-gradient(to bottom, rgba(8, 12, 20, 0.75), rgba(8, 12, 20, 0.95)),
+      url('/themes/cs/background.jpg');
+    background-size: cover;
+    background-position: center;
     background-attachment: fixed;
   }
 }

@@ -117,6 +117,18 @@
         </svg>
       </div>
 
+      <!-- Character Agent Cutout (Interactive Agent Switcher) -->
+      <div @click="nextCsAgent" 
+           title="点击切换出战探员"
+           class="absolute right-[-10px] bottom-[-8px] h-[190px] w-[160px] cursor-pointer select-none active:scale-95 transition-transform flex items-end justify-end z-20 group">
+        <img :src="currentCsAgent.url" 
+             :alt="currentCsAgent.name" 
+             class="h-[115%] max-w-none object-contain drop-shadow-[0_0_20px_rgba(249,115,22,0.45)] opacity-90 transition-all duration-300 group-hover:opacity-100" />
+        <span class="absolute bottom-1 right-3 text-[8px] font-mono px-1.5 py-0.5 rounded bg-black/80 text-[#F97316] border border-[#F97316]/40 backdrop-blur-sm shadow-md pointer-events-none">
+          {{ currentCsAgent.role }} ↺
+        </span>
+      </div>
+
       <!-- Header Content Container -->
       <div class="relative z-10 max-w-md mx-auto px-4 pb-7 flex flex-col justify-between" style="min-height: 180px;">
         
@@ -172,11 +184,26 @@
             <span>起把狙！枪枪爆头 · 撕裂肌纤维</span>
           </div>
 
-          <!-- Mini Tactical HUD indicators -->
-          <div class="flex items-center gap-2.5 pt-0.5 text-[9px] font-mono text-[#64748B]">
-            <span class="text-emerald-400 font-bold">💖 HP 100</span>
-            <span class="text-sky-400 font-bold">🛡️ ARMOR 100</span>
-            <span class="text-amber-400 font-bold">💰 $16,000</span>
+          <!-- Official CS2 Panorama HUD Gauges (100% Official Assets) -->
+          <div class="flex items-center gap-2 pt-1">
+            <!-- Health Gauge -->
+            <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/75 border border-emerald-500/40 backdrop-blur-md shadow-inner">
+              <img :src="csHealthCross" alt="HP" class="w-2.5 h-2.5 brightness-125 drop-shadow-[0_0_4px_#10B981]" />
+              <span class="font-mono text-xs font-black text-emerald-400 tracking-tight">100</span>
+            </div>
+
+            <!-- Armor & Helmet Gauge -->
+            <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/75 border border-sky-500/40 backdrop-blur-md shadow-inner">
+              <img :src="csArmorHelmet" alt="Armor" class="w-3 h-3 brightness-125 drop-shadow-[0_0_4px_#38BDF8]" />
+              <span class="font-mono text-xs font-black text-sky-400 tracking-tight">100</span>
+              <span class="text-[7px] font-mono font-bold text-sky-300/80 tracking-tighter">HELMET</span>
+            </div>
+
+            <!-- Money Gauge -->
+            <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-black/75 border border-amber-500/40 backdrop-blur-md shadow-inner">
+              <img :src="csMoneyChevron" alt="Cash" class="w-2 h-2 brightness-125" />
+              <span class="font-mono text-xs font-black text-[#85B84B] tracking-tight">$16,000</span>
+            </div>
           </div>
         </div>
 
@@ -241,6 +268,25 @@ import { ref, computed } from "vue";
 import { store, getCycleDayForDate } from "../store/fitnessStore.js";
 import CycleEditorModal from "./CycleEditorModal.vue";
 import logoUrl from "../assets/logo.png";
+import { triggerHaptic } from "../utils/vibrate.js";
+
+const csAgentIndex = ref(0);
+const csAgents = [
+  { name: "Elite Trapper Solman", role: "T · 捕兽者索尔曼", url: "./themes/cs/agents/t_solman.png" },
+  { name: "Markus Delrow", role: "CT · 马尔库斯·戴劳", url: "./themes/cs/agents/ct_delrow.png" },
+  { name: "Number K", role: "T · 老K", url: "./themes/cs/agents/t_number_k.png" },
+  { name: "Phoenix Enforcer", role: "T · 凤凰战士", url: "./themes/cs/agents/t_phoenix.png" }
+];
+const currentCsAgent = computed(() => csAgents[csAgentIndex.value]);
+
+function nextCsAgent() {
+  csAgentIndex.value = (csAgentIndex.value + 1) % csAgents.length;
+  if (store.settings.vibrationEnabled) triggerHaptic("light");
+}
+
+const csHealthCross = "./themes/cs/hud/health_cross.svg";
+const csArmorHelmet = "./themes/cs/hud/armor_helmet.svg";
+const csMoneyChevron = "./themes/cs/hud/chevron_money.svg";
 
 const showCycleModal = ref(false);
 

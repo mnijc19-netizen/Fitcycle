@@ -1,37 +1,51 @@
-{
-  "theme": "Counter-Strike 2 (CS2 · 战术特勤) Bespoke Theme",
-  "version": "1.0.0",
-  "assets": [
-    {
-      "file": "hero/cs-hero.jpg",
-      "dimensions": "1920x1080",
-      "format": "JPG",
-      "usage": "Top Theme Character Scene Banner Header (SAS Operative with AWP & Tactical Gear)"
-    },
-    {
-      "file": "icons/awp.jpg",
-      "dimensions": "1024x1024",
-      "usage": "Bottom TabBar Item 1: 今日训练 (AWP Sniper Rifle)"
-    },
-    {
-      "file": "icons/c4.jpg",
-      "dimensions": "1024x1024",
-      "usage": "Bottom TabBar Item 2: 分化循环 (C4 Explosive Bomb 7355608 Keypad)"
-    },
-    {
-      "file": "icons/rank.jpg",
-      "dimensions": "1024x1024",
-      "usage": "Bottom TabBar Item 3: 训练日历 (Global Elite Rank Wings Medal)"
-    },
-    {
-      "file": "icons/karambit.jpg",
-      "dimensions": "1024x1024",
-      "usage": "Bottom TabBar Item 4: 动作库 (Karambit Marble Fade Knife)"
-    },
-    {
-      "file": "icons/defuser.jpg",
-      "dimensions": "1024x1024",
-      "usage": "Bottom TabBar Item 5: 统计设置 (CT Defusal Kit Equipment)"
-    }
-  ]
+﻿{
+  "theme": "Counter-Strike 2 (CS2) 100% Valve Official Theme",
+  "version": "3.0.0",
+  "provenance": "100% Direct Game-File Extraction (Valve CS2 pak01_dir & Steam Store/Library CDN)",
+  "zeroAiPolicy": true,
+  "assets": {
+    "agents": [
+      {
+        "name": "Elite Trapper Solman",
+        "file": "agents/t_solman.png",
+        "source": "cs2/pak01_dir/materials/models/player/custom_player/legacy/tm_jungle_raider_varianta",
+        "usage": "Primary T Operator (Hawaiian Floral Shirt, Gold Chain, Bandolier)"
+      },
+      {
+        "name": "Markus Delrow",
+        "file": "agents/ct_delrow.png",
+        "source": "cs2/pak01_dir/materials/models/player/custom_player/legacy/ctm_fbi_variantg",
+        "usage": "Primary CT Operator (FBI HRT, Headset, Red Glasses)"
+      },
+      {
+        "name": "Number K",
+        "file": "agents/t_number_k.png",
+        "source": "cs2/pak01_dir/materials/models/player/custom_player/legacy/tm_professional_vari",
+        "usage": "T Operator (Paper Bag Mask)"
+      },
+      {
+        "name": "Phoenix Enforcer",
+        "file": "agents/t_phoenix.png",
+        "source": "cs2/pak01_dir/materials/models/player/custom_player/legacy/tm_phoenix_variantf",
+        "usage": "T Operator (Red Bandana)"
+      }
+    ],
+    "hud": [
+      { "file": "hud/health_cross.svg", "source": "cs2/panorama/images/hud/health_cross.svg", "usage": "Health Cross Icon" },
+      { "file": "hud/armor_helmet.svg", "source": "cs2/panorama/images/hud/armor_helmet.svg", "usage": "Armor Helmet Icon" },
+      { "file": "hud/chevron_money.svg", "source": "cs2/panorama/images/hud/chevron_money.svg", "usage": "Money Chevron Icon" },
+      { "file": "hud/bomb_planted.svg", "source": "cs2/panorama/images/hud/teamcounter/teamcounter_bomb-planted.svg", "usage": "C4 Bomb Planted Timer Icon" }
+    ],
+    "tabBar": [
+      { "file": "icons/ak47.svg", "source": "cs2/panorama/images/icons/equipment/ak47.svg", "usage": "Today Tab (Firepower)" },
+      { "file": "icons/c4.svg", "source": "cs2/panorama/images/icons/equipment/c4.svg", "usage": "Cycle Tab (C4 Explosive)" },
+      { "file": "icons/defuser.svg", "source": "cs2/panorama/images/icons/equipment/defuser.svg", "usage": "Calendar Tab (Defusal Kit)" },
+      { "file": "icons/awp.svg", "source": "cs2/panorama/images/icons/equipment/awp.svg", "usage": "Exercises Tab (AWP Sniper)" },
+      { "file": "icons/skillgroup18.svg", "source": "cs2/panorama/images/icons/skillgroups/skillgroup18.svg", "usage": "Stats Tab (The Global Elite Rank)" }
+    ],
+    "backgrounds": [
+      { "file": "hero/cs-hero.jpg", "source": "Steam Library App 730 Hero", "usage": "Header Banner Scene" },
+      { "file": "background.jpg", "source": "Steam Store App 730 Page Background", "usage": "Global Dark Blueprint Background" }
+    ]
+  }
 }

@@ -37,12 +37,12 @@
                class="w-6 h-6 object-contain transition-all"
                :class="[store.activeTab === 'today' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(229,195,120,0.7)] scale-110' : 'opacity-60 grayscale-[30%]']" />
           
-          <!-- CS2 Official AWP Weapon Icon -->
+          <!-- CS2 Official AK-47 UI Icon -->
           <img v-else-if="store.settings.uiSkin === 'cs'" 
-               :src="csAwpIcon" 
-               alt="AWP" 
-               class="w-6 h-6 rounded-md object-contain transition-all"
-               :class="[store.activeTab === 'today' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-65 grayscale-[20%]']" />
+               :src="csHomeIcon" 
+               alt="AK-47" 
+               class="w-6 h-6 object-contain transition-all drop-shadow-[0_0_2px_rgba(255,255,255,0.2)]"
+               :class="[store.activeTab === 'today' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-50 grayscale']" />
 
           <!-- Default SVG Icon -->
           <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -60,7 +60,7 @@
         <span v-if="store.settings.uiSkin === 'chamber' && store.activeTab === 'today'" 
               class="w-1 h-1 rounded-full bg-[#E5C378] mt-0.5 shadow-[0_0_4px_#E5C378]"></span>
         <span v-else-if="store.settings.uiSkin === 'cs' && store.activeTab === 'today'" 
-              class="w-1 h-1 rounded-full bg-[#F97316] mt-0.5 shadow-[0_0_6px_#F97316]"></span>
+              class="w-5 h-1 rounded-full bg-[#F97316] mt-0.5 shadow-[0_0_6px_#F97316]"></span>
       </button>
 
       <!-- ============================================== -->
@@ -81,12 +81,12 @@
                class="w-6 h-6 object-contain transition-all"
                :class="[store.activeTab === 'cycle' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(229,195,120,0.7)] scale-110' : 'opacity-60 grayscale-[30%]']" />
 
-          <!-- CS2 Official C4 Explosive Icon -->
+          <!-- CS2 Official C4 Explosive UI Icon -->
           <img v-else-if="store.settings.uiSkin === 'cs'" 
-               :src="csC4Icon" 
-               alt="C4" 
-               class="w-6 h-6 rounded-md object-contain transition-all"
-               :class="[store.activeTab === 'cycle' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-65 grayscale-[20%]']" />
+               :src="csCycleIcon" 
+               alt="C4 Bomb" 
+               class="w-6 h-6 object-contain transition-all drop-shadow-[0_0_2px_rgba(255,255,255,0.2)]"
+               :class="[store.activeTab === 'cycle' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-50 grayscale']" />
 
           <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -98,7 +98,7 @@
         <span v-if="store.settings.uiSkin === 'chamber' && store.activeTab === 'cycle'" 
               class="w-1 h-1 rounded-full bg-[#E5C378] mt-0.5 shadow-[0_0_4px_#E5C378]"></span>
         <span v-else-if="store.settings.uiSkin === 'cs' && store.activeTab === 'cycle'" 
-              class="w-1 h-1 rounded-full bg-[#F97316] mt-0.5 shadow-[0_0_6px_#F97316]"></span>
+              class="w-5 h-1 rounded-full bg-[#F97316] mt-0.5 shadow-[0_0_6px_#F97316]"></span>
       </button>
 
       <!-- ============================================== -->
@@ -119,12 +119,12 @@
                class="w-6 h-6 object-contain transition-all"
                :class="[store.activeTab === 'calendar' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(229,195,120,0.7)] scale-110' : 'opacity-60 grayscale-[30%]']" />
 
-          <!-- CS2 Official Global Elite Rank Badge Icon -->
+          <!-- CS2 Official Defuser UI Icon -->
           <img v-else-if="store.settings.uiSkin === 'cs'" 
-               :src="csRankIcon" 
-               alt="Global Elite" 
-               class="w-6 h-6 rounded-md object-contain transition-all"
-               :class="[store.activeTab === 'calendar' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-65 grayscale-[20%]']" />
+               :src="csCalendarIcon" 
+               alt="Defuser" 
+               class="w-6 h-6 object-contain transition-all drop-shadow-[0_0_2px_rgba(255,255,255,0.2)]"
+               :class="[store.activeTab === 'calendar' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-50 grayscale']" />
 
           <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -136,7 +136,7 @@
         <span v-if="store.settings.uiSkin === 'chamber' && store.activeTab === 'calendar'" 
               class="w-1 h-1 rounded-full bg-[#E5C378] mt-0.5 shadow-[0_0_4px_#E5C378]"></span>
         <span v-else-if="store.settings.uiSkin === 'cs' && store.activeTab === 'calendar'" 
-              class="w-1 h-1 rounded-full bg-[#F97316] mt-0.5 shadow-[0_0_6px_#F97316]"></span>
+              class="w-5 h-1 rounded-full bg-[#F97316] mt-0.5 shadow-[0_0_6px_#F97316]"></span>
       </button>
 
       <!-- ============================================== -->
@@ -157,12 +157,12 @@
                class="w-6 h-6 object-contain transition-all"
                :class="[store.activeTab === 'exercises' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(229,195,120,0.7)] scale-110' : 'opacity-60 grayscale-[30%]']" />
 
-          <!-- CS2 Official Karambit Knife Icon -->
+          <!-- CS2 Official AWP Sniper UI Icon -->
           <img v-else-if="store.settings.uiSkin === 'cs'" 
-               :src="csKarambitIcon" 
-               alt="Karambit" 
-               class="w-6 h-6 rounded-md object-contain transition-all"
-               :class="[store.activeTab === 'exercises' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-65 grayscale-[20%]']" />
+               :src="csExercisesIcon" 
+               alt="AWP Sniper" 
+               class="w-6 h-6 object-contain transition-all drop-shadow-[0_0_2px_rgba(255,255,255,0.2)]"
+               :class="[store.activeTab === 'exercises' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-50 grayscale']" />
 
           <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -174,7 +174,7 @@
         <span v-if="store.settings.uiSkin === 'chamber' && store.activeTab === 'exercises'" 
               class="w-1 h-1 rounded-full bg-[#E5C378] mt-0.5 shadow-[0_0_4px_#E5C378]"></span>
         <span v-else-if="store.settings.uiSkin === 'cs' && store.activeTab === 'exercises'" 
-              class="w-1 h-1 rounded-full bg-[#F97316] mt-0.5 shadow-[0_0_6px_#F97316]"></span>
+              class="w-5 h-1 rounded-full bg-[#F97316] mt-0.5 shadow-[0_0_6px_#F97316]"></span>
       </button>
 
       <!-- ============================================== -->
@@ -195,12 +195,12 @@
                class="w-5 h-5 object-contain transition-all"
                :class="[store.activeTab === 'stats' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(229,195,120,0.7)] scale-110' : 'opacity-60 grayscale-[30%]']" />
 
-          <!-- CS2 Official CT Defusal Kit Icon -->
+          <!-- CS2 Official Global Elite Rank Badge Icon -->
           <img v-else-if="store.settings.uiSkin === 'cs'" 
-               :src="csDefuserIcon" 
-               alt="Defuser" 
-               class="w-6 h-6 rounded-md object-contain transition-all"
-               :class="[store.activeTab === 'stats' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-65 grayscale-[20%]']" />
+               :src="csStatsIcon" 
+               alt="Global Elite" 
+               class="w-6 h-6 object-contain transition-all drop-shadow-[0_0_2px_rgba(255,255,255,0.2)]"
+               :class="[store.activeTab === 'stats' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-50 grayscale']" />
 
           <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -212,7 +212,7 @@
         <span v-if="store.settings.uiSkin === 'chamber' && store.activeTab === 'stats'" 
               class="w-1 h-1 rounded-full bg-[#E5C378] mt-0.5 shadow-[0_0_4px_#E5C378]"></span>
         <span v-else-if="store.settings.uiSkin === 'cs' && store.activeTab === 'stats'" 
-              class="w-1 h-1 rounded-full bg-[#F97316] mt-0.5 shadow-[0_0_6px_#F97316]"></span>
+              class="w-5 h-1 rounded-full bg-[#F97316] mt-0.5 shadow-[0_0_6px_#F97316]"></span>
       </button>
 
     </div>
@@ -229,16 +229,14 @@ const trademarkIcon = "./themes/chamber/icons/trademark.png";
 const tourDeForceIcon = "./themes/chamber/icons/tour-de-force.png";
 const chamberProfileIcon = "./themes/chamber/icons/chamber-profile.svg";
 
-const csAwpIcon = "./themes/cs/icons/awp.svg";
-const csC4Icon = "./themes/cs/icons/c4.svg";
-const csRankIcon = "./themes/cs/icons/rank.svg";
-const csKarambitIcon = "./themes/cs/icons/karambit.svg";
-const csDefuserIcon = "./themes/cs/icons/defuser.svg";
+const csHomeIcon = "./themes/cs/icons/ak47.svg";
+const csCycleIcon = "./themes/cs/icons/c4.svg";
+const csCalendarIcon = "./themes/cs/icons/defuser.svg";
+const csExercisesIcon = "./themes/cs/icons/awp.svg";
+const csStatsIcon = "./themes/cs/icons/skillgroup18.svg";
 
 function switchTab(tabName) {
   store.activeTab = tabName;
   if (store.settings.vibrationEnabled) triggerHaptic("light");
 }
 </script>
-
-

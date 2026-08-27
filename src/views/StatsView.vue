@@ -218,7 +218,7 @@
               <span v-if="store.settings.uiSkin === 'cs'" class="w-2 h-2 rounded-full bg-[#F97316]"></span>
             </div>
             <div class="text-[10px] text-zinc-400 leading-tight">
-              特勤暗蓝黑 · 战术金橙 & 战术小鸡
+              官方反恐精英 · 全景战术 & 100% 官方原画
             </div>
             <div class="flex items-center gap-1 mt-1">
               <span class="w-3 h-3 rounded-full bg-[#080C14] border border-[#1E293B]"></span>
