@@ -1,0 +1,7 @@
+<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="eagleGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#38BDF8" stop-opacity="0.8"/><stop offset="100%" stop-color="#000" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect x="15" y="36" width="90" height="48" rx="8" fill="#0F172A" stroke="#E2E8F0" stroke-width="3" filter="drop-shadow(0 4px 10px rgba(56,189,248,0.6))"/>
+  <path d="M 60,42 L 72,52 L 88,48 L 78,66 L 82,76 L 60,68 L 38,76 L 42,66 L 32,48 L 48,52 Z" fill="#FDE047" stroke="#78350F" stroke-width="1.5"/>
+</svg>

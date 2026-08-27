@@ -1,0 +1,5 @@
+<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="60,18 98,88 22,88" fill="#291508" stroke="#D97706" stroke-width="4" filter="drop-shadow(0 4px 10px rgba(217,119,6,0.6))"/>
+  <polygon points="60,34 84,78 36,78" fill="#78350F" stroke="#FDE047" stroke-width="2"/>
+  <circle cx="60" cy="62" r="6" fill="#FDE047"/>
+</svg>

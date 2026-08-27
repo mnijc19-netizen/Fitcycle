@@ -112,22 +112,22 @@ export const TIER_MEDAL_SVGS = {
 export const SKIN_TIER_MEDAL_SVGS = {
   default: TIER_MEDAL_SVGS,
   cs: {
-    tier_1: "./themes/medals/rank-tier-1.svg",
-    tier_2: "./themes/medals/rank-tier-2.svg",
-    tier_3: "./themes/medals/rank-tier-3.svg",
-    tier_4: "./themes/medals/rank-tier-4.svg",
-    tier_5: "./themes/medals/rank-tier-5.svg",
-    tier_6: "./themes/medals/cs-global-elite.svg",
-    tier_7: "./themes/medals/cs-demon-king-s.svg"
+    tier_1: "./themes/medals/cs-rank-1.svg",
+    tier_2: "./themes/medals/cs-rank-2.svg",
+    tier_3: "./themes/medals/cs-rank-3.svg",
+    tier_4: "./themes/medals/cs-rank-4.svg",
+    tier_5: "./themes/medals/cs-rank-5.svg",
+    tier_6: "./themes/medals/cs-rank-6.svg",
+    tier_7: "./themes/medals/cs-rank-7.svg"
   },
   chamber: {
-    tier_1: "./themes/medals/rank-tier-1.svg",
-    tier_2: "./themes/medals/rank-tier-2.svg",
-    tier_3: "./themes/medals/rank-tier-3.svg",
-    tier_4: "./themes/medals/rank-tier-4.svg",
-    tier_5: "./themes/medals/rank-tier-5.svg",
-    tier_6: "./themes/medals/rank-tier-6.svg",
-    tier_7: "./themes/medals/valorant-radiant.svg"
+    tier_1: "./themes/medals/val-rank-1.svg",
+    tier_2: "./themes/medals/val-rank-2.svg",
+    tier_3: "./themes/medals/val-rank-3.svg",
+    tier_4: "./themes/medals/val-rank-4.svg",
+    tier_5: "./themes/medals/val-rank-5.svg",
+    tier_6: "./themes/medals/val-rank-6.svg",
+    tier_7: "./themes/medals/val-rank-7.svg"
   }
 };
 

@@ -287,39 +287,46 @@ const svgs = {
   <text x="60" y="65" font-family="'Impact', sans-serif" font-size="12" font-weight="black" fill="#FEF08A" text-anchor="middle">100D</text>
 </svg>`,
 
-  // Official Game Icons for CS2, Wanmei Demon King S, and Valorant
-  'cs-demon-king-s.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="demonGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#DC2626" stop-opacity="0.95"/>
-      <stop offset="50%" stop-color="#7F1D1D" stop-opacity="0.5"/>
-      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="demonGold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFFBEB"/>
-      <stop offset="25%" stop-color="#FEF08A"/>
-      <stop offset="60%" stop-color="#DC2626"/>
-      <stop offset="100%" stop-color="#450A0A"/>
-    </linearGradient>
-    <linearGradient id="demonPlate" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#18181B"/>
-      <stop offset="50%" stop-color="#450A0A"/>
-      <stop offset="100%" stop-color="#000000"/>
-    </linearGradient>
-  </defs>
-  <circle cx="60" cy="60" r="56" fill="url(#demonGlow)"/>
-  <!-- Demon Wings Heraldry -->
-  <path d="M 60,25 L 82,10 L 108,30 L 92,60 L 104,90 L 60,112 L 16,90 L 28,60 L 12,30 L 38,10 Z" fill="url(#demonPlate)" stroke="url(#demonGold)" stroke-width="3" filter="drop-shadow(0 6px 16px rgba(220,38,38,0.8))"/>
-  <!-- Demonic Horned Crown -->
-  <path d="M 42,32 L 48,16 L 54,28 L 60,12 L 66,28 L 72,16 L 78,32 L 72,40 L 48,40 Z" fill="#DC2626" stroke="#FEF08A" stroke-width="1.5"/>
-  <!-- Massive Metallic Gothic S -->
-  <path d="M 72,46 C 72,46 54,42 48,50 C 42,58 54,64 64,68 C 76,72 78,82 72,90 C 66,98 46,96 46,96 L 44,86 C 44,86 60,90 64,84 C 68,78 58,74 48,70 C 38,66 36,54 44,46 C 52,38 72,40 72,40 Z" fill="url(#demonGold)" stroke="#FFF" stroke-width="1.5" filter="drop-shadow(0 2px 8px #DC2626)"/>
-  <!-- Demon King S Banner -->
-  <rect x="30" y="98" width="60" height="16" rx="4" fill="#450A0A" stroke="#FEF08A" stroke-width="1.5"/>
-  <text x="60" y="110" font-family="'Impact', sans-serif" font-size="10" font-weight="black" fill="#FEF08A" text-anchor="middle" letter-spacing="1">DEMON S</text>
+  // Official CS2 / Wanmei Rank Tiers 1-7
+  'cs-rank-1.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <rect x="15" y="36" width="90" height="48" rx="8" fill="#18181B" stroke="#64748B" stroke-width="3" filter="drop-shadow(0 4px 10px rgba(0,0,0,0.8))"/>
+  <line x1="60" y1="44" x2="60" y2="76" stroke="#E2E8F0" stroke-width="8" stroke-linecap="round"/>
 </svg>`,
 
-  'cs-global-elite.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  'cs-rank-2.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <rect x="15" y="36" width="90" height="48" rx="8" fill="#18181B" stroke="#94A3B8" stroke-width="3" filter="drop-shadow(0 4px 10px rgba(0,0,0,0.8))"/>
+  <line x1="38" y1="46" x2="82" y2="74" stroke="#CBD5E1" stroke-width="4" stroke-linecap="round"/>
+  <line x1="38" y1="74" x2="82" y2="46" stroke="#CBD5E1" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="60" cy="60" r="10" fill="#0F172A" stroke="#E2E8F0" stroke-width="2"/>
+  <polygon points="60,53 62,58 68,59 63,63 65,68 60,65 55,68 57,63 52,59 58,58" fill="#FFF"/>
+</svg>`,
+
+  'cs-rank-3.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <rect x="15" y="36" width="90" height="48" rx="8" fill="#1C1917" stroke="#F59E0B" stroke-width="3" filter="drop-shadow(0 4px 10px rgba(245,158,11,0.5))"/>
+  <polygon points="36,60 38,54 44,53 40,49 41,43 36,46 31,43 32,49 28,53 34,54" fill="#FDE047"/>
+  <polygon points="52,60 54,54 60,53 56,49 57,43 52,46 47,43 48,49 44,53 50,54" fill="#FDE047"/>
+  <polygon points="68,60 70,54 76,53 72,49 73,43 68,46 63,43 64,49 60,53 66,54" fill="#FDE047"/>
+  <polygon points="84,60 86,54 92,53 88,49 89,43 84,46 79,43 80,49 76,53 82,54" fill="#FDE047"/>
+  <path d="M 28,68 C 44,76 76,76 92,68" stroke="#F59E0B" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>`,
+
+  'cs-rank-4.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <rect x="15" y="36" width="90" height="48" rx="8" fill="#090E17" stroke="#38BDF8" stroke-width="3" filter="drop-shadow(0 4px 10px rgba(56,189,248,0.5))"/>
+  <line x1="30" y1="70" x2="90" y2="50" stroke="#FDE047" stroke-width="4" stroke-linecap="round"/>
+  <line x1="30" y1="50" x2="90" y2="70" stroke="#FDE047" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="60" cy="60" r="10" fill="#0C1322" stroke="#38BDF8" stroke-width="2"/>
+  <polygon points="60,53 62,58 68,59 63,63 65,68 60,65 55,68 57,63 52,59 58,58" fill="#38BDF8"/>
+</svg>`,
+
+  'cs-rank-5.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="eagleGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#38BDF8" stop-opacity="0.8"/><stop offset="100%" stop-color="#000" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect x="15" y="36" width="90" height="48" rx="8" fill="#0F172A" stroke="#E2E8F0" stroke-width="3" filter="drop-shadow(0 4px 10px rgba(56,189,248,0.6))"/>
+  <path d="M 60,42 L 72,52 L 88,48 L 78,66 L 82,76 L 60,68 L 38,76 L 42,66 L 32,48 L 48,52 Z" fill="#FDE047" stroke="#78350F" stroke-width="1.5"/>
+</svg>`,
+
+  'cs-rank-6.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <radialGradient id="geGlow" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.9"/>
@@ -342,7 +349,70 @@ const svgs = {
   <polygon points="60,46 65,56 75,60 65,64 60,74 55,64 45,60 55,56" fill="#F8FAFC" stroke="#38BDF8" stroke-width="1.5" filter="drop-shadow(0 0 8px #FFF)"/>
 </svg>`,
 
-  'valorant-radiant.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  'cs-rank-7.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="demonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#DC2626" stop-opacity="0.95"/>
+      <stop offset="50%" stop-color="#7F1D1D" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="demonGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFBEB"/>
+      <stop offset="25%" stop-color="#FEF08A"/>
+      <stop offset="60%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#450A0A"/>
+    </linearGradient>
+    <linearGradient id="demonPlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18181B"/>
+      <stop offset="50%" stop-color="#450A0A"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#demonGlow)"/>
+  <path d="M 60,25 L 82,10 L 108,30 L 92,60 L 104,90 L 60,112 L 16,90 L 28,60 L 12,30 L 38,10 Z" fill="url(#demonPlate)" stroke="url(#demonGold)" stroke-width="3" filter="drop-shadow(0 6px 16px rgba(220,38,38,0.8))"/>
+  <path d="M 42,32 L 48,16 L 54,28 L 60,12 L 66,28 L 72,16 L 78,32 L 72,40 L 48,40 Z" fill="#DC2626" stroke="#FEF08A" stroke-width="1.5"/>
+  <path d="M 72,46 C 72,46 54,42 48,50 C 42,58 54,64 64,68 C 76,72 78,82 72,90 C 66,98 46,96 46,96 L 44,86 C 44,86 60,90 64,84 C 68,78 58,74 48,70 C 38,66 36,54 44,46 C 52,38 72,40 72,40 Z" fill="url(#demonGold)" stroke="#FFF" stroke-width="1.5" filter="drop-shadow(0 2px 8px #DC2626)"/>
+  <rect x="30" y="98" width="60" height="16" rx="4" fill="#450A0A" stroke="#FEF08A" stroke-width="1.5"/>
+  <text x="60" y="110" font-family="'Impact', sans-serif" font-size="10" font-weight="black" fill="#FEF08A" text-anchor="middle" letter-spacing="1">DEMON S</text>
+</svg>`,
+
+  // Official Valorant Rank Tiers 1-7
+  'val-rank-1.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="60,20 96,88 24,88" fill="#18181B" stroke="#64748B" stroke-width="4" filter="drop-shadow(0 4px 10px rgba(0,0,0,0.8))"/>
+  <polygon points="60,34 82,78 38,78" fill="#334155" stroke="#94A3B8" stroke-width="2"/>
+</svg>`,
+
+  'val-rank-2.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="60,18 98,88 22,88" fill="#291508" stroke="#D97706" stroke-width="4" filter="drop-shadow(0 4px 10px rgba(217,119,6,0.6))"/>
+  <polygon points="60,34 84,78 36,78" fill="#78350F" stroke="#FDE047" stroke-width="2"/>
+  <circle cx="60" cy="62" r="6" fill="#FDE047"/>
+</svg>`,
+
+  'val-rank-3.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="60,14 94,36 94,84 60,106 26,84 26,36" fill="#451A03" stroke="#FACC15" stroke-width="4" filter="drop-shadow(0 4px 12px rgba(250,204,21,0.6))"/>
+  <polygon points="60,28 82,44 82,76 60,92 38,76 38,44" fill="#CA8A04" stroke="#FFFBEB" stroke-width="2"/>
+  <polygon points="60,42 70,54 70,66 60,78 50,66 50,54" fill="#FEF08A"/>
+</svg>`,
+
+  'val-rank-4.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="60,10 102,60 60,110 18,60" fill="#2E1065" stroke="#C084FC" stroke-width="4" filter="drop-shadow(0 4px 14px rgba(192,132,252,0.7))"/>
+  <polygon points="60,24 88,60 60,96 32,60" fill="#7E22CE" stroke="#F5D0FE" stroke-width="2"/>
+  <polygon points="60,38 74,60 60,82 46,60" fill="#FDF4FF"/>
+</svg>`,
+
+  'val-rank-5.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="60,12 98,40 84,98 60,112 36,98 22,40" fill="#062E20" stroke="#34D399" stroke-width="4" filter="drop-shadow(0 4px 14px rgba(52,211,153,0.7))"/>
+  <polygon points="60,26 84,48 74,86 60,96 46,86 36,48" fill="#059669" stroke="#A7F3D0" stroke-width="2"/>
+  <polygon points="60,42 72,56 66,76 60,82 54,76 48,56" fill="#ECFDF5"/>
+</svg>`,
+
+  'val-rank-6.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="60,10 88,32 106,60 60,112 14,60 32,32" fill="#450A0A" stroke="#F87171" stroke-width="4" filter="drop-shadow(0 4px 16px rgba(239,68,68,0.8))"/>
+  <polygon points="60,24 78,40 90,60 60,98 30,60 42,40" fill="#B91C1C" stroke="#FCA5A5" stroke-width="2"/>
+  <polygon points="60,38 70,48 76,60 60,82 44,60 50,48" fill="#FEF2F2"/>
+</svg>`,
+
+  'val-rank-7.svg': `<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <radialGradient id="radGlow" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#FDE047" stop-opacity="0.9"/>
@@ -356,10 +426,8 @@ const svgs = {
     </linearGradient>
   </defs>
   <circle cx="60" cy="60" r="56" fill="url(#radGlow)"/>
-  <!-- Valorant Radiant Triangular Energy Crest -->
   <polygon points="60,10 106,94 14,94" fill="#090D16" stroke="url(#radGold)" stroke-width="3.5" filter="drop-shadow(0 6px 16px rgba(250,204,21,0.7))"/>
   <polygon points="60,26 92,86 28,86" fill="none" stroke="#22D3EE" stroke-width="2"/>
-  <!-- Floating Yellow Diamond Core -->
   <polygon points="60,38 78,60 60,82 42,60" fill="url(#radGold)" stroke="#FFF" stroke-width="1.5"/>
   <circle cx="60" cy="60" r="4" fill="#090D16"/>
 </svg>`
