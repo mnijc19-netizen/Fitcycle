@@ -332,6 +332,7 @@
       <!-- 战备催练与肌群恢复看板 (Tactical Readiness & Urgency Card) -->
       <div class="rounded-3xl border p-4 shadow-xl relative overflow-hidden transition-all"
            :class="[
+             honorData.isDeloadActive ? 'bg-gradient-to-br from-sky-950/90 via-zinc-950 to-zinc-900 border-sky-500/50 shadow-sky-950/30' :
              store.settings.uiSkin === 'cs' ? 'bg-[#080C14]/95 border-[#F97316]/50 shadow-black' :
              store.settings.uiSkin === 'chamber' ? 'bg-[#0B101B]/95 border-amber-500/40' :
              'bg-zinc-900/90 border-zinc-800'
@@ -340,73 +341,109 @@
         <!-- Ambient Background Pulse -->
         <div class="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-20 pointer-events-none"
              :class="[
+               honorData.isDeloadActive ? 'bg-sky-400 animate-pulse' :
                timeSinceLastWorkout.urgencyLevel === 'danger' ? 'bg-red-500 animate-pulse' :
                timeSinceLastWorkout.urgencyLevel === 'warn' ? 'bg-amber-500' : 'bg-emerald-500'
              ]"></div>
 
-        <!-- Top Header: Urgency Level & 1-Tap Fast Start Button (无需往下滑即可秒开练！) -->
-        <div class="flex items-center justify-between gap-2">
-          <div class="flex items-center gap-2 min-w-0">
-            <span class="px-2.5 py-1 rounded-full text-[10px] font-black border flex items-center gap-1.5 flex-shrink-0"
-                  :class="[
-                    timeSinceLastWorkout.urgencyLevel === 'danger' ? 'bg-red-500/20 text-red-400 border-red-500/50 animate-pulse' :
-                    timeSinceLastWorkout.urgencyLevel === 'warn' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' :
-                    'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
-                  ]">
-              <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
-              {{ timeSinceLastWorkout.badge }}
-            </span>
-            
-            <div class="truncate">
-              <div class="text-xs font-black text-white truncate">
-                {{ timeSinceLastWorkout.title }}
+        <!-- Mode A: If Deload Shield is ACTIVE (战术免战休整模式) -->
+        <div v-if="honorData.isDeloadActive" class="space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-black border bg-sky-500/20 text-sky-300 border-sky-500/50 flex items-center gap-1.5 animate-pulse flex-shrink-0">
+                <span>🛡️</span>
+                <span>战术免战休整期</span>
+              </span>
+              <span class="text-xs font-black text-white truncate">战力已冻结 (剩 {{ honorData.shieldDaysRemaining }} 天)</span>
+            </div>
+            <button @click="toggleDeloadShield(false)" 
+                    class="px-2.5 py-1 bg-sky-900/80 hover:bg-sky-800 text-sky-200 text-xs font-bold rounded-xl border border-sky-600/50 active:scale-95 transition-all flex-shrink-0">
+              提前归队
+            </button>
+          </div>
+
+          <p class="text-xs text-sky-200/80 leading-relaxed pt-0.5">
+            当前处于科学周期化减载/休整期，战力怠惰衰减强制冻结（0扣分），中枢神经与关节超量修复中。
+          </p>
+
+          <div class="pt-2 border-t border-sky-900/40 flex items-center justify-between gap-2">
+            <button @click="markRestDayCompleted"
+                    class="flex-1 py-2.5 bg-sky-950 hover:bg-sky-900/60 text-sky-300 border border-sky-500/40 rounded-xl text-xs font-bold flex items-center justify-center gap-1 active:scale-95 transition-all shadow-sm">
+              <span>🧘</span> 记录减载休整打卡
+            </button>
+            <button @click="handleStartTodayWorkout"
+                    class="py-2.5 px-3.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-700 rounded-xl text-xs font-bold flex items-center justify-center gap-1 active:scale-95 transition-all">
+              <span>🏋️</span> 照常开练
+            </button>
+          </div>
+        </div>
+
+        <!-- Mode B: Normal Training Readiness State -->
+        <div v-else class="space-y-2.5">
+          <!-- Top Header: Urgency Level & 1-Tap Fast Start Button -->
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-black border flex items-center gap-1.5 flex-shrink-0"
+                    :class="[
+                      timeSinceLastWorkout.urgencyLevel === 'danger' ? 'bg-red-500/20 text-red-400 border-red-500/50 animate-pulse' :
+                      timeSinceLastWorkout.urgencyLevel === 'warn' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' :
+                      'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
+                    ]">
+                <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+                {{ timeSinceLastWorkout.badge }}
+              </span>
+              
+              <div class="truncate">
+                <div class="text-xs font-black text-white truncate">
+                  {{ timeSinceLastWorkout.title }}
+                </div>
               </div>
+            </div>
+
+            <!-- Top Fast Start Button -->
+            <button v-if="!todayCycle.isRest" 
+                    @click="handleStartTodayWorkout"
+                    class="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 active:scale-95 text-zinc-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 flex items-center gap-1 flex-shrink-0 transition-all">
+              <span>🚀 立即开练</span>
+            </button>
+          </div>
+
+          <!-- Urgency & Muscle Status Detail Rows -->
+          <div class="mt-2.5 pt-2.5 border-t border-zinc-800/80 space-y-1.5 text-xs">
+            <!-- 1. Total Inactivity Counter -->
+            <div class="flex items-start gap-1.5 text-zinc-300">
+              <span class="text-amber-400 flex-shrink-0 font-bold">⏱️ 怠惰计时:</span>
+              <span class="leading-relaxed" :class="timeSinceLastWorkout.urgencyLevel === 'danger' ? 'text-red-300 font-bold' : ''">
+                {{ timeSinceLastWorkout.subText }}
+              </span>
+            </div>
+
+            <!-- 2. Today's Split Muscle Recovery State -->
+            <div class="flex items-start gap-1.5 text-zinc-400">
+              <span class="text-sky-400 flex-shrink-0 font-bold">🧬 肌群状态:</span>
+              <span class="leading-relaxed text-zinc-300">
+                {{ splitRecoveryInfo.desc }}
+              </span>
             </div>
           </div>
 
-          <!-- Top Fast Start Button (解决往下滑痛点) -->
-          <button v-if="!todayCycle.isRest" 
-                  @click="handleStartTodayWorkout"
-                  class="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 active:scale-95 text-zinc-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 flex items-center gap-1 flex-shrink-0 transition-all">
-            <span>🚀 立即开练</span>
-          </button>
-        </div>
+          <!-- 3. Honor Rank & Body Metrics Quick Launcher Pill -->
+          <div class="mt-2.5 pt-2.5 border-t border-zinc-800/80 flex items-center justify-between gap-2">
+            <button @click="showHonorModal = true" 
+                    class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-zinc-950/80 hover:bg-zinc-800 border border-amber-500/40 text-xs font-mono text-amber-300 transition-all active:scale-95">
+              <span>{{ honorData.presentation.tierIcon }}</span>
+              <span class="font-black">{{ honorData.presentation.tierName.split('·')[0] }}</span>
+              <span class="text-[10px] text-zinc-400">({{ honorData.score }} PTS)</span>
+              <span class="text-[9px] text-amber-500">❯</span>
+            </button>
 
-        <!-- Urgency & Muscle Status Detail Rows -->
-        <div class="mt-2.5 pt-2.5 border-t border-zinc-800/80 space-y-1.5 text-xs">
-          <!-- 1. Total Inactivity Counter -->
-          <div class="flex items-start gap-1.5 text-zinc-300">
-            <span class="text-amber-400 flex-shrink-0 font-bold">⏱️ 怠惰计时:</span>
-            <span class="leading-relaxed" :class="timeSinceLastWorkout.urgencyLevel === 'danger' ? 'text-red-300 font-bold' : ''">
-              {{ timeSinceLastWorkout.subText }}
-            </span>
+            <button @click="showBodyModal = true"
+                    class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-zinc-950/80 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-mono text-zinc-300 transition-all active:scale-95">
+              <span>📐</span>
+              <span>形体围度</span>
+              <span class="text-[9px] text-zinc-500">❯</span>
+            </button>
           </div>
-
-          <!-- 2. Today's Split Muscle Recovery State -->
-          <div class="flex items-start gap-1.5 text-zinc-400">
-            <span class="text-sky-400 flex-shrink-0 font-bold">🧬 肌群状态:</span>
-            <span class="leading-relaxed text-zinc-300">
-              {{ splitRecoveryInfo.desc }}
-            </span>
-          </div>
-        </div>
-
-        <!-- 3. Honor Rank & Body Metrics Quick Launcher Pill -->
-        <div class="mt-2.5 pt-2.5 border-t border-zinc-800/80 flex items-center justify-between gap-2">
-          <button @click="showHonorModal = true" 
-                  class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-zinc-950/80 hover:bg-zinc-800 border border-amber-500/40 text-xs font-mono text-amber-300 transition-all active:scale-95">
-            <span>{{ honorData.presentation.tierIcon }}</span>
-            <span class="font-black">{{ honorData.presentation.tierName.split('·')[0] }}</span>
-            <span class="text-[10px] text-zinc-400">({{ honorData.score }} PTS)</span>
-            <span class="text-[9px] text-amber-500">❯</span>
-          </button>
-
-          <button @click="showBodyModal = true"
-                  class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-zinc-950/80 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-mono text-zinc-300 transition-all active:scale-95">
-            <span>📐</span>
-            <span>形体围度</span>
-            <span class="text-[9px] text-zinc-500">❯</span>
-          </button>
         </div>
 
       </div>
@@ -700,6 +737,7 @@ import {
   getLastExercisePerformance,
   getExerciseDetails,
   getFullHonorProfile,
+  toggleDeloadShield,
   uid
 } from "../store/fitnessStore.js";
 import ExercisePickerModal from "../components/ExercisePickerModal.vue";

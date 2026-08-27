@@ -18,6 +18,29 @@
       </button>
     </div>
 
+    <!-- Deload Shield Active Status Banner in CycleView -->
+    <div v-if="isDeloadActive" 
+         class="p-3.5 rounded-3xl bg-gradient-to-r from-sky-950/90 to-zinc-950 border border-sky-500/50 shadow-lg shadow-sky-950/30 flex items-center justify-between gap-3 text-left">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-9 h-9 rounded-xl bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-lg flex-shrink-0 animate-pulse">
+          🛡️
+        </div>
+        <div class="min-w-0">
+          <div class="text-xs font-black text-white flex items-center gap-1.5">
+            <span>战术减载免战期生效中</span>
+            <span class="text-[10px] text-sky-400 font-mono font-bold">剩余 {{ shieldDaysRemaining }} 天</span>
+          </div>
+          <p class="text-[10px] text-zinc-400 truncate mt-0.5">
+            分化循环已进入休整保护模式，战力分 100% 冻结免扣
+          </p>
+        </div>
+      </div>
+      <button @click="toggleDeloadShield(false)" 
+              class="px-2.5 py-1 bg-sky-900/80 hover:bg-sky-800 text-sky-200 text-xs font-bold rounded-xl border border-sky-600/50 flex-shrink-0 active:scale-95 transition-all">
+        提前归队
+      </button>
+    </div>
+
     <!-- Active Cycle Overview Card -->
     <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3">
       <div class="flex items-center justify-between">
@@ -154,8 +177,8 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { store, getExerciseDetails } from "../store/fitnessStore.js";
+import { ref, computed } from "vue";
+import { store, getExerciseDetails, getFullHonorProfile, toggleDeloadShield } from "../store/fitnessStore.js";
 import { SCIENCE_PRINCIPLES } from "../data/defaultPlans.js";
 import CycleEditorModal from "../components/CycleEditorModal.vue";
 import PlanEditorModal from "../components/PlanEditorModal.vue";
@@ -167,6 +190,10 @@ const selectedPlanToEdit = ref(null);
 
 const showExerciseDetailModal = ref(false);
 const selectedExerciseDetail = ref(null);
+
+const honorData = computed(() => getFullHonorProfile());
+const isDeloadActive = computed(() => honorData.value.isDeloadActive);
+const shieldDaysRemaining = computed(() => honorData.value.shieldDaysRemaining);
 
 function getPlanExerciseCount(planId) {
   const p = store.plans.find(x => x.id === planId);

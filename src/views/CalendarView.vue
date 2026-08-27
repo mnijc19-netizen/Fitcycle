@@ -92,13 +92,14 @@
           <!-- Bottom micro dot if volume exists -->
           <div class="h-1">
             <span v-if="cell.hasLog && cell.volume > 0" class="block w-1 h-1 rounded-full bg-emerald-400"></span>
+            <span v-else-if="cell.isDeloadDay && !cell.hasLog" class="block w-1 h-1 rounded-full bg-sky-400 animate-pulse"></span>
           </div>
 
         </div>
       </div>
 
       <!-- Legend -->
-      <div class="flex items-center justify-center gap-3 pt-2 border-t border-zinc-800/80 text-[10px] text-zinc-400">
+      <div class="flex flex-wrap items-center justify-center gap-3 pt-2 border-t border-zinc-800/80 text-[10px] text-zinc-400">
         <div class="flex items-center gap-1">
           <span class="w-2.5 h-2.5 rounded bg-amber-500"></span> 推日
         </div>
@@ -110,6 +111,9 @@
         </div>
         <div class="flex items-center gap-1">
           <span class="w-2.5 h-2.5 rounded bg-emerald-500"></span> 休息日
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-2.5 h-2.5 rounded bg-sky-600 border border-sky-400 flex items-center justify-center text-[7px]">🛡️</span> 免战休整
         </div>
       </div>
 
@@ -184,6 +188,17 @@
         </div>
       </div>
 
+      <!-- If Deload Shield Active on this day without log -->
+      <div v-else-if="isSelectedDeloadDay" class="p-3.5 bg-sky-950/40 border border-sky-500/40 rounded-2xl space-y-1.5 text-left">
+        <div class="flex items-center gap-2 text-xs font-bold text-sky-300">
+          <span class="text-base">🛡️</span>
+          <span>战术减载免战日 (战力冻结保护)</span>
+        </div>
+        <p class="text-xs text-zinc-300 leading-relaxed">
+          当天属于申报的战术免战休整期，战力分受 100% 绝对保护（0 衰减），中枢神经与关节深度修复中。
+        </p>
+      </div>
+
       <!-- If No log for this day -->
       <div v-else class="py-6 text-center text-xs text-zinc-500 space-y-2">
         <p>该日期暂无打卡记录</p>
@@ -217,6 +232,14 @@ const isSelectedToday = computed(() => {
   return selectedDateStr.value === formatDateStr(new Date());
 });
 
+const isSelectedDeloadDay = computed(() => {
+  const deloadUntil = store.honorProfile?.deloadShieldUntil || 0;
+  if (deloadUntil <= Date.now()) return false;
+  const selTime = new Date(selectedDateStr.value + "T12:00:00").getTime();
+  const startTime = deloadUntil - 7 * 86400000;
+  return selTime >= startTime && selTime <= deloadUntil;
+});
+
 const selectedCycleDay = computed(() => {
   return getCycleDayForDate(selectedDateStr.value);
 });
@@ -232,6 +255,9 @@ const calendarCells = computed(() => {
   const firstDayIndex = new Date(year, month, 1).getDay(); // 0 is Sunday
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const todayStr = formatDateStr(new Date());
+  const deloadUntil = store.honorProfile?.deloadShieldUntil || 0;
+  const isShieldActiveNow = deloadUntil > Date.now();
+  const shieldStartTime = deloadUntil - 7 * 86400000;
 
   const cells = [];
 
@@ -245,14 +271,17 @@ const calendarCells = computed(() => {
     const dStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     const log = store.workoutLogs.find(l => l.date === dStr);
     const cycleDay = getCycleDayForDate(dStr);
+    const dayTimestamp = new Date(dStr + "T12:00:00").getTime();
+    const isDeloadDay = isShieldActiveNow && dayTimestamp >= shieldStartTime && dayTimestamp <= deloadUntil;
 
     cells.push({
       day,
       dateStr: dStr,
       isToday: dStr === todayStr,
       hasLog: !!log,
-      logShortName: log ? (log.shortName || "练") : "",
-      logColor: log ? (log.color || "amber") : "",
+      isDeloadDay,
+      logShortName: log ? (log.shortName || "练") : (isDeloadDay ? "🛡️" : ""),
+      logColor: log ? (log.color || "amber") : (isDeloadDay ? "sky" : ""),
       volume: log ? (log.totalVolume || 0) : 0,
       cycleColor: cycleDay.color
     });

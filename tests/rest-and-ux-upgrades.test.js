@@ -142,4 +142,13 @@ describe("Rest Presets, Carousel, Auto-Finish & AI Analysis Upgrades", () => {
     expect(html).toContain("肌群状态");
     expect(html).toContain("立即开练");
   });
+
+  it("renders Deload Shield active state across TodayView when shield is active", () => {
+    store.honorProfile.deloadShieldUntil = Date.now() + 7 * 86400000;
+    const wrapper = mount(TodayView);
+    const html = wrapper.html();
+    expect(html).toContain("战术免战休整期");
+    expect(html).toContain("战力已冻结");
+    expect(html).toContain("提前归队");
+  });
 });

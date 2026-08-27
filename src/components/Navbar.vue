@@ -71,7 +71,15 @@
 
         <!-- Lower Hero Row: Date, Plan & Chamber Status Badge -->
         <div class="mt-4 space-y-1">
-          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-[#0D1627]/80 border border-[#E5C378]/30 text-[10px] text-[#E5C378] font-mono backdrop-blur-md">
+          <!-- Deload Shield Active State in Chamber -->
+          <div v-if="honorData.isDeloadActive" 
+               class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-sky-950/80 border border-sky-400/50 text-[10px] text-sky-300 font-mono backdrop-blur-md animate-pulse">
+            <span>🛡️</span>
+            <span>战术减载免战中 (剩{{ honorData.shieldDaysRemaining }}天)</span>
+          </div>
+
+          <!-- Normal Chamber Date & Plan Badge -->
+          <div v-else class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-[#0D1627]/80 border border-[#E5C378]/30 text-[10px] text-[#E5C378] font-mono backdrop-blur-md">
             <span>⚜️</span>
             <span>{{ todayFormatted }}</span>
             <span>·</span>
@@ -79,8 +87,8 @@
           </div>
 
           <div class="text-xs text-[#9AA8C2] flex items-center gap-1.5 pl-0.5 drop-shadow">
-            <span class="w-1.5 h-1.5 rounded-full bg-[#E06D3B]"></span>
-            <span>定制优雅，枪枪爆头 · 高效拉伸肥大</span>
+            <span class="w-1.5 h-1.5 rounded-full" :class="honorData.isDeloadActive ? 'bg-sky-400' : 'bg-[#E06D3B]'"></span>
+            <span>{{ honorData.isDeloadActive ? '修养恢复，蓄势待发 · 战力怠惰已冻结' : '定制优雅，枪枪爆头 · 高效拉伸肥大' }}</span>
           </div>
         </div>
 
@@ -88,42 +96,39 @@
     </header>
 
     <!-- ============================================== -->
-    <!-- 2. CS2 (反恐精英 · 战术特勤) OFFICIAL CHARACTER HERO THEME -->
+    <!-- 2. CS2 COUNTER-STRIKE TACTICAL HERO THEME -->
     <!-- ============================================== -->
     <header v-else-if="store.settings.uiSkin === 'cs'" 
             class="relative w-full overflow-hidden select-none border-b border-[#F97316]/40 transition-all duration-300"
-            style="min-height: 180px; padding-top: max(calc(env(safe-area-inset-top, 0px) + 6px), 12px);">
+            style="min-height: 200px; padding-top: max(calc(env(safe-area-inset-top, 0px) + 6px), 12px);">
       
-      <!-- High-Def CS2 Dust2 Solman & Delrow Hero Image -->
+      <!-- CS2 Hero Background Art -->
       <div class="absolute inset-0 w-full h-full bg-no-repeat pointer-events-none"
            :style="{
              backgroundImage: `url('./themes/cs/hero/cs-hero.jpg')`,
              backgroundSize: 'cover',
-             backgroundPosition: 'right 20%'
+             backgroundPosition: 'center 20%'
            }">
       </div>
 
-      <!-- Multi-Layer Deep Slate & Tactical Orange Gradient Overlays for High Legibility -->
-      <div class="absolute inset-0 bg-gradient-to-r from-[#080C14] via-[#080C14]/90 via-55% to-transparent pointer-events-none"></div>
-      <div class="absolute inset-0 bg-gradient-to-t from-[#080C14] via-[#080C14]/40 to-transparent pointer-events-none"></div>
+      <!-- Tactical Dark Vignette & Grid Lines -->
+      <div class="absolute inset-0 bg-gradient-to-r from-[#080C14] via-[#080C14]/90 via-55% to-[#080C14]/30 pointer-events-none"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#080C14] via-transparent to-transparent pointer-events-none"></div>
 
-      <!-- Subtle Tactical Precision Radar Crosshair Lines -->
-      <div class="absolute top-0 right-0 w-36 h-36 opacity-20 pointer-events-none">
-        <svg viewBox="0 0 100 100" class="w-full h-full text-[#F97316]">
-          <line x1="0" y1="50" x2="100" y2="50" stroke="currentColor" stroke-width="0.75" stroke-dasharray="3 3" />
-          <line x1="50" y1="0" x2="50" y2="100" stroke="currentColor" stroke-width="0.75" stroke-dasharray="3 3" />
-          <circle cx="50" cy="50" r="35" stroke="currentColor" stroke-width="0.75" fill="none" />
-          <circle cx="50" cy="50" r="15" stroke="currentColor" stroke-width="0.5" fill="none" />
-        </svg>
+      <!-- Agent Avatar Inlay (Click to Cycle Agents) -->
+      <div class="absolute -right-2 top-3 w-40 h-48 opacity-85 pointer-events-auto cursor-pointer select-none transition-transform hover:scale-105 active:scale-95"
+           @click="nextCsAgent"
+           :title="`当前干员: ${currentCsAgent.role} (点击切换)`">
+        <img :src="currentCsAgent.url" :alt="currentCsAgent.name" class="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]" />
       </div>
 
-      <!-- Header Content Container -->
-      <div class="relative z-10 max-w-md mx-auto px-4 pb-4 flex flex-col justify-between" style="min-height: 160px;">
+      <!-- Tactical HUD Header Content -->
+      <div class="relative z-10 max-w-md mx-auto px-4 pb-4 flex flex-col justify-between" style="min-height: 180px;">
         
-        <!-- Top Nav Row: Brand Logo + Quick Actions & Operator Switcher Badge -->
+        <!-- Top Row: Brand & Tactical Controls -->
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl overflow-hidden bg-[#0F172A] border border-[#F97316]/70 flex items-center justify-center shadow-lg shadow-black/80 flex-shrink-0">
+            <div class="w-9 h-9 rounded-lg overflow-hidden bg-[#0A101D] border border-[#F97316]/70 flex items-center justify-center shadow-lg shadow-black/80 flex-shrink-0">
               <img :src="logoUrl" alt="Logo" class="w-full h-full object-cover" />
             </div>
 
@@ -168,7 +173,16 @@
 
         <!-- Lower Hero Row: CS2 Tactical Stats & Official Slogan -->
         <div class="mt-4 space-y-1.5">
-          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-lg bg-[#0F172A]/90 border border-[#F97316]/40 text-[10px] text-[#F97316] font-mono backdrop-blur-md">
+          <!-- Deload Shield Active State in CS2 -->
+          <div v-if="honorData.isDeloadActive" 
+               class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-lg bg-sky-950/90 border border-sky-400/50 text-[10px] text-sky-300 font-mono backdrop-blur-md animate-pulse">
+            <span>🛡️</span>
+            <span>TACTICAL DELOAD (剩{{ honorData.shieldDaysRemaining }}天)</span>
+            <span class="text-[9px] px-1 rounded bg-sky-500/20 text-sky-200 border border-sky-400/40 font-bold">IMMUNITY ACTIVE</span>
+          </div>
+
+          <!-- Normal CS2 State -->
+          <div v-else class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-lg bg-[#0F172A]/90 border border-[#F97316]/40 text-[10px] text-[#F97316] font-mono backdrop-blur-md">
             <span>🎯</span>
             <span>{{ todayFormatted }}</span>
             <span>·</span>
@@ -177,8 +191,8 @@
           </div>
 
           <div class="text-[11px] text-[#94A3B8] flex items-center gap-1.5 pl-0.5 drop-shadow font-medium">
-            <span class="w-1.5 h-1.5 rounded-full bg-[#F97316]"></span>
-            <span>起把狙！枪枪爆头 · 撕裂肌纤维</span>
+            <span class="w-1.5 h-1.5 rounded-full" :class="honorData.isDeloadActive ? 'bg-sky-400' : 'bg-[#F97316]'"></span>
+            <span>{{ honorData.isDeloadActive ? '战术休战中 · 战力完全冻结 · 蓄力下一轮决战' : '起把狙！枪枪爆头 · 撕裂肌纤维' }}</span>
           </div>
 
           <!-- Official CS2 Panorama HUD Gauges (100% Official Assets) -->
@@ -228,7 +242,11 @@
                 PRO
               </span>
             </div>
-            <div class="text-[11px] text-zinc-400 flex items-center gap-1 font-medium">
+            <div v-if="honorData.isDeloadActive" class="text-[11px] text-sky-400 flex items-center gap-1 font-medium">
+              <span>🛡️</span>
+              <span>战术减载免战 (剩{{ honorData.shieldDaysRemaining }}天)</span>
+            </div>
+            <div v-else class="text-[11px] text-zinc-400 flex items-center gap-1 font-medium">
               <span>{{ todayFormatted }}</span>
               <span>·</span>
               <span class="text-amber-400 font-bold">{{ todayCycleDay.name }}</span>
@@ -262,11 +280,13 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { store, getCycleDayForDate } from "../store/fitnessStore.js";
+import { store, getCycleDayForDate, getFullHonorProfile } from "../store/fitnessStore.js";
 import { aiSession } from "../ai/aiSession.js";
 import CycleEditorModal from "./CycleEditorModal.vue";
 import logoUrl from "../assets/logo.png";
 import { triggerHaptic } from "../utils/vibrate.js";
+
+const honorData = computed(() => getFullHonorProfile());
 
 const csAgentIndex = ref(0);
 const csAgents = [
