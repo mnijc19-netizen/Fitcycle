@@ -6,38 +6,74 @@
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-80 rounded-full blur-3xl pointer-events-none transition-all duration-700 opacity-25"
          :class="themeGlowClass"></div>
 
-    <!-- Header: Title and Live V-Taper Badge -->
+    <!-- Header: Title, Live V-Taper Badge & Quick Height Setting Pill -->
     <div class="w-full flex items-center justify-between z-10 mb-1 text-left">
       <div class="flex items-center gap-1.5">
         <span class="text-sm">🧬</span>
         <div>
-          <h4 class="text-xs font-black text-white tracking-wide">3D 写实健美形体比例透视</h4>
-          <p class="text-[9px] text-zinc-500 font-mono">基于人体测量学实时生成体态</p>
+          <div class="flex items-center gap-1.5">
+            <h4 class="text-xs font-black text-white tracking-wide">3D 拟真人偶身材透视</h4>
+            <!-- Quick Height Pill -->
+            <button @click="showHeightPicker = !showHeightPicker"
+                    class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-sky-300 border border-sky-500/30 flex items-center gap-0.5 active:scale-95 transition-all"
+                    title="点击修改基准身高">
+              <span>📏 身高 {{ userHeight }}cm</span>
+              <span class="text-[8px] text-zinc-400">✎</span>
+            </button>
+          </div>
+          <p class="text-[9px] text-zinc-500 font-mono">
+            头身比 {{ headToBodyRatio }} · BMI {{ bmiValue }} ({{ bmiCategory }})
+          </p>
         </div>
       </div>
+
+      <!-- Live V-Taper Rating Badge -->
       <div class="flex items-center gap-1 font-mono">
-        <span class="text-[10px] px-2.5 py-1 rounded-xl border font-black transition-all duration-300 shadow-sm"
+        <span class="text-[10px] px-2.5 py-1 rounded-xl border font-black transition-all duration-300 shadow-sm whitespace-nowrap"
               :class="vTaperBadgeClass">
           {{ vTaperRating.icon }} {{ vTaperRating.title }} ({{ currentVTaper }})
         </span>
       </div>
     </div>
 
-    <!-- Realistic Human Physique Morphing SVG Canvas -->
-    <div class="relative w-full max-w-[320px] h-[360px] flex items-center justify-center my-1 z-10">
-      <svg viewBox="0 0 340 440" class="w-full h-full filter drop-shadow-[0_8px_24px_rgba(0,0,0,0.8)]">
+    <!-- Height Adjustment Popover (Quick Slider) -->
+    <div v-if="showHeightPicker" 
+         class="w-full p-2.5 mb-2 rounded-xl bg-zinc-900 border border-sky-500/40 z-20 space-y-1.5 animate-in fade-in zoom-in-95 duration-150 text-left">
+      <div class="flex items-center justify-between text-[10px] text-zinc-300 font-mono">
+        <span>⚙️ 调节基准身高 (决定纵向头身比与下肢比例)</span>
+        <span class="text-sky-400 font-bold">{{ userHeight }} cm</span>
+      </div>
+      <input type="range" min="150" max="205" step="1" 
+             v-model.number="userHeight" 
+             @change="saveHeightPreference"
+             class="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-sky-400" />
+      <div class="flex justify-between text-[8px] font-mono text-zinc-500">
+        <span>150cm</span>
+        <span>175cm (标准)</span>
+        <span>205cm</span>
+      </div>
+    </div>
+
+    <!-- Realistic 3D Humanoid Mannequin SVG Canvas -->
+    <div class="relative w-full max-w-[320px] h-[370px] flex items-center justify-center my-1 z-10">
+      <svg viewBox="0 0 340 450" class="w-full h-full filter drop-shadow-[0_8px_24px_rgba(0,0,0,0.8)]">
         <defs>
-          <!-- 3D Muscle Shading Radial & Linear Gradients -->
-          <linearGradient id="physiqueBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <!-- 3D Realistic Muscle Shading Radial & Linear Gradients -->
+          <linearGradient id="humanSkinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" :stop-color="themeColors.highlight" stop-opacity="0.95"/>
-            <stop offset="25%" :stop-color="themeColors.primary" stop-opacity="0.8"/>
-            <stop offset="65%" :stop-color="themeColors.secondary" stop-opacity="0.45"/>
-            <stop offset="100%" stop-color="#0a0a0c" stop-opacity="0.95"/>
+            <stop offset="25%" :stop-color="themeColors.primary" stop-opacity="0.85"/>
+            <stop offset="65%" :stop-color="themeColors.secondary" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="#0a0a0c" stop-opacity="0.98"/>
           </linearGradient>
 
-          <linearGradient id="muscleShadeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.25"/>
-            <stop offset="50%" stop-color="#000000" stop-opacity="0.1"/>
+          <linearGradient id="muscleVolumeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"/>
+            <stop offset="50%" stop-color="#000000" stop-opacity="0.05"/>
+            <stop offset="100%" stop-color="#000000" stop-opacity="0.6"/>
+          </linearGradient>
+
+          <linearGradient id="absBlockGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2"/>
             <stop offset="100%" stop-color="#000000" stop-opacity="0.5"/>
           </linearGradient>
 
@@ -47,138 +83,143 @@
             <stop offset="50%" :stop-color="themeColors.highlight" stop-opacity="0.9"/>
             <stop offset="100%" :stop-color="themeColors.primary" stop-opacity="0"/>
           </linearGradient>
-
-          <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="3" result="blur"/>
-            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-          </filter>
         </defs>
 
         <!-- Center Symmetry Axis Guide -->
-        <line x1="170" y1="12" x2="170" y2="435" stroke="#27272a" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="170" y1="10" x2="170" y2="445" stroke="#27272a" stroke-width="1" stroke-dasharray="3 3"/>
 
         <!-- ============================================== -->
-        <!-- 1. Anatomical Realistic Human Outer Silhouette -->
+        <!-- 1. Realistic Human Head, Neck & Jaw (8-Head Proportional) -->
         <!-- ============================================== -->
-        <path :d="anatomicalBodyPath"
-              fill="url(#physiqueBodyGrad)"
+        <g class="transition-all duration-300">
+          <!-- Cranium / Head -->
+          <ellipse cx="170" :cy="headCenterY" :rx="headRadiusX" :ry="headRadiusY" fill="url(#humanSkinGrad)" :stroke="themeColors.stroke" stroke-width="1.8"/>
+          <ellipse cx="170" :cy="headCenterY" :rx="headRadiusX" :ry="headRadiusY" fill="url(#muscleVolumeGrad)"/>
+          <!-- Facial Plane / Jawline -->
+          <path :d="`M ${170 - headRadiusX * 0.7} ${headCenterY + headRadiusY * 0.3} Q 170 ${headCenterY + headRadiusY * 1.05} ${170 + headRadiusX * 0.7} ${headCenterY + headRadiusY * 0.3}`"
+                fill="none" :stroke="themeColors.muscleLine" stroke-width="1.2"/>
+          <!-- Neck & Sternocleidomastoid Muscle (胸锁乳突肌) -->
+          <path :d="`M ${170 - 7} ${headCenterY + headRadiusY * 0.8} L ${170 - 10} ${torsoTopY} M ${170 + 7} ${headCenterY + headRadiusY * 0.8} L ${170 + 10} ${torsoTopY}`"
+                stroke="url(#humanSkinGrad)" stroke-width="14" stroke-linecap="round"/>
+          <line :x1="170 - 5" :y1="headCenterY + headRadiusY * 0.8" :x2="170 - 7" :y2="torsoTopY" :stroke="themeColors.muscleLine" stroke-width="1.2"/>
+          <line :x1="170 + 5" :y1="headCenterY + headRadiusY * 0.8" :x2="170 + 7" :y2="torsoTopY" :stroke="themeColors.muscleLine" stroke-width="1.2"/>
+        </g>
+
+        <!-- ============================================== -->
+        <!-- 2. Anatomical Realistic Human Torso & Limbs -->
+        <!-- ============================================== -->
+        <path :d="humanoidBodyPath"
+              fill="url(#humanSkinGrad)"
               :stroke="themeColors.stroke"
-              stroke-width="2"
+              stroke-width="2.2"
               stroke-linejoin="round"
               stroke-linecap="round"
               class="transition-all duration-300 ease-out"/>
 
-        <!-- Ambient Depth Overlay -->
-        <path :d="anatomicalBodyPath"
-              fill="url(#muscleShadeGrad)"
+        <!-- 3D Muscle Volume Shader -->
+        <path :d="humanoidBodyPath"
+              fill="url(#muscleVolumeGrad)"
               class="pointer-events-none transition-all duration-300"/>
 
-        <!-- ============================================== -->
-        <!-- 2. Sculpted Muscle Group Anatomy Overlay Lines -->
-        <!-- ============================================== -->
+        <!-- Clavicle / Collarbone (锁骨横连) -->
+        <path :d="`M 170 ${torsoTopY + 4} Q ${170 - shoulderHalf * 0.45} ${torsoTopY + 5} ${170 - shoulderHalf * 0.85} ${torsoTopY}`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.5"/>
+        <path :d="`M 170 ${torsoTopY + 4} Q ${170 + shoulderHalf * 0.45} ${torsoTopY + 5} ${170 + shoulderHalf * 0.85} ${torsoTopY}`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.5"/>
 
-        <!-- Head & Facial / Neck Anatomy -->
-        <ellipse cx="170" cy="36" rx="14" ry="18" fill="#18181b" :stroke="themeColors.stroke" stroke-width="1.5"/>
-        <path d="M 164 48 C 167 52 173 52 176 48" fill="none" :stroke="themeColors.muscleLine" stroke-width="1"/>
-        <!-- Clavicle / Collarbone (锁骨) -->
-        <path :d="`M 170 66 Q ${170 - shoulderHalf * 0.45} 67 ${170 - shoulderHalf * 0.85} 63`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.5"/>
-        <path :d="`M 170 66 Q ${170 + shoulderHalf * 0.45} 67 ${170 + shoulderHalf * 0.85} 63`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.5"/>
-
-        <!-- Pectorals / Chest Muscle Plates (胸大肌胸甲) -->
-        <path :d="pecsLeftPlate" fill="rgba(255,255,255,0.06)" :stroke="themeColors.highlight" stroke-width="1.2" class="transition-all duration-300"/>
-        <path :d="pecsRightPlate" fill="rgba(255,255,255,0.06)" :stroke="themeColors.highlight" stroke-width="1.2" class="transition-all duration-300"/>
+        <!-- Pectorals / Chest Armor Plates (立体胸肌厚甲) -->
+        <path :d="pecsLeft3D" fill="url(#absBlockGrad)" :stroke="themeColors.highlight" stroke-width="1.3" class="transition-all duration-300"/>
+        <path :d="pecsRight3D" fill="url(#absBlockGrad)" :stroke="themeColors.highlight" stroke-width="1.3" class="transition-all duration-300"/>
 
         <!-- Sternum Center Cleavage Line (胸骨中缝) -->
-        <line x1="170" y1="67" x2="170" y2="120" :stroke="themeColors.muscleLine" stroke-width="1.2"/>
+        <line x1="170" :y1="torsoTopY + 4" x2="170" :y2="chestY + 16" :stroke="themeColors.muscleLine" stroke-width="1.5"/>
 
-        <!-- Deltoid / Shoulder Separation Crease (三角肌羽状分界线) -->
-        <path :d="`M ${170 - shoulderHalf + 10} 63 Q ${170 - shoulderHalf + 16} 85 ${170 - chestHalf - 4} 95`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.2" class="transition-all duration-300"/>
-        <path :d="`M ${170 + shoulderHalf - 10} 63 Q ${170 + shoulderHalf - 16} 85 ${170 + chestHalf + 4} 95`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.2" class="transition-all duration-300"/>
+        <!-- Deltoid 3D Rounded Muscle Sphere Caps (三角肌三束) -->
+        <path :d="`M ${170 - shoulderHalf + 8} ${torsoTopY} Q ${170 - shoulderHalf + 14} ${torsoTopY + 22} ${170 - chestHalf - 2} ${chestY - 8}`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.3" class="transition-all duration-300"/>
+        <path :d="`M ${170 + shoulderHalf - 8} ${torsoTopY} Q ${170 + shoulderHalf - 14} ${torsoTopY + 22} ${170 + chestHalf + 2} ${chestY - 8}`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.3" class="transition-all duration-300"/>
 
-        <!-- Biceps Peak Arc (肱二头肌隆起线) -->
-        <path :d="`M ${170 - shoulderHalf - armRadius * 0.3} 100 Q ${170 - shoulderHalf - armRadius * 0.8} 120 ${170 - shoulderHalf - armRadius * 0.2} 140`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
-        <path :d="`M ${170 + shoulderHalf + armRadius * 0.3} 100 Q ${170 + shoulderHalf + armRadius * 0.8} 120 ${170 + shoulderHalf + armRadius * 0.2} 140`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
+        <!-- Biceps Peak Arc (肱二头肌峰与肘部分界) -->
+        <path :d="`M ${170 - shoulderHalf - armRadius * 0.2} ${chestY} Q ${170 - shoulderHalf - armRadius * 0.8} ${chestY + 22} ${170 - shoulderHalf - armRadius * 0.2} ${chestY + 44}`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.2" class="transition-all duration-300"/>
+        <path :d="`M ${170 + shoulderHalf + armRadius * 0.2} ${chestY} Q ${170 + shoulderHalf + armRadius * 0.8} ${chestY + 22} ${170 + shoulderHalf + armRadius * 0.2} ${chestY + 44}`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.2" class="transition-all duration-300"/>
 
-        <!-- Serratus Anterior / Ribcage Lines (前锯肌 / 鲨鱼线) -->
-        <path :d="`M ${170 - chestHalf * 0.85} 125 L ${170 - waistHalf * 0.75} 135`" stroke="rgba(255,255,255,0.2)" stroke-width="1" class="transition-all duration-300"/>
-        <path :d="`M ${170 - chestHalf * 0.8} 140 L ${170 - waistHalf * 0.7} 150`" stroke="rgba(255,255,255,0.2)" stroke-width="1" class="transition-all duration-300"/>
-        <path :d="`M ${170 + chestHalf * 0.85} 125 L ${170 + waistHalf * 0.75} 135`" stroke="rgba(255,255,255,0.2)" stroke-width="1" class="transition-all duration-300"/>
-        <path :d="`M ${170 + chestHalf * 0.8} 140 L ${170 + waistHalf * 0.7} 150`" stroke="rgba(255,255,255,0.2)" stroke-width="1" class="transition-all duration-300"/>
+        <!-- Serratus Anterior / Ribcage (前锯肌鲨鱼线) -->
+        <path :d="`M ${170 - chestHalf * 0.85} ${chestY + 18} L ${170 - waistHalf * 0.72} ${chestY + 30}`" stroke="rgba(255,255,255,0.25)" stroke-width="1" class="transition-all duration-300"/>
+        <path :d="`M ${170 - chestHalf * 0.8} ${chestY + 34} L ${170 - waistHalf * 0.68} ${chestY + 46}`" stroke="rgba(255,255,255,0.25)" stroke-width="1" class="transition-all duration-300"/>
+        <path :d="`M ${170 + chestHalf * 0.85} ${chestY + 18} L ${170 + waistHalf * 0.72} ${chestY + 30}`" stroke="rgba(255,255,255,0.25)" stroke-width="1" class="transition-all duration-300"/>
+        <path :d="`M ${170 + chestHalf * 0.8} ${chestY + 34} L ${170 + waistHalf * 0.68} ${chestY + 46}`" stroke="rgba(255,255,255,0.25)" stroke-width="1" class="transition-all duration-300"/>
 
-        <!-- Six-Pack Abs (6 块雕刻腹肌 + 腹直肌白线) -->
-        <line x1="170" y1="120" x2="170" y2="185" :stroke="themeColors.muscleLine" stroke-width="1.2"/>
+        <!-- Six-Pack Abs (3D 雕刻腹肌 6 块) -->
+        <line x1="170" :y1="chestY + 16" x2="170" :y2="waistY + 8" :stroke="themeColors.muscleLine" stroke-width="1.4"/>
         <!-- Upper Abs Row 1 -->
-        <rect :x="170 - waistHalf * 0.42" y="125" :width="waistHalf * 0.36" height="15" rx="3" fill="none" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
-        <rect :x="170 + waistHalf * 0.06" y="125" :width="waistHalf * 0.36" height="15" rx="3" fill="none" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
+        <rect :x="170 - waistHalf * 0.42" :y="chestY + 20" :width="waistHalf * 0.36" height="14" rx="3.5" fill="url(#absBlockGrad)" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
+        <rect :x="170 + waistHalf * 0.06" :y="chestY + 20" :width="waistHalf * 0.36" height="14" rx="3.5" fill="url(#absBlockGrad)" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
         <!-- Mid Abs Row 2 -->
-        <rect :x="170 - waistHalf * 0.45" y="145" :width="waistHalf * 0.38" height="16" rx="3" fill="none" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
-        <rect :x="170 + waistHalf * 0.07" y="145" :width="waistHalf * 0.38" height="16" rx="3" fill="none" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
+        <rect :x="170 - waistHalf * 0.45" :y="chestY + 38" :width="waistHalf * 0.38" height="15" rx="3.5" fill="url(#absBlockGrad)" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
+        <rect :x="170 + waistHalf * 0.07" :y="chestY + 38" :width="waistHalf * 0.38" height="15" rx="3.5" fill="url(#absBlockGrad)" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
         <!-- Lower Abs Row 3 -->
-        <rect :x="170 - waistHalf * 0.42" y="166" :width="waistHalf * 0.36" height="16" rx="3" fill="none" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
-        <rect :x="170 + waistHalf * 0.06" y="166" :width="waistHalf * 0.36" height="16" rx="3" fill="none" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
+        <rect :x="170 - waistHalf * 0.42" :y="chestY + 57" :width="waistHalf * 0.36" height="15" rx="3.5" fill="url(#absBlockGrad)" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
+        <rect :x="170 + waistHalf * 0.06" :y="chestY + 57" :width="waistHalf * 0.36" height="15" rx="3.5" fill="url(#absBlockGrad)" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
 
         <!-- Adonis Belt / V-Cut (人鱼线 / 腹股沟) -->
-        <path :d="`M ${170 - waistHalf * 0.9} 175 Q ${170 - waistHalf * 0.4} 190 170 205`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.2" class="transition-all duration-300"/>
-        <path :d="`M ${170 + waistHalf * 0.9} 175 Q ${170 + waistHalf * 0.4} 190 170 205`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.2" class="transition-all duration-300"/>
+        <path :d="`M ${170 - waistHalf * 0.9} ${waistY - 5} Q ${170 - waistHalf * 0.4} ${waistY + 12} 170 ${waistY + 28}`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.3" class="transition-all duration-300"/>
+        <path :d="`M ${170 + waistHalf * 0.9} ${waistY - 5} Q ${170 + waistHalf * 0.4} ${waistY + 12} 170 ${waistY + 28}`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.3" class="transition-all duration-300"/>
 
-        <!-- Quad Teardrops / Vastus Medialis (股内侧肌泪滴肌 & 膝盖骨) -->
-        <path :d="`M ${170 - thighCenter + 6} 290 Q ${170 - thighCenter + 2} 310 ${170 - thighCenter + 8} 320`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.2" class="transition-all duration-300"/>
-        <path :d="`M ${170 + thighCenter - 6} 290 Q ${170 + thighCenter - 2} 310 ${170 + thighCenter - 8} 320`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.2" class="transition-all duration-300"/>
+        <!-- Vastus Medialis / Quad Teardrop & Knee (股内侧泪滴肌与膝盖骨) -->
+        <path :d="`M ${170 - thighCenter + 5} ${kneeY - 38} Q ${170 - thighCenter + 2} ${kneeY - 18} ${170 - thighCenter + 7} ${kneeY - 8}`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.3" class="transition-all duration-300"/>
+        <path :d="`M ${170 + thighCenter - 5} ${kneeY - 38} Q ${170 + thighCenter - 2} ${kneeY - 18} ${170 + thighCenter - 7} ${kneeY - 8}`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.3" class="transition-all duration-300"/>
         <!-- Kneecaps / Patella (膝盖骨) -->
-        <circle :cx="170 - thighCenter" cy="330" r="5" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.2" class="transition-all duration-300"/>
-        <circle :cx="170 + thighCenter" cy="330" r="5" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.2" class="transition-all duration-300"/>
-        <!-- Calf Muscle Peak (小腿腓肠肌) -->
-        <path :d="`M ${170 - thighCenter - 8} 355 Q ${170 - thighCenter - 14} 375 ${170 - thighCenter - 4} 395`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
-        <path :d="`M ${170 + thighCenter + 8} 355 Q ${170 + thighCenter + 14} 375 ${170 + thighCenter + 4} 395`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1" class="transition-all duration-300"/>
+        <ellipse :cx="170 - thighCenter" :cy="kneeY" rx="4.5" ry="5.5" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.3" class="transition-all duration-300"/>
+        <ellipse :cx="170 + thighCenter" :cy="kneeY" rx="4.5" ry="5.5" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.3" class="transition-all duration-300"/>
+        <!-- Calf Diamonds / Gastrocnemius (小腿腓肠肌钻石峰) -->
+        <path :d="`M ${170 - thighCenter - 7} ${kneeY + 22} Q ${170 - thighCenter - 13} ${kneeY + 44} ${170 - thighCenter - 3} ${kneeY + 65}`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.2" class="transition-all duration-300"/>
+        <path :d="`M ${170 + thighCenter + 7} ${kneeY + 22} Q ${170 + thighCenter + 13} ${kneeY + 44} ${170 + thighCenter + 3} ${kneeY + 65}`" fill="none" :stroke="themeColors.muscleLine" stroke-width="1.2" class="transition-all duration-300"/>
 
         <!-- ============================================== -->
-        <!-- 3. Sleek Technical Caliper Dimension Callouts -->
+        <!-- 3. Dynamic Laser Precision Caliper Callouts -->
         <!-- ============================================== -->
 
         <!-- A. Chest Caliper (Left) -->
         <g class="transition-all duration-300">
-          <line :x1="170 - chestHalf - 20" y1="102" :x2="170 + chestHalf + 20" y2="102"
+          <line :x1="170 - chestHalf - 18" :y1="chestY" :x2="170 + chestHalf + 18" :y2="chestY"
                 stroke="url(#laserScanGrad)" stroke-width="1.5" stroke-dasharray="2 2"/>
-          <circle :cx="170 - chestHalf" cy="102" r="3.5" :fill="themeColors.highlight" :stroke="themeColors.stroke" stroke-width="1"/>
-          <circle :cx="170 + chestHalf" cy="102" r="3.5" :fill="themeColors.highlight" :stroke="themeColors.stroke" stroke-width="1"/>
+          <circle :cx="170 - chestHalf" :cy="chestY" r="3.5" :fill="themeColors.highlight" :stroke="themeColors.stroke" stroke-width="1"/>
+          <circle :cx="170 + chestHalf" :cy="chestY" r="3.5" :fill="themeColors.highlight" :stroke="themeColors.stroke" stroke-width="1"/>
           <!-- Chest Callout Tag -->
-          <rect :x="170 - chestHalf - 68" y="92" width="62" height="20" rx="6" fill="#09090b" :stroke="themeColors.primary" stroke-width="1.2"/>
-          <text :x="170 - chestHalf - 37" y="106" font-family="'Impact', monospace" font-size="10" font-weight="bold" :fill="themeColors.highlight" text-anchor="middle">
+          <rect :x="170 - chestHalf - 66" :y="chestY - 10" width="60" height="20" rx="6" fill="#09090b" :stroke="themeColors.primary" stroke-width="1.2"/>
+          <text :x="170 - chestHalf - 36" :y="chestY + 4" font-family="'Impact', monospace" font-size="10" font-weight="bold" :fill="themeColors.highlight" text-anchor="middle">
             胸围 {{ safeChest }}cm
           </text>
         </g>
 
         <!-- B. Waist Caliper (Right) -->
         <g class="transition-all duration-300">
-          <line :x1="170 - waistHalf - 20" y1="172" :x2="170 + waistHalf + 20" y2="172"
+          <line :x1="170 - waistHalf - 18" :y1="waistY" :x2="170 + waistHalf + 18" :y2="waistY"
                 stroke="url(#laserScanGrad)" stroke-width="1.5" stroke-dasharray="2 2"/>
-          <circle :cx="170 - waistHalf" cy="172" r="3.5" :fill="themeColors.highlight" :stroke="themeColors.stroke" stroke-width="1"/>
-          <circle :cx="170 + waistHalf" cy="172" r="3.5" :fill="themeColors.highlight" :stroke="themeColors.stroke" stroke-width="1"/>
+          <circle :cx="170 - waistHalf" :cy="waistY" r="3.5" :fill="themeColors.highlight" :stroke="themeColors.stroke" stroke-width="1"/>
+          <circle :cx="170 + waistHalf" :cy="waistY" r="3.5" :fill="themeColors.highlight" :stroke="themeColors.stroke" stroke-width="1"/>
           <!-- Waist Callout Tag -->
-          <rect :x="170 + waistHalf + 6" y="162" width="62" height="20" rx="6" fill="#09090b" :stroke="themeColors.primary" stroke-width="1.2"/>
-          <text :x="170 + waistHalf + 37" y="176" font-family="'Impact', monospace" font-size="10" font-weight="bold" :fill="themeColors.highlight" text-anchor="middle">
+          <rect :x="170 + waistHalf + 6" :y="waistY - 10" width="60" height="20" rx="6" fill="#09090b" :stroke="themeColors.primary" stroke-width="1.2"/>
+          <text :x="170 + waistHalf + 36" :y="waistY + 4" font-family="'Impact', monospace" font-size="10" font-weight="bold" :fill="themeColors.highlight" text-anchor="middle">
             腰围 {{ safeWaist }}cm
           </text>
         </g>
 
         <!-- C. Arm Bicep Dimension (Right Outer Arm) -->
         <g class="transition-all duration-300">
-          <line :x1="170 + shoulderHalf + armRadius * 0.9" y1="118" :x2="170 + shoulderHalf + armRadius * 0.9 + 18" y2="118"
+          <line :x1="170 + shoulderHalf + armRadius * 0.9" :y1="chestY + 16" :x2="170 + shoulderHalf + armRadius * 0.9 + 18" :y2="chestY + 16"
                 :stroke="themeColors.secondary" stroke-width="1.2"/>
-          <circle :cx="170 + shoulderHalf + armRadius * 0.9" cy="118" r="3" :fill="themeColors.highlight"/>
-          <rect :x="170 + shoulderHalf + armRadius * 0.9 + 18" y="108" width="56" height="18" rx="5" fill="#09090b" :stroke="themeColors.secondary" stroke-width="1"/>
-          <text :x="170 + shoulderHalf + armRadius * 0.9 + 46" y="121" font-family="'Impact', monospace" font-size="9.5" font-weight="bold" :fill="themeColors.highlight" text-anchor="middle">
+          <circle :cx="170 + shoulderHalf + armRadius * 0.9" :cy="chestY + 16" r="3" :fill="themeColors.highlight"/>
+          <rect :x="170 + shoulderHalf + armRadius * 0.9 + 18" :y="chestY + 6" width="56" height="18" rx="5" fill="#09090b" :stroke="themeColors.secondary" stroke-width="1"/>
+          <text :x="170 + shoulderHalf + armRadius * 0.9 + 46" :y="chestY + 19" font-family="'Impact', monospace" font-size="9.5" font-weight="bold" :fill="themeColors.highlight" text-anchor="middle">
             臂围 {{ safeArm }}cm
           </text>
         </g>
 
         <!-- D. Thigh Dimension (Left Quad) -->
         <g class="transition-all duration-300">
-          <line :x1="170 - thighCenter - thighRadius * 0.95" y1="270" :x2="170 - thighCenter - thighRadius * 0.95 - 18" y2="270"
+          <line :x1="170 - thighCenter - thighRadius * 0.95" :y1="kneeY - 50" :x2="170 - thighCenter - thighRadius * 0.95 - 18" :y2="kneeY - 50"
                 :stroke="themeColors.secondary" stroke-width="1.2"/>
-          <circle :cx="170 - thighCenter - thighRadius * 0.95" cy="270" r="3" :fill="themeColors.highlight"/>
-          <rect :x="170 - thighCenter - thighRadius * 0.95 - 74" y="261" width="56" height="18" rx="5" fill="#09090b" :stroke="themeColors.secondary" stroke-width="1"/>
-          <text :x="170 - thighCenter - thighRadius * 0.95 - 46" y="274" font-family="'Impact', monospace" font-size="9.5" font-weight="bold" :fill="themeColors.highlight" text-anchor="middle">
+          <circle :cx="170 - thighCenter - thighRadius * 0.95" :cy="kneeY - 50" r="3" :fill="themeColors.highlight"/>
+          <rect :x="170 - thighCenter - thighRadius * 0.95 - 74" :y="kneeY - 59" width="56" height="18" rx="5" fill="#09090b" :stroke="themeColors.secondary" stroke-width="1"/>
+          <text :x="170 - thighCenter - thighRadius * 0.95 - 46" :y="kneeY - 46" font-family="'Impact', monospace" font-size="9.5" font-weight="bold" :fill="themeColors.highlight" text-anchor="middle">
             大腿 {{ safeThigh }}cm
           </text>
         </g>
@@ -186,8 +227,8 @@
       </svg>
     </div>
 
-    <!-- Bottom Physiological Metric Chips -->
-    <div class="w-full grid grid-cols-4 gap-1.5 pt-2.5 border-t border-zinc-800/80 text-center font-mono text-[10px] z-10">
+    <!-- Bottom Metric Calibration Summary Bar -->
+    <div class="w-full grid grid-cols-4 gap-1.5 pt-2 border-t border-zinc-800/80 text-center font-mono text-[10px] z-10">
       <div class="p-1.5 rounded-xl bg-zinc-900/90 border border-zinc-800">
         <span class="text-zinc-500 text-[8px] block">胸腰比例</span>
         <span class="font-bold text-amber-300">{{ currentVTaper }}</span>
@@ -201,7 +242,7 @@
         <span class="font-bold text-emerald-400">{{ (safeThigh / safeWaist * 100).toFixed(0) }}%</span>
       </div>
       <div class="p-1.5 rounded-xl bg-zinc-900/90 border border-zinc-800">
-        <span class="text-zinc-500 text-[8px] block">健美体态</span>
+        <span class="text-zinc-500 text-[8px] block">自然健美</span>
         <span class="font-bold text-white">{{ vTaperRating.shortGrade }}</span>
       </div>
     </div>
@@ -210,7 +251,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import { store } from "../store/fitnessStore.js";
 
 const props = defineProps({
@@ -221,30 +262,81 @@ const props = defineProps({
   weight: { type: [Number, String], default: 72 }
 });
 
+const showHeightPicker = ref(false);
+
+// User Height (stored in store.settings.userHeight, defaults to 175cm)
+const userHeight = computed({
+  get() {
+    return store.settings.userHeight || 175;
+  },
+  set(val) {
+    store.settings.userHeight = Number(val) || 175;
+  }
+});
+
+function saveHeightPreference() {
+  showHeightPicker.value = false;
+}
+
 // Clamped Safe Numbers for Human Physiology (70kg-120kg Bodybuilders / Athletes)
 const safeArm = computed(() => Math.max(22, Math.min(60, Number(props.arm) || 35)));
 const safeChest = computed(() => Math.max(75, Math.min(145, Number(props.chest) || 100)));
 const safeWaist = computed(() => Math.max(55, Math.min(130, Number(props.waist) || 80)));
 const safeThigh = computed(() => Math.max(40, Math.min(85, Number(props.thigh) || 56)));
+const safeWeight = computed(() => Math.max(45, Math.min(150, Number(props.weight) || 72)));
 
-// Anatomical Proportions Calculation
+// BMI Calculation
+const bmiValue = computed(() => {
+  const hM = userHeight.value / 100;
+  if (hM <= 0) return "22.5";
+  return (safeWeight.value / (hM * hM)).toFixed(1);
+});
+
+const bmiCategory = computed(() => {
+  const b = parseFloat(bmiValue.value);
+  if (b < 18.5) return "偏瘦";
+  if (b < 24.0) return "标准精壮";
+  if (b < 27.9) return "强壮超重";
+  return "高强健力";
+});
+
+// Head-to-Body Proportion Scale Factor (Determined by Height)
+const heightScale = computed(() => {
+  // Height 175cm is baseline 1.0
+  return userHeight.value / 175;
+});
+
+const headToBodyRatio = computed(() => {
+  // 160cm -> 6.9, 175cm -> 7.5, 185cm -> 7.9, 195cm -> 8.3
+  return (6.4 + (userHeight.value - 150) * 0.035).toFixed(1);
+});
+
+// Vertical Anatomy Coordinates based on Height
+const headCenterY = computed(() => 34);
+const headRadiusX = computed(() => 13.5 / Math.sqrt(heightScale.value));
+const headRadiusY = computed(() => 17 / Math.sqrt(heightScale.value));
+
+const torsoTopY = computed(() => 64);
+const chestY = computed(() => 64 + 38 * heightScale.value);
+const waistY = computed(() => chestY.value + 68 * heightScale.value);
+const hipY = computed(() => waistY.value + 36 * heightScale.value);
+const kneeY = computed(() => hipY.value + 120 * heightScale.value);
+const footY = computed(() => kneeY.value + 105 * heightScale.value);
+
+// Horizontal Anatomical Proportions
 const chestHalf = computed(() => {
-  // 100cm baseline maps to ~54px half-width at chest
   return 42 + (safeChest.value - 75) * 0.42;
 });
 
 const waistHalf = computed(() => {
-  // 80cm baseline maps to ~36px half-width at waist
   return 26 + (safeWaist.value - 55) * 0.35;
 });
 
 const shoulderHalf = computed(() => {
-  // Shoulder width scales with Chest & Arm size for classic V-Taper deltoid caps
   return chestHalf.value + 16 + (safeArm.value - 25) * 0.28;
 });
 
 const armRadius = computed(() => {
-  // Upper arm bicep/tricep thickness
   return 8 + (safeArm.value - 22) * 0.32;
 });
 
@@ -325,19 +417,23 @@ const themeColors = computed(() => {
 });
 
 // Pectoral Plate Left
-const pecsLeftPlate = computed(() => {
+const pecsLeft3D = computed(() => {
   const ch = chestHalf.value;
-  return `M 170 70 L ${170 - ch * 0.85} 75 Q ${170 - ch * 0.95} 105 ${170 - ch * 0.4} 118 L 170 118 Z`;
+  const ty = torsoTopY.value;
+  const cy = chestY.value;
+  return `M 170 ${ty + 6} L ${170 - ch * 0.85} ${ty + 10} Q ${170 - ch * 0.95} ${cy - 2} ${170 - ch * 0.4} ${cy + 14} L 170 ${cy + 14} Z`;
 });
 
 // Pectoral Plate Right
-const pecsRightPlate = computed(() => {
+const pecsRight3D = computed(() => {
   const ch = chestHalf.value;
-  return `M 170 70 L ${170 + ch * 0.85} 75 Q ${170 + ch * 0.95} 105 ${170 + ch * 0.4} 118 L 170 118 Z`;
+  const ty = torsoTopY.value;
+  const cy = chestY.value;
+  return `M 170 ${ty + 6} L ${170 + ch * 0.85} ${ty + 10} Q ${170 + ch * 0.95} ${cy - 2} ${170 + ch * 0.4} ${cy + 14} L 170 ${cy + 14} Z`;
 });
 
-// Realistic Anatomical 8-Head Human Silhouette Vector Path
-const anatomicalBodyPath = computed(() => {
+// Realistic Anthropomorphic 3D Humanoid Body Vector Path
+const humanoidBodyPath = computed(() => {
   const sh = shoulderHalf.value;
   const ch = chestHalf.value;
   const wh = waistHalf.value;
@@ -346,52 +442,53 @@ const anatomicalBodyPath = computed(() => {
   const tr = thighRadius.value;
   const hip = wh + 5;
 
+  const ty = torsoTopY.value;
+  const cy = chestY.value;
+  const wy = waistY.value;
+  const hy = hipY.value;
+  const ky = kneeY.value;
+  const fy = Math.min(442, footY.value);
+
   return `
-    M 170 18
-    C 178 18 184 25 184 36
-    C 184 46 179 54 175 58
-    L 176 64
-    C 186 65 ${170 + sh * 0.6} 67 ${170 + sh - 8} 72
-    C ${170 + sh} 74 ${170 + sh + 4} 80 ${170 + sh + 4} 90
-    C ${170 + sh + 4 + ar} 98 ${170 + sh + 4 + ar * 0.9} 125 ${170 + sh + 2 + ar * 0.6} 150
-    C ${170 + sh + ar * 0.3} 165 ${170 + sh - 2} 185 ${170 + sh - 4} 205
-    C ${170 + sh - 6} 220 ${170 + sh - 8} 235 ${170 + sh - 10} 245
-    C ${170 + sh - 14} 250 ${170 + sh - 18} 248 ${170 + sh - 18} 240
-    C ${170 + sh - 14} 225 ${170 + sh - 12} 205 ${170 + sh - 12} 180
-    C ${170 + sh - 10} 160 ${170 + ch + 6} 130 ${170 + ch} 118
-    C ${170 + ch - 2} 130 ${170 + wh + 6} 160 ${170 + wh} 175
-    C ${170 + wh - 2} 188 ${170 + hip} 198 ${170 + hip} 210
-    C ${170 + tc + tr + 2} 230 ${170 + tc + tr + 4} 265 ${170 + tc + tr} 295
-    C ${170 + tc + tr * 0.5} 320 ${170 + tc + 6} 330 ${170 + tc + 6} 340
-    C ${170 + tc + 10} 355 ${170 + tc + 10} 380 ${170 + tc + 4} 405
-    C ${170 + tc + 3} 418 ${170 + tc + 4} 428 ${170 + tc + 4} 432
-    L ${170 + tc - 8} 432
-    C ${170 + tc - 6} 425 ${170 + tc - 4} 415 ${170 + tc - 4} 405
-    C ${170 + tc - 6} 380 ${170 + tc - 6} 355 ${170 + tc - 4} 340
-    C ${170 + tc - 4} 330 ${170 + tc - tr * 0.5} 320 ${170 + tc - tr * 0.8} 295
-    C ${170 + tc - tr * 0.6} 265 ${170 + 8} 240 170 225
-    C ${170 - 8} 240 ${170 - tc + tr * 0.6} 265 ${170 - tc + tr * 0.8} 295
-    C ${170 - tc + tr * 0.5} 320 ${170 - tc + 4} 330 ${170 - tc + 4} 340
-    C ${170 - tc + 6} 355 ${170 - tc + 6} 380 ${170 - tc + 4} 405
-    C ${170 - tc + 4} 415 ${170 - tc + 6} 425 ${170 - tc + 8} 432
-    L ${170 - tc - 4} 432
-    C ${170 - tc - 4} 428 ${170 - tc - 3} 418 ${170 - tc - 4} 405
-    C ${170 - tc - 10} 380 ${170 - tc - 10} 355 ${170 - tc - 6} 340
-    C ${170 - tc - 6} 330 ${170 - tc - tr * 0.5} 320 ${170 - tc - tr} 295
-    C ${170 - tc - tr - 4} 265 ${170 - tc - tr - 2} 230 ${170 - hip} 210
-    C ${170 - hip} 198 ${170 - wh + 2} 188 ${170 - wh} 175
-    C ${170 - wh - 6} 160 ${170 - ch + 2} 130 ${170 - ch} 118
-    C ${170 - ch - 6} 130 ${170 - sh + 10} 160 ${170 - sh + 12} 180
-    C ${170 - sh + 12} 205 ${170 - sh + 14} 225 ${170 - sh + 18} 240
-    C ${170 - sh + 18} 248 ${170 - sh + 14} 250 ${170 - sh + 10} 245
-    C ${170 - sh + 8} 235 ${170 - sh + 6} 220 ${170 - sh + 4} 205
-    C ${170 - sh + 2} 185 ${170 - sh - ar * 0.3} 165 ${170 - sh - 2 - ar * 0.6} 150
-    C ${170 - sh - 4 - ar * 0.9} 125 ${170 - sh - 4 - ar} 98 ${170 - sh - 4} 90
-    C ${170 - sh - 4} 80 ${170 - sh} 74 ${170 - sh + 8} 72
-    C ${170 - sh * 0.6} 67 154 65 164 64
-    L 165 58
-    C 161 54 156 46 156 36
-    C 156 25 162 18 170 18
+    M 170 ${ty - 2}
+    C 178 ${ty - 2} ${170 + sh * 0.5} ${ty} ${170 + sh - 8} ${ty + 6}
+    C ${170 + sh} ${ty + 8} ${170 + sh + 4} ${ty + 14} ${170 + sh + 4} ${ty + 24}
+    C ${170 + sh + 4 + ar} ${cy - 6} ${170 + sh + 4 + ar * 0.9} ${cy + 20} ${170 + sh + 2 + ar * 0.6} ${cy + 45}
+    C ${170 + sh + ar * 0.3} ${cy + 60} ${170 + sh - 2} ${wy + 5} ${170 + sh - 4} ${wy + 25}
+    C ${170 + sh - 6} ${wy + 40} ${170 + sh - 8} ${wy + 55} ${170 + sh - 10} ${wy + 65}
+    C ${170 + sh - 14} ${wy + 70} ${170 + sh - 18} ${wy + 68} ${170 + sh - 18} ${wy + 60}
+    C ${170 + sh - 14} ${wy + 45} ${170 + sh - 12} ${wy + 25} ${170 + sh - 12} ${cy + 75}
+    C ${170 + sh - 10} ${cy + 55} ${170 + ch + 6} ${cy + 25} ${170 + ch} ${cy + 14}
+    C ${170 + ch - 2} ${cy + 25} ${170 + wh + 6} ${wy - 15} ${170 + wh} ${wy}
+    C ${170 + wh - 2} ${wy + 12} ${170 + hip} ${hy - 12} ${170 + hip} ${hy}
+    C ${170 + tc + tr + 2} ${hy + 20} ${170 + tc + tr + 4} ${ky - 55} ${170 + tc + tr} ${ky - 25}
+    C ${170 + tc + tr * 0.5} ${ky - 5} ${170 + tc + 6} ${ky} ${170 + tc + 6} ${ky + 10}
+    C ${170 + tc + 10} ${ky + 25} ${170 + tc + 10} ${ky + 50} ${170 + tc + 4} ${fy - 25}
+    C ${170 + tc + 3} ${fy - 12} ${170 + tc + 4} ${fy - 4} ${170 + tc + 4} ${fy}
+    L ${170 + tc - 8} ${fy}
+    C ${170 + tc - 6} ${fy - 8} ${170 + tc - 4} ${fy - 18} ${170 + tc - 4} ${fy - 25}
+    C ${170 + tc - 6} ${ky + 50} ${170 + tc - 6} ${ky + 25} ${170 + tc - 4} ${ky + 10}
+    C ${170 + tc - 4} ${ky} ${170 + tc - tr * 0.5} ${ky - 5} ${170 + tc - tr * 0.8} ${ky - 25}
+    C ${170 + tc - tr * 0.6} ${ky - 55} ${170 + 8} ${hy + 30} 170 ${hy + 15}
+    C ${170 - 8} ${hy + 30} ${170 - tc + tr * 0.6} ${ky - 55} ${170 - tc + tr * 0.8} ${ky - 25}
+    C ${170 - tc + tr * 0.5} ${ky - 5} ${170 - tc + 4} ${ky} ${170 - tc + 4} ${ky + 10}
+    C ${170 - tc + 6} ${ky + 25} ${170 - tc + 6} ${ky + 50} ${170 - tc + 4} ${fy - 25}
+    C ${170 - tc + 4} ${fy - 18} ${170 - tc + 6} ${fy - 8} ${170 - tc + 8} ${fy}
+    L ${170 - tc - 4} ${fy}
+    C ${170 - tc - 4} ${fy - 4} ${170 - tc - 3} ${fy - 12} ${170 - tc - 4} ${fy - 25}
+    C ${170 - tc - 10} ${ky + 50} ${170 - tc - 10} ${ky + 25} ${170 - tc - 6} ${ky + 10}
+    C ${170 - tc - 6} ${ky} ${170 - tc - tr * 0.5} ${ky - 5} ${170 - tc - tr} ${ky - 25}
+    C ${170 - tc - tr - 4} ${ky - 55} ${170 - tc - tr - 2} ${hy + 20} ${170 - hip} ${hy}
+    C ${170 - hip} ${hy - 12} ${170 - wh + 2} ${wy + 12} ${170 - wh} ${wy}
+    C ${170 - wh - 6} ${wy - 15} ${170 - ch + 2} ${cy + 25} ${170 - ch} ${cy + 14}
+    C ${170 - ch - 6} ${cy + 25} ${170 - sh + 10} ${cy + 55} ${170 - sh + 12} ${cy + 75}
+    C ${170 - sh + 12} ${wy + 25} ${170 - sh + 14} ${wy + 45} ${170 - sh + 18} ${wy + 60}
+    C ${170 - sh + 18} ${wy + 68} ${170 - sh + 14} ${wy + 70} ${170 - sh + 10} ${wy + 65}
+    C ${170 - sh + 8} ${wy + 55} ${170 - sh + 6} ${wy + 40} ${170 - sh + 4} ${wy + 25}
+    C ${170 - sh + 2} ${wy + 5} ${170 - sh - ar * 0.3} ${cy + 60} ${170 - sh - 2 - ar * 0.6} ${cy + 45}
+    C ${170 - sh - 4 - ar * 0.9} ${cy + 20} ${170 - sh - 4 - ar} ${cy - 6} ${170 - sh - 4} ${ty + 24}
+    C ${170 - sh - 4} ${ty + 14} ${170 - sh} ${ty + 8} ${170 - sh + 8} ${ty + 6}
+    C ${170 - sh * 0.5} ${ty} 162 ${ty - 2} 170 ${ty - 2}
     Z
   `.replace(/\s+/g, " ");
 });

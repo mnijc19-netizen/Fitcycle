@@ -27,6 +27,7 @@ export const VALID_SKINS = ["default", "chamber", "cs"];
 
 export const DEFAULT_SETTINGS = {
   defaultRestSeconds: 90,
+  userHeight: 175, // cm (fixed base height for anthropometric body proportions)
   soundEnabled: true,
   vibrationEnabled: true,
   weightUnit: "kg",
@@ -106,6 +107,9 @@ export function sanitizeSettings(rawSettings) {
   // 3. Ensure other numerical/boolean settings are safe
   if (typeof sanitized.defaultRestSeconds !== "number" || sanitized.defaultRestSeconds <= 0) {
     sanitized.defaultRestSeconds = DEFAULT_SETTINGS.defaultRestSeconds;
+  }
+  if (typeof sanitized.userHeight !== "number" || sanitized.userHeight < 120 || sanitized.userHeight > 230) {
+    sanitized.userHeight = DEFAULT_SETTINGS.userHeight;
   }
   sanitized.soundEnabled = Boolean(sanitized.soundEnabled);
   sanitized.vibrationEnabled = Boolean(sanitized.vibrationEnabled);
