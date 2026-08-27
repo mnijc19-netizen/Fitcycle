@@ -8,6 +8,18 @@ export const PROVIDER_CONFIGS = {
   zhipu: {
     name: "智谱 GLM",
     apiBase: "https://open.bigmodel.cn/api/paas/v4"
+  },
+  qwen: {
+    name: "通义千问 (阿里云百炼)",
+    apiBase: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  },
+  siliconflow: {
+    name: "硅基流动",
+    apiBase: "https://api.siliconflow.cn/v1"
+  },
+  moonshot: {
+    name: "月之暗面 Kimi",
+    apiBase: "https://api.moonshot.cn/v1"
   }
 };
 

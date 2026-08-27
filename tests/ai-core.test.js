@@ -28,13 +28,13 @@ afterEach(() => {
 describe("dynamic model capabilities", () => {
   it("derives capabilities for DeepSeek and Zhipu models", () => {
     const capable = normalizeProviderModel("zhipu", { id: "glm-4.6v-flash" });
-    const glm5 = normalizeProviderModel("zhipu", { id: "glm-5" });
-    const glmFlash = normalizeProviderModel("zhipu", { id: "glm-5.3-flash" });
-    const chatOnly = normalizeProviderModel("deepseek", { id: "deepseek-v4" });
+    const glm5 = normalizeProviderModel("zhipu", { id: "glm-4v-plus" });
+    const glmFlash = normalizeProviderModel("zhipu", { id: "glm-4-flash" });
+    const chatOnly = normalizeProviderModel("deepseek", { id: "deepseek-chat" });
 
-    expect(capable.capabilities).toEqual({ text: true, image: true, tools: true, streaming: true });
-    expect(glm5.capabilities).toEqual({ text: true, image: true, tools: true, streaming: true });
-    expect(glmFlash.capabilities).toEqual({ text: true, image: true, tools: true, streaming: true });
+    expect(capable.capabilities.image).toBe(true);
+    expect(glm5.capabilities.image).toBe(true);
+    expect(glmFlash.capabilities.image).toBe(false);
     expect(chatOnly.capabilities.image).toBe(false);
     expect(chatOnly.capabilities.tools).toBe(true);
     expect(filterModels([capable, chatOnly], "4.6v")).toEqual([capable]);

@@ -274,7 +274,45 @@
       </div>
     </div>
 
-    <AISettingsPanel />
+    <!-- Fitcycle AI Coach Settings Compact Entry Card -->
+    <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl flex items-center justify-between cursor-pointer hover:border-amber-500/40 active:scale-98 transition-all group"
+         @click="showAISettingsModal = true"
+         data-testid="open-ai-settings-modal">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-lg text-amber-400 flex-shrink-0 shadow-lg shadow-amber-500/10">
+          ✦
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <h3 class="text-xs font-bold text-zinc-100">智能教练设置 (Fitcycle AI)</h3>
+            <span class="text-[10px] px-2 py-0.5 rounded-full border font-mono font-medium"
+                  :class="aiConnected ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-400' : 'border-zinc-700 bg-zinc-950 text-zinc-500'">
+              {{ aiConnected ? '● 已就绪' : '○ 未连接' }}
+            </span>
+          </div>
+          <p class="text-[11px] text-zinc-400 truncate mt-0.5">
+            {{ aiConnected ? `${activeAIProvider.name} · ${activeAIModel?.name || getActiveModelId()}` : '点击连接 DeepSeek / 智谱 / 通义千问 / 硅基流动' }}
+          </p>
+        </div>
+      </div>
+      <div class="text-zinc-500 group-hover:text-amber-400 transition-colors text-sm font-bold pl-2">
+        ›
+      </div>
+    </div>
+
+    <!-- Full AI Settings Modal Sheet -->
+    <div v-if="showAISettingsModal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" @click="showAISettingsModal = false"></div>
+      <div class="relative w-full max-w-lg max-h-[85vh] overflow-y-auto bg-zinc-950 border border-zinc-800 rounded-t-3xl sm:rounded-3xl p-4 shadow-2xl space-y-3 z-10">
+        <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
+          <div class="text-xs font-bold text-zinc-100 flex items-center gap-1.5">
+            <span class="text-amber-400">✦</span> 智能教练详细配置
+          </div>
+          <button type="button" @click="showAISettingsModal = false" class="w-7 h-7 rounded-full bg-zinc-900 text-zinc-400 hover:text-white flex items-center justify-center text-xs">✕</button>
+        </div>
+        <AISettingsPanel />
+      </div>
+    </div>
 
     <!-- Data Backup & Reset -->
     <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3">
@@ -319,6 +357,13 @@
 <script setup>
 import { ref, computed } from "vue";
 import AISettingsPanel from "../components/AISettingsPanel.vue";
+import {
+  aiSession,
+  getActiveApiKey,
+  getActiveProvider,
+  getActiveModelId,
+  getActiveModels
+} from "../ai/aiSession.js";
 import { 
   store, 
   exportBackupJSON, 
@@ -328,6 +373,12 @@ import {
   setUISkin,
   restoreDefaultSkin
 } from "../store/fitnessStore.js";
+
+const showAISettingsModal = ref(false);
+const activeAIProvider = computed(getActiveProvider);
+const activeAIModels = computed(getActiveModels);
+const aiConnected = computed(() => Boolean(getActiveApiKey() && activeAIModels.value.length));
+const activeAIModel = computed(() => activeAIModels.value.find((m) => m.id === getActiveModelId()));
 
 const fileInput = ref(null);
 const passcodeInput = ref("");

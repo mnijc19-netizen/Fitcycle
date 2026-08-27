@@ -18,13 +18,13 @@
     <!-- Provider Selection -->
     <div class="space-y-1.5">
       <label class="block text-[11px] font-medium text-zinc-300">选择 AI 服务商</label>
-      <div class="grid grid-cols-2 gap-2" aria-label="AI 提供商">
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" aria-label="AI 提供商">
         <button v-for="provider in AI_PROVIDERS" :key="provider.id" type="button"
-                class="py-2.5 px-3 rounded-2xl border text-xs font-bold transition-all flex flex-col items-center gap-0.5 active:scale-98"
+                class="py-2 px-2.5 rounded-2xl border text-xs font-bold transition-all flex flex-col items-center gap-0.5 active:scale-98"
                 :class="aiSession.activeProvider === provider.id ? 'bg-amber-500 border-amber-500 text-zinc-950 shadow-md shadow-amber-500/20' : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'"
                 @click="selectProvider(provider.id)">
           <span class="font-bold">{{ provider.name }}</span>
-          <span class="text-[9px] font-normal opacity-80">{{ provider.id === 'deepseek' ? '高性价比 · 深度思考' : '多模态 · 支持识图' }}</span>
+          <span class="text-[9px] font-normal opacity-80 truncate max-w-full">{{ provider.tag || provider.id }}</span>
         </button>
       </div>
     </div>
@@ -102,8 +102,8 @@
         <p v-if="!selectedModel.capabilities.tools" class="text-[10px] text-amber-400/90 leading-tight">
           该模型可用于对话咨询，但不支持自动读取或修改 Fitcycle 训练数据。
         </p>
-        <p v-if="aiSession.activeProvider === 'deepseek'" class="text-[10px] text-zinc-500 leading-tight">
-          DeepSeek 官方接口当前为纯文本模型；如需上传身材或动作图片分析，请切换至智谱 GLM 视觉模型。
+        <p v-if="!selectedModel.capabilities.image" class="text-[10px] text-zinc-500 leading-tight">
+          当前选中的模型为纯文本对话模型；如需上传身材或动作图片分析，请选择带有「视觉识图」标识的模型（如 GLM-4V-Plus、Qwen-VL-Max）。
         </p>
       </div>
 
@@ -156,11 +156,8 @@ function formatModelLabel(model) {
   return model.id;
 }
 
-
 const portalLink = computed(() => {
-  if (aiSession.activeProvider === "deepseek") return "https://platform.deepseek.com";
-  if (aiSession.activeProvider === "zhipu") return "https://open.bigmodel.cn";
-  return "https://platform.deepseek.com";
+  return activeProvider.value?.portal || "https://platform.deepseek.com";
 });
 
 watch(() => aiSession.activeProvider, () => {

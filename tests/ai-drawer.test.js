@@ -139,5 +139,33 @@ describe("mobile AI drawer", () => {
     expect(options[1].text()).toBe("智谱旗舰大模型 (glm-custom)");
     wrapper.unmount();
   });
+
+  it("supports 1-tap quick model switcher directly inside the chat drawer header", async () => {
+    setActiveProvider("qwen");
+    setSessionApiKey("session-only-test-key", "qwen");
+    setProviderModels([
+      { id: "qwen-max", name: "通义千问 Max", capabilities: { text: true, image: false, tools: true, streaming: true } },
+      { id: "qwen-vl-max", name: "Qwen-VL-Max (视觉旗舰)", capabilities: { text: true, image: true, tools: true, streaming: true } }
+    ], "qwen");
+    setSelectedModel("qwen-max", "qwen");
+    aiSession.drawerOpen = true;
+
+    const wrapper = mount(AIAssistantDrawer, { attachTo: document.body });
+    expect(wrapper.find('[data-testid="quick-model-picker-modal"]').exists()).toBe(false);
+
+    // Open quick model picker popover from header
+    await wrapper.get('[data-testid="toggle-quick-model-picker"]').trigger("click");
+    expect(wrapper.find('[data-testid="quick-model-picker-modal"]').exists()).toBe(true);
+
+    // Click to switch model to Qwen-VL-Max
+    const vlButton = wrapper.findAll('[data-testid="quick-model-picker-modal"] button').find(b => b.text().includes("Qwen-VL-Max"));
+    expect(vlButton).toBeTruthy();
+    await vlButton.trigger("click");
+
+    expect(aiSession.selectedModelIds.qwen).toBe("qwen-vl-max");
+    expect(wrapper.find('[data-testid="quick-model-picker-modal"]').exists()).toBe(false);
+    wrapper.unmount();
+  });
 });
+
 

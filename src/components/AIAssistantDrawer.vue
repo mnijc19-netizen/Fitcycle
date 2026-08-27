@@ -17,18 +17,69 @@
     <section class="relative w-full max-w-md h-[min(760px,calc(100dvh-24px))] bg-zinc-950 border border-zinc-700 rounded-t-3xl shadow-2xl flex flex-col overflow-hidden"
              aria-label="Fitcycle AI 助手">
       <header class="flex items-center justify-between gap-3 px-4 py-3 border-b border-zinc-800 bg-zinc-900/95 flex-shrink-0">
-        <div class="min-w-0">
+        <div class="min-w-0 flex-1">
           <div class="text-sm font-black text-zinc-100 flex items-center gap-2">
             <span class="text-amber-400 font-black">✦</span> Fitcycle AI
             <span v-if="activeApiKey" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
           </div>
-          <div class="text-[10px] text-zinc-500 truncate">{{ selectedModel ? `${activeProvider.name} · ${selectedModel.name}` : '请先在设置中连接 AI 提供商' }}</div>
+          <button type="button"
+                  data-testid="toggle-quick-model-picker"
+                  @click="showQuickModelPicker = !showQuickModelPicker"
+                  class="text-[10px] text-zinc-400 hover:text-amber-400 truncate flex items-center gap-1 mt-0.5 max-w-full group text-left transition-colors">
+            <span class="truncate font-mono">{{ selectedModel ? `${activeProvider.name} · ${selectedModel.name}` : '未选择模型（点击选择）' }}</span>
+            <span class="text-[9px] text-amber-400/80 group-hover:text-amber-300">▼</span>
+          </button>
         </div>
         <div class="flex items-center gap-1.5">
           <button type="button" class="px-2.5 py-1 rounded-lg text-[10px] border border-zinc-700 text-zinc-400 hover:text-zinc-200 bg-zinc-900 transition-colors" @click="handleClear">清空对话</button>
           <button type="button" class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center text-xs transition-colors" aria-label="收起 AI 助手" @click="aiSession.drawerOpen = false">✕</button>
         </div>
       </header>
+
+      <!-- ⚡ 快捷切换模型弹窗 (Quick Model Switcher Popover) -->
+      <div v-if="showQuickModelPicker" 
+           data-testid="quick-model-picker-modal"
+           class="absolute top-14 left-3 right-3 z-40 bg-zinc-900/98 border border-zinc-700 rounded-2xl shadow-2xl p-3 space-y-2.5 backdrop-blur-xl">
+        <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
+          <div class="text-xs font-bold text-zinc-200 flex items-center gap-1.5">
+            <span class="text-amber-400">⚡</span> 快捷切换模型
+          </div>
+          <button type="button" @click="showQuickModelPicker = false" class="text-zinc-500 hover:text-zinc-300 text-xs px-1">✕</button>
+        </div>
+
+        <!-- Provider Horizontal Tabs -->
+        <div class="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          <button v-for="prov in AI_PROVIDERS" :key="prov.id" type="button"
+                  @click="quickSwitchProvider(prov.id)"
+                  class="px-2.5 py-1 rounded-lg text-[10px] font-bold border whitespace-nowrap transition-all"
+                  :class="aiSession.activeProvider === prov.id ? 'bg-amber-500 text-zinc-950 border-amber-500' : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-zinc-200'">
+            {{ prov.name }}
+          </button>
+        </div>
+
+        <!-- Model List -->
+        <div class="max-h-52 overflow-y-auto space-y-1 pr-1 font-mono">
+          <button v-for="m in activeModels" :key="m.id" type="button"
+                  @click="quickSelectModel(m.id)"
+                  class="w-full px-2.5 py-1.5 rounded-xl text-left text-xs transition-all flex items-center justify-between group"
+                  :class="selectedModelId === m.id ? 'bg-amber-500/15 border border-amber-500/40 text-amber-300 font-bold' : 'hover:bg-zinc-800 text-zinc-300 border border-transparent'">
+            <div class="min-w-0 flex-1 pr-2">
+              <div class="text-[11px] truncate">{{ m.name }}</div>
+              <div class="text-[9px] text-zinc-500 truncate">{{ m.id }}</div>
+            </div>
+            <div class="flex items-center gap-1 flex-shrink-0">
+              <span v-if="m.capabilities?.image" class="text-[9px] px-1 py-0.2 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30">识图</span>
+              <span v-if="m.capabilities?.reasoning" class="text-[9px] px-1 py-0.2 rounded bg-purple-500/20 text-purple-400 border border-purple-500/30">思考</span>
+              <span v-if="selectedModelId === m.id" class="text-amber-400 text-xs">✓</span>
+            </div>
+          </button>
+        </div>
+
+        <div class="pt-1 border-t border-zinc-800 flex items-center justify-between text-[10px]">
+          <span class="text-zinc-500">厂商: {{ activeProvider.name }}</span>
+          <button type="button" @click="goToSettingsTab" class="text-amber-400 hover:text-amber-300 underline font-medium">管理 API 密钥 ↗</button>
+        </div>
+      </div>
 
       <div ref="messageList" class="flex-1 overflow-y-auto overscroll-contain px-3 py-4 space-y-3" data-testid="ai-messages">
         <!-- Empty State with Quick Action Chips -->
@@ -181,7 +232,17 @@
 
 <script setup>
 import { computed, nextTick, reactive, ref, watch } from "vue";
-import { aiSession, clearConversation, getActiveApiKey, getActiveModelId, getActiveModels, getActiveProvider } from "../ai/aiSession.js";
+import {
+  AI_PROVIDERS,
+  aiSession,
+  clearConversation,
+  getActiveApiKey,
+  getActiveModelId,
+  getActiveModels,
+  getActiveProvider,
+  setActiveProvider,
+  setSelectedModel
+} from "../ai/aiSession.js";
 import { buildUserMessage, resumeAssistantAfterDecision, runAssistantLoop } from "../ai/assistantRuntime.js";
 import { createFitcycleToolRuntime } from "../ai/fitcycleTools.js";
 import { processImageFile } from "../ai/imageProcessor.js";
@@ -200,7 +261,26 @@ const cameraInput = ref(null);
 const galleryInput = ref(null);
 const messageList = ref(null);
 const inputError = ref("");
+const showQuickModelPicker = ref(false);
 let abortController = null;
+
+const activeModels = computed(getActiveModels);
+const selectedModelId = computed({ get: getActiveModelId, set: (val) => setSelectedModel(val) });
+
+function quickSwitchProvider(providerId) {
+  setActiveProvider(providerId);
+}
+
+function quickSelectModel(modelId) {
+  setSelectedModel(modelId);
+  showQuickModelPicker.value = false;
+}
+
+function goToSettingsTab() {
+  showQuickModelPicker.value = false;
+  aiSession.drawerOpen = false;
+  store.activeTab = "stats";
+}
 
 const defaultChips = [
   {
