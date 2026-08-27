@@ -66,7 +66,63 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- 2. DEFAULT / CHAMBER THEME VARIANT -->
+    <!-- 2. CHAMBER (尚博勒) OFFICIAL RENDEZVOUS WATCH THEME VARIANT -->
+    <!-- ============================================== -->
+    
+    <!-- Chamber Compact State (微型官方金表 + 贵宾专线传送怀表金光) -->
+    <div v-else-if="!isExpanded && store.settings.uiSkin === 'chamber'" 
+         @click="toggleExpand"
+         class="bg-[#070B14]/98 border border-[#E5C378]/70 backdrop-blur-xl rounded-2xl pl-2 pr-3 py-1.5 shadow-2xl shadow-black flex items-center gap-2 text-white animate-in slide-in-from-right-4 duration-200 cursor-grab active:cursor-grabbing active:scale-95 group transition-transform">
+      <!-- Official Chamber Rendezvous Watch Icon -->
+      <div class="relative w-6 h-6 rounded-lg bg-[#0D1627] border border-[#E5C378]/60 flex items-center justify-center flex-shrink-0">
+        <div class="absolute -inset-1 rounded-xl bg-[#E5C378]/25 blur-[2px] animate-pulse pointer-events-none"></div>
+        <img :src="chamberWatchImg" alt="Chamber Watch" class="w-full h-full object-contain p-0.5 relative z-10 drop-shadow-[0_0_6px_rgba(229,195,120,0.9)]" />
+      </div>
+
+      <!-- Digital French Gold Countdown Display -->
+      <div class="flex flex-col">
+        <span class="font-mono font-black text-xs text-[#F6E09E] tracking-tight leading-none drop-shadow-[0_0_8px_rgba(246,224,158,0.9)]">
+          {{ formatTime(store.restTimer.remaining) }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Chamber Expanded Action Bar (点击后紧凑展开) -->
+    <div v-else-if="isExpanded && store.settings.uiSkin === 'chamber'" 
+         class="bg-[#070B14]/98 border border-[#E5C378]/70 backdrop-blur-2xl rounded-2xl px-2.5 py-1.5 shadow-2xl shadow-black flex items-center gap-2 text-white animate-in zoom-in-95 duration-200">
+      
+      <!-- Left: Mini Chamber Watch & Time (tap to collapse) -->
+      <div class="flex items-center gap-1.5 cursor-pointer" @click="toggleExpand">
+        <div class="relative w-6 h-6 rounded-lg bg-[#0D1627] border border-[#E5C378]/60 flex items-center justify-center flex-shrink-0">
+          <div class="absolute -inset-1 rounded-xl bg-[#E5C378]/25 blur-[2px] animate-pulse pointer-events-none"></div>
+          <img :src="chamberWatchImg" alt="Chamber Watch" class="w-full h-full object-contain p-0.5 relative z-10 drop-shadow-[0_0_6px_rgba(229,195,120,0.9)]" />
+        </div>
+        <span class="font-mono font-black text-xs text-[#F6E09E] tracking-tight drop-shadow-[0_0_8px_rgba(246,224,158,0.9)] pr-1">
+          {{ formatTime(store.restTimer.remaining) }}
+        </span>
+      </div>
+
+      <!-- Action Buttons: -15s, +30s, 关闭 -->
+      <div class="flex items-center gap-1 flex-shrink-0">
+        <button @click.stop="adjustRestTimer(-15)" 
+                class="px-2 py-1 bg-[#0D1627] hover:bg-[#142036] active:scale-90 text-[#9AA8C2] rounded-lg text-xs font-mono font-bold border border-[#1E3052] transition-all">
+          -15s
+        </button>
+        <button @click.stop="adjustRestTimer(30)" 
+                class="px-2 py-1 bg-[#E5C378]/20 hover:bg-[#E5C378]/30 active:scale-90 text-[#F6E09E] rounded-lg text-xs font-mono font-bold border border-[#E5C378]/50 transition-all">
+          +30s
+        </button>
+        <button @click.stop="handleClose" 
+                title="关闭休息计时"
+                class="w-6 h-6 rounded-lg bg-[#E06D3B]/20 hover:bg-[#E06D3B]/30 text-[#E06D3B] active:scale-90 flex items-center justify-center text-xs font-bold border border-[#E06D3B]/40 transition-all">
+          ✕
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- 3. DEFAULT CLASSIC THEME VARIANT -->
     <!-- ============================================== -->
 
     <!-- Default Compact Variant -->
@@ -138,6 +194,7 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
 import { store, startRestTimer, stopRestTimer, adjustRestTimer } from "../store/fitnessStore.js";
 
 const csC4TimerImg = "./themes/cs/hud/bomb_planted.svg";
+const chamberWatchImg = "./themes/chamber/icons/rendezvous.png";
 const timerWidgetRef = ref(null);
 
 const isExpanded = ref(false);
