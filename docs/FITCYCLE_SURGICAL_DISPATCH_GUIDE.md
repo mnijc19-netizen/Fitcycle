@@ -23,6 +23,11 @@
                 (如衰减周期、150%复苏加成)      ├── 2. `src/engine/skinHonorSchemas.js` (全皮肤称号对齐)
                                                 └── 3. `src/components/HonorShowcaseModal.vue` (天梯陈列馆)
 
+[OP-DELOAD]     战术免战盾牌与周期化减载        ├── 1. `src/engine/honorEngine.js` (16次充能比、21天冷却)npm run test tests/honor-system.test.js
+                (做工充能/筑基期/唯一权威消耗)  ├── 2. `src/components/HonorShowcaseModal.vue` (权威消耗弹窗)
+                                                ├── 3. `src/views/StatsView.vue` (只读状态跳转，严禁侧门开关)
+                                                └── 4. `src/views/TodayView.vue` & `CalendarView.vue` (休整联动)
+
 [OP-BADGE]      新增/修改专精荣誉勋章           ├── 1. `src/engine/honorEngine.js` (BADGE_DEFINITIONS)   npm run test tests/honor-system.test.js
                 (自律/形体/力量/战术彩蛋)       ├── 2. `src/engine/skinHonorSchemas.js` (本地化文案插槽)
                                                 └── 3. `src/components/HonorShowcaseModal.vue` (勋章墙分类)

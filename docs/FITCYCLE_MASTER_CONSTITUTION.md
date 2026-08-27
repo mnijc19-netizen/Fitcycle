@@ -52,15 +52,23 @@ Fitcycle 采用严格单向依赖的 5 层洋葱架构，**严禁跨层反向污
                                           ├── 4.4 `docs/FITCYCLE_CORE_CONSTITUTION.md` (同步更新法律条款)
                                           └── 4.5 `tests/honor-system.test.js` (断言数学公式、扣分区间与防刷分测试)
 
-5. 修改 形体围度测量标准 (Body Metrics)   ├── 5.1 `src/store/fitnessStore.js` (`recordBodyMetric` 7天冷却与里程碑奖励)
-                                          ├── 5.2 `src/components/BodyMetricsModal.vue` (测量表单、V身比与科学测量标准弹窗)
-                                          ├── 5.3 `src/views/StatsView.vue` & `TodayView.vue` (入口胶囊与数据摘要)
-                                          └── 5.4 `tests/honor-system.test.js` (断言冷却逻辑与数据持久化)
+5. 修改 战术免战盾牌/减载周期 (Deload Shield)├── 5.1 `src/engine/honorEngine.js` (16次打卡充能比、21天冷却与计算纯函数)
+                                          ├── 5.2 `src/store/fitnessStore.js` (`toggleDeloadShield` 状态变更与校验)
+                                          ├── 5.3 `src/components/HonorShowcaseModal.vue` (【唯一权威消耗与激活入口】)
+                                          ├── 5.4 `src/views/StatsView.vue` (设置页仅提供只读状态跳转，严禁开设免费后门)
+                                          ├── 5.5 `src/views/TodayView.vue` & `CalendarView.vue` (休整态看板联动)
+                                          ├── 5.6 `docs/FITCYCLE_CORE_CONSTITUTION.md` (第4.4条生理学减载法典)
+                                          └── 5.7 `tests/honor-system.test.js` (断言16次门槛、筑基期与21天冷却测试)
 
-6. 修改 AI 大模型网关/协议 (AI Gateway)  ├── 6.1 `src/ai/providerClient.js` (厂商 API 请求适配器与参数转换)
-                                          ├── 6.2 `src/ai/aiSession.js` (全局会话状态、多模态 Token 管理与流式调度)
-                                          ├── 6.3 `src/components/AISettingsPanel.vue` (厂商选择、宫格模型卡片与 Key 验证)
-                                          └── 6.4 `tests/ai-core.test.js` (断言多厂商鉴权与多模态识图兼容性)
+6. 修改 形体围度测量标准 (Body Metrics)   ├── 6.1 `src/store/fitnessStore.js` (`recordBodyMetric` 7天冷却与里程碑奖励)
+                                          ├── 6.2 `src/components/BodyMetricsModal.vue` (测量表单、V身比与科学测量标准弹窗)
+                                          ├── 6.3 `src/views/StatsView.vue` & `TodayView.vue` (入口胶囊与数据摘要)
+                                          └── 6.4 `tests/honor-system.test.js` (断言冷却逻辑与数据持久化)
+
+7. 修改 AI 大模型网关/协议 (AI Gateway)  ├── 7.1 `src/ai/providerClient.js` (厂商 API 请求适配器与参数转换)
+                                          ├── 7.2 `src/ai/aiSession.js` (全局会话状态、多模态 Token 管理与流式调度)
+                                          ├── 7.3 `src/components/AISettingsPanel.vue` (厂商选择、宫格模型卡片与 Key 验证)
+                                          └── 7.4 `tests/ai-core.test.js` (断言多厂商鉴权与多模态识图兼容性)
 ========================================================================================================================
 ```
 
