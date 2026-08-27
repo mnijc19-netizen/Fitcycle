@@ -1,0 +1,11 @@
+<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tp100" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#94A3B8"/><stop offset="50%" stop-color="#475569"/><stop offset="100%" stop-color="#0F172A"/></linearGradient>
+    <linearGradient id="gb100" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FDE047"/><stop offset="50%" stop-color="#EAB308"/><stop offset="100%" stop-color="#78350F"/></linearGradient>
+  </defs>
+  <polygon points="60,12 102,34 102,86 60,108 18,86 18,34" fill="url(#tp100)" stroke="url(#gb100)" stroke-width="3" filter="drop-shadow(0 4px 10px rgba(0,0,0,0.8))"/>
+  <line x1="28" y1="28" x2="92" y2="92" stroke="#E2E8F0" stroke-width="4" stroke-linecap="round"/>
+  <line x1="28" y1="92" x2="92" y2="28" stroke="#E2E8F0" stroke-width="4" stroke-linecap="round"/>
+  <rect x="35" y="48" width="50" height="24" rx="6" fill="#090D16" stroke="url(#gb100)" stroke-width="2"/>
+  <text x="60" y="65" font-family="'Impact', sans-serif" font-size="16" font-weight="black" fill="#FDE047" text-anchor="middle">100T</text>
+</svg>

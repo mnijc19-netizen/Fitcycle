@@ -1,4 +1,4 @@
-﻿// Fitcycle Skin Localization & Semantic Mapping Schemas
+// Fitcycle Skin Localization & Semantic Mapping Schemas
 // Strictly compliant with Chapter 1 of docs/FITCYCLE_CORE_CONSTITUTION.md
 
 export const SKIN_HONOR_SCHEMAS = {
@@ -99,6 +99,41 @@ export const SKIN_HONOR_SCHEMAS = {
   }
 };
 
+export const TIER_MEDAL_SVGS = {
+  tier_1: "./themes/medals/rank-tier-1.svg",
+  tier_2: "./themes/medals/rank-tier-2.svg",
+  tier_3: "./themes/medals/rank-tier-3.svg",
+  tier_4: "./themes/medals/rank-tier-4.svg",
+  tier_5: "./themes/medals/rank-tier-5.svg",
+  tier_6: "./themes/medals/rank-tier-6.svg",
+  tier_7: "./themes/medals/rank-tier-7.svg"
+};
+
+export const BADGE_MEDAL_SVGS = {
+  badge_tonnage_10t: "./themes/medals/badge-tonnage-10t.svg",
+  badge_tonnage_50t: "./themes/medals/badge-tonnage-50t.svg",
+  badge_tonnage_100t: "./themes/medals/badge-tonnage-100t.svg",
+  badge_tonnage_1000t: "./themes/medals/badge-tonnage-1000t.svg",
+  badge_body_init: "./themes/medals/badge-body-init.svg",
+  badge_arm_titan: "./themes/medals/badge-arm-titan.svg",
+  badge_chest_armor: "./themes/medals/badge-chest-armor.svg",
+  badge_v_taper: "./themes/medals/badge-v-taper.svg",
+  badge_bench_bw: "./themes/medals/badge-bench-bw.svg",
+  badge_squat_1_5bw: "./themes/medals/badge-squat-1-5bw.svg",
+  badge_headshot_ace: "./themes/medals/badge-headshot-ace.svg",
+  badge_awp_pr: "./themes/medals/badge-awp-pr.svg",
+  badge_veteran_100: "./themes/medals/badge-veteran-100d.svg"
+};
+
+export const PRESTIGE_MEDAL_SVGS = {
+  1: "./themes/medals/prestige-1.svg",
+  2: "./themes/medals/prestige-2.svg",
+  3: "./themes/medals/prestige-3.svg",
+  4: "./themes/medals/prestige-4.svg",
+  5: "./themes/medals/prestige-5.svg",
+  6: "./themes/medals/prestige-6.svg"
+};
+
 /**
  * Gets localized tier and badge presentation for the current skin
  * @param {string} skin - 'default' | 'cs' | 'chamber'
@@ -117,7 +152,8 @@ export function getSkinHonorPresentation(skin = "default", tierConfig = {}, unlo
       ...badge,
       name: badgeInfo.name,
       desc: badgeInfo.desc,
-      icon: badgeInfo.icon
+      icon: badgeInfo.icon,
+      svg: BADGE_MEDAL_SVGS[badge.id] || null
     };
   });
 
@@ -126,6 +162,7 @@ export function getSkinHonorPresentation(skin = "default", tierConfig = {}, unlo
     tierName: localizedTier.name,
     tierSub: localizedTier.sub,
     tierIcon: localizedTier.icon || tierConfig.badgeIcon || "🔰",
+    tierSvg: TIER_MEDAL_SVGS[tierKey] || TIER_MEDAL_SVGS.tier_1,
     tierColor: localizedTier.color || "amber",
     badges: localizedBadges
   };

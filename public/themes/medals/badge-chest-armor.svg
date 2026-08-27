@@ -1,0 +1,5 @@
+<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="60,18 96,30 86,85 60,105 34,85 24,30" fill="#18181B" stroke="#EAB308" stroke-width="3"/>
+  <path d="M 36,40 C 48,45 60,40 60,65 C 60,40 72,45 84,40 C 80,75 60,90 60,90 C 60,90 40,75 36,40 Z" fill="#CA8A04" stroke="#FEF08A" stroke-width="1.5"/>
+  <text x="60" y="66" font-family="'Impact', sans-serif" font-size="11" font-weight="black" fill="#FFF" text-anchor="middle">CHEST</text>
+</svg>

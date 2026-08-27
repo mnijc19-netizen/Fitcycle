@@ -1,0 +1,10 @@
+<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="rg6" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#F97316" stop-opacity="0.9"/><stop offset="50%" stop-color="#DC2626" stop-opacity="0.5"/><stop offset="100%" stop-color="#000" stop-opacity="0"/></radialGradient>
+    <linearGradient id="mf6" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FEF08A"/><stop offset="30%" stop-color="#F97316"/><stop offset="70%" stop-color="#DC2626"/><stop offset="100%" stop-color="#7F1D1D"/></linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="54" fill="url(#rg6)"/>
+  <path d="M 60,12 C 80,30 106,36 106,64 C 106,94 85,110 60,110 C 35,110 14,94 14,64 C 14,36 40,30 60,12 Z" fill="#090D16" stroke="url(#mf6)" stroke-width="3" filter="drop-shadow(0 4px 14px rgba(249,115,22,0.7))"/>
+  <path d="M 60,22 C 74,38 94,44 94,66 C 94,88 78,98 60,98 C 42,98 26,88 26,66 C 26,44 46,38 60,22 Z" fill="url(#mf6)"/>
+  <path d="M 60,40 C 68,52 78,58 78,72 C 78,84 70,90 60,90 C 50,90 42,84 42,72 C 42,58 52,52 60,40 Z" fill="#FEF08A" filter="drop-shadow(0 0 6px #FFF)"/>
+</svg>

@@ -1,0 +1,11 @@
+<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="60" cy="60" r="46" fill="#080C14" stroke="#F97316" stroke-width="3.5"/>
+  <line x1="18" y1="60" x2="44" y2="60" stroke="#F97316" stroke-width="2"/>
+  <line x1="76" y1="60" x2="102" y2="60" stroke="#F97316" stroke-width="2"/>
+  <line x1="60" y1="18" x2="60" y2="44" stroke="#F97316" stroke-width="2"/>
+  <line x1="60" y1="76" x2="60" y2="102" stroke="#F97316" stroke-width="2"/>
+  <circle cx="60" cy="60" r="14" fill="none" stroke="#F97316" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <polygon points="60,38 68,60 52,60" fill="#FEF08A" stroke="#EA580C" stroke-width="1.5"/>
+  <rect x="36" y="80" width="48" height="18" rx="4" fill="#18181B" stroke="#F97316" stroke-width="1.5"/>
+  <text x="60" y="93" font-family="'Impact', sans-serif" font-size="12" font-weight="black" fill="#FED7AA" text-anchor="middle">PR</text>
+</svg>

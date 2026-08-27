@@ -1,0 +1,14 @@
+<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="rg2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#94A3B8" stop-opacity="0.6"/><stop offset="100%" stop-color="#000" stop-opacity="0"/></radialGradient>
+    <linearGradient id="sp2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#CBD5E1"/><stop offset="50%" stop-color="#64748B"/><stop offset="100%" stop-color="#1E293B"/></linearGradient>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FDE047"/><stop offset="50%" stop-color="#D97706"/><stop offset="100%" stop-color="#78350F"/></linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="54" fill="url(#rg2)"/>
+  <line x1="28" y1="28" x2="92" y2="92" stroke="url(#sp2)" stroke-width="5" stroke-linecap="round"/>
+  <line x1="28" y1="92" x2="92" y2="28" stroke="url(#sp2)" stroke-width="5" stroke-linecap="round"/>
+  <polygon points="60,16 94,34 94,80 60,104 26,80 26,34" fill="#0F172A" stroke="url(#bg2)" stroke-width="3" filter="drop-shadow(0 4px 10px rgba(0,0,0,0.8))"/>
+  <polygon points="60,24 86,38 86,74 60,94 34,74 34,38" fill="url(#sp2)" stroke="#E2E8F0" stroke-width="1.5"/>
+  <path d="M 60,34 L 72,50 L 60,78 L 48,50 Z" fill="#090D16" stroke="url(#bg2)" stroke-width="2"/>
+  <circle cx="60" cy="56" r="6" fill="url(#bg2)"/>
+</svg>

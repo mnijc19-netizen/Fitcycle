@@ -16,9 +16,12 @@
     <div class="grid grid-cols-2 gap-2.5">
       <!-- 1. Honor & Rank Card -->
       <div @click="showHonorModal = true" 
-           class="p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/15 via-zinc-950 to-zinc-900 border border-amber-500/50 hover:border-amber-400 cursor-pointer shadow-lg shadow-black/40 space-y-1.5 transition-all active:scale-95 group">
+           class="p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/15 via-zinc-950 to-zinc-900 border border-amber-500/40 hover:border-amber-400 cursor-pointer shadow-lg shadow-black/40 space-y-1.5 transition-all active:scale-95 group">
         <div class="flex items-center justify-between">
-          <span class="text-2xl group-hover:scale-110 transition-transform">{{ honorData.presentation.tierIcon }}</span>
+          <div class="w-8 h-8 flex items-center justify-center">
+            <img v-if="honorData.presentation.tierSvg" :src="honorData.presentation.tierSvg" alt="Rank Medal" class="w-full h-full object-contain group-hover:scale-110 transition-transform filter drop-shadow-[0_0_6px_rgba(245,158,11,0.5)]" />
+            <span v-else class="text-2xl group-hover:scale-110 transition-transform">{{ honorData.presentation.tierIcon }}</span>
+          </div>
           <span class="text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-500 text-zinc-950">天梯排位</span>
         </div>
         <div>

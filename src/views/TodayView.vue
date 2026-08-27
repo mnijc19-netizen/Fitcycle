@@ -431,7 +431,8 @@
           <div class="mt-2.5 pt-2.5 border-t border-zinc-800/80 flex items-center justify-between gap-2">
             <button @click="showHonorModal = true" 
                     class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-zinc-950/80 hover:bg-zinc-800 border border-amber-500/40 text-xs font-mono text-amber-300 transition-all active:scale-95">
-              <span>{{ honorData.presentation.tierIcon }}</span>
+              <img v-if="honorData.presentation.tierSvg" :src="honorData.presentation.tierSvg" alt="Tier Medal" class="w-4 h-4 object-contain inline-block filter drop-shadow-[0_0_4px_rgba(245,158,11,0.6)]" />
+              <span v-else>{{ honorData.presentation.tierIcon }}</span>
               <span class="font-black">{{ honorData.presentation.tierName.split('·')[0] }}</span>
               <span class="text-[10px] text-zinc-400">({{ honorData.score }} PTS)</span>
               <span class="text-[9px] text-amber-500">❯</span>

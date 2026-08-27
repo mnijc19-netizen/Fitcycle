@@ -28,13 +28,15 @@
 
           <!-- Medal Badge Icon -->
           <div class="relative inline-flex items-center justify-center">
-            <div class="w-20 h-20 rounded-2xl bg-zinc-900 border-2 border-amber-500/80 shadow-lg shadow-amber-500/20 flex items-center justify-center text-4xl transform hover:scale-105 transition-transform">
-              {{ honorData.presentation.tierIcon }}
+            <div class="w-24 h-24 rounded-3xl bg-zinc-950/90 border-2 border-amber-500/80 shadow-[0_0_25px_rgba(245,158,11,0.35)] flex items-center justify-center p-2 transform hover:scale-105 transition-transform">
+              <img v-if="honorData.presentation.tierSvg" :src="honorData.presentation.tierSvg" alt="Rank Medal" class="w-full h-full object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]" />
+              <span v-else class="text-4xl">{{ honorData.presentation.tierIcon }}</span>
             </div>
             <!-- Annual Prestige Badge Tag -->
-            <div class="absolute -bottom-2 px-2.5 py-0.5 rounded-full text-[9px] font-black border tracking-wider"
+            <div class="absolute -bottom-2 px-2.5 py-0.5 rounded-full text-[9px] font-black border tracking-wider flex items-center gap-1 shadow-md"
                  :style="{ backgroundColor: prestigeInfo.glow, borderColor: prestigeInfo.border, color: prestigeInfo.color }">
-              {{ prestigeInfo.name }}
+              <img v-if="prestigeSvg" :src="prestigeSvg" alt="Prestige Star" class="w-3 h-3 object-contain inline-block" />
+              <span>{{ prestigeInfo.name }}</span>
             </div>
           </div>
 
@@ -171,8 +173,12 @@
                    ? 'bg-zinc-950/90 border-amber-500/60 shadow-sm shadow-amber-500/10' 
                    : 'bg-zinc-950/40 border-zinc-800/80 opacity-60'">
               
-              <div class="text-2xl flex-shrink-0 pt-0.5">
-                {{ badge.icon || '🎖️' }}
+              <!-- Vector Medal SVG or Fallback Icon -->
+              <div class="w-10 h-10 rounded-xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-center flex-shrink-0 p-1 shadow-sm"
+                   :class="badge.unlocked ? 'border-amber-500/40' : 'border-zinc-800'">
+                <img v-if="badge.svg" :src="badge.svg" :alt="badge.name" class="w-full h-full object-contain" 
+                     :class="badge.unlocked ? 'filter drop-shadow-[0_0_6px_rgba(245,158,11,0.5)]' : 'grayscale opacity-40'" />
+                <span v-else class="text-xl">{{ badge.icon || '🎖️' }}</span>
               </div>
 
               <div class="min-w-0 flex-1">
@@ -208,6 +214,7 @@
 import { ref, computed } from "vue";
 import { getFullHonorProfile, performPrestigeReset, toggleDeloadShield } from "../store/fitnessStore.js";
 import { PRESTIGE_MEDAL_COLORS } from "../engine/honorEngine.js";
+import { PRESTIGE_MEDAL_SVGS } from "../engine/skinHonorSchemas.js";
 
 defineProps({
   visible: Boolean
@@ -222,6 +229,11 @@ const honorData = computed(() => getFullHonorProfile());
 const prestigeInfo = computed(() => {
   const level = honorData.value.prestigeLevel || 1;
   return PRESTIGE_MEDAL_COLORS[level - 1] || PRESTIGE_MEDAL_COLORS[0];
+});
+
+const prestigeSvg = computed(() => {
+  const level = honorData.value.prestigeLevel || 1;
+  return PRESTIGE_MEDAL_SVGS[level] || PRESTIGE_MEDAL_SVGS[1];
 });
 
 const filterTabs = [

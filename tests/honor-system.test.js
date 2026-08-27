@@ -223,4 +223,24 @@ describe("Fitcycle Core Constitution & Honor Rating Engine", () => {
       expect(getFullHonorProfile().isDeloadActive).toBe(false);
     });
   });
+
+  describe("7. Vector Medals & Visual SVGs Mappings", () => {
+    it("maps 7 tier ranks to high-definition SVG medals", () => {
+      const tier1 = getTierForScore(100);
+      const pres1 = getSkinHonorPresentation("default", tier1, []);
+      expect(pres1.tierSvg).toBe("./themes/medals/rank-tier-1.svg");
+
+      const tier7 = getTierForScore(2950);
+      const pres7 = getSkinHonorPresentation("cs", tier7, []);
+      expect(pres7.tierSvg).toBe("./themes/medals/rank-tier-7.svg");
+    });
+
+    it("attaches vector medal SVGs to unlocked achievement badges", () => {
+      const badges = evaluateUnlockedBadges({ totalTonnageKg: 120000 });
+      const pres = getSkinHonorPresentation("default", getTierForScore(1500), badges);
+      const badge100t = pres.badges.find(b => b.id === "badge_tonnage_100t");
+      expect(badge100t).toBeDefined();
+      expect(badge100t.svg).toBe("./themes/medals/badge-tonnage-100t.svg");
+    });
+  });
 });

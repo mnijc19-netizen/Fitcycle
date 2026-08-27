@@ -1,0 +1,7 @@
+<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="60" cy="60" r="46" fill="#090D16" stroke="#EF4444" stroke-width="3"/>
+  <line x1="20" y1="60" x2="100" y2="60" stroke="#EF4444" stroke-width="2"/>
+  <line x1="60" y1="20" x2="60" y2="100" stroke="#EF4444" stroke-width="2"/>
+  <circle cx="60" cy="60" r="18" fill="none" stroke="#EF4444" stroke-width="2"/>
+  <text x="60" y="66" font-family="'Impact', sans-serif" font-size="14" font-weight="black" fill="#FEF08A" text-anchor="middle">ACE</text>
+</svg>
