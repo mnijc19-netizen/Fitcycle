@@ -65,22 +65,22 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- 2. CHAMBER (尚博勒) OFFICIAL MANIFEST ELEGANCE WATCH THEME -->
+    <!-- 2. CHAMBER (尚博勒) HAUTE-HORLOGERIE LUXURY GOLD WATCH THEME -->
     <!-- ============================================== -->
     
     <!-- Chamber Compact State -->
     <div v-else-if="!isExpanded && store.settings.uiSkin === 'chamber'" 
          @click="toggleExpand"
-         class="bg-[#070B14]/98 border border-[#E5C378]/70 backdrop-blur-xl rounded-2xl pl-2 pr-3 py-1.5 shadow-2xl shadow-black flex items-center gap-2 text-white animate-in slide-in-from-right-4 duration-200 cursor-grab active:cursor-grabbing active:scale-95 group transition-transform">
-      <!-- Official Riot Games Chamber Gold Wristwatch Icon -->
-      <div class="relative w-6 h-6 rounded-lg bg-[#0D1627] border border-[#E5C378]/60 flex items-center justify-center flex-shrink-0 overflow-hidden">
-        <div class="absolute -inset-1 rounded-xl bg-[#E5C378]/25 blur-[2px] animate-pulse pointer-events-none"></div>
-        <img :src="chamberWatchImg" alt="Chamber Official Gold Watch" class="w-full h-full object-cover relative z-10 drop-shadow-[0_0_6px_rgba(229,195,120,0.9)]" />
+         class="bg-gradient-to-r from-[#070B14]/98 to-[#0D1627]/98 border border-[#E5C378]/70 backdrop-blur-2xl rounded-2xl pl-2 pr-3 py-1.5 shadow-[0_0_15px_rgba(229,195,120,0.25)] flex items-center gap-2 text-white animate-in slide-in-from-right-4 duration-200 cursor-grab active:cursor-grabbing active:scale-95 group transition-all">
+      <!-- Bespoke Gold Wristwatch Icon -->
+      <div class="relative w-7 h-7 rounded-xl bg-gradient-to-b from-[#0D1627] to-[#070B14] border border-[#E5C378]/60 flex items-center justify-center flex-shrink-0 shadow-md shadow-black/70">
+        <div class="absolute -inset-1 rounded-xl bg-[#E5C378]/25 blur-[3px] animate-pulse pointer-events-none"></div>
+        <img :src="chamberWatchImg" alt="Chamber Luxury Gold Watch" class="w-full h-full object-contain p-0.5 relative z-10 drop-shadow-[0_0_6px_rgba(246,224,158,0.8)]" />
       </div>
 
       <!-- Digital French Gold Countdown Display -->
       <div class="flex flex-col">
-        <span class="font-mono font-black text-xs text-[#F6E09E] tracking-tight leading-none drop-shadow-[0_0_8px_rgba(246,224,158,0.9)]">
+        <span class="font-mono font-black text-xs text-[#F6E09E] tracking-tight leading-none drop-shadow-[0_0_10px_rgba(246,224,158,0.85)]">
           {{ formatTime(store.restTimer.remaining) }}
         </span>
       </div>
@@ -88,7 +88,7 @@
 
     <!-- Chamber Expanded Action Bar (Directional zero-jump expansion) -->
     <div v-else-if="isExpanded && store.settings.uiSkin === 'chamber'" 
-         class="bg-[#070B14]/98 border border-[#E5C378]/70 backdrop-blur-2xl rounded-2xl px-2.5 py-1.5 shadow-2xl shadow-black flex items-center gap-2 text-white animate-in zoom-in-95 duration-200">
+         class="bg-gradient-to-r from-[#070B14]/98 to-[#0D1627]/98 border border-[#E5C378]/70 backdrop-blur-2xl rounded-2xl px-2.5 py-1.5 shadow-[0_0_20px_rgba(229,195,120,0.3)] flex items-center gap-2 text-white animate-in zoom-in-95 duration-200">
       
       <!-- Action Buttons (Ordered dynamically: left when on right side, right when on left side) -->
       <div class="flex items-center gap-1 flex-shrink-0" :class="{ 'order-1': isRightHalf, 'order-2': !isRightHalf }">
@@ -109,11 +109,11 @@
 
       <!-- Mini Chamber Watch & Time (Statically aligned to edge) -->
       <div class="flex items-center gap-1.5 cursor-pointer" :class="{ 'order-2': isRightHalf, 'order-1': !isRightHalf }" @click="toggleExpand">
-        <div class="relative w-6 h-6 rounded-lg bg-[#0D1627] border border-[#E5C378]/60 flex items-center justify-center flex-shrink-0 overflow-hidden">
-          <div class="absolute -inset-1 rounded-xl bg-[#E5C378]/25 blur-[2px] animate-pulse pointer-events-none"></div>
-          <img :src="chamberWatchImg" alt="Chamber Official Gold Watch" class="w-full h-full object-cover relative z-10 drop-shadow-[0_0_6px_rgba(229,195,120,0.9)]" />
+        <div class="relative w-7 h-7 rounded-xl bg-gradient-to-b from-[#0D1627] to-[#070B14] border border-[#E5C378]/60 flex items-center justify-center flex-shrink-0 shadow-md shadow-black/70">
+          <div class="absolute -inset-1 rounded-xl bg-[#E5C378]/25 blur-[3px] animate-pulse pointer-events-none"></div>
+          <img :src="chamberWatchImg" alt="Chamber Luxury Gold Watch" class="w-full h-full object-contain p-0.5 relative z-10 drop-shadow-[0_0_6px_rgba(246,224,158,0.8)]" />
         </div>
-        <span class="font-mono font-black text-xs text-[#F6E09E] tracking-tight drop-shadow-[0_0_8px_rgba(246,224,158,0.9)]">
+        <span class="font-mono font-black text-xs text-[#F6E09E] tracking-tight drop-shadow-[0_0_10px_rgba(246,224,158,0.85)] pr-0.5">
           {{ formatTime(store.restTimer.remaining) }}
         </span>
       </div>
@@ -193,7 +193,7 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
 import { store, startRestTimer, stopRestTimer, adjustRestTimer } from "../store/fitnessStore.js";
 
 const csC4TimerImg = "./themes/cs/hud/bomb_planted.svg";
-const chamberWatchImg = "./themes/chamber/icons/chamber-watch.png";
+const chamberWatchImg = "./themes/chamber/icons/chamber-luxury-watch.svg";
 const timerWidgetRef = ref(null);
 
 const isExpanded = ref(false);
