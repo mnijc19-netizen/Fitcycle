@@ -377,6 +377,40 @@
       </section>
     </div>
 
+    <!-- 📜 Rules Codex & Onboarding Guide Hub -->
+    <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-2.5">
+      <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center justify-between">
+        <span>📖 规则法典与功能指南</span>
+        <span class="text-[10px] text-amber-400 font-mono">GUIDE & CODEX</span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 pt-1">
+        <!-- Button 1: Open Rules Codex Modal -->
+        <button @click="showRulesModal = true"
+                class="p-3 bg-zinc-950 hover:bg-zinc-850 active:scale-98 border border-zinc-800 hover:border-amber-500/40 rounded-2xl text-left transition-all space-y-1 group">
+          <div class="text-amber-400 font-bold text-xs flex items-center gap-1.5 group-hover:text-amber-300">
+            <span>📜</span>
+            <span>排位与衰减规则</span>
+          </div>
+          <p class="text-[10px] text-zinc-400 leading-tight">
+            查阅天梯段位、做工积分、4阶衰减与减载盾牌说明
+          </p>
+        </button>
+
+        <!-- Button 2: Open Onboarding Tour Modal -->
+        <button @click="showOnboardingModal = true"
+                class="p-3 bg-zinc-950 hover:bg-zinc-850 active:scale-98 border border-zinc-800 hover:border-sky-500/40 rounded-2xl text-left transition-all space-y-1 group">
+          <div class="text-sky-400 font-bold text-xs flex items-center gap-1.5 group-hover:text-sky-300">
+            <span>💡</span>
+            <span>网站功能向导</span>
+          </div>
+          <p class="text-[10px] text-zinc-400 leading-tight">
+            重新浏览 5 步全功能新手领航指南与特色功能
+          </p>
+        </button>
+      </div>
+    </div>
+
     <!-- Data Backup & Reset -->
     <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3">
       <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">
@@ -426,6 +460,18 @@
       @close="showBodyModal = false" 
     />
 
+    <!-- Rules Codex Modal -->
+    <RulesCodexModal
+      :visible="showRulesModal"
+      @close="showRulesModal = false"
+    />
+
+    <!-- User Onboarding Guided Tour Modal -->
+    <UserOnboardingModal
+      :visible="showOnboardingModal"
+      @close="showOnboardingModal = false"
+    />
+
   </div>
 </template>
 
@@ -434,6 +480,8 @@ import { ref, computed } from "vue";
 import AISettingsPanel from "../components/AISettingsPanel.vue";
 import HonorShowcaseModal from "../components/HonorShowcaseModal.vue";
 import BodyMetricsModal from "../components/BodyMetricsModal.vue";
+import RulesCodexModal from "../components/RulesCodexModal.vue";
+import UserOnboardingModal from "../components/UserOnboardingModal.vue";
 import {
   aiSession,
   getActiveApiKey,
@@ -455,6 +503,8 @@ import {
 
 const showHonorModal = ref(false);
 const showBodyModal = ref(false);
+const showRulesModal = ref(false);
+const showOnboardingModal = ref(false);
 const honorData = computed(() => getFullHonorProfile());
 const isDeloadActive = computed(() => honorData.value.isDeloadActive);
 

@@ -32,7 +32,8 @@ export const DEFAULT_SETTINGS = {
   weightUnit: "kg",
   theme: "dark",
   uiSkin: "default", // 'default' | 'chamber' | 'cs'
-  unlockedSkins: ["default"] // string[]
+  unlockedSkins: ["default"], // string[]
+  hasSeenOnboarding: false
 };
 
 /**

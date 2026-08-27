@@ -21,6 +21,12 @@
     <!-- Session-only mobile AI assistant; existing views stay mounted behind it. -->
     <AIAssistantDrawer />
 
+    <!-- First-Time User Guided Onboarding Tour Modal -->
+    <UserOnboardingModal
+      :visible="!store.settings.hasSeenOnboarding"
+      @close="store.settings.hasSeenOnboarding = true"
+    />
+
     <!-- Fixed Bottom Mobile Navigation Bar -->
     <TabBar />
   </div>
@@ -32,6 +38,7 @@ import Navbar from "./components/Navbar.vue";
 import TabBar from "./components/TabBar.vue";
 import RestTimerFloat from "./components/RestTimerFloat.vue";
 import AIAssistantDrawer from "./components/AIAssistantDrawer.vue";
+import UserOnboardingModal from "./components/UserOnboardingModal.vue";
 
 import TodayView from "./views/TodayView.vue";
 import CycleView from "./views/CycleView.vue";
