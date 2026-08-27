@@ -179,7 +179,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, nextTick, reactive, ref, watch } from "vue";
 import { aiSession, clearConversation, getActiveApiKey, getActiveModelId, getActiveModels, getActiveProvider } from "../ai/aiSession.js";
 import { buildUserMessage, resumeAssistantAfterDecision, runAssistantLoop } from "../ai/assistantRuntime.js";
 import { createFitcycleToolRuntime } from "../ai/fitcycleTools.js";
@@ -266,7 +266,7 @@ function scrollToBottom() {
 }
 
 function makeMessage(role, text, extra = {}) {
-  return { id: `${role}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, role, text, ...extra };
+  return reactive({ id: `${role}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, role, text, ...extra });
 }
 
 function copyText(text) {
