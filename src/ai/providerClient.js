@@ -152,4 +152,3 @@ export async function streamProviderChatCompletion(request, options = {}) {
 
   return { content, toolCalls: toolCalls.filter(Boolean), finishReason };
 }
-
