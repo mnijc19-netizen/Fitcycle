@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <path d="M80 120 C80 106.745 90.745 96 104 96 H360 L432 168 V392 C432 405.255 421.255 416 408 416 H104 C90.745 416 80 405.255 80 392 V120 Z" stroke="currentColor" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <path d="M360 96 V168 H432" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M256 180 L320 256 L256 332 L192 256 Z" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.25" />
+  <circle cx="256" cy="256" r="14" fill="currentColor" />
+  <line x1="256" y1="140" x2="256" y2="166" stroke="currentColor" stroke-width="20" stroke-linecap="round" />
+  <line x1="256" y1="346" x2="256" y2="372" stroke="currentColor" stroke-width="20" stroke-linecap="round" />
+  <line x1="148" y1="256" x2="174" y2="256" stroke="currentColor" stroke-width="20" stroke-linecap="round" />
+  <line x1="338" y1="256" x2="364" y2="256" stroke="currentColor" stroke-width="20" stroke-linecap="round" />
+  <line x1="120" y1="368" x2="200" y2="368" stroke="currentColor" stroke-width="18" stroke-linecap="round" opacity="0.6" />
+  <line x1="120" y1="148" x2="180" y2="148" stroke="currentColor" stroke-width="18" stroke-linecap="round" opacity="0.6" />
+</svg>

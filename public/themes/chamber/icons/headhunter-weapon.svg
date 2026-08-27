@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <path d="M64 210 L300 210 L320 230 L380 230 L430 250 L448 270 L448 310 L410 320 L350 310 L330 350 L270 430 L220 430 L250 340 L160 340 L130 300 L64 300 Z" stroke="currentColor" stroke-width="20" stroke-linejoin="round" fill="currentColor" fill-opacity="0.15" />
+  <line x1="64" y1="250" x2="300" y2="250" stroke="currentColor" stroke-width="16" stroke-linecap="round" />
+  <circle cx="350" cy="270" r="12" fill="currentColor" />
+  <path d="M280 210 L300 170 L340 170 L340 210" stroke="currentColor" stroke-width="18" stroke-linejoin="round" />
+</svg>
