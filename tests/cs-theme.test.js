@@ -34,16 +34,17 @@ describe("CS2 Official Theme Integration & UI Tests", () => {
     expect(document.documentElement.dataset.skin).toBe("cs");
   });
 
-  it("renders authentic CS2 agents and official HUD in Navbar when skin is cs", () => {
+  it("renders authentic CS2 Dust2 hero and official HUD in Navbar when skin is cs", () => {
     unlockSkin("7355806");
     const wrapper = mount(Navbar);
     
     const html = wrapper.html();
-    expect(html).toContain("t_solman.png");
+    expect(html).toContain("cs-hero.jpg");
     expect(html).toContain("health_cross.svg");
     expect(html).toContain("armor_helmet.svg");
     expect(html).toContain("chevron_money.svg");
     expect(html).toContain("$16,000");
+    expect(html).toContain("AI 教练");
   });
 
   it("renders official CS2 weapon and rank SVGs in TabBar when skin is cs", () => {

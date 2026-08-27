@@ -1,12 +1,16 @@
 <template>
   <div v-if="store.restTimer.running && store.restTimer.remaining > 0" 
-       class="fixed z-40 transition-all duration-300 pointer-events-auto select-none"
+       class="fixed z-40 pointer-events-auto select-none"
        :class="[
          isExpanded 
            ? 'left-4 right-4 max-w-md mx-auto' 
            : 'right-3'
        ]"
-       :style="{ bottom: 'max(calc(env(safe-area-inset-bottom, 0px) + 64px), 74px)' }">
+       :style="{ 
+         bottom: 'max(calc(env(safe-area-inset-bottom, 0px) + 64px), 74px)',
+         transform: 'translateZ(0)',
+         webkitTransform: 'translateZ(0)'
+       }">
 
     <!-- 1. COMPACT SIDE-DOCKED FLOATING CAPSULE (Default: 缩在右侧，不占底部整行) -->
     <!-- CS2 C4 Variant -->

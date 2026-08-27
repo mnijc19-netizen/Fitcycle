@@ -140,30 +140,27 @@
             </div>
           </div>
 
-          <!-- Quick Action Buttons & Interactive Operator Switcher Badge -->
-          <div class="flex items-center gap-1.5">
-            <!-- Compact Operator Switcher Badge -->
-            <button @click="nextCsAgent" 
-                    title="点击轮换出战探员"
-                    class="h-8 pl-1.5 pr-2 rounded-xl bg-[#080C14]/90 hover:bg-[#0F172A] border border-[#F97316]/50 text-[#F97316] flex items-center gap-1.5 shadow-lg active:scale-95 transition-all group backdrop-blur-md">
-              <div class="w-5 h-5 rounded-lg overflow-hidden bg-black/60 border border-[#F97316]/40 flex items-center justify-center flex-shrink-0">
-                <img :src="currentCsAgent.url" :alt="currentCsAgent.name" class="w-full h-full object-cover object-top" />
-              </div>
-              <span class="text-[10px] font-mono font-bold tracking-tight text-[#F8FAFC] group-hover:text-[#F97316]">{{ currentCsAgent.role }}</span>
-              <span class="text-[8px] text-[#F97316] opacity-75">↺</span>
+          <!-- Quick Action Buttons: AI Coach & Workout/Cycle -->
+          <div class="flex items-center gap-2">
+            <!-- AI Coach Trigger Button -->
+            <button @click="aiSession.drawerOpen = true"
+                    title="打开 Fitcycle AI 智能教练"
+                    class="h-8 px-3 rounded-xl bg-[#F97316]/20 hover:bg-[#F97316]/30 border border-[#F97316]/50 text-[#F97316] flex items-center gap-1.5 text-xs font-bold shadow-md active:scale-95 transition-all backdrop-blur-md">
+              <span class="animate-pulse">✦</span>
+              <span>AI 教练</span>
             </button>
 
             <!-- Workout / Cycle Button -->
             <button v-if="store.activeWorkout" 
                     @click="store.activeTab = 'today'"
-                    class="px-2.5 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 rounded-full text-xs font-bold flex items-center gap-1.5 backdrop-blur-md animate-pulse">
+                    class="h-8 px-2.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 rounded-xl text-xs font-bold flex items-center gap-1.5 backdrop-blur-md animate-pulse">
               <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
               进行中
             </button>
 
             <button v-else 
                     @click="showCycleModal = true"
-                    class="px-2.5 py-1 bg-[#0F172A]/90 hover:bg-[#1E293B] text-[#F97316] border border-[#F97316]/40 rounded-xl text-xs font-bold flex items-center gap-1 backdrop-blur-md shadow-md transition-all">
+                    class="h-8 px-2.5 bg-[#0F172A]/90 hover:bg-[#1E293B] text-zinc-300 border border-zinc-700/80 rounded-xl text-xs font-bold flex items-center gap-1 backdrop-blur-md shadow-md transition-all">
               <span>🔄 分化</span>
             </button>
           </div>
@@ -266,6 +263,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { store, getCycleDayForDate } from "../store/fitnessStore.js";
+import { aiSession } from "../ai/aiSession.js";
 import CycleEditorModal from "./CycleEditorModal.vue";
 import logoUrl from "../assets/logo.png";
 import { triggerHaptic } from "../utils/vibrate.js";

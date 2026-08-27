@@ -1,13 +1,13 @@
 <template>
-  <nav class="fixed bottom-0 left-0 right-0 z-30 transition-all duration-300 px-2 pt-1.5"
+  <nav class="fixed bottom-0 left-0 right-0 z-30 px-2 pt-1.5 transition-colors duration-200"
        :class="[
          store.settings.uiSkin === 'chamber' 
-           ? 'bg-[#070B14]/95 backdrop-blur-2xl border-t border-[#E5C378]/30 shadow-2xl shadow-black' 
+           ? 'bg-[#070B14]/98 backdrop-blur-2xl border-t border-[#E5C378]/30 shadow-2xl shadow-black' 
            : store.settings.uiSkin === 'cs'
-           ? 'bg-[#080C14]/95 backdrop-blur-2xl border-t border-[#F97316]/40 shadow-2xl shadow-black'
-           : 'bg-zinc-950/90 backdrop-blur-xl border-t border-zinc-800/80'
+           ? 'bg-[#080C14]/98 backdrop-blur-2xl border-t border-[#F97316]/40 shadow-2xl shadow-black'
+           : 'bg-zinc-950/95 backdrop-blur-xl border-t border-zinc-800/80'
        ]"
-       style="padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);">
+       style="padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px); transform: translateZ(0); -webkit-transform: translateZ(0);">
     
     <!-- Top fine hairline shimmer for Chamber & CS2 -->
     <div v-if="store.settings.uiSkin === 'chamber'" 

@@ -1,15 +1,10 @@
 <template>
+  <!-- Non-intrusive side-docked AI Coach Tab (Never blocks bottom buttons or workout actions) -->
   <button v-if="!aiSession.drawerOpen" type="button" aria-label="打开 AI 助手" data-testid="ai-fab"
-          class="!fixed right-4 z-40 w-12 h-12 rounded-full bg-amber-500 text-zinc-950 shadow-2xl shadow-black/80 border border-amber-300 font-black text-lg active:scale-95 transition-all flex items-center justify-center pointer-events-auto"
-          :style="{
-            position: 'fixed',
-            right: '16px',
-            bottom: store.restTimer.running ? '132px' : '76px',
-            clipPath: 'none',
-            borderRadius: '9999px'
-          }"
+          class="!fixed right-0 top-36 z-40 pl-2.5 pr-1.5 py-2 rounded-l-2xl bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-xl shadow-black/80 border-t border-b border-l border-amber-300/80 font-black text-xs active:scale-95 transition-all flex items-center gap-1 pointer-events-auto backdrop-blur-md"
           @click="aiSession.drawerOpen = true">
-    <span class="animate-pulse text-base leading-none">✦</span>
+    <span class="animate-pulse text-sm leading-none">✦</span>
+    <span class="text-[10px] font-bold pr-0.5">AI</span>
   </button>
 
   <div v-if="aiSession.drawerOpen" class="fixed inset-0 z-50 flex items-end justify-center" data-testid="ai-drawer">
