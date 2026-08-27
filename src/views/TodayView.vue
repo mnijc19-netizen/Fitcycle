@@ -251,6 +251,70 @@
         </div>
       </div>
 
+      <!-- 战备催练与肌群恢复看板 (Tactical Readiness & Urgency Card) -->
+      <div class="rounded-3xl border p-4 shadow-xl relative overflow-hidden transition-all"
+           :class="[
+             store.settings.uiSkin === 'cs' ? 'bg-[#080C14]/95 border-[#F97316]/50 shadow-black' :
+             store.settings.uiSkin === 'chamber' ? 'bg-[#0B101B]/95 border-amber-500/40' :
+             'bg-zinc-900/90 border-zinc-800'
+           ]">
+        
+        <!-- Ambient Background Pulse -->
+        <div class="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-20 pointer-events-none"
+             :class="[
+               timeSinceLastWorkout.urgencyLevel === 'danger' ? 'bg-red-500 animate-pulse' :
+               timeSinceLastWorkout.urgencyLevel === 'warn' ? 'bg-amber-500' : 'bg-emerald-500'
+             ]"></div>
+
+        <!-- Top Header: Urgency Level & 1-Tap Fast Start Button (无需往下滑即可秒开练！) -->
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-black border flex items-center gap-1.5 flex-shrink-0"
+                  :class="[
+                    timeSinceLastWorkout.urgencyLevel === 'danger' ? 'bg-red-500/20 text-red-400 border-red-500/50 animate-pulse' :
+                    timeSinceLastWorkout.urgencyLevel === 'warn' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' :
+                    'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
+                  ]">
+              <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+              {{ timeSinceLastWorkout.badge }}
+            </span>
+            
+            <div class="truncate">
+              <div class="text-xs font-black text-white truncate">
+                {{ timeSinceLastWorkout.title }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Fast Start Button (解决往下滑痛点) -->
+          <button v-if="!todayCycle.isRest" 
+                  @click="handleStartTodayWorkout"
+                  class="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 active:scale-95 text-zinc-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 flex items-center gap-1 flex-shrink-0 transition-all">
+            <span>🚀 立即开练</span>
+          </button>
+        </div>
+
+        <!-- Urgency & Muscle Status Detail Rows -->
+        <div class="mt-2.5 pt-2.5 border-t border-zinc-800/80 space-y-1.5 text-xs">
+          <!-- 1. Total Inactivity Counter -->
+          <div class="flex items-start gap-1.5 text-zinc-300">
+            <span class="text-amber-400 flex-shrink-0 font-bold">⏱️ 怠惰计时:</span>
+            <span class="leading-relaxed" :class="timeSinceLastWorkout.urgencyLevel === 'danger' ? 'text-red-300 font-bold' : ''">
+              {{ timeSinceLastWorkout.subText }}
+            </span>
+          </div>
+
+          <!-- 2. Today's Split Muscle Recovery State -->
+          <div class="flex items-start gap-1.5 text-zinc-400">
+            <span class="text-sky-400 flex-shrink-0 font-bold">🧬 肌群状态:</span>
+            <span class="leading-relaxed text-zinc-300">
+              {{ splitRecoveryInfo.desc }}
+            </span>
+          </div>
+        </div>
+
+      </div>
+
       <!-- Today's Workout Hero Card -->
       <div class="bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-950 border rounded-3xl p-5 shadow-2xl relative overflow-hidden"
            :class="[
@@ -583,6 +647,122 @@ const currentPlan = computed(() => {
 const todayFormatted = computed(() => {
   const d = new Date();
   return `${d.getMonth() + 1}月${d.getDate()}日`;
+});
+
+const timeSinceLastWorkout = computed(() => {
+  const logs = store.workoutLogs || [];
+  if (!logs.length) {
+    return {
+      hasHistory: false,
+      badge: "新兵报到",
+      title: "首训档案待激活",
+      urgencyLevel: "fresh",
+      subText: "尚未记录过训练，立即开启你的第一场特训打卡！"
+    };
+  }
+
+  const latestLog = logs[0];
+  const lastTime = latestLog.completedAt || (new Date(latestLog.date).getTime()) || (Date.now() - 86400000);
+  const diffMs = Math.max(0, nowTimestamp.value - lastTime);
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffHours / 24);
+  const remHours = diffHours % 24;
+  const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+  let timeStr = "";
+  if (diffDays > 0) {
+    timeStr = `${diffDays}天${remHours}小时`;
+  } else if (diffHours > 0) {
+    timeStr = `${diffHours}小时${diffMins}分`;
+  } else {
+    timeStr = `${Math.max(1, diffMins)}分钟`;
+  }
+
+  if (diffHours < 24) {
+    return {
+      hasHistory: true,
+      badge: "⚡ 刚刚练完",
+      title: "超量恢复中",
+      urgencyLevel: "fresh",
+      timeStr,
+      subText: `距上次训练已过 ${timeStr} · 肌原纤维超量合成中`
+    };
+  } else if (diffHours < 48) {
+    return {
+      hasHistory: true,
+      badge: "🔥 黄金战备",
+      title: "精力已满血",
+      urgencyLevel: "ready",
+      timeStr,
+      subText: `距上次训练已过 ${timeStr} · 神经与肌糖原已充沛，适宜重装开练！`
+    };
+  } else if (diffHours < 72) {
+    return {
+      hasHistory: true,
+      badge: "⚠️ 催练警报",
+      title: "神经募集下降中",
+      urgencyLevel: "warn",
+      timeStr,
+      subText: `你已经 ${timeStr} 没练了！募集感正在衰减，建议立即归队！`
+    };
+  } else {
+    return {
+      hasHistory: true,
+      badge: "🚨 严重怠惰",
+      title: "枪膛已冷 · 速速开练",
+      urgencyLevel: "danger",
+      timeStr,
+      subText: `你已经 ${timeStr} 没练了！肌肉正在消退，枪膛已冷，速速开练！`
+    };
+  }
+});
+
+const splitRecoveryInfo = computed(() => {
+  const plan = currentPlan.value;
+  const cycle = todayCycle.value;
+  const shortName = cycle?.shortName || plan?.shortName || "今日分化";
+  
+  if (cycle?.isRest) {
+    return {
+      status: "休息与超量恢复",
+      desc: "今日为预设休息日 · 中枢神经与大肌群正在修复，可记录休息打卡"
+    };
+  }
+
+  const logs = store.workoutLogs || [];
+  const matchLog = logs.find(l => 
+    (plan && l.planId === plan.id) ||
+    (plan && l.planName?.includes(plan.name)) ||
+    (l.shortName && l.shortName === shortName)
+  );
+
+  if (!matchLog) {
+    return {
+      status: "首度开练",
+      desc: `暂无上次【${shortName}】历史记录 · 立即开练建立首训力量基准！`
+    };
+  }
+
+  const logTime = matchLog.completedAt || (new Date(matchLog.date).getTime()) || (Date.now() - 86400000 * 2);
+  const diffMs = Math.max(0, nowTimestamp.value - logTime);
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffHours / 24);
+  const remHours = diffHours % 24;
+  
+  const timeLabel = diffDays > 0 ? `${diffDays}天前` : `${diffHours}小时前`;
+  const recoveryPercent = Math.min(100, Math.round((diffHours / 48) * 100));
+
+  if (recoveryPercent >= 100) {
+    return {
+      status: "100% 满血复活",
+      desc: `上次【${shortName}】是 ${timeLabel} · 靶向肌群已 100% 超量重组完成，蓄势待发！`
+    };
+  } else {
+    return {
+      status: `恢复度 ${recoveryPercent}%`,
+      desc: `上次【${shortName}】是 ${timeLabel} · 恢复度 ${recoveryPercent}% (深层纤维修复中)`
+    };
+  }
 });
 
 const totalSetsCount = computed(() => {

@@ -1,4 +1,4 @@
-﻿import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { store, startRestTimer, stopRestTimer, toggleSetCompletion, startWorkout, finishWorkout, discardActiveWorkout, resumeWorkoutFromSummary } from "../src/store/fitnessStore.js";
 import { analyzeWorkoutSummary } from "../src/ai/workoutAnalyzer.js";
@@ -119,5 +119,13 @@ describe("Rest Presets, Carousel, Auto-Finish & AI Analysis Upgrades", () => {
     expect(html).toContain("补给");
     expect(html).toContain("手滑了？返回继续本次训练");
     expect(html).toContain("呼叫 AI 智能教练深度复盘");
+  });
+
+  it("renders tactical readiness urgency counter and muscle recovery card in TodayView", () => {
+    const wrapper = mount(TodayView);
+    const html = wrapper.html();
+    expect(html).toContain("怠惰计时");
+    expect(html).toContain("肌群状态");
+    expect(html).toContain("立即开练");
   });
 });
