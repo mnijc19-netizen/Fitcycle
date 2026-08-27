@@ -109,6 +109,28 @@ export const TIER_MEDAL_SVGS = {
   tier_7: "./themes/medals/rank-tier-7.svg"
 };
 
+export const SKIN_TIER_MEDAL_SVGS = {
+  default: TIER_MEDAL_SVGS,
+  cs: {
+    tier_1: "./themes/medals/rank-tier-1.svg",
+    tier_2: "./themes/medals/rank-tier-2.svg",
+    tier_3: "./themes/medals/rank-tier-3.svg",
+    tier_4: "./themes/medals/rank-tier-4.svg",
+    tier_5: "./themes/medals/rank-tier-5.svg",
+    tier_6: "./themes/medals/cs-global-elite.svg",
+    tier_7: "./themes/medals/cs-demon-king-s.svg"
+  },
+  chamber: {
+    tier_1: "./themes/medals/rank-tier-1.svg",
+    tier_2: "./themes/medals/rank-tier-2.svg",
+    tier_3: "./themes/medals/rank-tier-3.svg",
+    tier_4: "./themes/medals/rank-tier-4.svg",
+    tier_5: "./themes/medals/rank-tier-5.svg",
+    tier_6: "./themes/medals/rank-tier-6.svg",
+    tier_7: "./themes/medals/valorant-radiant.svg"
+  }
+};
+
 export const BADGE_MEDAL_SVGS = {
   badge_tonnage_10t: "./themes/medals/badge-tonnage-10t.svg",
   badge_tonnage_50t: "./themes/medals/badge-tonnage-50t.svg",
@@ -157,12 +179,15 @@ export function getSkinHonorPresentation(skin = "default", tierConfig = {}, unlo
     };
   });
 
+  const skinMedalMap = SKIN_TIER_MEDAL_SVGS[skin] || SKIN_TIER_MEDAL_SVGS.default;
+  const tierSvg = skinMedalMap[tierKey] || TIER_MEDAL_SVGS[tierKey] || TIER_MEDAL_SVGS.tier_1;
+
   return {
     skinName: schema.name,
     tierName: localizedTier.name,
     tierSub: localizedTier.sub,
     tierIcon: localizedTier.icon || tierConfig.badgeIcon || "🔰",
-    tierSvg: TIER_MEDAL_SVGS[tierKey] || TIER_MEDAL_SVGS.tier_1,
+    tierSvg: tierSvg,
     tierColor: localizedTier.color || "amber",
     badges: localizedBadges
   };

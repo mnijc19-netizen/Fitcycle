@@ -230,9 +230,13 @@ describe("Fitcycle Core Constitution & Honor Rating Engine", () => {
       const pres1 = getSkinHonorPresentation("default", tier1, []);
       expect(pres1.tierSvg).toBe("./themes/medals/rank-tier-1.svg");
 
-      const tier7 = getTierForScore(2950);
-      const pres7 = getSkinHonorPresentation("cs", tier7, []);
-      expect(pres7.tierSvg).toBe("./themes/medals/rank-tier-7.svg");
+      const tier7Default = getTierForScore(2950);
+      const pres7Default = getSkinHonorPresentation("default", tier7Default, []);
+      expect(pres7Default.tierSvg).toBe("./themes/medals/rank-tier-7.svg");
+
+      const tier7Cs = getTierForScore(2950);
+      const pres7Cs = getSkinHonorPresentation("cs", tier7Cs, []);
+      expect(pres7Cs.tierSvg).toBe("./themes/medals/cs-demon-king-s.svg");
     });
 
     it("attaches vector medal SVGs to unlocked achievement badges", () => {

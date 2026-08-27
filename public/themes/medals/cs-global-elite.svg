@@ -1,0 +1,22 @@
+<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="geGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#818CF8" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="geGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFBEB"/>
+      <stop offset="30%" stop-color="#FCD34D"/>
+      <stop offset="70%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#78350F"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#geGlow)"/>
+  <path d="M 60,18 L 74,32 L 105,38 L 88,58 L 96,90 L 60,76 L 24,90 L 32,58 L 15,38 L 46,32 Z" fill="#090D16" stroke="url(#geGold)" stroke-width="2.5" filter="drop-shadow(0 6px 14px rgba(56,189,248,0.5))"/>
+  <circle cx="60" cy="60" r="26" fill="#0C1322" stroke="#38BDF8" stroke-width="2"/>
+  <ellipse cx="60" cy="60" rx="14" ry="26" fill="none" stroke="#38BDF8" stroke-width="1" stroke-dasharray="2 2"/>
+  <line x1="34" y1="60" x2="86" y2="60" stroke="#38BDF8" stroke-width="1"/>
+  <path d="M 45,34 L 50,42 L 60,30 L 70,42 L 75,34 L 72,48 L 48,48 Z" fill="url(#geGold)" stroke="#78350F" stroke-width="1"/>
+  <polygon points="60,46 65,56 75,60 65,64 60,74 55,64 45,60 55,56" fill="#F8FAFC" stroke="#38BDF8" stroke-width="1.5" filter="drop-shadow(0 0 8px #FFF)"/>
+</svg>
