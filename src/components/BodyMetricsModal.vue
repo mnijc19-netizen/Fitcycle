@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div v-if="visible" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
     <div class="bg-zinc-900 border border-zinc-700/80 rounded-3xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-zinc-100">
       
@@ -55,7 +55,7 @@
         <div class="p-3.5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-3">
           <div class="flex items-center justify-between text-xs font-bold text-zinc-200">
             <span>✍️ 录入最新身体围度 (cm)</span>
-            <span class="text-[10px] text-amber-400 font-mono">每次记录 +30 FPS 战力</span>
+            <span class="text-[10px] text-amber-400 font-mono">每周基础打卡+20分 (7天冷却) | 围度蜕变额外加分</span>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">

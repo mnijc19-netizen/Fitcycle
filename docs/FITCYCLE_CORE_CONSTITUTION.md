@@ -106,6 +106,15 @@ $$\text{等效抗阻做工吨位 (Equivalent Tonnage, kg)} = \text{METs 系数} 
 ### 第 6.2 条【形体蜕变指数 (Body Recomposition Index)】
 系统自动计算 $\text{V字倒三角比例} = \frac{\text{胸围 (Chest)}}{\text{腰围 (Waist)}}$。当腰围下降且胸围/臂围上升时，强制触发健美塑形专属加分与勋章解锁。
 
+### 第 6.3 条【形体测量防刷分与生理学生长节律公理 (Anti-Exploit & Biological Rate of Growth Law)】
+1. **7 天基础测绘加分冷却法则 (7-Day Cooldown)**：
+   * 人体肌肉蛋白质合成与肌纤维肥大属于周/月级生理进程。基础记录奖励分（+20 FPS）设定 **7 天冷却周期**；
+   * 同一自然周内可无限次更新修正围度数据，但**单周内最多仅计入 1 次基础建档分**，彻底杜绝单日频繁录入刷分漏洞。
+2. **实质性形体蜕变里程碑阶梯奖励 (True Growth Delta Rewards)**：
+   * 只有当围度产生真实的**跨周期正向改善**（如臂围净增 $\ge 1.0\text{cm}$、胸围净增 $\ge 2.0\text{cm}$、腰围收紧 $\ge 2.0\text{cm}$）时，才触发对应档位的里程碑成就加分并解锁专属勋章。
+3. **生理学合理性防伪过滤 (Biological Plausibility Filter)**：
+   * 严禁无生理依据的单日异常剧烈波动刷分，确保天梯榜单与荣誉徽章的绝对真实性与公信力。
+
 ---
 
 ## 📜 附录：未来功能扩展接入校验清单 (Compliance Checklist)

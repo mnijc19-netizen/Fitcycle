@@ -797,10 +797,17 @@ export function importBackupJSON(jsonStr) {
 // --- BODY METRICS & HONOR SYSTEM ACTIONS ---
 export function recordBodyMetric(metricData) {
   if (!store.bodyMetrics) store.bodyMetrics = [];
+  const now = Date.now();
+
+  const previousMetrics = store.bodyMetrics.filter(m => m.timestamp || m.date);
+  const lastMetric = previousMetrics.length > 0 ? previousMetrics[previousMetrics.length - 1] : null;
+  const lastTime = lastMetric ? (lastMetric.timestamp || new Date(lastMetric.date).getTime() || 0) : 0;
+  const hoursSinceLast = lastTime > 0 ? (now - lastTime) / (1000 * 3600) : 9999;
+
   const entry = {
     id: uid("metric"),
     date: metricData.date || getInitialDateStr(),
-    timestamp: Date.now(),
+    timestamp: now,
     arm: Number(metricData.arm) || 0,
     chest: Number(metricData.chest) || 0,
     waist: Number(metricData.waist) || 0,
@@ -810,18 +817,34 @@ export function recordBodyMetric(metricData) {
   store.bodyMetrics.push(entry);
 
   if (!store.honorProfile) {
-    store.honorProfile = { score: 850, prestigeLevel: 1, prestigeYear: new Date().getFullYear(), highestScore: 850, lastWorkoutTimestamp: Date.now(), unlockedBadges: [] };
+    store.honorProfile = { score: 850, prestigeLevel: 1, prestigeYear: new Date().getFullYear(), highestScore: 850, lastWorkoutTimestamp: now, unlockedBadges: [] };
   }
-  // Award body transformation reward (+30 FPS points)
-  store.honorProfile.score = (store.honorProfile.score || 0) + 30;
+
+  // Anti-Exploit Rule (Article 6.3): 7-Day Cooldown for baseline recording points (+20 FPS)
+  let awardedPoints = 0;
+  if (hoursSinceLast >= 168) {
+    awardedPoints = 20;
+    store.honorProfile.score = (store.honorProfile.score || 0) + awardedPoints;
+  }
+
+  // Refresh badges & check if new badges were unlocked
+  const badgesBefore = new Set(store.honorProfile.unlockedBadges || []);
+  const currentBadges = refreshUnlockedBadges();
+  const newlyUnlocked = currentBadges.filter(b => !badgesBefore.has(b.id));
+
+  // Milestone bonus for newly unlocked body aesthetic badges (+50 FPS per milestone)
+  if (newlyUnlocked.length > 0) {
+    const milestoneBonus = newlyUnlocked.length * 50;
+    awardedPoints += milestoneBonus;
+    store.honorProfile.score = (store.honorProfile.score || 0) + milestoneBonus;
+  }
+
   if (store.honorProfile.score > (store.honorProfile.highestScore || 0)) {
     store.honorProfile.highestScore = store.honorProfile.score;
   }
 
-  // Refresh badges
-  refreshUnlockedBadges();
   if (store.settings.vibrationEnabled) triggerHaptic("success");
-  return entry;
+  return { entry, awardedPoints, isCooldown: hoursSinceLast < 168 };
 }
 
 export function deleteBodyMetric(id) {

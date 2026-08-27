@@ -1,4 +1,4 @@
-﻿import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import {
   calculateEquivalentTonnage,
   calculateInactivityDecay,
@@ -109,11 +109,12 @@ describe("Fitcycle Core Constitution & Honor Rating Engine", () => {
   });
 
   describe("5. Store Integration & Body Metrics", () => {
-    it("records body metrics and awards +30 FPS bonus", () => {
+    it("records body metrics with 7-day cooldown anti-spam protection", () => {
       const profileBefore = getFullHonorProfile();
       const initialScore = profileBefore.score;
 
-      recordBodyMetric({
+      // 1. Initial measurement (initial sample was 14 days ago) -> awards points
+      const res1 = recordBodyMetric({
         arm: 36.5,
         chest: 104,
         waist: 78,
@@ -121,9 +122,23 @@ describe("Fitcycle Core Constitution & Honor Rating Engine", () => {
         weight: 73
       });
 
-      const profileAfter = getFullHonorProfile();
-      expect(profileAfter.score).toBe(initialScore + 30);
+      expect(res1.isCooldown).toBe(false);
+      expect(res1.awardedPoints).toBeGreaterThan(0);
       expect(store.bodyMetrics.length).toBeGreaterThanOrEqual(2);
+
+      // 2. Immediate second measurement (0 hours later) -> triggers 7-day cooldown (0 pts)
+      const scoreAfterFirst = store.honorProfile.score;
+      const res2 = recordBodyMetric({
+        arm: 36.5,
+        chest: 104,
+        waist: 78,
+        thigh: 58,
+        weight: 73
+      });
+
+      expect(res2.isCooldown).toBe(true);
+      expect(res2.awardedPoints).toBe(0); // 0 points awarded! Prevents exploit spam!
+      expect(store.honorProfile.score).toBe(scoreAfterFirst);
     });
 
     it("evaluates prestige reset when score >= 2900", () => {
