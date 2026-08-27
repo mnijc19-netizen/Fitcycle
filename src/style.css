@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 @layer base {
   :root {
@@ -8,18 +8,86 @@
     --sar: env(safe-area-inset-right, 0px);
   }
 
+  /* Default Theme (Classic Dark Zinc + Amber) */
+  :root, [data-skin="default"] {
+    --fc-bg: #09090b; /* zinc-950 */
+    --fc-surface-1: #18181b; /* zinc-900 */
+    --fc-surface-1-glass: rgba(24, 24, 27, 0.92);
+    --fc-surface-2: #27272a; /* zinc-800 */
+    --fc-surface-3: #3f3f46; /* zinc-700 */
+    --fc-modal-bg: #18181b;
+    --fc-modal-glass: rgba(24, 24, 27, 0.98);
+    --fc-border: #27272a; /* zinc-800 */
+    --fc-border-subtle: #3f3f46; /* zinc-700 */
+    --fc-text-primary: #f4f4f5; /* zinc-100 */
+    --fc-text-secondary: #a1a1aa; /* zinc-400 */
+    --fc-text-muted: #71717a; /* zinc-500 */
+    
+    --fc-accent: #f59e0b; /* amber-500 */
+    --fc-accent-hover: #d97706; /* amber-600 */
+    --fc-accent-active: #b45309;
+    --fc-accent-text: #09090b;
+    --fc-accent-glow: rgba(245, 158, 11, 0.25);
+    --fc-accent-subtle: rgba(245, 158, 11, 0.15);
+    --fc-accent-border: rgba(245, 158, 11, 0.35);
+
+    --fc-btn-radius: 0.75rem;
+    --fc-card-radius: 1rem;
+  }
+
+  /* Chamber (尚博勒) Bespoke Precision Navy & Champagne Gold Theme */
+  [data-skin="chamber"] {
+    --fc-bg: #070B14; /* deep bespoke navy */
+    --fc-surface-1: #0D1627; /* navy-black primary card */
+    --fc-surface-1-glass: rgba(13, 22, 39, 0.94);
+    --fc-surface-2: #142036; /* cool slate navy subcard */
+    --fc-surface-3: #1B2B4A; /* elevated controls */
+    --fc-modal-bg: #0A111F;
+    --fc-modal-glass: rgba(10, 17, 31, 0.98);
+    --fc-border: #1E3052; /* blueprint precision border */
+    --fc-border-subtle: rgba(229, 195, 120, 0.25); /* champagne gold whisper border */
+    --fc-text-primary: #F7F6F2; /* ivory warm white */
+    --fc-text-secondary: #9AA8C2; /* low-saturation cool blue-gray */
+    --fc-text-muted: #5C6E8F; /* muted blueprint slate */
+
+    --fc-accent: #E5C378; /* bespoke refined champagne gold */
+    --fc-accent-hover: #D4AF37; /* classic gold */
+    --fc-accent-active: #B8972E;
+    --fc-accent-text: #070B14; /* deep navy on gold */
+    --fc-accent-glow: rgba(229, 195, 120, 0.25);
+    --fc-accent-subtle: rgba(229, 195, 120, 0.12);
+    --fc-accent-border: rgba(229, 195, 120, 0.4);
+
+    --fc-accent-tie: #E06D3B; /* bespoke tie orange */
+    --fc-accent-telecom: #9B5DE5; /* telecom purple */
+
+    --fc-btn-radius: 0.375rem;
+    --fc-card-radius: 0.75rem;
+  }
+
   * {
     -webkit-tap-highlight-color: transparent;
   }
 
   body {
-    @apply bg-zinc-950 text-zinc-100 antialiased font-sans min-h-screen overflow-x-hidden;
+    background-color: var(--fc-bg);
+    color: var(--fc-text-primary);
     margin: 0;
     padding: 0;
     -webkit-overflow-scrolling: touch;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+
+  [data-skin="chamber"] body {
+    background-color: #070B14;
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(30, 48, 82, 0.35), transparent 75%),
+      linear-gradient(rgba(229, 195, 120, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(229, 195, 120, 0.025) 1px, transparent 1px);
+    background-size: 100% 100%, 36px 36px, 36px 36px;
+    background-attachment: fixed;
   }
 }
-
 
 .safe-top-padding {
   padding-top: max(calc(env(safe-area-inset-top, 0px) + 8px), 14px);
@@ -28,8 +96,6 @@
 .safe-bottom-padding {
   padding-bottom: max(env(safe-area-inset-bottom, 0px), 10px);
 }
-
-
 
 /* Custom scrollbars */
 ::-webkit-scrollbar {
@@ -47,6 +113,13 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
+[data-skin="chamber"] ::-webkit-scrollbar-thumb {
+  background: rgba(229, 195, 120, 0.25);
+}
+[data-skin="chamber"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(229, 195, 120, 0.45);
+}
+
 /* Pulse animation for active workout timer */
 @keyframes pulse-ring {
   0% { transform: scale(0.95); opacity: 0.8; }
@@ -58,3 +131,147 @@
   animation: pulse-ring 2s infinite ease-in-out;
 }
 
+/* ========================================================================= */
+/* CHAMBER THEME COMPONENT STYLES & OVERRIDES                                */
+/* ========================================================================= */
+
+[data-skin="chamber"] .bg-zinc-950,
+[data-skin="chamber"] .bg-zinc-950\/90,
+[data-skin="chamber"] .bg-zinc-950\/80 {
+  background-color: var(--fc-bg) !important;
+}
+
+[data-skin="chamber"] .bg-zinc-900,
+[data-skin="chamber"] .bg-zinc-900\/90,
+[data-skin="chamber"] .bg-zinc-900\/95 {
+  background-color: var(--fc-surface-1) !important;
+}
+
+[data-skin="chamber"] .bg-zinc-800,
+[data-skin="chamber"] .bg-zinc-800\/80,
+[data-skin="chamber"] .bg-zinc-800\/90 {
+  background-color: var(--fc-surface-2) !important;
+}
+
+[data-skin="chamber"] .bg-zinc-700 {
+  background-color: var(--fc-surface-3) !important;
+}
+
+[data-skin="chamber"] .border-zinc-800,
+[data-skin="chamber"] .border-zinc-800\/80,
+[data-skin="chamber"] .border-zinc-700,
+[data-skin="chamber"] .border-zinc-700\/80 {
+  border-color: var(--fc-border) !important;
+}
+
+[data-skin="chamber"] .text-zinc-100,
+[data-skin="chamber"] .text-zinc-200 {
+  color: var(--fc-text-primary) !important;
+}
+
+[data-skin="chamber"] .text-zinc-300,
+[data-skin="chamber"] .text-zinc-400 {
+  color: var(--fc-text-secondary) !important;
+}
+
+[data-skin="chamber"] .text-zinc-500 {
+  color: var(--fc-text-muted) !important;
+}
+
+/* Accent overrides: Amber -> Champagne Gold */
+[data-skin="chamber"] .bg-amber-500 {
+  background-color: var(--fc-accent) !important;
+  color: var(--fc-accent-text) !important;
+}
+
+[data-skin="chamber"] .hover\:bg-amber-400:hover {
+  background-color: var(--fc-accent-hover) !important;
+}
+
+[data-skin="chamber"] .text-amber-400,
+[data-skin="chamber"] .text-amber-500 {
+  color: var(--fc-accent) !important;
+}
+
+[data-skin="chamber"] .border-amber-500,
+[data-skin="chamber"] .border-amber-500\/40,
+[data-skin="chamber"] .border-amber-500\/30 {
+  border-color: var(--fc-accent-border) !important;
+}
+
+[data-skin="chamber"] .bg-amber-500\/20,
+[data-skin="chamber"] .bg-amber-500\/10 {
+  background-color: var(--fc-accent-subtle) !important;
+}
+
+[data-skin="chamber"] .shadow-amber-500\/20 {
+  box-shadow: 0 4px 14px 0 var(--fc-accent-glow) !important;
+}
+
+/* Chamber Chamfered Primary Action Buttons */
+[data-skin="chamber"] button.bg-amber-500,
+[data-skin="chamber"] .fc-chamber-btn-primary {
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  position: relative;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  transition: transform 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+}
+
+[data-skin="chamber"] button.bg-amber-500:active,
+[data-skin="chamber"] .fc-chamber-btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* Chamber Precision Card Corner Markers */
+[data-skin="chamber"] .bg-zinc-900,
+[data-skin="chamber"] .bg-zinc-900\/90 {
+  position: relative;
+}
+
+[data-skin="chamber"] .bg-zinc-900::after,
+[data-skin="chamber"] .bg-zinc-900\/90::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 6px;
+  height: 6px;
+  border-top: 2px solid var(--fc-accent);
+  border-right: 2px solid var(--fc-accent);
+  border-top-right-radius: 2px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Chamber Precision Unlock Flash Animation */
+@keyframes chamber-unlock-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(229, 195, 120, 0.7), inset 0 0 0 1px rgba(229, 195, 120, 0.9);
+  }
+  50% {
+    box-shadow: 0 0 25px 8px rgba(229, 195, 120, 0.35), inset 0 0 20px 2px rgba(229, 195, 120, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(229, 195, 120, 0), inset 0 0 0 0 rgba(229, 195, 120, 0);
+  }
+}
+
+.animate-chamber-unlock {
+  animation: chamber-unlock-pulse 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Selection */
+[data-skin="chamber"] ::selection {
+  background-color: var(--fc-accent);
+  color: var(--fc-accent-text);
+}
+
+/* Accessibility: Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

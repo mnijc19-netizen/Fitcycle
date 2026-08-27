@@ -1,6 +1,7 @@
 <template>
-  <div class="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-amber-500 selection:text-zinc-950">
+  <div :data-skin="store.settings.uiSkin" class="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-amber-500 selection:text-zinc-950 transition-colors duration-200">
     <!-- Sticky Top Navbar -->
+
     <Navbar />
 
     <!-- Main Dynamic Content Views -->

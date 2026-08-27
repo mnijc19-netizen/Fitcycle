@@ -2,6 +2,7 @@ import { reactive, watch } from "vue";
 import { DEFAULT_EXERCISES, DEFAULT_PLANS, PRESET_CYCLES, SCIENCE_PRINCIPLES } from "../data/defaultPlans.js";
 import { playSetCompleteSound, playRestCompleteSound, playWorkoutDoneSound } from "../utils/audio.js";
 import { triggerHaptic } from "../utils/vibrate.js";
+import { DEFAULT_SETTINGS, sanitizeSettings, verifyPasscode, applySkinToDOM } from "../utils/themeManager.js";
 
 const STORAGE_KEY = "fitcycle_app_data_v1";
 
@@ -25,13 +26,29 @@ function loadSavedState() {
       // Merge saved exercises with newest DEFAULT_EXERCISES to bring in new GIFs & tips
       if (parsed.exercises) {
         const mergedExercises = DEFAULT_EXERCISES.map(defEx => {
-          const customMatch = parsed.exercises.find(e => e.id === defEx.id || e.name === defEx.name);
+          const customMatch = parsed.exercises.find(e => {
+            if (e.id === defEx.id || e.name === defEx.name) return true;
+            if (defEx.aliases && defEx.aliases.includes(e.name)) return true;
+            const eClean = (e.name || "").replace(/[\s\(\)\/（）\-]/g, '');
+            const defClean = (defEx.name || "").replace(/[\s\(\)\/（）\-]/g, '');
+            return eClean === defClean || (eClean.length >= 4 && (defClean.includes(eClean) || eClean.includes(defClean)));
+          });
           return customMatch ? { ...defEx, ...customMatch, gifUrl: defEx.gifUrl, tips: defEx.tips, substitutes: defEx.substitutes, scienceDetail: defEx.scienceDetail || customMatch.scienceDetail } : defEx;
         });
-        // Also keep any purely custom exercises added by user
-        const customOnly = parsed.exercises.filter(e => !DEFAULT_EXERCISES.some(d => d.id === e.id || d.name === e.name));
+        // Also keep any purely custom exercises added by user that don't match default
+        const customOnly = parsed.exercises.filter(e => !DEFAULT_EXERCISES.some(d => {
+          if (d.id === e.id || d.name === e.name) return true;
+          if (d.aliases && d.aliases.includes(e.name)) return true;
+          const eClean = (e.name || "").replace(/[\s\(\)\/（）\-]/g, '');
+          const defClean = (d.name || "").replace(/[\s\(\)\/（）\-]/g, '');
+          return eClean === defClean || (eClean.length >= 4 && (defClean.includes(eClean) || eClean.includes(defClean)));
+        }));
         parsed.exercises = [...mergedExercises, ...customOnly];
       }
+
+      // Deep sanitize settings for backward compatibility & theme system
+      parsed.settings = sanitizeSettings(parsed.settings);
+
       return parsed;
     }
   } catch (e) {
@@ -39,6 +56,7 @@ function loadSavedState() {
   }
   return null;
 }
+
 
 
 const todayStr = getInitialDateStr();
@@ -142,19 +160,28 @@ const defaultInitialState = {
     intervalId: null
   },
   settings: {
-    defaultRestSeconds: 90,
-    soundEnabled: true,
-    vibrationEnabled: true,
-    weightUnit: "kg",
-    theme: "dark"
+    ...DEFAULT_SETTINGS
   }
 };
 
 // Merge saved data with defaults
 const saved = loadSavedState();
-export const store = reactive(saved ? { ...defaultInitialState, ...saved } : defaultInitialState);
+export const store = reactive(saved ? { ...defaultInitialState, ...saved, settings: sanitizeSettings(saved.settings) } : defaultInitialState);
+
+// Immediately apply current skin to document
+applySkinToDOM(store.settings.uiSkin);
+
+// Watch for UI skin changes and keep DOM attribute / theme-color updated
+watch(
+  () => store.settings.uiSkin,
+  (newSkin) => {
+    applySkinToDOM(newSkin);
+  },
+  { immediate: true }
+);
 
 // Auto save to localStorage on changes (excluding timer interval)
+
 watch(
   () => ({
     plans: store.plans,
@@ -596,9 +623,43 @@ export function saveCustomCycle(cycleData) {
   if (store.settings.vibrationEnabled) triggerHaptic("success");
 }
 
+// --- THEME / SKIN ACTIONS ---
+export function unlockChamberSkin(passcodeInput) {
+  const isMatch = verifyPasscode(passcodeInput);
+  if (!isMatch) {
+    return { success: false, message: "暗号不正确" };
+  }
+
+  if (!store.settings.unlockedSkins.includes("chamber")) {
+    store.settings.unlockedSkins.push("chamber");
+  }
+  store.settings.uiSkin = "chamber";
+  applySkinToDOM("chamber");
+
+  if (store.settings.vibrationEnabled) triggerHaptic("success");
+  return { success: true, message: "隐藏皮肤已解锁" };
+}
+
+export function setUISkin(skinName) {
+  const target = skinName === "chamber" ? "chamber" : "default";
+  if (target === "default" || store.settings.unlockedSkins.includes(target)) {
+    store.settings.uiSkin = target;
+    applySkinToDOM(target);
+    if (store.settings.vibrationEnabled) triggerHaptic("light");
+  }
+}
+
+export function restoreDefaultSkin() {
+  store.settings.uiSkin = "default";
+  applySkinToDOM("default");
+  if (store.settings.vibrationEnabled) triggerHaptic("light");
+  return { success: true, message: "已恢复默认外观，训练数据未改变" };
+}
+
 export function resetAllDataToDefault() {
   localStorage.removeItem(STORAGE_KEY);
-  Object.assign(store, defaultInitialState);
+  Object.assign(store, JSON.parse(JSON.stringify(defaultInitialState)));
+  applySkinToDOM("default");
   if (store.settings.vibrationEnabled) triggerHaptic("warning");
 }
 
@@ -613,7 +674,7 @@ export function exportBackupJSON() {
     workoutLogs: store.workoutLogs,
     settings: store.settings,
     exportTime: new Date().toISOString(),
-    version: "1.0"
+    version: "1.1"
   };
   return JSON.stringify(data, null, 2);
 }
@@ -631,7 +692,10 @@ export function importBackupJSON(jsonStr) {
     if (parsed.cycleMode) store.cycleMode = parsed.cycleMode;
     if (parsed.weeklySchedule) store.weeklySchedule = parsed.weeklySchedule;
     if (parsed.workoutLogs) store.workoutLogs = parsed.workoutLogs;
-    if (parsed.settings) store.settings = parsed.settings;
+    if (parsed.settings) {
+      store.settings = sanitizeSettings(parsed.settings);
+      applySkinToDOM(store.settings.uiSkin);
+    }
     if (store.settings.vibrationEnabled) triggerHaptic("success");
     return true;
   } catch (e) {
@@ -639,3 +703,4 @@ export function importBackupJSON(jsonStr) {
     return false;
   }
 }
+

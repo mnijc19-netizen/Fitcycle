@@ -20,6 +20,7 @@
     commonMistakes: ["大幅度前后摇晃身体借力", "下拉时手腕过度屈曲变成小臂和二头死拽"],
     substitutes: [
       { name: "正手引体向上", reason: "自重背部黄金王牌动作" },
+      { name: "辅助引体", reason: "力量不足时的最佳过渡" },
       { name: "坐姿绳索划船", reason: "增厚背阔肌中下部" }
     ]
   },
@@ -43,8 +44,33 @@
     },
     commonMistakes: ["借双腿蹬踢荡秋千晃动借力", "下放幅度太小做半程引体"],
     substitutes: [
-      { name: "对握/宽握高位下拉", reason: "负荷可精准微调的器械版本" },
-      { name: "胸垫胸前划船", reason: "专注上背厚度" }
+      { name: "辅助引体", reason: "插销减重辅助，标准动作模式" },
+      { name: "对握/宽握高位下拉", reason: "负荷可精准微调的器械版本" }
+    ]
+  },
+  {
+    id: "ex-assisted-pullup",
+    name: "辅助引体",
+    aliases: ["辅助引体向上", "器械辅助引体", "助力引体向上"],
+    englishName: "Assisted Pull-up",
+    category: "背部",
+    target: "背阔肌全面 / 建立引体神经募集",
+    secondaryMuscles: ["肱二头肌", "菱形肌", "大圆肌"],
+    gifUrl: "./exercises/pull-ups.gif",
+    defaultSets: 4,
+    defaultReps: "8-12",
+    scienceDetail: "无法完成标准自重引体时的神级器械！通过配重垫辅助减重，让你在安全负荷下建立标准的高位下拉力线与背肌发力感知。",
+    tags: ["引体进阶", "减重辅助", "倒三角塑造"],
+    tips: {
+      prep: "调节插销重量（配重越重越轻松），双膝跪在辅助垫上，正握或对握单杠握把，挺胸沉肩。",
+      execution: "后背背阔肌发力将身体拉起，挺胸让锁骨靠近横杆。",
+      peak: "顶峰停留挤压背阔肌1-2秒。",
+      negative: "慢速匀速下落，让背阔肌在离心过程中得到充分拉伸。"
+    },
+    commonMistakes: ["借辅助垫弹力上下猛烈弹跳", "耸肩含胸只用二头肌硬拉"],
+    substitutes: [
+      { name: "正手引体向上", reason: "自重力量终极进阶" },
+      { name: "对握/宽握高位下拉", reason: "滑轮器械精准加重" }
     ]
   },
   {
@@ -115,8 +141,32 @@
     },
     commonMistakes: ["弓腰驼背造成腰椎剧烈负荷", "身体随动作上下猛烈弹动"],
     substitutes: [
-      { name: "胸垫胸前划船", reason: "下背无压力更安全" },
-      { name: "单臂哑铃划船", reason: "单侧孤立" }
+      { name: "俯身双臂哑铃划船", reason: "自由手腕角度" },
+      { name: "胸垫胸前划船", reason: "下背无压力更安全" }
+    ]
+  },
+  {
+    id: "ex-dumbbell-bent-over-row",
+    name: "俯身双臂哑铃划船",
+    englishName: "Bent-Over Dumbbell Row",
+    category: "背部",
+    target: "背阔肌与上背部 / 自由轨迹",
+    secondaryMuscles: ["肱二头肌", "斜方肌中束"],
+    gifUrl: "./exercises/dumbbell-bent-over-row.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    scienceDetail: "哑铃提供更自由的手腕旋转角度（对握或旋后），在顶峰收缩时手肘可以拉得更靠后，极致挤压背阔肌。",
+    tags: ["自由角度", "背阔肌挤压", "左右对称"],
+    tips: {
+      prep: "屈髋俯身45度，背部平直中立，双手各持哑铃自然垂于膝盖前。",
+      execution: "手肘贴近身体向斜后方拉起哑铃，大臂夹紧躯干。",
+      peak: "顶峰夹紧背部肌群1.5秒。",
+      negative: "匀速慢放至底部充分拉伸。"
+    },
+    commonMistakes: ["弓腰驼背", "用手腕耸肩甩动哑铃"],
+    substitutes: [
+      { name: "俯身杠铃划船", reason: "大重量突破" },
+      { name: "坐姿绳索划船", reason: "全程恒定张力" }
     ]
   },
   {
@@ -189,6 +239,54 @@
     substitutes: [
       { name: "罗马尼亚硬拉 (RDL)", reason: "更偏向腘绳肌与臀部拉伸" },
       { name: "俯身杠铃划船", reason: "专注上背厚度" }
+    ]
+  },
+  {
+    id: "ex-barbell-shrug",
+    name: "杠铃耸肩",
+    englishName: "Barbell Shrug",
+    category: "背部",
+    target: "斜方肌上束 / 颈后山峰",
+    secondaryMuscles: ["前臂握力", "肩胛提肌"],
+    gifUrl: "./exercises/barbell-shrug.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    scienceDetail: "构建霸气斜方肌上束。双手持大重量垂直向上耸肩，让斜方肌如山峰般隆起，打造强悍上体骨架。",
+    tags: ["斜方肌上束", "力量巨兽", "厚重颈肩"],
+    tips: {
+      prep: "站姿双脚与肩同宽，双手正握杠铃置于大腿前侧，挺胸收腹。",
+      execution: "双肩垂直向上提起靠近耳朵，肘部保持伸直不弯曲。",
+      peak: "最高点停顿挤压斜方肌2秒。",
+      negative: "控制下放至双肩自然下沉充分拉伸。"
+    },
+    commonMistakes: ["旋转肩膀耸肩导致肩关节磨损", "头部过度前伸"],
+    substitutes: [
+      { name: "胸垫胸前划船", reason: "斜方肌中下束增厚" },
+      { name: "杠铃直立划船", reason: "肩部与斜方肌联动" }
+    ]
+  },
+  {
+    id: "ex-barbell-upright-row",
+    name: "杠铃直立划船",
+    englishName: "Barbell Upright Row",
+    category: "背部",
+    target: "三角肌中束 / 斜方肌上中束",
+    secondaryMuscles: ["肱二头肌", "前臂"],
+    gifUrl: "./exercises/barbell-upright-row.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    scienceDetail: "手肘引领向上提升，同时高效轰炸三角肌中束与斜方肌，加宽上身比例。",
+    tags: ["加宽上身", "中束与斜方", "复合拉力"],
+    tips: {
+      prep: "双手握距略宽于肩，正握杠铃垂于大腿前，挺胸沉肩。",
+      execution: "手肘向斜上方提起，将杠铃贴着躯干提升至胸口下方。",
+      peak: "手肘略高于手腕，顶峰停留1秒。",
+      negative: "缓慢下放杠铃回大腿前侧。"
+    },
+    commonMistakes: ["握距过窄造成腕关节和肩峰撞击", "利用身体前后摇晃借力"],
+    substitutes: [
+      { name: "绳索侧平举", reason: "纯孤立三角肌中束" },
+      { name: "杠铃耸肩", reason: "专注斜方肌" }
     ]
   }
 ];

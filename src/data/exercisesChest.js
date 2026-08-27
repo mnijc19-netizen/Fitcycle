@@ -25,8 +25,8 @@
     ],
     substitutes: [
       { name: "平板杠铃卧推", reason: "提升整体上肢推力基础" },
-      { name: "固定器械推胸", reason: "更安全的力竭轰炸" },
-      { name: "龙门架绳索夹胸", reason: "顶峰恒定张力收缩" }
+      { name: "上斜器械推胸", reason: "更安全的上胸力竭轰炸" },
+      { name: "龙门架低位绳索夹胸", reason: "顶峰恒定张力收缩" }
     ]
   },
   {
@@ -78,6 +78,30 @@
     ]
   },
   {
+    id: "ex-incline-machine-chest-press",
+    name: "上斜器械推胸",
+    englishName: "Incline Machine Chest Press",
+    category: "胸部",
+    target: "胸大肌上束 / 上胸安全力竭",
+    secondaryMuscles: ["三角肌前束", "肱三头肌"],
+    gifUrl: "./exercises/incline-chest-press-machine.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    scienceDetail: "器械固定上斜推角，彻底解放核心与平衡压力，让所有负荷100%倾泻在锁骨头上胸，安全冲刺到力竭。",
+    tags: ["上胸力竭", "器械安全", "锁骨饱满"],
+    tips: {
+      prep: "调节座椅使握把对准锁骨下方，背部紧贴靠背，挺胸沉肩。",
+      execution: "沿器械上斜轨迹向前上方推出，肘部内收不耸肩。",
+      peak: "顶峰挤压上胸肌纤维2秒。",
+      negative: "慢速下放让上胸充分拉长。"
+    },
+    commonMistakes: ["耸肩推胸", "背部离开靠垫借力"],
+    substitutes: [
+      { name: "上斜哑铃卧推", reason: "自由重量拉伸" },
+      { name: "固定器械推胸", reason: "中下胸厚度" }
+    ]
+  },
+  {
     id: "ex-flat-dumbbell-press",
     name: "平板哑铃卧推",
     englishName: "Flat Dumbbell Press",
@@ -121,8 +145,32 @@
     },
     commonMistakes: ["手肘角度在动作中随意变动", "耸肩含胸借力"],
     substitutes: [
-      { name: "龙门架绳索夹胸", reason: "多角度多变张力" },
-      { name: "平板哑铃卧推", reason: "复合大重量肥大" }
+      { name: "哑铃飞鸟", reason: "自由重量深层拉伸" },
+      { name: "龙门架绳索夹胸", reason: "多角度多变张力" }
+    ]
+  },
+  {
+    id: "ex-dumbbell-fly",
+    name: "平板哑铃飞鸟",
+    englishName: "Flat Dumbbell Fly",
+    category: "胸部",
+    target: "胸大肌外沿与拉伸位",
+    secondaryMuscles: ["三角肌前束"],
+    gifUrl: "./exercises/dumbbell-fly.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    scienceDetail: "大重量拉伸胸肌外侧边缘。在动作底部胸肌被完全展开，提供极强拉伸位肌纤维撕裂刺激。",
+    tags: ["胸肌外沿", "深度展开", "拉伸肥大"],
+    tips: {
+      prep: "仰卧长凳，双手持哑铃于胸上方，肘关节微屈约120度锁死。",
+      execution: "像展开双翼一样向两侧弧线打开哑铃，感受胸肌被强力拉扯。",
+      peak: "向内合拢至胸部正上方，夹紧胸大肌。",
+      negative: "慢速下放3秒，切勿盲目用超大重量以防拉伤肩袖。"
+    },
+    commonMistakes: ["手臂完全伸直导致手肘受压", "下放过低伤肩关节"],
+    substitutes: [
+      { name: "蝴蝶机夹胸", reason: "器械稳定孤立" },
+      { name: "龙门架绳索夹胸", reason: "全程恒定阻力" }
     ]
   },
   {
@@ -146,7 +194,31 @@
     commonMistakes: ["手臂完全伸直导致手肘承受过大剪切力", "身体剧烈前后晃动借力"],
     substitutes: [
       { name: "蝴蝶机夹胸 (Pec Deck)", reason: "轨迹更孤立稳定" },
-      { name: "下斜哑铃卧推", reason: "下胸厚度" }
+      { name: "低位绳索夹胸", reason: "针对锁骨上胸" }
+    ]
+  },
+  {
+    id: "ex-cable-low-to-high-fly",
+    name: "低位绳索上斜夹胸",
+    englishName: "Low-to-High Cable Fly",
+    category: "胸部",
+    target: "胸大肌上束内侧 / 锁骨中缝",
+    secondaryMuscles: ["三角肌前束"],
+    gifUrl: "./exercises/cable-low-to-high-fly.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    scienceDetail: "从低滑轮向上向前画弧夹起，完全顺着上胸纤维由下至上的力线，打造上胸中缝与锁骨深槽。",
+    tags: ["上胸中缝", "锁骨线", "顶峰收缩"],
+    tips: {
+      prep: "滑轮调至最低处，双手持握把，站立微前倾，挺胸沉肩。",
+      execution: "从身体斜下方往面部前上方画弧聚拢手腕。",
+      peak: "在锁骨高度双手并拢挤压上胸2秒。",
+      negative: "顺着绳索拉力慢放至髋关节两侧。"
+    },
+    commonMistakes: ["过度屈肘变成二头肌弯举", "耸肩含胸"],
+    substitutes: [
+      { name: "上斜哑铃卧推", reason: "大重量上胸肥大" },
+      { name: "蝴蝶机夹胸", reason: "中胸孤立" }
     ]
   },
   {
@@ -169,8 +241,104 @@
     },
     commonMistakes: ["下放位置过高砸向颈部", "起落节奏过快"],
     substitutes: [
-      { name: "龙门架绳索夹胸", reason: "高位向下夹胸针对下沿" },
-      { name: "固定器械推胸", reason: "整体厚度" }
+      { name: "双杠臂屈伸 (胸部前倾)", reason: "自重打造下胸黄金动作" },
+      { name: "龙门架绳索夹胸", reason: "高位向下夹胸针对下沿" }
+    ]
+  },
+  {
+    id: "ex-chest-dips",
+    name: "双杠臂屈伸 (胸部前倾)",
+    englishName: "Chest Dips",
+    category: "胸部",
+    target: "胸大肌下束与外沿 / 自重黄金",
+    secondaryMuscles: ["肱三头肌", "三角肌前束"],
+    gifUrl: "./exercises/chest-dips.gif",
+    defaultSets: 3,
+    defaultReps: "8-12",
+    scienceDetail: "上肢深蹲之称！身体前倾30度下沉，能给下胸带来极大的自重负荷拉伸，雕刻铠甲下边缘轮廓。",
+    tags: ["自重黄金", "下胸厚度", "上肢深蹲"],
+    tips: {
+      prep: "双手撑于双杠上，躯干主动前倾30度，屈膝交叉双腿。",
+      execution: "手肘向后外侧打开下落，直至大臂与地面平行。",
+      peak: "胸肌强力发力将身体推起，顶峰夹紧下胸。",
+      negative: "匀速控制下沉，避免肩关节过深下坠造成损伤。"
+    },
+    commonMistakes: ["身体直立变成主要练三头", "下沉太深导致肩袖撕裂伤"],
+    substitutes: [
+      { name: "下斜哑铃卧推", reason: "负重微调更平稳" },
+      { name: "固定器械推胸", reason: "器械稳定安全" }
+    ]
+  },
+  {
+    id: "ex-push-up",
+    name: "标准俯卧撑",
+    englishName: "Standard Push-up",
+    category: "胸部",
+    target: "胸大肌整体 / 核心支撑",
+    secondaryMuscles: ["三角肌前束", "肱三头肌", "腹直肌"],
+    gifUrl: "./exercises/push-up.gif",
+    defaultSets: 3,
+    defaultReps: "15-20",
+    scienceDetail: "随时随地的胸部与核心激活王牌。作为热身或训练尾声排空泵感超级组的最佳选择。",
+    tags: ["自重基石", "核心联动", "随时随地"],
+    tips: {
+      prep: "双手撑地略宽于肩，身体从头到脚呈一条笔直钢板，核心腹部夹紧。",
+      execution: "手肘向后下方45度折叠下沉，胸口轻触地面。",
+      peak: "推起至手臂微屈，顶峰收缩胸大肌。",
+      negative: "平稳控制下落。"
+    },
+    commonMistakes: ["塌腰撅屁股", "手肘向外展开成90度伤肩"],
+    substitutes: [
+      { name: "平板杠铃卧推", reason: "器械大负荷增肌" },
+      { name: "钻石俯卧撑", reason: "偏向三头与中缝" }
+    ]
+  },
+  {
+    id: "ex-diamond-pushup",
+    name: "钻石俯卧撑 (窄握)",
+    englishName: "Diamond Push-up",
+    category: "胸部",
+    target: "胸大肌中缝内侧 / 肱三头肌",
+    secondaryMuscles: ["肱三头肌", "前束"],
+    gifUrl: "./exercises/diamond-pushup.gif",
+    defaultSets: 3,
+    defaultReps: "10-15",
+    scienceDetail: "双手拇指食指相触成钻石形，极大地增加胸肌内收幅度与三头肌推力参与，雕刻胸肌中线。",
+    tags: ["中缝雕刻", "三头联动", "高阶自重"],
+    tips: {
+      prep: "双手拇指与食指在胸部正下方拼成钻石菱形，身体收紧成直线。",
+      execution: "手肘贴近身体下落，胸口触碰到双手手背上方。",
+      peak: "用力推起并极度夹紧胸大肌内侧。",
+      negative: "缓慢下放控制动作节奏。"
+    },
+    commonMistakes: ["手腕压力过大导致刺痛", "塌腰借力"],
+    substitutes: [
+      { name: "窄距杠铃卧推", reason: "负荷可调" },
+      { name: "蝴蝶机夹胸", reason: "专注胸肌中缝" }
+    ]
+  },
+  {
+    id: "ex-dumbbell-pullover",
+    name: "仰卧哑铃上拉 (Pullover)",
+    englishName: "Dumbbell Pullover",
+    category: "胸部",
+    target: "胸大肌上部 / 前锯肌 / 扩展胸腔",
+    secondaryMuscles: ["背阔肌", "肱三头肌长头"],
+    gifUrl: "./exercises/dumbbell-pullover.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    scienceDetail: "阿诺德黄金时代的经典动作！横卧长凳拉伸胸大肌上缘与前锯肌（鲨鱼线），视觉上显著扩展胸腔宽度。",
+    tags: ["扩展胸腔", "前锯肌鲨鱼线", "拉伸之王"],
+    tips: {
+      prep: "上背部横躺在长凳上，双手虎口交叉托住哑铃一端，手臂微屈置于胸部上方。",
+      execution: "保持手肘微屈锁死，将哑铃沿弧线向头顶后方缓慢下放，直至上胸完全被拉伸开。",
+      peak: "胸肌与前锯肌发力将哑铃拉回胸部上方，顶峰挤压胸肌1秒。",
+      negative: "下放时深吸气扩张胸腔，感受深层拉伸。"
+    },
+    commonMistakes: ["手肘大幅度弯曲做成臂屈伸", "臀部随哑铃下落抬起过高导致失去张力"],
+    substitutes: [
+      { name: "直臂下压", reason: "绳索站姿版本" },
+      { name: "上斜哑铃卧推", reason: "上胸厚度" }
     ]
   }
 ];

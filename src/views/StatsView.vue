@@ -136,6 +136,122 @@
 
     </div>
 
+    <!-- ============================================== -->
+    <!-- Personalized Appearance / Hidden Skin Settings -->
+    <!-- ============================================== -->
+    <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3.5 transition-all">
+      <div class="flex items-center justify-between">
+        <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span>🎨</span> 个性化外观
+        </div>
+        <span v-if="store.settings.unlockedSkins.includes('chamber')" 
+              class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 font-medium">
+          已解锁隐藏皮肤
+        </span>
+      </div>
+
+      <!-- State A: NOT Unlocked Yet -->
+      <div v-if="!store.settings.unlockedSkins.includes('chamber')" class="space-y-2.5">
+        <p class="text-xs text-zinc-400 leading-relaxed">
+          输入暗号，解锁隐藏界面皮肤
+        </p>
+
+        <div class="space-y-1.5">
+          <div class="flex items-center gap-2">
+            <div class="relative flex-1">
+              <input :type="showPasscode ? 'text' : 'password'"
+                     v-model="passcodeInput"
+                     maxlength="30"
+                     autocomplete="off"
+                     @keydown.enter.prevent="handlePasscodeSubmit"
+                     placeholder="输入解锁暗号..."
+                     class="w-full bg-zinc-950 border text-xs text-zinc-100 rounded-xl px-3 py-2.5 pr-9 focus:outline-none transition-colors font-mono"
+                     :class="[passcodeError ? 'border-red-500/80 focus:border-red-500' : 'border-zinc-800 focus:border-amber-500/60']" />
+              
+              <button type="button"
+                      @click="showPasscode = !showPasscode"
+                      class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 p-1 text-xs transition-colors"
+                      :title="showPasscode ? '隐藏' : '显示'">
+                <span v-if="showPasscode">👁️</span>
+                <span v-else>🔒</span>
+              </button>
+            </div>
+
+            <button @click="handlePasscodeSubmit"
+                    class="py-2.5 px-4 bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center flex-shrink-0">
+              确认
+            </button>
+          </div>
+
+          <!-- Subtle inline error message -->
+          <div v-if="passcodeError" class="text-xs text-red-400 flex items-center gap-1 pl-1 pt-0.5">
+            <span>⚠️</span> 暗号不正确
+          </div>
+        </div>
+      </div>
+
+      <!-- State B: Unlocked (Skin Selector) -->
+      <div v-else class="space-y-3">
+        <div class="grid grid-cols-2 gap-2">
+          <!-- Option 1: Default Skin -->
+          <button @click="handleSelectSkin('default')"
+                  class="p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between h-24"
+                  :class="[
+                    store.settings.uiSkin === 'default' 
+                      ? 'bg-zinc-800/90 border-amber-500/80 shadow-md ring-1 ring-amber-500/40' 
+                      : 'bg-zinc-950 border-zinc-800/80 hover:border-zinc-700 opacity-75'
+                  ]">
+            <div class="flex items-center justify-between w-full">
+              <span class="text-xs font-bold text-zinc-100 flex items-center gap-1">
+                <span>🌑</span> 默认外观
+              </span>
+              <span v-if="store.settings.uiSkin === 'default'" class="w-2 h-2 rounded-full bg-amber-400"></span>
+            </div>
+            <div class="text-[10px] text-zinc-400 leading-tight">
+              经典深灰黑 · 活力琥珀金
+            </div>
+            <div class="flex items-center gap-1 mt-1">
+              <span class="w-3 h-3 rounded-full bg-zinc-950 border border-zinc-700"></span>
+              <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+              <span v-if="store.settings.uiSkin === 'default'" class="text-[9px] text-amber-400 font-bold ml-auto font-mono">当前生效</span>
+            </div>
+          </button>
+
+          <!-- Option 2: Chamber Skin -->
+          <button @click="handleSelectSkin('chamber')"
+                  class="p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between h-24"
+                  :class="[
+                    store.settings.uiSkin === 'chamber' 
+                      ? 'bg-zinc-800/90 border-amber-500/80 shadow-md ring-1 ring-amber-500/40' 
+                      : 'bg-zinc-950 border-zinc-800/80 hover:border-zinc-700 opacity-75'
+                  ]">
+            <div class="flex items-center justify-between w-full">
+              <span class="text-xs font-bold text-zinc-100 flex items-center gap-1">
+                <span>⚜️</span> 尚博勒
+              </span>
+              <span v-if="store.settings.uiSkin === 'chamber'" class="w-2 h-2 rounded-full bg-amber-400"></span>
+            </div>
+            <div class="text-[10px] text-zinc-400 leading-tight">
+              法式精密深蓝 · 香槟流金
+            </div>
+            <div class="flex items-center gap-1 mt-1">
+              <span class="w-3 h-3 rounded-full bg-[#070B14] border border-[#1E3052]"></span>
+              <span class="w-3 h-3 rounded-full bg-[#E5C378]"></span>
+              <span v-if="store.settings.uiSkin === 'chamber'" class="text-[9px] text-amber-400 font-bold ml-auto font-mono">当前生效</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Restore Default Skin Button (Visible when chamber skin is active) -->
+        <div v-if="store.settings.uiSkin === 'chamber'" class="pt-1">
+          <button @click="handleRestoreDefaultSkin"
+                  class="w-full py-2 bg-zinc-950 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 text-xs font-medium rounded-xl border border-zinc-800 transition-colors flex items-center justify-center gap-1.5">
+            <span>↩️</span> 恢复默认外观
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Data Backup & Reset -->
     <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3">
       <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">
@@ -166,14 +282,68 @@
       </div>
     </div>
 
+    <!-- In-page Toast Notification -->
+    <div v-if="toastText"
+         class="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-zinc-900/95 border border-amber-500/50 shadow-2xl rounded-full text-xs font-bold text-amber-400 flex items-center gap-2 backdrop-blur-md">
+      <span>✨</span>
+      <span>{{ toastText }}</span>
+    </div>
+
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
-import { store, exportBackupJSON, importBackupJSON, resetAllDataToDefault } from "../store/fitnessStore.js";
+import { 
+  store, 
+  exportBackupJSON, 
+  importBackupJSON, 
+  resetAllDataToDefault,
+  unlockChamberSkin,
+  setUISkin,
+  restoreDefaultSkin
+} from "../store/fitnessStore.js";
 
 const fileInput = ref(null);
+const passcodeInput = ref("");
+const showPasscode = ref(false);
+const passcodeError = ref(false);
+const toastText = ref("");
+let toastTimeout = null;
+
+function showToast(msg) {
+  toastText.value = msg;
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toastText.value = "";
+  }, 2500);
+}
+
+function handlePasscodeSubmit() {
+  passcodeError.value = false;
+  const result = unlockChamberSkin(passcodeInput.value);
+  if (result.success) {
+    passcodeInput.value = "";
+    passcodeError.value = false;
+    showToast(result.message);
+  } else {
+    passcodeError.value = true;
+  }
+}
+
+function handleSelectSkin(skinName) {
+  setUISkin(skinName);
+  if (skinName === "chamber") {
+    showToast("已启用尚博勒隐藏皮肤");
+  } else {
+    showToast("已切换至默认外观");
+  }
+}
+
+function handleRestoreDefaultSkin() {
+  const result = restoreDefaultSkin();
+  showToast(result.message);
+}
 
 const totalVolumeMetric = computed(() => {
   const sum = store.workoutLogs.reduce((acc, l) => acc + (l.totalVolume || 0), 0);
@@ -234,7 +404,7 @@ function handleFileSelected(e) {
     if (typeof content === "string") {
       const ok = importBackupJSON(content);
       if (ok) {
-        alert("🎉 备份数据已成功恢复！");
+        showToast("🎉 备份数据已成功恢复！");
       } else {
         alert("❌ 备份文件格式错误，导入失败。");
       }
@@ -246,7 +416,8 @@ function handleFileSelected(e) {
 function handleResetDefaults() {
   if (confirm("确定要恢复出厂默认设置吗？已有的自定义修改将被重置为推拉腿黄金模板。")) {
     resetAllDataToDefault();
-    alert("已恢复默认设置！");
+    showToast("已恢复出厂默认设置！");
   }
 }
 </script>
+

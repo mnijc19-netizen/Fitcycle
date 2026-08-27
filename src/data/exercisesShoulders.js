@@ -68,7 +68,7 @@
     commonMistakes: ["腰部过度向前拱起悬空变成斜板卧推", "下放幅度太浅只有半程"],
     substitutes: [
       { name: "坐姿哑铃推肩", reason: "自由平衡与稳定肌群" },
-      { name: "站姿杠铃推举 (OHP)", reason: "全身联动力量之王" }
+      { name: "史密斯推肩", reason: "垂直轨道冲击负荷" }
     ]
   },
   {
@@ -91,32 +91,104 @@
     },
     commonMistakes: ["推起时头部过度前伸", "下放太低导致肩关节活动度不足受损"],
     substitutes: [
-      { name: "固定器械推肩", reason: "器械稳定冲刺大重量" },
-      { name: "站姿杠铃推举 (OHP)", reason: "全身爆发核心联动" }
+      { name: "阿诺德推举", reason: "结合前束旋转长行程" },
+      { name: "固定器械推肩", reason: "器械稳定冲刺大重量" }
     ]
   },
   {
-    id: "ex-overhead-barbell-press",
-    name: "站姿杠铃推举 (OHP)",
-    englishName: "Overhead Barbell Press (OHP)",
+    id: "ex-smith-shoulder-press",
+    name: "史密斯推肩",
+    englishName: "Smith Machine Shoulder Press",
     category: "肩部",
-    target: "肩部整体 / 全身复合推举之王",
-    secondaryMuscles: ["肱三头肌", "核心腹肌", "臀大肌"],
-    gifUrl: "./exercises/overhead-barbell-press.gif",
+    target: "三角肌前中束 / 稳定大重量推举",
+    secondaryMuscles: ["肱三头肌", "上胸部"],
+    gifUrl: "./exercises/smith-shoulder-press.gif",
     defaultSets: 4,
-    defaultReps: "6-8",
-    scienceDetail: "四大复合力量动作之一。从站姿脚底传导力量至头顶，构建强韧的核心支撑力与宽厚饱满的虎头肩。",
-    tags: ["四大项之一", "站姿核心", "全身爆发推力"],
+    defaultReps: "8-10",
+    scienceDetail: "史密斯导轨保障完全直立的推举轨迹，无需浪费精力在前后晃动上，专注将最大重量直接压在肩部三角肌上。",
+    tags: ["史密斯大重量", "前束围度", "安全冲刺"],
     tips: {
-      prep: "双脚与肩同宽站稳，夹紧臀部收紧核心，杠铃架在锁骨上方，握距略宽于肩。",
-      execution: "头部微后仰让出杠铃轨迹，垂直向上推起杠铃，过头顶后头部自然回正。",
-      peak: "顶峰锁紧肩膀与上背，杠铃位于脚掌中心正上方。",
-      negative: "缓慢匀速下放回锁骨位置。"
+      prep: "推肩椅置于史密斯杠铃正下方，挺胸靠紧椅背，杠铃落在锁骨上方一指距离。",
+      execution: "垂直向上推起杠铃至顶峰。",
+      peak: "顶峰肘部微屈不锁死，停留挤压1秒。",
+      negative: "控制下放杠铃至下巴水平。"
     },
-    commonMistakes: ["腰部过度后仰借力导致腰椎反弓受压", "肘部向后张开失去前推力线"],
+    commonMistakes: ["身体前移变成斜板推胸", "手腕过度后翻"],
     substitutes: [
-      { name: "坐姿哑铃推肩", reason: "有靠背保护腰椎" },
-      { name: "固定器械推肩", reason: "器械固定轨道更安全" }
+      { name: "固定器械推肩", reason: "双轴收敛轨迹" },
+      { name: "坐姿哑铃推肩", reason: "自由平衡" }
+    ]
+  },
+  {
+    id: "ex-arnold-press",
+    name: "阿诺德推举 (Arnold Press)",
+    englishName: "Arnold Press",
+    category: "肩部",
+    target: "三角肌前束与中束 / 长行程旋转",
+    secondaryMuscles: ["肱三头肌", "上胸部"],
+    gifUrl: "./exercises/arnold-press.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    scienceDetail: "施瓦辛格招牌动作！通过从下至上的手腕180度旋转，让三角肌前束在最底部完全受力，并平滑过渡到中束顶峰收缩。",
+    tags: ["长行程旋转", "阿诺德经典", "全方位刺激"],
+    tips: {
+      prep: "坐姿靠背，双手掌心朝向自己（反握）持哑铃于锁骨前，肘部内夹。",
+      execution: "向上推起哑铃的同时将手腕向外旋转180度，直至顶峰掌心向前。",
+      peak: "在最高点挤压三角肌整体1秒。",
+      negative: "按原路径旋转内收慢速下落回胸前。"
+    },
+    commonMistakes: ["旋转过快导致动作脱节", "使用过大重量伤肩袖"],
+    substitutes: [
+      { name: "坐姿哑铃推肩", reason: "标准垂直推举" },
+      { name: "前平举", reason: "孤立三角肌前束" }
+    ]
+  },
+  {
+    id: "ex-front-raise",
+    name: "哑铃前平举",
+    englishName: "Dumbbell Front Raise",
+    category: "肩部",
+    target: "三角肌前束单关节孤立",
+    secondaryMuscles: ["上胸锁骨头"],
+    gifUrl: "./exercises/front-raise.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    scienceDetail: "单关节孤立三角肌前束。手臂微屈锁死，垂直向前上方平举，打造前肩饱满隆起与锁骨交界立体度。",
+    tags: ["前束孤立", "锁骨立体", "单关节"],
+    tips: {
+      prep: "站姿挺胸收腹，双手持哑铃垂于大腿前侧，掌心朝后或相对。",
+      execution: "由前束发力将哑铃向前上方平举至眼睛高度。",
+      peak: "顶峰停留挤压前束1.5秒。",
+      negative: "控制慢速下放，不要让哑铃直接砸回大腿。"
+    },
+    commonMistakes: ["身体大幅度向后晃动甩起哑铃", "耸肩过度代偿"],
+    substitutes: [
+      { name: "绳索前平举", reason: "全程恒定阻力" },
+      { name: "坐姿哑铃推肩", reason: "复合推举" }
+    ]
+  },
+  {
+    id: "ex-cable-front-raise",
+    name: "绳索前平举",
+    englishName: "Cable Front Raise",
+    category: "肩部",
+    target: "三角肌前束 / 恒定张力",
+    secondaryMuscles: ["上胸部"],
+    gifUrl: "./exercises/cable-front-raise.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    scienceDetail: "利用低位绳索拉力，在动作初始位置就提供强大张力，最大化延长三角肌前束受力时间。",
+    tags: ["恒定张力", "前束充血", "拉伸张力"],
+    tips: {
+      prep: "背对龙门架跨过低滑轮绳索，单手或双手正握把手，躯干微前倾。",
+      execution: "前束发力向前上方拉起把手至视线水平。",
+      peak: "最高点收紧前束1秒。",
+      negative: "匀速退让回放至大腿后侧。"
+    },
+    commonMistakes: ["甩腰借力", "手肘过度弯曲"],
+    substitutes: [
+      { name: "哑铃前平举", reason: "自由重量" },
+      { name: "绳索侧平举", reason: "针对中束肩宽" }
     ]
   },
   {
