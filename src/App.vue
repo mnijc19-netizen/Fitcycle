@@ -18,6 +18,9 @@
     <!-- Floating Rest Timer Overlay -->
     <RestTimerFloat />
 
+    <!-- Session-only mobile AI assistant; existing views stay mounted behind it. -->
+    <AIAssistantDrawer />
+
     <!-- Fixed Bottom Mobile Navigation Bar -->
     <TabBar />
   </div>
@@ -28,6 +31,7 @@ import { store } from "./store/fitnessStore.js";
 import Navbar from "./components/Navbar.vue";
 import TabBar from "./components/TabBar.vue";
 import RestTimerFloat from "./components/RestTimerFloat.vue";
+import AIAssistantDrawer from "./components/AIAssistantDrawer.vue";
 
 import TodayView from "./views/TodayView.vue";
 import CycleView from "./views/CycleView.vue";
