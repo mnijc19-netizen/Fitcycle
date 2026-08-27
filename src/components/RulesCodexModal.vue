@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div v-if="visible" class="fixed inset-0 z-50 flex items-center justify-center p-4">
     <!-- Backdrop blur -->
     <div class="absolute inset-0 bg-black/85 backdrop-blur-md" @click="$emit('close')"></div>
@@ -115,13 +115,27 @@
             </p>
           </div>
 
-          <div class="p-3.5 bg-zinc-900/80 border border-zinc-800 rounded-2xl space-y-1.5">
+          <div class="p-3.5 bg-zinc-900/80 border border-zinc-800 rounded-2xl space-y-2">
             <div class="text-sky-400 font-black flex items-center gap-1.5 text-xs">
-              <span>🛡️</span> 战术减载周与伤病休养盾牌 (Deload Shield)
+              <span>🛡️</span> 战术减载盾牌：获取、充能与消耗法则
             </div>
             <p class="text-zinc-300 text-[11px]">
-              当处于主动减载周、生病发烧或因公出差无法训练时，可在【统计设置】开启免战盾牌，开启期间<span class="text-sky-300 font-bold">战力衰减完全冻结为 0</span>，避免产生心理焦虑！
+              为了防止滥用并遵循科学周期化减载训练原则，战力免战盾牌设有严格的**做工充能与使用机制**：
             </p>
+            <div class="space-y-1.5 font-mono text-[10px]">
+              <div class="p-2 rounded-xl bg-zinc-950 border border-zinc-800 text-sky-300">
+                <span class="font-bold">✦ 充能铸造机制:</span> 每完成 <span class="font-bold text-amber-300">12 次有效训练打卡</span>（约 3~4 周系统化训练），自动充能铸造 1 枚战术盾牌。
+              </div>
+              <div class="p-2 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-300">
+                <span class="font-bold">✦ 储备上限:</span> 最多同时储备 <span class="font-bold text-white">2 枚盾牌</span>（新兵初始获赠 1 枚新手护航盾）。
+              </div>
+              <div class="p-2 rounded-xl bg-zinc-950 border border-zinc-800 text-emerald-300">
+                <span class="font-bold">✦ 激活与效力:</span> 消耗 1 枚盾牌激活 <span class="font-bold">7 天战力绝对冻结期</span>（0 衰减），期间完成任意训练打卡自动解除。
+              </div>
+              <div class="p-2 rounded-xl bg-zinc-950 border border-zinc-800 text-orange-300">
+                <span class="font-bold">✦ 周期冷却保护:</span> 每次使用后享有 <span class="font-bold">14 天训练适应冷却期</span>，杜绝无限免战。
+              </div>
+            </div>
           </div>
         </div>
 

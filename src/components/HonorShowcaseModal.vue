@@ -59,37 +59,67 @@
             </div>
           </div>
 
-          <!-- Inactivity Status / Deload Shield Notice -->
-          <div v-if="honorData.isDeloadActive"
-               class="p-2.5 rounded-xl bg-sky-950/60 border border-sky-500/50 text-[11px] text-sky-300 text-left flex items-center justify-between gap-2 shadow-sm shadow-sky-500/20">
-            <div class="flex items-center gap-2">
-              <span class="text-base">🛡️</span>
-              <span class="leading-tight font-medium">战术减载免战盾牌生效中 (战力已冻结免扣分)</span>
+          <!-- Tactical Deload Shield Inventory & Status Module -->
+          <div class="p-3 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-2.5 text-left">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5 text-xs font-bold text-sky-400">
+                <span>🛡️</span>
+                <span>战术减载免战盾牌</span>
+              </div>
+              <span class="text-[10px] font-mono font-black px-2 py-0.5 rounded-full border"
+                    :class="honorData.shieldInventory.available > 0 ? 'bg-sky-500/15 border-sky-500/40 text-sky-300' : 'bg-zinc-900 border-zinc-800 text-zinc-500'">
+                储备: {{ honorData.shieldInventory.available }}/{{ honorData.shieldInventory.maxCapacity }} 枚
+              </span>
             </div>
-            <button @click="handleToggleDeload(false)" class="text-[10px] px-2 py-0.5 rounded bg-sky-900/80 hover:bg-sky-800 text-sky-200 border border-sky-600/50 font-bold whitespace-nowrap">
-              提前归队
-            </button>
-          </div>
 
-          <div v-else-if="honorData.decayInfo.decayPoints > 0" 
-               class="p-2 rounded-xl bg-red-950/50 border border-red-500/40 text-[11px] text-red-300 text-left flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2">
-              <span>🚨</span>
-              <span class="leading-tight">{{ honorData.decayInfo.warningMessage }} (已衰减 -{{ honorData.decayInfo.decayPoints }}分)</span>
+            <!-- Shield Charging Progress Bar (1 Shield per 12 Workouts) -->
+            <div class="space-y-1">
+              <div class="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
+                <span>下一枚充能: {{ honorData.shieldInventory.currentChargeWorkouts }}/12 次训练</span>
+                <span class="text-sky-300 font-bold">还需 {{ honorData.shieldInventory.nextShieldRemaining }} 次打卡</span>
+              </div>
+              <div class="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden border border-zinc-800">
+                <div class="h-full bg-gradient-to-r from-sky-500 to-indigo-500 transition-all duration-500 rounded-full"
+                     :style="{ width: `${honorData.shieldInventory.chargePercent}%` }"></div>
+              </div>
             </div>
-            <button @click="handleToggleDeload(true)" class="text-[10px] px-2 py-0.5 rounded bg-sky-600 hover:bg-sky-500 text-white font-bold whitespace-nowrap">
-              开启减载盾
-            </button>
-          </div>
 
-          <div v-else class="p-2 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-[10px] text-emerald-300 flex items-center justify-between gap-1.5">
-            <div class="flex items-center gap-1.5">
-              <span>⚡</span>
-              <span>肌肉状态满血，未受怠惰衰减影响</span>
+            <!-- Shield Dynamic Status Banner & Action Button -->
+            <!-- 1. Active State -->
+            <div v-if="honorData.isDeloadActive"
+                 class="p-2.5 rounded-xl bg-sky-950/60 border border-sky-500/50 text-[11px] text-sky-300 flex items-center justify-between gap-2 shadow-sm shadow-sky-500/20">
+              <div class="flex items-center gap-2">
+                <span class="text-base">🛡️</span>
+                <span class="leading-tight font-medium">免战盾生效中 (剩余 {{ honorData.shieldDaysRemaining }} 天免扣分)</span>
+              </div>
+              <button @click="handleToggleDeload(false)" class="text-[10px] px-2.5 py-1 rounded-lg bg-sky-900 hover:bg-sky-800 text-sky-200 border border-sky-600/50 font-bold whitespace-nowrap active:scale-95 transition-all">
+                提前归队
+              </button>
             </div>
-            <button @click="handleToggleDeload(true)" class="text-[10px] px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 font-bold whitespace-nowrap">
-              🛡️ 减载休整
-            </button>
+
+            <!-- 2. Cooldown State -->
+            <div v-else-if="honorData.isCooldownActive"
+                 class="p-2 rounded-xl bg-zinc-900/90 border border-zinc-800 text-[10px] text-zinc-400 flex items-center justify-between gap-1.5">
+              <span>⏳ 减载休整冷却中 (还需 {{ honorData.cooldownDaysRemaining }} 天方可再次使用)</span>
+              <span class="text-zinc-600 font-mono text-[9px]">防连续休战</span>
+            </div>
+
+            <!-- 3. Ready to Activate -->
+            <div v-else-if="honorData.shieldInventory.available > 0"
+                 class="flex items-center justify-between gap-2 pt-0.5">
+              <span class="text-[10px] text-zinc-400">消耗 1 枚盾牌，冻结 7 天战力衰减</span>
+              <button @click="handleToggleDeload(true)" 
+                      class="text-xs px-3 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold shadow-md shadow-sky-500/20 active:scale-95 transition-all whitespace-nowrap flex items-center gap-1">
+                <span>🛡️</span>
+                <span>激活 7 天免战盾</span>
+              </button>
+            </div>
+
+            <!-- 4. No Shields Available -->
+            <div v-else class="p-2 rounded-xl bg-zinc-900/60 border border-zinc-800/80 text-[10px] text-zinc-500 flex items-center justify-between">
+              <span>暂无可用盾牌，完成 12 次训练即可自动铸造</span>
+              <span class="font-mono text-zinc-400 font-bold">做工充能</span>
+            </div>
           </div>
 
           <!-- Progression Bar to Next Tier -->
@@ -213,8 +243,11 @@ const visibleBadges = computed(() => {
 
 function handleToggleDeload(enable) {
   if (enable) {
-    if (confirm("🛡️ 确认申报开启【7天战术减载免战期】？\n期间战力怠惰衰减将完全冻结（0扣分），适合主动减载周或伤病休养！")) {
-      toggleDeloadShield(true, 7);
+    if (confirm("🛡️ 确认消耗 1 枚战术盾牌开启【7天战术减载免战期】？\n\n期间战力怠惰衰减将完全冻结（0扣分），适合主动减载周或伤病休养！")) {
+      const res = toggleDeloadShield(true, 7);
+      if (!res.success) {
+        alert(res.message);
+      }
     }
   } else {
     toggleDeloadShield(false);

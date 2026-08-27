@@ -4,7 +4,7 @@ import { playSetCompleteSound, playRestCompleteSound, playWorkoutDoneSound } fro
 import { triggerHaptic } from "../utils/vibrate.js";
 import { requestNotificationPermission, sendRestCompleteNotification, updateDocumentTitleForTimer, setRestCompleteTitle, resetDocumentTitle } from "../utils/notification.js";
 import { DEFAULT_SETTINGS, sanitizeSettings, verifyPasscode, getPasscodeSkin, VALID_SKINS, applySkinToDOM } from "../utils/themeManager.js";
-import { calculateInactivityDecay, calculateSessionPointsEarned, getTierForScore, evaluateUnlockedBadges, calculateEquivalentTonnage } from "../engine/honorEngine.js";
+import { calculateInactivityDecay, calculateSessionPointsEarned, getTierForScore, evaluateUnlockedBadges, calculateEquivalentTonnage, calculateShieldInventory } from "../engine/honorEngine.js";
 import { getSkinHonorPresentation } from "../engine/skinHonorSchemas.js";
 
 const STORAGE_KEY = "fitcycle_app_data_v1";
@@ -949,6 +949,14 @@ export function getFullHonorProfile() {
   const allUnlocked = getUnlockedBadgesList();
   const presentation = getSkinHonorPresentation(store.settings.uiSkin, finalTier, allUnlocked);
 
+  // Deload Shield Inventory & Cooldown Calculations
+  const totalWorkouts = (store.workoutLogs || []).length;
+  const usedShields = honor.usedShieldsCount || 0;
+  const shieldInventory = calculateShieldInventory(totalWorkouts, usedShields, 1);
+  const isCooldownActive = !!(honor.shieldCooldownUntil && honor.shieldCooldownUntil > Date.now() && !isDeloadActive);
+  const cooldownDaysRemaining = isCooldownActive ? Math.ceil((honor.shieldCooldownUntil - Date.now()) / (1000 * 86400)) : 0;
+  const shieldDaysRemaining = isDeloadActive ? Math.max(1, Math.ceil((honor.deloadShieldUntil - Date.now()) / (1000 * 86400))) : 0;
+
   return {
     score: decayedScore,
     rawScore,
@@ -960,7 +968,11 @@ export function getFullHonorProfile() {
     highestScore: honor.highestScore || rawScore,
     badges: presentation.badges,
     isDeloadActive,
-    deloadShieldUntil: honor.deloadShieldUntil || 0
+    deloadShieldUntil: honor.deloadShieldUntil || 0,
+    shieldDaysRemaining,
+    isCooldownActive,
+    cooldownDaysRemaining,
+    shieldInventory
   };
 }
 
@@ -968,13 +980,44 @@ export function toggleDeloadShield(enable, days = 7) {
   if (!store.honorProfile) {
     store.honorProfile = { score: 850, prestigeLevel: 1, prestigeYear: new Date().getFullYear(), highestScore: 850, lastWorkoutTimestamp: Date.now(), unlockedBadges: [] };
   }
+  const honor = store.honorProfile;
+  const totalWorkouts = (store.workoutLogs || []).length;
+  const usedShields = honor.usedShieldsCount || 0;
+  const shieldInventory = calculateShieldInventory(totalWorkouts, usedShields, 1);
+
   if (enable) {
-    store.honorProfile.deloadShieldUntil = Date.now() + days * 86400000;
+    // Check if user has available shields
+    if (shieldInventory.available <= 0) {
+      if (store.settings.vibrationEnabled) triggerHaptic("warning");
+      return { 
+        success: false, 
+        reason: "no_shield", 
+        message: `战术盾牌数量不足！每完成 12 次训练可充能铸造 1 枚（当前充能进度 ${shieldInventory.currentChargeWorkouts}/12 次）。` 
+      };
+    }
+
+    // Check cooldown
+    if (honor.shieldCooldownUntil && honor.shieldCooldownUntil > Date.now() && !(honor.deloadShieldUntil && honor.deloadShieldUntil > Date.now())) {
+      const daysLeft = Math.ceil((honor.shieldCooldownUntil - Date.now()) / (1000 * 86400));
+      if (store.settings.vibrationEnabled) triggerHaptic("warning");
+      return { 
+        success: false, 
+        reason: "cooldown", 
+        message: `减载休整冷却中！为了保证周期化训练效果，还需 ${daysLeft} 天方可再次使用。` 
+      };
+    }
+
+    // Consume 1 shield and activate
+    honor.usedShieldsCount = usedShields + 1;
+    honor.deloadShieldUntil = Date.now() + days * 86400000;
+    honor.shieldCooldownUntil = Date.now() + (days + 14) * 86400000; // 7 days active + 14 days cooldown
+    if (store.settings.vibrationEnabled) triggerHaptic("medium");
+    return { success: true, message: `已成功消耗 1 枚战术盾牌，开启 ${days} 天免战保护！` };
   } else {
-    store.honorProfile.deloadShieldUntil = 0;
+    honor.deloadShieldUntil = 0;
+    if (store.settings.vibrationEnabled) triggerHaptic("light");
+    return { success: true, message: "已提前归队，恢复正常做工战力结算！" };
   }
-  if (store.settings.vibrationEnabled) triggerHaptic("medium");
-  return store.honorProfile.deloadShieldUntil > Date.now();
 }
 
 export function performPrestigeReset() {

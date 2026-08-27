@@ -6,10 +6,11 @@ import {
   getTierForScore,
   evaluateUnlockedBadges,
   validateInputSanity,
+  calculateShieldInventory,
   PRESTIGE_MEDAL_COLORS
 } from "../src/engine/honorEngine.js";
 import { SKIN_HONOR_SCHEMAS, getSkinHonorPresentation } from "../src/engine/skinHonorSchemas.js";
-import { store, recordBodyMetric, getFullHonorProfile, performPrestigeReset, resetAllDataToDefault } from "../src/store/fitnessStore.js";
+import { store, recordBodyMetric, getFullHonorProfile, performPrestigeReset, resetAllDataToDefault, toggleDeloadShield } from "../src/store/fitnessStore.js";
 
 describe("Fitcycle Core Constitution & Honor Rating Engine", () => {
   beforeEach(() => {
@@ -168,6 +169,58 @@ describe("Fitcycle Core Constitution & Honor Rating Engine", () => {
       expect(success).toBe(true);
       expect(store.honorProfile.prestigeLevel).toBe(2);
       expect(store.honorProfile.score).toBe(2400);
+    });
+  });
+
+  describe("6. Tactical Deload Shield Acquisition, Recharge & Cooldown", () => {
+    it("calculates shield recharge: 1 initial gift + 1 shield per 12 workouts (max 2 capacity)", () => {
+      // 0 workouts -> 1 initial shield
+      const inv0 = calculateShieldInventory(0, 0, 1);
+      expect(inv0.available).toBe(1);
+      expect(inv0.currentChargeWorkouts).toBe(0);
+      expect(inv0.nextShieldRemaining).toBe(12);
+
+      // 6 workouts -> 1 shield, 50% charge
+      const inv6 = calculateShieldInventory(6, 0, 1);
+      expect(inv6.available).toBe(1);
+      expect(inv6.currentChargeWorkouts).toBe(6);
+      expect(inv6.chargePercent).toBe(50);
+
+      // 12 workouts -> 2 shields (reached max capacity 2)
+      const inv12 = calculateShieldInventory(12, 0, 1);
+      expect(inv12.available).toBe(2);
+      expect(inv12.currentChargeWorkouts).toBe(0);
+
+      // 36 workouts (e.g. month 3 user) with 2 shields used previously -> 2 available
+      const inv36 = calculateShieldInventory(36, 2, 1);
+      expect(inv36.available).toBe(2);
+    });
+
+    it("activates deload shield, consumes 1 shield, and enlists 14-day cooldown", () => {
+      store.workoutLogs = [];
+      const profile = getFullHonorProfile();
+      expect(profile.shieldInventory.available).toBe(1);
+
+      // Activate shield
+      const res = toggleDeloadShield(true, 7);
+      expect(res.success).toBe(true);
+      expect(store.honorProfile.deloadShieldUntil).toBeGreaterThan(Date.now());
+      expect(store.honorProfile.usedShieldsCount).toBe(1);
+
+      // After consuming the only shield, available becomes 0
+      const profileActive = getFullHonorProfile();
+      expect(profileActive.isDeloadActive).toBe(true);
+      expect(profileActive.shieldInventory.available).toBe(0);
+
+      // Attempting to activate again when 0 available fails gracefully
+      const resFail = toggleDeloadShield(true, 7);
+      expect(resFail.success).toBe(false);
+      expect(resFail.reason).toBe("no_shield");
+
+      // Early return
+      const resReturn = toggleDeloadShield(false);
+      expect(resReturn.success).toBe(true);
+      expect(getFullHonorProfile().isDeloadActive).toBe(false);
     });
   });
 });

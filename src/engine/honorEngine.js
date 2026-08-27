@@ -287,3 +287,35 @@ export function validateInputSanity(weight = 0, reps = 0, volume = 0) {
   }
   return { isAnomalous: false };
 }
+
+export const WORKOUTS_PER_SHIELD = 12;
+export const MAX_SHIELDS_CAPACITY = 2;
+export const SHIELD_DURATION_DAYS = 7;
+export const SHIELD_COOLDOWN_DAYS = 14;
+
+/**
+ * Calculates user's Deload Shield inventory, available count, and recharge progress
+ * Formula: 1 Initial Welcome Shield + 1 Earned Shield per 12 Workouts Completed (Max Capacity: 2)
+ * @param {number} totalWorkoutsCount 
+ * @param {number} usedShieldsCount 
+ * @param {number} initialGift 
+ * @returns {Object} { available, maxCapacity, totalEarned, usedCount, currentChargeWorkouts, nextShieldRemaining, chargePercent }
+ */
+export function calculateShieldInventory(totalWorkoutsCount = 0, usedShieldsCount = 0, initialGift = 1) {
+  const earnedFromWorkouts = Math.floor(Math.max(0, totalWorkoutsCount) / WORKOUTS_PER_SHIELD);
+  const totalEarned = initialGift + earnedFromWorkouts;
+  const available = Math.max(0, Math.min(MAX_SHIELDS_CAPACITY, totalEarned - Math.max(0, usedShieldsCount)));
+  const currentChargeWorkouts = Math.max(0, totalWorkoutsCount) % WORKOUTS_PER_SHIELD;
+  const nextShieldRemaining = WORKOUTS_PER_SHIELD - currentChargeWorkouts;
+  const chargePercent = Math.round((currentChargeWorkouts / WORKOUTS_PER_SHIELD) * 100);
+
+  return {
+    available,
+    maxCapacity: MAX_SHIELDS_CAPACITY,
+    totalEarned,
+    usedCount: usedShieldsCount,
+    currentChargeWorkouts,
+    nextShieldRemaining,
+    chargePercent
+  };
+}
