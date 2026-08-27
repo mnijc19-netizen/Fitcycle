@@ -173,22 +173,24 @@
         </button>
       </div>
 
-      <!-- Tactical Deload Shield (Article 4.4) -->
-      <div class="flex items-center justify-between py-1.5 border-t border-zinc-800/80">
+      <!-- Tactical Deload Shield Status Entry (Points to Honor Showcase) -->
+      <div class="flex items-center justify-between py-1.5 border-t border-zinc-800/80 cursor-pointer hover:opacity-80 transition-opacity"
+           @click="showHonorModal = true">
         <div>
           <div class="text-xs font-bold text-sky-300 flex items-center gap-1.5">
-            <span>🛡️</span> 战术休整 / 减载免战盾牌
+            <span>🛡️</span> 战术减载盾牌档案
           </div>
           <div class="text-[10px] text-zinc-400">
-            {{ isDeloadActive ? '免战期生效中：战力怠惰衰减已冻结 (0扣分)' : '主动减载周或伤病休养时开启，冻结天梯掉分' }}
+            <span v-if="isDeloadActive" class="text-emerald-400 font-bold">免战休整期生效中 (剩余 {{ honorData.shieldDaysRemaining }} 天)</span>
+            <span v-else-if="honorData.shieldInventory.available > 0" class="text-sky-300">当前已铸造储备: {{ honorData.shieldInventory.available }}/2 枚 (点击查看/使用)</span>
+            <span v-else-if="honorData.shieldInventory.isNoviceProbation" class="text-amber-400">新兵筑基中 ({{ honorData.shieldInventory.currentChargeWorkouts }}/16 次)</span>
+            <span v-else class="text-zinc-500">做工充能进度: {{ honorData.shieldInventory.currentChargeWorkouts }}/16 次打卡</span>
           </div>
         </div>
-        <button @click="onToggleDeload(!isDeloadActive)"
-                class="w-12 h-6 rounded-full transition-colors relative p-0.5"
-                :class="[isDeloadActive ? 'bg-sky-500 shadow-sm shadow-sky-500/30' : 'bg-zinc-800']">
-          <div class="w-5 h-5 rounded-full bg-white transition-transform transform"
-               :class="[isDeloadActive ? 'translate-x-6' : 'translate-x-0']"></div>
-        </button>
+        <span class="text-xs text-zinc-500 flex items-center gap-0.5">
+          <span>查看</span>
+          <span class="text-zinc-600">→</span>
+        </span>
       </div>
 
     </div>
@@ -518,18 +520,6 @@ const showRulesModal = ref(false);
 const showOnboardingModal = ref(false);
 const honorData = computed(() => getFullHonorProfile());
 const isDeloadActive = computed(() => honorData.value.isDeloadActive);
-
-function onToggleDeload(enable) {
-  if (enable) {
-    if (confirm("🛡️ 确认申报开启【7天战术减载免战期】？\n期间战力怠惰衰减将完全冻结（0扣分），适合主动减载周或伤病休养！")) {
-      toggleDeloadShield(true, 7);
-      showToast("🛡️ 已开启 7 天战术减载免战保护！");
-    }
-  } else {
-    toggleDeloadShield(false);
-    showToast("⚡ 已退出减载期，恢复常规战力机制！");
-  }
-}
 
 const vTaperRatio = computed(() => {
   const history = store.bodyMetrics || [];
