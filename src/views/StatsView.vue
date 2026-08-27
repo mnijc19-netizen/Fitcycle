@@ -248,6 +248,8 @@
       </div>
     </div>
 
+    <AISettingsPanel />
+
     <!-- Data Backup & Reset -->
     <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3">
       <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">
@@ -290,6 +292,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import AISettingsPanel from "../components/AISettingsPanel.vue";
 import { 
   store, 
   exportBackupJSON, 
