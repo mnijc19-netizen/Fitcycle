@@ -91,28 +91,31 @@
                class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3 py-2 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition-colors" />
       </div>
 
-      <!-- Visual Model Selection Cards (High Visibility!) -->
-      <div class="max-h-60 overflow-y-auto space-y-1.5 pr-1 scrollbar-thin">
+      <!-- 宫格卡片式模型选择列表 (2-Column Grid Layout) -->
+      <div class="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1 scrollbar-thin">
         <div v-for="model in visibleModels" :key="model.id"
              @click="selectedModelId = model.id"
-             class="p-2.5 rounded-xl border text-left cursor-pointer transition-all flex items-center justify-between gap-2 active:scale-98"
+             class="p-2.5 rounded-2xl border text-left cursor-pointer transition-all flex flex-col justify-between gap-2 relative overflow-hidden active:scale-95"
              :class="selectedModelId === model.id 
-               ? 'bg-amber-500/20 border-amber-500/80 text-white shadow-sm ring-1 ring-amber-500/40' 
-               : 'bg-zinc-950/90 border-zinc-800 hover:border-zinc-700 text-zinc-300'">
-          <div class="truncate">
-            <div class="flex items-center gap-1.5">
-              <span class="text-xs font-bold text-zinc-100 font-mono">{{ model.name || model.id }}</span>
-              <span v-if="selectedModelId === model.id" class="text-[9px] px-1.5 py-0.2 rounded bg-amber-500 text-zinc-950 font-black">当前生效</span>
+               ? 'bg-amber-500/15 border-amber-500 text-white shadow-md ring-1 ring-amber-500/50' 
+               : 'bg-zinc-950/80 border-zinc-800 hover:border-zinc-700 text-zinc-300'">
+          
+          <div>
+            <div class="flex items-center justify-between gap-1">
+              <span class="text-xs font-bold text-zinc-100 font-mono truncate">{{ model.name || model.id }}</span>
+              <span v-if="selectedModelId === model.id" class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0 animate-pulse"></span>
             </div>
-            <div class="text-[10px] text-zinc-500 font-mono truncate mt-0.5">{{ model.id }}</div>
+            <div class="text-[9px] text-zinc-500 font-mono truncate mt-0.5">{{ model.id }}</div>
           </div>
 
-          <!-- Feature Pills -->
-          <div class="flex items-center gap-1 flex-shrink-0 text-[9px] font-mono">
-            <span v-if="model.capabilities.reasoning" class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">深度思考</span>
-            <span v-if="model.capabilities.image" class="px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 font-bold">视觉识图</span>
-            <span v-if="model.capabilities.tools" class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">数据感知</span>
+          <!-- Feature Pills in Grid Card -->
+          <div class="flex flex-wrap gap-1 text-[8px] font-mono">
+            <span v-if="model.capabilities.reasoning" class="px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">🧠 深度思考</span>
+            <span v-if="model.capabilities.image" class="px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 font-bold">👁️ 视觉识图</span>
+            <span v-if="model.capabilities.tools" class="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">🛠️ 感知</span>
+            <span v-if="!model.capabilities.image && !model.capabilities.reasoning" class="px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">⚡ 纯文本</span>
           </div>
+
         </div>
       </div>
 
