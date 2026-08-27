@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div v-if="visible" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
     <div class="bg-zinc-900 border border-zinc-700/80 rounded-3xl p-5 max-w-sm w-full max-h-[90dvh] overflow-y-auto shadow-2xl text-center relative animate-in fade-in zoom-in-95 duration-200 scrollbar-none">
       
@@ -119,7 +119,7 @@
 import { ref, computed, watch } from "vue";
 import confetti from "canvas-confetti";
 import { store, resumeWorkoutFromSummary } from "../store/fitnessStore.js";
-import { analyzeWorkoutSummary } from "../ai/workoutAnalyzer.js";
+import { analyzeWorkoutSummary, buildDetailedWorkoutPrompt, buildInstantWorkoutCoachResponse } from "../ai/workoutAnalyzer.js";
 import { aiSession } from "../ai/aiSession.js";
 
 const props = defineProps({
@@ -156,14 +156,32 @@ function openDeepAIReview() {
   if (!props.summary) return;
   emit("close");
   
-  // Seed conversation with today's workout performance
-  const prompt = `我刚刚完成了【${props.summary.planName}】训练！用时 ${Math.round((props.summary.durationSeconds || 60) / 60)} 分钟，完成 ${props.summary.totalSets} 组，总容量 ${props.summary.totalVolume} kg。请对我今天的训练动作质量、发力感和下次调整给出深度专业指导！`;
+  const userPrompt = buildDetailedWorkoutPrompt(props.summary);
+  const analysis = aiAnalysis.value;
+  const instantCoachResponse = buildInstantWorkoutCoachResponse(props.summary, analysis);
   
   aiSession.drawerOpen = true;
+  
   aiSession.conversation.push({
+    id: `user_${Date.now()}`,
     role: "user",
-    content: prompt,
-    timestamp: Date.now()
+    text: userPrompt
+  });
+
+  aiSession.conversation.push({
+    id: `asst_${Date.now() + 1}`,
+    role: "assistant",
+    text: instantCoachResponse
+  });
+
+  aiSession.apiMessages.push({
+    role: "user",
+    content: userPrompt
+  });
+
+  aiSession.apiMessages.push({
+    role: "assistant",
+    content: instantCoachResponse
   });
 }
 

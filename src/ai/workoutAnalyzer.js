@@ -127,3 +127,55 @@ export function analyzeWorkoutSummary(summary, workoutLogs = [], skin = "default
     tacticalBadge
   };
 }
+
+/**
+ * Builds a structured markdown prompt summarizing the workout session for deep AI coaching
+ */
+export function buildDetailedWorkoutPrompt(summary) {
+  if (!summary) return "";
+  const durationMin = Math.max(1, Math.round((summary.durationSeconds || 60) / 60));
+  let text = `我刚刚完成了【${summary.planName || '今日训练'}】！\n\n`;
+  text += `📊 **本次训练数据：**\n`;
+  text += `- 训练用时: ${durationMin} 分钟\n`;
+  text += `- 累计总容量: ${summary.totalVolume || 0} kg\n`;
+  text += `- 完成总组数: ${summary.totalSets || 0} 组\n`;
+  
+  if (Array.isArray(summary.exercises) && summary.exercises.length > 0) {
+    text += `- 各动作明细:\n`;
+    summary.exercises.forEach((ex, idx) => {
+      const completedSets = (ex.sets || []).filter(s => s.completed);
+      const setsDetail = completedSets.length > 0
+        ? completedSets.map(s => `${s.weight}kg x ${s.reps}次`).join("、")
+        : "打卡完成";
+      text += `  ${idx + 1}. **${ex.name}**: ${completedSets.length}组 (${setsDetail})\n`;
+    });
+  }
+
+  text += `\n请AI智能教练针对我今天这轮训练的【动作负荷分配】、【肌群刺激效果】、【渐进超负荷增重策略】以及【练后营养补给】给出详细专业的运动科学指导复盘！`;
+  return text;
+}
+
+/**
+ * Builds an instant structured coach response in case no external API key is configured
+ */
+export function buildInstantWorkoutCoachResponse(summary, analysis) {
+  if (!summary || !analysis) return "";
+  const durationMin = Math.max(1, Math.round((summary.durationSeconds || 60) / 60));
+
+  let resp = `### 🏆 今日【${summary.planName}】AI 智能深度复盘\n\n`;
+  resp += `> **训练总评：** ${analysis.intensityLevel} (用时 ${durationMin}分钟 / 总容量 ${summary.totalVolume}kg / 完成 ${summary.totalSets}组)\n\n`;
+  resp += `#### 1. 🎯 靶向肌群与动作做工分析\n`;
+  resp += `- **主刺激部位：** ${analysis.muscleFocus}\n`;
+  resp += `- **教练点评：** ${analysis.coachComment}\n\n`;
+  
+  resp += `#### 2. 📈 渐进超负荷与进阶建议\n`;
+  resp += `- **超负荷态势：** ${analysis.overloadText}\n`;
+  resp += `- **下一循环目标：** 保持当前主项动作第一组重量，若能稳定完成 10-12 次以上，下一轮训练建议尝试递增 +1.25kg ~ +2.5kg 微重量突破！\n\n`;
+
+  resp += `#### 3. 🥗 运动科学营养与超量恢复\n`;
+  resp += `- **蛋白质与碳水窗口：** ${analysis.nutritionAdvice}\n`;
+  resp += `- **神经与肌纤维修复：** ${analysis.sleepAdvice}\n\n`;
+  resp += `*你有任何动作发力感或替换动作的疑问，可以直接在下方继续问我！*`;
+  
+  return resp;
+}

@@ -1,10 +1,9 @@
 <template>
-  <!-- Non-intrusive side-docked AI Coach Tab (Never blocks bottom buttons or workout actions) -->
+  <!-- Non-intrusive AI button: hidden on mobile devices to never block close buttons or modal cards; users access AI from the top Navbar -->
   <button v-if="!aiSession.drawerOpen" type="button" aria-label="打开 AI 助手" data-testid="ai-fab"
-          class="!fixed right-0 top-36 z-40 pl-2.5 pr-1.5 py-2 rounded-l-2xl bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-xl shadow-black/80 border-t border-b border-l border-amber-300/80 font-black text-xs active:scale-95 transition-all flex items-center gap-1 pointer-events-auto backdrop-blur-md"
+          class="hidden sm:flex !fixed right-4 bottom-20 z-20 w-10 h-10 rounded-full bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-xl shadow-black/80 border border-amber-300 font-black text-xs active:scale-95 transition-all items-center justify-center pointer-events-auto backdrop-blur-md"
           @click="aiSession.drawerOpen = true">
     <span class="animate-pulse text-sm leading-none">✦</span>
-    <span class="text-[10px] font-bold pr-0.5">AI</span>
   </button>
 
   <div v-if="aiSession.drawerOpen" class="fixed inset-0 z-50 flex items-end justify-center" data-testid="ai-drawer">
