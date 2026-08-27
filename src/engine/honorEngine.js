@@ -288,34 +288,40 @@ export function validateInputSanity(weight = 0, reps = 0, volume = 0) {
   return { isAnomalous: false };
 }
 
-export const WORKOUTS_PER_SHIELD = 12;
+export const WORKOUTS_PER_SHIELD = 16;
 export const MAX_SHIELDS_CAPACITY = 2;
 export const SHIELD_DURATION_DAYS = 7;
-export const SHIELD_COOLDOWN_DAYS = 14;
+export const SHIELD_COOLDOWN_DAYS = 21;
 
 /**
  * Calculates user's Deload Shield inventory, available count, and recharge progress
- * Formula: 1 Initial Welcome Shield + 1 Earned Shield per 12 Workouts Completed (Max Capacity: 2)
+ * Scientific Periodization Rationale (NSCA & Israetel Periodization):
+ * - After 4~6 microcycles (16~24 workouts), CNS and connective tissue fatigue accumulates to a threshold, requiring a 7-day Deload Week.
+ * - Beginners must complete 16 workouts (Probationary Phase) before earning their 1st shield. No free unearned gift on day 1.
+ * - Cooldown: 21 days between uses to prevent abuse and enforce training consistency.
  * @param {number} totalWorkoutsCount 
  * @param {number} usedShieldsCount 
- * @param {number} initialGift 
- * @returns {Object} { available, maxCapacity, totalEarned, usedCount, currentChargeWorkouts, nextShieldRemaining, chargePercent }
+ * @param {number} initialGift (defaults to 0: earned purely by sweat & consistency)
+ * @returns {Object} { available, maxCapacity, totalEarned, usedCount, currentChargeWorkouts, nextShieldRemaining, chargePercent, isNoviceProbation }
  */
-export function calculateShieldInventory(totalWorkoutsCount = 0, usedShieldsCount = 0, initialGift = 1) {
-  const earnedFromWorkouts = Math.floor(Math.max(0, totalWorkoutsCount) / WORKOUTS_PER_SHIELD);
+export function calculateShieldInventory(totalWorkoutsCount = 0, usedShieldsCount = 0, initialGift = 0) {
+  const safeWorkouts = Math.max(0, Number(totalWorkoutsCount) || 0);
+  const earnedFromWorkouts = Math.floor(safeWorkouts / WORKOUTS_PER_SHIELD);
   const totalEarned = initialGift + earnedFromWorkouts;
-  const available = Math.max(0, Math.min(MAX_SHIELDS_CAPACITY, totalEarned - Math.max(0, usedShieldsCount)));
-  const currentChargeWorkouts = Math.max(0, totalWorkoutsCount) % WORKOUTS_PER_SHIELD;
+  const available = Math.max(0, Math.min(MAX_SHIELDS_CAPACITY, totalEarned - Math.max(0, Number(usedShieldsCount) || 0)));
+  const currentChargeWorkouts = safeWorkouts % WORKOUTS_PER_SHIELD;
   const nextShieldRemaining = WORKOUTS_PER_SHIELD - currentChargeWorkouts;
   const chargePercent = Math.round((currentChargeWorkouts / WORKOUTS_PER_SHIELD) * 100);
+  const isNoviceProbation = safeWorkouts < WORKOUTS_PER_SHIELD && totalEarned === 0;
 
   return {
     available,
     maxCapacity: MAX_SHIELDS_CAPACITY,
     totalEarned,
-    usedCount: usedShieldsCount,
+    usedCount: Number(usedShieldsCount) || 0,
     currentChargeWorkouts,
     nextShieldRemaining,
-    chargePercent
+    chargePercent,
+    isNoviceProbation
   };
 }

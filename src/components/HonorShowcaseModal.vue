@@ -74,15 +74,31 @@
               </span>
             </div>
 
-            <!-- Shield Charging Progress Bar (1 Shield per 12 Workouts) -->
+            <!-- Shield Charging Progress Bar (1 Shield per 16 Workouts) -->
             <div class="space-y-1">
               <div class="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
-                <span>下一枚充能: {{ honorData.shieldInventory.currentChargeWorkouts }}/12 次训练</span>
+                <span v-if="honorData.shieldInventory.isNoviceProbation" class="text-amber-400 font-bold">🌱 新兵筑基期 ({{ honorData.shieldInventory.currentChargeWorkouts }}/16 次)</span>
+                <span v-else>下一枚充能: {{ honorData.shieldInventory.currentChargeWorkouts }}/16 次训练</span>
                 <span class="text-sky-300 font-bold">还需 {{ honorData.shieldInventory.nextShieldRemaining }} 次打卡</span>
               </div>
               <div class="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden border border-zinc-800">
                 <div class="h-full bg-gradient-to-r from-sky-500 to-indigo-500 transition-all duration-500 rounded-full"
                      :style="{ width: `${honorData.shieldInventory.chargePercent}%` }"></div>
+              </div>
+            </div>
+
+            <!-- Scientific Periodization Rationale & Physiological Reason -->
+            <div class="p-2.5 rounded-xl bg-zinc-950 border border-sky-500/20 text-[10px] space-y-1 text-zinc-400">
+              <div class="flex items-center gap-1 text-sky-300 font-bold">
+                <span>🧬</span>
+                <span>运动生理减载原理 (Deload Science)</span>
+              </div>
+              <p class="leading-relaxed text-zinc-300">
+                连续高强度训练 4~6 周（16次+）后，中枢神经与肌腱劳损达临界值，需 7 天主动减载以消解疲劳、促发超量恢复。
+              </p>
+              <div class="flex items-center justify-between text-[9px] text-zinc-400 pt-0.5 border-t border-zinc-800/80 font-mono">
+                <span>⚡ 门槛：每 16 次特训铸造 1 枚</span>
+                <span>⏳ 冷却：使用后享 21 天自适应期</span>
               </div>
             </div>
 
@@ -102,8 +118,8 @@
             <!-- 2. Cooldown State -->
             <div v-else-if="honorData.isCooldownActive"
                  class="p-2 rounded-xl bg-zinc-900/90 border border-zinc-800 text-[10px] text-zinc-400 flex items-center justify-between gap-1.5">
-              <span>⏳ 减载休整冷却中 (还需 {{ honorData.cooldownDaysRemaining }} 天方可再次使用)</span>
-              <span class="text-zinc-600 font-mono text-[9px]">防连续休战</span>
+              <span>⏳ 周期化自适应冷却中 (还需 {{ honorData.cooldownDaysRemaining }} 天)</span>
+              <span class="text-zinc-600 font-mono text-[9px]">规律训练中</span>
             </div>
 
             <!-- 3. Ready to Activate -->
@@ -117,10 +133,11 @@
               </button>
             </div>
 
-            <!-- 4. No Shields Available -->
-            <div v-else class="p-2 rounded-xl bg-zinc-900/60 border border-zinc-800/80 text-[10px] text-zinc-500 flex items-center justify-between">
-              <span>暂无可用盾牌，完成 12 次训练即可自动铸造</span>
-              <span class="font-mono text-zinc-400 font-bold">做工充能</span>
+            <!-- 4. No Shields Available (Novice vs Veteran) -->
+            <div v-else class="p-2 rounded-xl bg-zinc-900/60 border border-zinc-800/80 text-[10px] text-zinc-400 flex items-center justify-between">
+              <span v-if="honorData.shieldInventory.isNoviceProbation" class="text-zinc-400">新兵筑基中，完成 16 次打卡自动解锁首枚</span>
+              <span v-else>暂无可用盾牌，完成 16 次特训即可自动铸造</span>
+              <span class="font-mono text-sky-400 font-bold">做工充能</span>
             </div>
           </div>
 

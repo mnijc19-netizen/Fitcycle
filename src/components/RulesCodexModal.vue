@@ -117,23 +117,26 @@
 
           <div class="p-3.5 bg-zinc-900/80 border border-zinc-800 rounded-2xl space-y-2">
             <div class="text-sky-400 font-black flex items-center gap-1.5 text-xs">
-              <span>🛡️</span> 战术减载盾牌：获取、充能与消耗法则
+              <span>🛡️</span> 战术减载盾牌：运动生理学原理与充能法则
             </div>
-            <p class="text-zinc-300 text-[11px]">
-              为了防止滥用并遵循科学周期化减载训练原则，战力免战盾牌设有严格的**做工充能与使用机制**：
+            <p class="text-zinc-300 text-[11px] leading-relaxed">
+              <strong>为什么需要主动减载？</strong> 在经历 4~6 周（16次+）高强度超负荷训练后，肌肉结缔组织微损伤与中枢神经系统（CNS）疲劳累积达临界值。适时进入 7 天减载期可消解深层疲劳、促发超量恢复，避免过度训练（Overtraining）与运动损伤。
             </p>
             <div class="space-y-1.5 font-mono text-[10px]">
               <div class="p-2 rounded-xl bg-zinc-950 border border-zinc-800 text-sky-300">
-                <span class="font-bold">✦ 充能铸造机制:</span> 每完成 <span class="font-bold text-amber-300">12 次有效训练打卡</span>（约 3~4 周系统化训练），自动充能铸造 1 枚战术盾牌。
+                <span class="font-bold">✦ 做工充能门槛:</span> 每扎实完成 <span class="font-bold text-amber-300">16 次有效特训打卡</span>（约 1 个月系统化推拉腿），自动充能铸造 1 枚战术盾牌。
+              </div>
+              <div class="p-2 rounded-xl bg-zinc-950 border border-zinc-800 text-amber-300">
+                <span class="font-bold">✦ 新兵筑基保护:</span> 新手前 16 次打卡处于神经募集筑基期（尚无深层神经疲劳），完成 16 次打卡方可解锁首枚盾牌，杜绝刚练 4 天就躺平。
               </div>
               <div class="p-2 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-300">
-                <span class="font-bold">✦ 储备上限:</span> 最多同时储备 <span class="font-bold text-white">2 枚盾牌</span>（新兵初始获赠 1 枚新手护航盾）。
+                <span class="font-bold">✦ 储备上限:</span> 最多同时储备 <span class="font-bold text-white">2 枚盾牌</span>，防止无限制屯卡。
               </div>
               <div class="p-2 rounded-xl bg-zinc-950 border border-zinc-800 text-emerald-300">
-                <span class="font-bold">✦ 激活与效力:</span> 消耗 1 枚盾牌激活 <span class="font-bold">7 天战力绝对冻结期</span>（0 衰减），期间完成任意训练打卡自动解除。
+                <span class="font-bold">✦ 激活与效力:</span> 消耗 1 枚盾牌开启 <span class="font-bold">7 天战力绝对冻结期</span>（0 衰减），全站日历与看板同步置为休整状态。
               </div>
               <div class="p-2 rounded-xl bg-zinc-950 border border-zinc-800 text-orange-300">
-                <span class="font-bold">✦ 周期冷却保护:</span> 每次使用后享有 <span class="font-bold">14 天训练适应冷却期</span>，杜绝无限免战。
+                <span class="font-bold">✦ 周期自适应冷却:</span> 每次使用后享有 <span class="font-bold">21 天训练自适应冷却期</span>，确保两次减载之间有充足的超负荷训练积累。
               </div>
             </div>
           </div>

@@ -949,10 +949,10 @@ export function getFullHonorProfile() {
   const allUnlocked = getUnlockedBadgesList();
   const presentation = getSkinHonorPresentation(store.settings.uiSkin, finalTier, allUnlocked);
 
-  // Deload Shield Inventory & Cooldown Calculations
+  // Deload Shield Inventory & Cooldown Calculations (16 Workouts / Shield, 21-Day Cooldown)
   const totalWorkouts = (store.workoutLogs || []).length;
   const usedShields = honor.usedShieldsCount || 0;
-  const shieldInventory = calculateShieldInventory(totalWorkouts, usedShields, 1);
+  const shieldInventory = calculateShieldInventory(totalWorkouts, usedShields, 0);
   const isCooldownActive = !!(honor.shieldCooldownUntil && honor.shieldCooldownUntil > Date.now() && !isDeloadActive);
   const cooldownDaysRemaining = isCooldownActive ? Math.ceil((honor.shieldCooldownUntil - Date.now()) / (1000 * 86400)) : 0;
   const shieldDaysRemaining = isDeloadActive ? Math.max(1, Math.ceil((honor.deloadShieldUntil - Date.now()) / (1000 * 86400))) : 0;
@@ -983,36 +983,39 @@ export function toggleDeloadShield(enable, days = 7) {
   const honor = store.honorProfile;
   const totalWorkouts = (store.workoutLogs || []).length;
   const usedShields = honor.usedShieldsCount || 0;
-  const shieldInventory = calculateShieldInventory(totalWorkouts, usedShields, 1);
+  const shieldInventory = calculateShieldInventory(totalWorkouts, usedShields, 0);
 
   if (enable) {
     // Check if user has available shields
     if (shieldInventory.available <= 0) {
       if (store.settings.vibrationEnabled) triggerHaptic("warning");
+      const msg = shieldInventory.isNoviceProbation
+        ? `新兵筑基保护期（当前 ${totalWorkouts}/16 次训练）：神经募集建立阶段暂无中枢疲劳，完成 16 次规律特训后将自动铸造首枚免战盾牌！`
+        : `战术盾牌数量不足！每扎实完成 16 次有效特训充能 1 枚（当前充能进度 ${shieldInventory.currentChargeWorkouts}/16 次）。`;
       return { 
         success: false, 
         reason: "no_shield", 
-        message: `战术盾牌数量不足！每完成 12 次训练可充能铸造 1 枚（当前充能进度 ${shieldInventory.currentChargeWorkouts}/12 次）。` 
+        message: msg 
       };
     }
 
-    // Check cooldown
+    // Check cooldown (21-Day Periodization Adaptation Cooldown)
     if (honor.shieldCooldownUntil && honor.shieldCooldownUntil > Date.now() && !(honor.deloadShieldUntil && honor.deloadShieldUntil > Date.now())) {
       const daysLeft = Math.ceil((honor.shieldCooldownUntil - Date.now()) / (1000 * 86400));
       if (store.settings.vibrationEnabled) triggerHaptic("warning");
       return { 
         success: false, 
         reason: "cooldown", 
-        message: `减载休整冷却中！为了保证周期化训练效果，还需 ${daysLeft} 天方可再次使用。` 
+        message: `周期化减载冷却中！完成休整后需保证 21 天规律超负荷训练方可再次进入减载，距下次可用还剩 ${daysLeft} 天。` 
       };
     }
 
-    // Consume 1 shield and activate
+    // Consume 1 shield and activate (7 days active + 21 days cooldown)
     honor.usedShieldsCount = usedShields + 1;
     honor.deloadShieldUntil = Date.now() + days * 86400000;
-    honor.shieldCooldownUntil = Date.now() + (days + 14) * 86400000; // 7 days active + 14 days cooldown
+    honor.shieldCooldownUntil = Date.now() + (days + 21) * 86400000;
     if (store.settings.vibrationEnabled) triggerHaptic("medium");
-    return { success: true, message: `已成功消耗 1 枚战术盾牌，开启 ${days} 天免战保护！` };
+    return { success: true, message: `已成功消耗 1 枚战术盾牌，开启 ${days} 天生理减载免战保护！` };
   } else {
     honor.deloadShieldUntil = 0;
     if (store.settings.vibrationEnabled) triggerHaptic("light");

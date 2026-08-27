@@ -173,31 +173,46 @@ describe("Fitcycle Core Constitution & Honor Rating Engine", () => {
   });
 
   describe("6. Tactical Deload Shield Acquisition, Recharge & Cooldown", () => {
-    it("calculates shield recharge: 1 initial gift + 1 shield per 12 workouts (max 2 capacity)", () => {
-      // 0 workouts -> 1 initial shield
-      const inv0 = calculateShieldInventory(0, 0, 1);
-      expect(inv0.available).toBe(1);
+    it("calculates shield recharge: 0 initial gift (novice probation) + 1 shield per 16 workouts (max 2 capacity)", () => {
+      // 0 workouts -> 0 initial shield (Novice Probation Phase)
+      const inv0 = calculateShieldInventory(0, 0, 0);
+      expect(inv0.available).toBe(0);
+      expect(inv0.isNoviceProbation).toBe(true);
       expect(inv0.currentChargeWorkouts).toBe(0);
-      expect(inv0.nextShieldRemaining).toBe(12);
+      expect(inv0.nextShieldRemaining).toBe(16);
 
-      // 6 workouts -> 1 shield, 50% charge
-      const inv6 = calculateShieldInventory(6, 0, 1);
-      expect(inv6.available).toBe(1);
-      expect(inv6.currentChargeWorkouts).toBe(6);
-      expect(inv6.chargePercent).toBe(50);
+      // 8 workouts -> 0 shield, 50% charge (still novice probation)
+      const inv8 = calculateShieldInventory(8, 0, 0);
+      expect(inv8.available).toBe(0);
+      expect(inv8.isNoviceProbation).toBe(true);
+      expect(inv8.currentChargeWorkouts).toBe(8);
+      expect(inv8.chargePercent).toBe(50);
 
-      // 12 workouts -> 2 shields (reached max capacity 2)
-      const inv12 = calculateShieldInventory(12, 0, 1);
-      expect(inv12.available).toBe(2);
-      expect(inv12.currentChargeWorkouts).toBe(0);
+      // 16 workouts (1 month consistent trainee) -> 1 shield forged
+      const inv16 = calculateShieldInventory(16, 0, 0);
+      expect(inv16.available).toBe(1);
+      expect(inv16.isNoviceProbation).toBe(false);
+      expect(inv16.currentChargeWorkouts).toBe(0);
 
-      // 36 workouts (e.g. month 3 user) with 2 shields used previously -> 2 available
-      const inv36 = calculateShieldInventory(36, 2, 1);
-      expect(inv36.available).toBe(2);
+      // 32 workouts (2 months trainee) -> 2 shields (max capacity)
+      const inv32 = calculateShieldInventory(32, 0, 0);
+      expect(inv32.available).toBe(2);
+
+      // 48 workouts (3 months trainee) with 1 shield used previously -> 2 available (recharges back to max)
+      const inv48 = calculateShieldInventory(48, 1, 0);
+      expect(inv48.available).toBe(2);
     });
 
-    it("activates deload shield, consumes 1 shield, and enlists 14-day cooldown", () => {
-      store.workoutLogs = [];
+    it("activates deload shield after earning from workouts, consumes 1 shield, and enlists 21-day cooldown", () => {
+      // Create 16 mock workouts for a 1-month dedicated user
+      store.workoutLogs = Array.from({ length: 16 }, (_, i) => ({
+        id: `mock_log_${i}`,
+        date: `2026-08-${String(i + 1).padStart(2, '0')}`,
+        timestamp: Date.now() - (16 - i) * 86400000,
+        totalVolume: 3500,
+        totalSets: 12
+      }));
+
       const profile = getFullHonorProfile();
       expect(profile.shieldInventory.available).toBe(1);
 

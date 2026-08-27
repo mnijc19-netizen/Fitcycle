@@ -158,7 +158,7 @@
                   <div class="text-xs font-black text-white flex items-center gap-1">
                     <span>🛡️ 盾牌储备: 1/2 枚</span>
                   </div>
-                  <div class="text-[9px] text-zinc-400 font-mono">每12次打卡铸造 · 冻结7天战力</div>
+                  <div class="text-[9px] text-zinc-400 font-mono">每16次打卡铸造 · 冻结7天战力</div>
                 </div>
                 <div class="text-right font-mono text-[9px]">
                   <span class="text-emerald-400 font-bold block">📐 胸腰比 1.42</span>
@@ -320,7 +320,7 @@ const steps = [
     title: "战术减载盾牌 · 黄金 V-Taper 测绘",
     subTitle: "科学周期化减载与骨骼肌进化轨迹",
     highlights: [
-      "<strong>战术免战盾牌：</strong>每完成 12 次训练充能 1 枚，激活冻结 7 天战力衰减",
+      "<strong>战术免战盾牌：</strong>每完成 16 次训练充能 1 枚，激活冻结 7 天战力衰减",
       "<strong>黄金形体测绘：</strong>严谨追踪胸腰比、臂围与肩宽，雕刻古典阿诺德比例"
     ]
   }
