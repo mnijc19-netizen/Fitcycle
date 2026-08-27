@@ -299,6 +299,7 @@ import {
   setUISkin,
   restoreDefaultSkin
 } from "../store/fitnessStore.js";
+import { playChamberUltimateSound } from "../utils/audio.js";
 
 const fileInput = ref(null);
 const passcodeInput = ref("");
@@ -322,10 +323,15 @@ function handlePasscodeSubmit() {
     passcodeInput.value = "";
     passcodeError.value = false;
     showToast(result.message);
+    // 第一次输入暗号解锁时播放尚博勒开大招原声
+    if (store.settings.soundEnabled !== false) {
+      playChamberUltimateSound();
+    }
   } else {
     passcodeError.value = true;
   }
 }
+
 
 function handleSelectSkin(skinName) {
   setUISkin(skinName);
