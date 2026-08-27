@@ -746,6 +746,21 @@ export function restoreDefaultSkin() {
   return { success: true, message: "已恢复默认外观，训练数据未改变" };
 }
 
+export function clearWorkoutHistory() {
+  store.workoutLogs = [];
+  store.bodyMetrics = [];
+  store.honorProfile = {
+    score: 850,
+    prestigeLevel: 1,
+    prestigeYear: new Date().getFullYear(),
+    highestScore: 850,
+    lastWorkoutTimestamp: Date.now(),
+    unlockedBadges: ["badge_first_blood"]
+  };
+  if (store.settings.vibrationEnabled) triggerHaptic("warning");
+  return { success: true, message: "训练打卡与形体记录已全部清空，保留计划与皮肤设置" };
+}
+
 export function resetAllDataToDefault() {
   localStorage.removeItem(STORAGE_KEY);
   Object.assign(store, JSON.parse(JSON.stringify(defaultInitialState)));

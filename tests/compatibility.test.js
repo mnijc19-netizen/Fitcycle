@@ -3,6 +3,7 @@ import { nextTick } from "vue";
 import {
   exportBackupJSON,
   importBackupJSON,
+  clearWorkoutHistory,
   restoreDefaultSkin,
   setUISkin,
   unlockSkin,
@@ -113,6 +114,21 @@ describe("production data compatibility", () => {
     expect(localStorage.getItem("fitcycle_app_data_v1") || "").not.toContain("session-secret-marker");
     expect(localStorage.getItem("fitcycle_app_data_v1") || "").not.toContain("second-secret-marker");
     expect(store).not.toHaveProperty("apiKey");
+  });
+
+  it("clears workout history and resets honor stats while keeping custom plans and skins", () => {
+    store.workoutLogs = [{ id: "test-log", planName: "测试打卡", sets: [] }];
+    store.bodyMetrics = [{ id: "test-metric", arm: 35 }];
+    store.settings.unlockedSkins = ["default", "chamber"];
+    store.settings.uiSkin = "chamber";
+
+    const res = clearWorkoutHistory();
+    expect(res.success).toBe(true);
+    expect(store.workoutLogs).toHaveLength(0);
+    expect(store.bodyMetrics).toHaveLength(0);
+    expect(store.honorProfile.score).toBe(850);
+    expect(store.settings.uiSkin).toBe("chamber");
+    expect(store.settings.unlockedSkins).toEqual(["default", "chamber"]);
   });
 });
 

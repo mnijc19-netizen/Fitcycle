@@ -433,10 +433,17 @@
         <input ref="fileInput" type="file" accept=".json" class="hidden" @change="handleFileSelected" />
       </div>
 
-      <div class="pt-2 border-t border-zinc-800">
+      <div class="space-y-2 pt-2 border-t border-zinc-800">
+        <!-- Option 1: Clear Workout Logs Only (Preserves custom plans and unlocked skins) -->
+        <button @click="handleClearHistory" 
+                class="w-full py-2.5 bg-zinc-950 hover:bg-amber-950/25 active:scale-98 text-amber-400 hover:text-amber-300 text-xs font-bold rounded-xl border border-amber-500/30 hover:border-amber-500/50 transition-all flex items-center justify-center gap-1.5">
+          <span>🗑️</span> 清空所有打卡与训练记录 (试用体验重置)
+        </button>
+
+        <!-- Option 2: Full Factory Reset (All data & default plans) -->
         <button @click="handleResetDefaults" 
-                class="w-full py-2.5 bg-zinc-950 hover:bg-red-950/30 text-zinc-500 hover:text-red-400 text-xs font-semibold rounded-xl border border-zinc-800/80 transition-colors">
-          恢复默认推拉腿黄金计划设置
+                class="w-full py-2 bg-zinc-950 hover:bg-red-950/30 active:scale-98 text-zinc-500 hover:text-red-400 text-[11px] font-semibold rounded-xl border border-zinc-800/80 transition-colors flex items-center justify-center gap-1">
+          <span>⚠️</span> 恢复出厂默认设置 (重置全部计划与数据)
         </button>
       </div>
     </div>
@@ -493,6 +500,7 @@ import {
   store, 
   exportBackupJSON, 
   importBackupJSON, 
+  clearWorkoutHistory,
   resetAllDataToDefault,
   unlockSkin,
   setUISkin,
@@ -649,6 +657,13 @@ function handleFileSelected(e) {
     }
   };
   reader.readAsText(file);
+}
+
+function handleClearHistory() {
+  if (confirm("确定要清空所有历史打卡记录与形体测绘数据吗？\n\n此操作将清除打卡日志与做工历史，但会【保留您自定义的训练计划与已解锁的皮肤】。适合试用后重新开始正式记录。")) {
+    clearWorkoutHistory();
+    showToast("🗑️ 历史训练记录已全部清空！");
+  }
 }
 
 function handleResetDefaults() {
