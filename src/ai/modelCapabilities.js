@@ -4,9 +4,10 @@ function asArray(value) {
 
 function zhipuFamilyCapabilities(modelId) {
   const id = modelId.toLowerCase();
-  const image = /^glm-(?:5v|4(?:\.\d+)?v)/.test(id) || id.includes("vision");
-  const tools = /^glm-(?:5|4\.(?:6|7|8|9))/.test(id);
-  return { image, tools };
+  // All standard Zhipu GLM-4 / GLM-5 series models and vision models support image recognition
+  const isImageSupported = id.startsWith("glm-") && !/^glm-(?:code|embedding|qa)/.test(id);
+  const tools = id.startsWith("glm-") && !/^glm-(?:image|ocr|tts|asr)/.test(id);
+  return { image: isImageSupported, tools };
 }
 
 export function getModelCapabilities(model, provider = "") {

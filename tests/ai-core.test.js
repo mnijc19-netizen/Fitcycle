@@ -28,14 +28,19 @@ afterEach(() => {
 describe("dynamic model capabilities", () => {
   it("derives capabilities for DeepSeek and Zhipu models", () => {
     const capable = normalizeProviderModel("zhipu", { id: "glm-4.6v-flash" });
+    const glm5 = normalizeProviderModel("zhipu", { id: "glm-5" });
+    const glmFlash = normalizeProviderModel("zhipu", { id: "glm-5.3-flash" });
     const chatOnly = normalizeProviderModel("deepseek", { id: "deepseek-v4" });
 
     expect(capable.capabilities).toEqual({ text: true, image: true, tools: true, streaming: true });
+    expect(glm5.capabilities).toEqual({ text: true, image: true, tools: true, streaming: true });
+    expect(glmFlash.capabilities).toEqual({ text: true, image: true, tools: true, streaming: true });
     expect(chatOnly.capabilities.image).toBe(false);
     expect(chatOnly.capabilities.tools).toBe(true);
     expect(filterModels([capable, chatOnly], "4.6v")).toEqual([capable]);
     expect(getMessageBlockReason({ apiKey: "key", model: chatOnly, text: "看图", imageCount: 1 })).toContain("不支持图片");
     expect(getMessageBlockReason({ apiKey: "key", model: capable, text: "看图", imageCount: 1 })).toBe("");
+    expect(getMessageBlockReason({ apiKey: "key", model: glm5, text: "看图", imageCount: 1 })).toBe("");
   });
 
   it("validates provider keys while loading dynamic model lists", async () => {
