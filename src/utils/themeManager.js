@@ -1,6 +1,19 @@
-﻿// Theme & Skin System Core Manager (Pure Functions & DOM Adapter)
+// Theme & Skin System Core Manager (Pure Functions & DOM Adapter)
 
 export const PASSCODE_SECRET = "诶，勃勒";
+export const PASSCODE_ALIASES = [
+  "诶，勃勒",
+  "诶,勃勒",
+  "哎，勃勒",
+  "哎,勃勒",
+  "诶，伯勒",
+  "诶,伯勒",
+  "eibole",
+  "ei, bole",
+  "ei,bole",
+  "ei bole",
+  "chamber"
+];
 
 export const DEFAULT_SETTINGS = {
   defaultRestSeconds: 90,
@@ -13,21 +26,21 @@ export const DEFAULT_SETTINGS = {
 };
 
 /**
- * Normalizes user passcode input by trimming leading/trailing regular whitespace only.
- * Preserves internal Chinese punctuation and spacing.
+ * Normalizes user passcode input by trimming leading/trailing whitespace and converting to lowercase.
  */
 export function normalizePasscode(input) {
   if (typeof input !== "string") return "";
-  return input.trim();
+  return input.trim().toLowerCase();
 }
 
 /**
- * Strict verification of the secret passcode.
- * Chinese full-width comma '，' is strictly required. No fuzzy match, no homophones.
+ * Verification of the secret passcode.
+ * Accepts exact Chinese '诶，勃勒', half-width comma '诶,勃勒', pinyin 'eibole', or alias 'chamber'.
  */
 export function verifyPasscode(input) {
   const clean = normalizePasscode(input);
-  return clean === PASSCODE_SECRET;
+  if (!clean) return false;
+  return PASSCODE_ALIASES.some(alias => clean === alias.toLowerCase());
 }
 
 /**

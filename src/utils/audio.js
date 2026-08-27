@@ -103,49 +103,4 @@ export function playWorkoutDoneSound() {
   }
 }
 
-// 播放尚博勒开大招专属语音 ("他们走不了了" / Chamber Ultimate Voiceline)
-export function playChamberUltimateSound() {
-
-  try {
-    const audioUrl = "./themes/chamber/audio/chamber-ultimate-cast.mp3";
-    const audio = new Audio(audioUrl);
-    audio.volume = 1.0; // 系统最大音量
-
-    // 尝试通过 Web Audio API 进行清晰度与增益提升 (Gain Boost)
-    try {
-      const ctx = getAudioContext();
-      if (ctx) {
-        if (ctx.state === "suspended") {
-          ctx.resume();
-        }
-        const source = ctx.createMediaElementSource(audio);
-        const gainNode = ctx.createGain();
-        gainNode.gain.setValueAtTime(1.4, ctx.currentTime); // 适度增益提升清晰度
-
-        // 加上压限器防止过载失真
-        const compressor = ctx.createDynamicsCompressor();
-        compressor.threshold.setValueAtTime(-12, ctx.currentTime);
-        compressor.knee.setValueAtTime(30, ctx.currentTime);
-        compressor.ratio.setValueAtTime(12, ctx.currentTime);
-        compressor.attack.setValueAtTime(0.003, ctx.currentTime);
-        compressor.release.setValueAtTime(0.25, ctx.currentTime);
-
-        source.connect(gainNode);
-        gainNode.connect(compressor);
-        compressor.connect(ctx.destination);
-      }
-    } catch (webAudioErr) {
-      // 降级使用普通原生 Audio 播放
-    }
-
-    const p = audio.play();
-    if (p !== undefined) {
-      p.catch((err) => {
-        console.warn("Chamber ultimate audio playback blocked:", err);
-      });
-    }
-  } catch (e) {
-    console.warn("Audio play failed:", e);
-  }
-}
 

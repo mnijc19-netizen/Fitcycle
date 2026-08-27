@@ -38,12 +38,6 @@
       "file": "icons/chamber-profile.svg",
       "source": "Bespoke Custom Vector (Gold Chamfered Card & Precision Crosshair)",
       "usage": "Bottom TabBar Item 5: 统计设置 (Chamber Custom Business Card)"
-    },
-    {
-      "file": "audio/chamber-ultimate-cast.mp3",
-      "source": "VALORANT Official Chamber Ultimate Voice Line (Chinese localization: 他们走不了了)",
-      "processing": "0 dBFS Peak Normalized, +10dB RMS Dynamic Gain Boosted (192kbps MP3)",
-      "usage": "Workout Start Easter Egg Audio (开始今日训练打卡)"
     }
   ]
 }
