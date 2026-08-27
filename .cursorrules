@@ -1,0 +1,12 @@
+﻿# FITCYCLE CURSOR / AGENT RULES
+
+You are working on the Fitcycle codebase.
+Before taking any action, you MUST read:
+1. docs/FITCYCLE_MASTER_CONSTITUTION.md (Master Meta-Constitution & Cascading Impact Matrix)
+2. docs/FITCYCLE_SURGICAL_DISPATCH_GUIDE.md (Surgical Dispatch Code & Target Files)
+3. docs/FITCYCLE_CORE_CONSTITUTION.md (Sports Science & Ranking Laws)
+
+Rules:
+- NEVER hardcode skin conditionals in business engines.
+- NEVER mutate state inside getters/computeds (prevents Vue recursive loop).
+- Always verify changes with `npm run test` before finishing.
