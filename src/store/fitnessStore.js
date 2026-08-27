@@ -4,6 +4,8 @@ import { playSetCompleteSound, playRestCompleteSound, playWorkoutDoneSound } fro
 import { triggerHaptic } from "../utils/vibrate.js";
 import { requestNotificationPermission, sendRestCompleteNotification, updateDocumentTitleForTimer, setRestCompleteTitle, resetDocumentTitle } from "../utils/notification.js";
 import { DEFAULT_SETTINGS, sanitizeSettings, verifyPasscode, getPasscodeSkin, VALID_SKINS, applySkinToDOM } from "../utils/themeManager.js";
+import { calculateInactivityDecay, calculateSessionPointsEarned, getTierForScore, evaluateUnlockedBadges, calculateEquivalentTonnage } from "../engine/honorEngine.js";
+import { getSkinHonorPresentation } from "../engine/skinHonorSchemas.js";
 
 const STORAGE_KEY = "fitcycle_app_data_v1";
 
@@ -49,6 +51,8 @@ function loadSavedState() {
 
       // Deep sanitize settings for backward compatibility & theme system
       parsed.settings = sanitizeSettings(parsed.settings);
+      if (!parsed.bodyMetrics) parsed.bodyMetrics = JSON.parse(JSON.stringify(defaultInitialState.bodyMetrics));
+      if (!parsed.honorProfile) parsed.honorProfile = JSON.parse(JSON.stringify(defaultInitialState.honorProfile));
 
       return parsed;
     }
@@ -160,6 +164,25 @@ const defaultInitialState = {
     minimized: false,
     intervalId: null
   },
+  bodyMetrics: [
+    {
+      id: "body-m-init",
+      date: getInitialDateStr(new Date(Date.now() - 86400000 * 14)),
+      arm: 34.0,
+      chest: 98.0,
+      waist: 82.0,
+      thigh: 56.0,
+      weight: 72.0
+    }
+  ],
+  honorProfile: {
+    score: 850,
+    prestigeLevel: 1,
+    prestigeYear: 2026,
+    highestScore: 850,
+    lastWorkoutTimestamp: Date.now() - 86400000,
+    unlockedBadges: ["badge_first_blood", "badge_body_init"]
+  },
   settings: {
     ...DEFAULT_SETTINGS
   }
@@ -193,6 +216,8 @@ watch(
     weeklySchedule: store.weeklySchedule,
     workoutLogs: store.workoutLogs,
     activeWorkout: store.activeWorkout,
+    bodyMetrics: store.bodyMetrics,
+    honorProfile: store.honorProfile,
     settings: store.settings
   }),
   (val) => {
@@ -587,9 +612,29 @@ export function finishWorkout() {
   // Add to workout logs (or overwrite if same day duplicate log to keep clean)
   store.workoutLogs.unshift(logEntry);
   
+  // Calculate and award FPS honor points
+  const elapsedHours = store.workoutLogs.length > 1
+    ? (now - (store.workoutLogs[1].timestamp || store.workoutLogs[1].completedAt || (now - 86400000))) / (1000 * 3600)
+    : 24;
+
+  const sessionHonorPoints = calculateSessionPointsEarned(logEntry, store.workoutLogs.slice(1), elapsedHours);
+  
+  if (!store.honorProfile) {
+    store.honorProfile = { score: 850, prestigeLevel: 1, prestigeYear: new Date().getFullYear(), highestScore: 850, lastWorkoutTimestamp: now, unlockedBadges: [] };
+  }
+
+  store.honorProfile.score = (store.honorProfile.score || 0) + sessionHonorPoints.finalSessionPoints;
+  if (store.honorProfile.score > (store.honorProfile.highestScore || 0)) {
+    store.honorProfile.highestScore = store.honorProfile.score;
+  }
+  store.honorProfile.lastWorkoutTimestamp = now;
+  refreshUnlockedBadges();
+
+  logEntry.honorPointsEarned = sessionHonorPoints;
+
   // Clean active workout & stop timer
   stopRestTimer();
-  const summary = { ...logEntry };
+  const summary = { ...logEntry, honorPointsEarned: sessionHonorPoints };
   store.activeWorkout = null;
 
   if (store.settings.soundEnabled) playWorkoutDoneSound();
@@ -747,5 +792,132 @@ export function importBackupJSON(jsonStr) {
     console.error("Import error:", e);
     return false;
   }
+}
+
+// --- BODY METRICS & HONOR SYSTEM ACTIONS ---
+export function recordBodyMetric(metricData) {
+  if (!store.bodyMetrics) store.bodyMetrics = [];
+  const entry = {
+    id: uid("metric"),
+    date: metricData.date || getInitialDateStr(),
+    timestamp: Date.now(),
+    arm: Number(metricData.arm) || 0,
+    chest: Number(metricData.chest) || 0,
+    waist: Number(metricData.waist) || 0,
+    thigh: Number(metricData.thigh) || 0,
+    weight: Number(metricData.weight) || 0
+  };
+  store.bodyMetrics.push(entry);
+
+  if (!store.honorProfile) {
+    store.honorProfile = { score: 850, prestigeLevel: 1, prestigeYear: new Date().getFullYear(), highestScore: 850, lastWorkoutTimestamp: Date.now(), unlockedBadges: [] };
+  }
+  // Award body transformation reward (+30 FPS points)
+  store.honorProfile.score = (store.honorProfile.score || 0) + 30;
+  if (store.honorProfile.score > (store.honorProfile.highestScore || 0)) {
+    store.honorProfile.highestScore = store.honorProfile.score;
+  }
+
+  // Refresh badges
+  refreshUnlockedBadges();
+  if (store.settings.vibrationEnabled) triggerHaptic("success");
+  return entry;
+}
+
+export function deleteBodyMetric(id) {
+  if (!store.bodyMetrics) return;
+  store.bodyMetrics = store.bodyMetrics.filter(m => m.id !== id);
+}
+
+export function getHonorStatsSnapshot() {
+  const totalWorkouts = (store.workoutLogs || []).length;
+  let totalTonnageKg = 0;
+  let maxBench = 0;
+  let maxSquat = 0;
+
+  (store.workoutLogs || []).forEach(l => {
+    totalTonnageKg += (l.totalVolume || 0);
+    (l.exercises || []).forEach(e => {
+      const eName = (e.name || "").toLowerCase();
+      const maxSetWeight = Math.max(...(e.sets || []).filter(s => s.completed).map(s => Number(s.weight) || 0), 0);
+      if (eName.includes("卧推") || eName.includes("bench")) {
+        if (maxSetWeight > maxBench) maxBench = maxSetWeight;
+      }
+      if (eName.includes("深蹲") || eName.includes("squat") || eName.includes("腿举")) {
+        if (maxSetWeight > maxSquat) maxSquat = maxSetWeight;
+      }
+    });
+  });
+
+  const userWeight = (store.bodyMetrics && store.bodyMetrics.length > 0)
+    ? (store.bodyMetrics[store.bodyMetrics.length - 1].weight || 70)
+    : 70;
+
+  return {
+    totalWorkouts,
+    totalTonnageKg,
+    consecutiveWeeks: Math.min(12, Math.floor(totalWorkouts / 3)),
+    bodyMetricsHistory: store.bodyMetrics || [],
+    maxBenchRatio: userWeight > 0 ? maxBench / userWeight : 0,
+    maxSquatRatio: userWeight > 0 ? maxSquat / userWeight : 0,
+    hasBrokenPR: maxBench > 0 || maxSquat > 0,
+    perfectSessionsCount: (store.workoutLogs || []).filter(l => (l.totalSets || 0) >= 12).length
+  };
+}
+
+export function getUnlockedBadgesList() {
+  const stats = getHonorStatsSnapshot();
+  const badges = evaluateUnlockedBadges(stats);
+  const storedIds = store.honorProfile?.unlockedBadges || [];
+  const allIds = Array.from(new Set([...storedIds, ...badges.map(b => b.id)]));
+  return allIds.map(id => ({ id, unlocked: true }));
+}
+
+export function refreshUnlockedBadges() {
+  const badges = getUnlockedBadgesList();
+  if (!store.honorProfile) {
+    store.honorProfile = { score: 850, prestigeLevel: 1, prestigeYear: new Date().getFullYear(), highestScore: 850, lastWorkoutTimestamp: Date.now(), unlockedBadges: [] };
+  }
+  store.honorProfile.unlockedBadges = badges.map(b => b.id);
+  return badges;
+}
+
+export function getFullHonorProfile() {
+  const honor = store.honorProfile || { score: 850, prestigeLevel: 1, prestigeYear: new Date().getFullYear(), highestScore: 850, lastWorkoutTimestamp: Date.now() - 86400000, unlockedBadges: [] };
+
+  const rawScore = honor.score || 0;
+  const currentTier = getTierForScore(rawScore);
+
+  // Inactivity decay calculation
+  const lastTime = honor.lastWorkoutTimestamp || (store.workoutLogs?.[0]?.timestamp || Date.now() - 86400000);
+  const hoursSince = Math.max(0, (Date.now() - lastTime) / (1000 * 3600));
+  const decayInfo = calculateInactivityDecay(hoursSince, rawScore, currentTier.minScore);
+  const decayedScore = Math.max(currentTier.minScore, rawScore - decayInfo.decayPoints);
+
+  const finalTier = getTierForScore(decayedScore);
+  const allUnlocked = getUnlockedBadgesList();
+  const presentation = getSkinHonorPresentation(store.settings.uiSkin, finalTier, allUnlocked);
+
+  return {
+    score: decayedScore,
+    rawScore,
+    decayInfo,
+    tier: finalTier,
+    presentation,
+    prestigeLevel: honor.prestigeLevel || 1,
+    prestigeYear: honor.prestigeYear || new Date().getFullYear(),
+    highestScore: honor.highestScore || rawScore,
+    badges: presentation.badges
+  };
+}
+
+export function performPrestigeReset() {
+  if (!store.honorProfile) return false;
+  if ((store.honorProfile.score || 0) < 2900) return false;
+
+  store.honorProfile.prestigeLevel = Math.min(6, (store.honorProfile.prestigeLevel || 1) + 1);
+  store.honorProfile.score = 2400; // soft reset to Tier 6
+  if (store.settings.vibrationEnabled) triggerHaptic("success");
+  return true;
 }
 

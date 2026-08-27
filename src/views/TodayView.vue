@@ -313,6 +313,24 @@
           </div>
         </div>
 
+        <!-- 3. Honor Rank & Body Metrics Quick Launcher Pill -->
+        <div class="mt-2.5 pt-2.5 border-t border-zinc-800/80 flex items-center justify-between gap-2">
+          <button @click="showHonorModal = true" 
+                  class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-zinc-950/80 hover:bg-zinc-800 border border-amber-500/40 text-xs font-mono text-amber-300 transition-all active:scale-95">
+            <span>{{ honorData.presentation.tierIcon }}</span>
+            <span class="font-black">{{ honorData.presentation.tierName.split('·')[0] }}</span>
+            <span class="text-[10px] text-zinc-400">({{ honorData.score }} PTS)</span>
+            <span class="text-[9px] text-amber-500">❯</span>
+          </button>
+
+          <button @click="showBodyModal = true"
+                  class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-zinc-950/80 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-mono text-zinc-300 transition-all active:scale-95">
+            <span>📐</span>
+            <span>形体围度</span>
+            <span class="text-[9px] text-zinc-500">❯</span>
+          </button>
+        </div>
+
       </div>
 
       <!-- Today's Workout Hero Card -->
@@ -517,6 +535,18 @@
       @close="showSummaryModal = false" 
     />
 
+    <!-- Honor & Rank Showcase Modal -->
+    <HonorShowcaseModal
+      :visible="showHonorModal"
+      @close="showHonorModal = false"
+    />
+
+    <!-- Body Circumference & Transformation Modal -->
+    <BodyMetricsModal
+      :visible="showBodyModal"
+      @close="showBodyModal = false"
+    />
+
     <!-- 7. Auto Workout Finish Celebration Modal (智能防漏结算与加练弹窗) -->
     <div v-if="showAutoFinishModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div class="absolute inset-0 bg-black/80 backdrop-blur-md" @click="showAutoFinishModal = false"></div>
@@ -591,12 +621,15 @@ import {
   shiftCycleDays,
   getLastExercisePerformance,
   getExerciseDetails,
+  getFullHonorProfile,
   uid
 } from "../store/fitnessStore.js";
 import ExercisePickerModal from "../components/ExercisePickerModal.vue";
 import ExerciseDetailModal from "../components/ExerciseDetailModal.vue";
 import CycleEditorModal from "../components/CycleEditorModal.vue";
 import WorkoutSummaryModal from "../components/WorkoutSummaryModal.vue";
+import HonorShowcaseModal from "../components/HonorShowcaseModal.vue";
+import BodyMetricsModal from "../components/BodyMetricsModal.vue";
 import ExerciseImage from "../components/ExerciseImage.vue";
 
 // State
@@ -610,6 +643,10 @@ const showPlanPicker = ref(false);
 const showSummaryModal = ref(false);
 const latestSummary = ref(null);
 const showAutoFinishModal = ref(false);
+const showHonorModal = ref(false);
+const showBodyModal = ref(false);
+
+const honorData = computed(() => getFullHonorProfile());
 
 // Timer for elapsed workout time
 const nowTimestamp = ref(Date.now());

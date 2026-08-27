@@ -46,6 +46,27 @@
       <!-- FAST AI WORKOUT ANALYSIS & RECOVERY CARD -->
       <!-- ============================================== -->
       <div v-if="aiAnalysis" class="bg-zinc-950/80 border border-amber-500/40 rounded-2xl p-3.5 text-left mb-4 space-y-2.5 shadow-lg relative overflow-hidden">
+        
+        <!-- FPS Honor Points Earned Pill -->
+        <div v-if="summary?.honorPointsEarned" class="p-2.5 rounded-xl bg-gradient-to-r from-amber-500/15 via-zinc-900 to-zinc-950 border border-amber-500/50 flex items-center justify-between text-xs font-mono">
+          <div class="flex items-center gap-1.5">
+            <span class="text-base">🏆</span>
+            <div>
+              <span class="text-white font-bold text-[11px] block">本次获得 FPS 战力加分</span>
+              <span class="text-[9px] text-zinc-400">
+                基础: +{{ summary.honorPointsEarned.basePoints }}
+                <span v-if="summary.honorPointsEarned.overloadBonus"> | 超负荷: +{{ summary.honorPointsEarned.overloadBonus }}</span>
+                <span v-if="summary.honorPointsEarned.isRedemptionRebound" class="text-purple-300 font-bold"> | ⚡ 破冰复苏 1.5x</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="text-right">
+            <span class="text-base font-black text-amber-400">+{{ summary.honorPointsEarned.finalSessionPoints }}</span>
+            <span class="text-[9px] text-zinc-500 block">PTS</span>
+          </div>
+        </div>
+
         <!-- AI Badge Header -->
         <div class="flex items-center justify-between">
           <div class="text-xs font-black text-amber-400 flex items-center gap-1.5 font-mono">

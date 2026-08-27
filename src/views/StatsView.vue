@@ -8,8 +8,37 @@
         <span>📊</span> 训练数据与系统设置
       </h2>
       <p class="text-xs text-zinc-400">
-        训练容量分析、偏好设置与数据备份恢复
+        综合战力天梯、形体围度、训练容量分析与偏好设置
       </p>
+    </div>
+
+    <!-- Honor Rank & Body Metrics Hero Entry Cards -->
+    <div class="grid grid-cols-2 gap-2.5">
+      <!-- 1. Honor & Rank Card -->
+      <div @click="showHonorModal = true" 
+           class="p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/15 via-zinc-950 to-zinc-900 border border-amber-500/50 hover:border-amber-400 cursor-pointer shadow-lg shadow-black/40 space-y-1.5 transition-all active:scale-95 group">
+        <div class="flex items-center justify-between">
+          <span class="text-2xl group-hover:scale-110 transition-transform">{{ honorData.presentation.tierIcon }}</span>
+          <span class="text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-500 text-zinc-950">天梯排位</span>
+        </div>
+        <div>
+          <div class="text-xs font-black text-white truncate">{{ honorData.presentation.tierName }}</div>
+          <div class="text-[10px] font-mono text-amber-400 font-bold mt-0.5">{{ honorData.score }} PTS <span class="text-zinc-500 font-normal">❯</span></div>
+        </div>
+      </div>
+
+      <!-- 2. Body Circumference Card -->
+      <div @click="showBodyModal = true"
+           class="p-3.5 rounded-2xl bg-gradient-to-br from-sky-500/15 via-zinc-950 to-zinc-900 border border-sky-500/40 hover:border-sky-400 cursor-pointer shadow-lg shadow-black/40 space-y-1.5 transition-all active:scale-95 group">
+        <div class="flex items-center justify-between">
+          <span class="text-2xl group-hover:scale-110 transition-transform">📐</span>
+          <span class="text-[9px] font-black px-1.5 py-0.2 rounded bg-sky-500 text-zinc-950">形体围度</span>
+        </div>
+        <div>
+          <div class="text-xs font-black text-white truncate">身体蜕变追踪</div>
+          <div class="text-[10px] font-mono text-sky-400 font-bold mt-0.5">V身比 {{ vTaperRatio }} <span class="text-zinc-500 font-normal">❯</span></div>
+        </div>
+      </div>
     </div>
 
     <!-- Overall Lifetime Metrics Grid -->
@@ -367,12 +396,26 @@
       <span>{{ toastText }}</span>
     </div>
 
+    <!-- Honor Showcase Modal -->
+    <HonorShowcaseModal 
+      :visible="showHonorModal" 
+      @close="showHonorModal = false" 
+    />
+
+    <!-- Body Metrics Modal -->
+    <BodyMetricsModal 
+      :visible="showBodyModal" 
+      @close="showBodyModal = false" 
+    />
+
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
 import AISettingsPanel from "../components/AISettingsPanel.vue";
+import HonorShowcaseModal from "../components/HonorShowcaseModal.vue";
+import BodyMetricsModal from "../components/BodyMetricsModal.vue";
 import {
   aiSession,
   getActiveApiKey,
@@ -387,8 +430,22 @@ import {
   resetAllDataToDefault,
   unlockSkin,
   setUISkin,
-  restoreDefaultSkin
+  restoreDefaultSkin,
+  getFullHonorProfile
 } from "../store/fitnessStore.js";
+
+const showHonorModal = ref(false);
+const showBodyModal = ref(false);
+const honorData = computed(() => getFullHonorProfile());
+
+const vTaperRatio = computed(() => {
+  const history = store.bodyMetrics || [];
+  if (!history.length) return "1.20";
+  const latest = history[history.length - 1];
+  if (!latest.waist || latest.waist === 0) return "1.20";
+  const ratio = (latest.chest || 0) / latest.waist;
+  return ratio > 0 ? ratio.toFixed(2) : "1.20";
+});
 
 const showAISettingsModal = ref(false);
 const activeAIProvider = computed(getActiveProvider);
