@@ -92,20 +92,20 @@
     <!-- ============================================== -->
     <header v-else-if="store.settings.uiSkin === 'cs'" 
             class="relative w-full overflow-hidden select-none border-b border-[#F97316]/40 transition-all duration-300"
-            style="min-height: 200px; padding-top: max(calc(env(safe-area-inset-top, 0px) + 6px), 12px);">
+            style="min-height: 180px; padding-top: max(calc(env(safe-area-inset-top, 0px) + 6px), 12px);">
       
-      <!-- High-Def CS2 Hero Banner Image -->
+      <!-- High-Def CS2 Dust2 Solman & Delrow Hero Image -->
       <div class="absolute inset-0 w-full h-full bg-no-repeat pointer-events-none"
            :style="{
              backgroundImage: `url('./themes/cs/hero/cs-hero.jpg')`,
              backgroundSize: 'cover',
-             backgroundPosition: '45% center'
+             backgroundPosition: 'right 20%'
            }">
       </div>
 
       <!-- Multi-Layer Deep Slate & Tactical Orange Gradient Overlays for High Legibility -->
-      <div class="absolute inset-0 bg-gradient-to-r from-[#080C14] via-[#080C14]/85 via-50% to-transparent pointer-events-none"></div>
-      <div class="absolute inset-0 bg-gradient-to-t from-[#080C14] via-[#080C14]/50 to-transparent pointer-events-none"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-[#080C14] via-[#080C14]/90 via-55% to-transparent pointer-events-none"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#080C14] via-[#080C14]/40 to-transparent pointer-events-none"></div>
 
       <!-- Subtle Tactical Precision Radar Crosshair Lines -->
       <div class="absolute top-0 right-0 w-36 h-36 opacity-20 pointer-events-none">
@@ -117,22 +117,10 @@
         </svg>
       </div>
 
-      <!-- Character Agent Cutout (Interactive Agent Switcher) -->
-      <div @click="nextCsAgent" 
-           title="点击切换出战探员"
-           class="absolute right-[-10px] bottom-[-8px] h-[190px] w-[160px] cursor-pointer select-none active:scale-95 transition-transform flex items-end justify-end z-20 group">
-        <img :src="currentCsAgent.url" 
-             :alt="currentCsAgent.name" 
-             class="h-[115%] max-w-none object-contain drop-shadow-[0_0_20px_rgba(249,115,22,0.45)] opacity-90 transition-all duration-300 group-hover:opacity-100" />
-        <span class="absolute bottom-1 right-3 text-[8px] font-mono px-1.5 py-0.5 rounded bg-black/80 text-[#F97316] border border-[#F97316]/40 backdrop-blur-sm shadow-md pointer-events-none">
-          {{ currentCsAgent.role }} ↺
-        </span>
-      </div>
-
       <!-- Header Content Container -->
-      <div class="relative z-10 max-w-md mx-auto px-4 pb-7 flex flex-col justify-between" style="min-height: 180px;">
+      <div class="relative z-10 max-w-md mx-auto px-4 pb-4 flex flex-col justify-between" style="min-height: 160px;">
         
-        <!-- Top Nav Row: Brand Logo + Quick Actions -->
+        <!-- Top Nav Row: Brand Logo + Quick Actions & Operator Switcher Badge -->
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2.5">
             <div class="w-9 h-9 rounded-xl overflow-hidden bg-[#0F172A] border border-[#F97316]/70 flex items-center justify-center shadow-lg shadow-black/80 flex-shrink-0">
@@ -152,19 +140,31 @@
             </div>
           </div>
 
-          <!-- Quick Action Buttons -->
-          <div class="flex items-center gap-2">
+          <!-- Quick Action Buttons & Interactive Operator Switcher Badge -->
+          <div class="flex items-center gap-1.5">
+            <!-- Compact Operator Switcher Badge -->
+            <button @click="nextCsAgent" 
+                    title="点击轮换出战探员"
+                    class="h-8 pl-1.5 pr-2 rounded-xl bg-[#080C14]/90 hover:bg-[#0F172A] border border-[#F97316]/50 text-[#F97316] flex items-center gap-1.5 shadow-lg active:scale-95 transition-all group backdrop-blur-md">
+              <div class="w-5 h-5 rounded-lg overflow-hidden bg-black/60 border border-[#F97316]/40 flex items-center justify-center flex-shrink-0">
+                <img :src="currentCsAgent.url" :alt="currentCsAgent.name" class="w-full h-full object-cover object-top" />
+              </div>
+              <span class="text-[10px] font-mono font-bold tracking-tight text-[#F8FAFC] group-hover:text-[#F97316]">{{ currentCsAgent.role }}</span>
+              <span class="text-[8px] text-[#F97316] opacity-75">↺</span>
+            </button>
+
+            <!-- Workout / Cycle Button -->
             <button v-if="store.activeWorkout" 
                     @click="store.activeTab = 'today'"
                     class="px-2.5 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 rounded-full text-xs font-bold flex items-center gap-1.5 backdrop-blur-md animate-pulse">
               <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-              战斗进行中
+              进行中
             </button>
 
             <button v-else 
                     @click="showCycleModal = true"
                     class="px-2.5 py-1 bg-[#0F172A]/90 hover:bg-[#1E293B] text-[#F97316] border border-[#F97316]/40 rounded-xl text-xs font-bold flex items-center gap-1 backdrop-blur-md shadow-md transition-all">
-              <span>🔄 战术分化</span>
+              <span>🔄 分化</span>
             </button>
           </div>
         </div>
