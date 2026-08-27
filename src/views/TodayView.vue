@@ -241,6 +241,13 @@
                       class="px-1.5 py-0.5 rounded bg-zinc-900/60 border border-zinc-800/80 text-zinc-500">
                   {{ getSetOverloadDelta(ex.name, s, sIdx).label }}
                 </span>
+
+                <!-- Initial Baseline Badge (首次建档) -->
+                <span v-else-if="getSetOverloadDelta(ex.name, s, sIdx).type === 'initial'"
+                      class="px-1.5 py-0.5 rounded-md bg-sky-950/40 border border-sky-500/40 text-sky-300 font-bold flex items-center gap-1">
+                  <span>🌱</span>
+                  <span>{{ getSetOverloadDelta(ex.name, s, sIdx).label }}</span>
+                </span>
               </div>
             </div>
 
@@ -981,7 +988,20 @@ function showOverloadCelebration(text, subText, isPr = true) {
 
 function getSetOverloadDelta(exerciseName, s, sIdx) {
   const lastPerf = getLastExercisePerformance(exerciseName);
-  if (!lastPerf || !lastPerf.sets || !lastPerf.sets.length) return null;
+  if (!lastPerf || !lastPerf.sets || !lastPerf.sets.length) {
+    const curW = Number(s.weight) || 0;
+    const curR = Number(s.reps) || 0;
+    if (curW > 0 || curR > 0) {
+      return {
+        type: "initial",
+        label: "📍 首训建档中",
+        prevText: "首训档案：记录初始能力",
+        isInitial: true
+      };
+    }
+    return null;
+  }
+
   const prevSet = lastPerf.sets[sIdx] || lastPerf.sets[lastPerf.sets.length - 1];
   if (!prevSet) return null;
 
