@@ -20,29 +20,64 @@
       <!-- Scrollable Content -->
       <div class="p-4 overflow-y-auto space-y-4 scrollbar-thin flex-1">
         
-        <!-- V-Taper Golden Ratio & Progress Banner -->
-        <div class="p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/15 via-zinc-950 to-zinc-900 border border-amber-500/40 space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-amber-300">🧬 黄金 V 身比例指数 (胸腰比)</span>
-            <span class="text-sm font-black text-white font-mono">{{ vTaperRatio }}</span>
+        <!-- Real-Time Parametric 3D Body Morphing Visualizer -->
+        <BodyVisualizer 
+          :arm="previewArm"
+          :chest="previewChest"
+          :waist="previewWaist"
+          :thigh="previewThigh"
+          :weight="previewWeight"
+        />
+
+        <!-- Aesthetic Goal Simulation Preset Pills -->
+        <div class="space-y-1.5 text-left">
+          <div class="flex items-center justify-between text-[10px] text-zinc-400">
+            <span>✨ 黄金形体比例模拟与目标推演</span>
+            <span class="font-mono text-zinc-500">点击即时透视</span>
+          </div>
+          <div class="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none font-mono text-[10px]">
+            <button @click="applyPreset(120, 74, 46, 64, 88)"
+                    class="px-2.5 py-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold whitespace-nowrap active:scale-95 transition-all">
+              👑 阿诺德黄金比例 (1.62)
+            </button>
+            <button @click="applyPreset(108, 75, 40, 58, 78)"
+                    class="px-2.5 py-1 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/40 font-bold whitespace-nowrap active:scale-95 transition-all">
+              ⚡ 古典健体倒三角 (1.44)
+            </button>
+            <button @click="applyPreset(102, 77, 37, 56, 73)"
+                    class="px-2.5 py-1 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold whitespace-nowrap active:scale-95 transition-all">
+              🔥 战术特勤倒三角 (1.32)
+            </button>
+            <button v-if="latestMetric" @click="resetToLatest"
+                    class="px-2 py-1 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 whitespace-nowrap active:scale-95 transition-all">
+              ↺ 恢复我的实测
+            </button>
+          </div>
+        </div>
+
+        <!-- V-Taper Delta Increments Banner -->
+        <div class="p-3 rounded-2xl bg-zinc-950/80 border border-zinc-800 space-y-1.5">
+          <div class="flex items-center justify-between text-xs font-bold text-zinc-300">
+            <span>📈 历史实测蜕变增量</span>
+            <span class="text-[10px] font-mono text-zinc-500">首末对比 (共 {{ history.length }} 次)</span>
           </div>
           
-          <div class="grid grid-cols-3 gap-2 pt-1 text-center font-mono">
-            <div class="p-2 rounded-xl bg-zinc-950/80 border border-zinc-800">
-              <span class="text-[9px] text-zinc-500 block">臂围增量</span>
+          <div class="grid grid-cols-3 gap-2 pt-0.5 text-center font-mono">
+            <div class="p-1.5 rounded-xl bg-zinc-900/90 border border-zinc-800">
+              <span class="text-[9px] text-zinc-500 block">臂围净增</span>
               <span class="text-xs font-bold" :class="armDelta >= 0 ? 'text-emerald-400' : 'text-zinc-400'">
                 {{ armDelta >= 0 ? `+${armDelta}` : armDelta }} cm
               </span>
             </div>
 
-            <div class="p-2 rounded-xl bg-zinc-950/80 border border-zinc-800">
-              <span class="text-[9px] text-zinc-500 block">胸围增量</span>
+            <div class="p-1.5 rounded-xl bg-zinc-900/90 border border-zinc-800">
+              <span class="text-[9px] text-zinc-500 block">胸围净增</span>
               <span class="text-xs font-bold" :class="chestDelta >= 0 ? 'text-emerald-400' : 'text-zinc-400'">
                 {{ chestDelta >= 0 ? `+${chestDelta}` : chestDelta }} cm
               </span>
             </div>
 
-            <div class="p-2 rounded-xl bg-zinc-950/80 border border-zinc-800">
+            <div class="p-1.5 rounded-xl bg-zinc-900/90 border border-zinc-800">
               <span class="text-[9px] text-zinc-500 block">腰围收紧</span>
               <span class="text-xs font-bold" :class="waistDelta <= 0 ? 'text-emerald-400' : 'text-amber-400'">
                 {{ waistDelta <= 0 ? `${waistDelta}` : `+${waistDelta}` }} cm
@@ -55,7 +90,7 @@
         <div class="p-3.5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-3">
           <div class="flex items-center justify-between text-xs font-bold text-zinc-200">
             <div class="flex items-center gap-1.5">
-              <span>✍️ 录入最新身体围度 (cm)</span>
+              <span>✍️ 录入/修正当前围度 (cm)</span>
               <!-- Circular Exclamation Standards Button -->
               <button @click="showStandardsModal = true" 
                       type="button"
@@ -111,11 +146,11 @@
         <div class="space-y-2">
           <h3 class="text-xs font-bold text-zinc-300">历史测量记录 (共 {{ history.length }} 次)</h3>
           
-          <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1 scrollbar-thin">
+          <div class="space-y-1.5 max-h-40 overflow-y-auto pr-1 scrollbar-thin">
             <div v-for="m in sortedHistory" :key="m.id"
                  class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80 flex items-center justify-between text-xs font-mono">
-              <div>
-                <span class="text-amber-400 font-bold block text-[11px]">{{ m.date }}</span>
+              <div class="cursor-pointer hover:opacity-80" @click="loadHistoryIntoPreview(m)">
+                <span class="text-amber-400 font-bold block text-[11px]">{{ m.date }} <span class="text-[9px] text-zinc-500 font-normal">(点击透视模型)</span></span>
                 <span class="text-[10px] text-zinc-400">
                   臂:{{ m.arm }}cm | 胸:{{ m.chest }}cm | 腰:{{ m.waist }}cm | 腿:{{ m.thigh }}cm | 重:{{ m.weight }}kg
                 </span>
@@ -233,6 +268,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { store, recordBodyMetric, deleteBodyMetric } from "../store/fitnessStore.js";
+import BodyVisualizer from "./BodyVisualizer.vue";
 
 defineProps({
   visible: Boolean
@@ -255,6 +291,41 @@ const sortedHistory = computed(() => [...history.value].reverse());
 
 const latestMetric = computed(() => history.value[history.value.length - 1] || null);
 const firstMetric = computed(() => history.value[0] || null);
+
+// Live preview data for the 3D Body Morphing Visualizer
+const previewArm = computed(() => form.value.arm || latestMetric.value?.arm || 35);
+const previewChest = computed(() => form.value.chest || latestMetric.value?.chest || 100);
+const previewWaist = computed(() => form.value.waist || latestMetric.value?.waist || 80);
+const previewThigh = computed(() => form.value.thigh || latestMetric.value?.thigh || 56);
+const previewWeight = computed(() => form.value.weight || latestMetric.value?.weight || 72);
+
+function applyPreset(chest, waist, arm, thigh, weight) {
+  form.value.chest = chest;
+  form.value.waist = waist;
+  form.value.arm = arm;
+  form.value.thigh = thigh;
+  form.value.weight = weight;
+}
+
+function resetToLatest() {
+  if (latestMetric.value) {
+    form.value.chest = latestMetric.value.chest;
+    form.value.waist = latestMetric.value.waist;
+    form.value.arm = latestMetric.value.arm;
+    form.value.thigh = latestMetric.value.thigh;
+    form.value.weight = latestMetric.value.weight;
+  } else {
+    form.value = { arm: null, chest: null, waist: null, thigh: null, weight: null };
+  }
+}
+
+function loadHistoryIntoPreview(metric) {
+  form.value.chest = metric.chest;
+  form.value.waist = metric.waist;
+  form.value.arm = metric.arm;
+  form.value.thigh = metric.thigh;
+  form.value.weight = metric.weight;
+}
 
 const vTaperRatio = computed(() => {
   if (!latestMetric.value || !latestMetric.value.waist || latestMetric.value.waist === 0) return "1.20";
