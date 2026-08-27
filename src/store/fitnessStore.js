@@ -911,10 +911,11 @@ export function getFullHonorProfile() {
   const rawScore = honor.score || 0;
   const currentTier = getTierForScore(rawScore);
 
-  // Inactivity decay calculation
+  // Inactivity decay calculation with Deload Shield check
+  const isDeloadActive = !!(honor.deloadShieldUntil && honor.deloadShieldUntil > Date.now());
   const lastTime = honor.lastWorkoutTimestamp || (store.workoutLogs?.[0]?.timestamp || Date.now() - 86400000);
   const hoursSince = Math.max(0, (Date.now() - lastTime) / (1000 * 3600));
-  const decayInfo = calculateInactivityDecay(hoursSince, rawScore, currentTier.minScore);
+  const decayInfo = calculateInactivityDecay(hoursSince, rawScore, currentTier.minScore, isDeloadActive);
   const decayedScore = Math.max(currentTier.minScore, rawScore - decayInfo.decayPoints);
 
   const finalTier = getTierForScore(decayedScore);
@@ -930,8 +931,23 @@ export function getFullHonorProfile() {
     prestigeLevel: honor.prestigeLevel || 1,
     prestigeYear: honor.prestigeYear || new Date().getFullYear(),
     highestScore: honor.highestScore || rawScore,
-    badges: presentation.badges
+    badges: presentation.badges,
+    isDeloadActive,
+    deloadShieldUntil: honor.deloadShieldUntil || 0
   };
+}
+
+export function toggleDeloadShield(enable, days = 7) {
+  if (!store.honorProfile) {
+    store.honorProfile = { score: 850, prestigeLevel: 1, prestigeYear: new Date().getFullYear(), highestScore: 850, lastWorkoutTimestamp: Date.now(), unlockedBadges: [] };
+  }
+  if (enable) {
+    store.honorProfile.deloadShieldUntil = Date.now() + days * 86400000;
+  } else {
+    store.honorProfile.deloadShieldUntil = 0;
+  }
+  if (store.settings.vibrationEnabled) triggerHaptic("medium");
+  return store.honorProfile.deloadShieldUntil > Date.now();
 }
 
 export function performPrestigeReset() {

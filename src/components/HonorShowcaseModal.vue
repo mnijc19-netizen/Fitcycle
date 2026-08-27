@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div v-if="visible" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
     <div class="bg-zinc-900 border border-zinc-700/80 rounded-3xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-zinc-100">
       
@@ -59,15 +59,37 @@
             </div>
           </div>
 
-          <!-- Inactivity Status Notice -->
-          <div v-if="honorData.decayInfo.decayPoints > 0" 
-               class="p-2 rounded-xl bg-red-950/50 border border-red-500/40 text-[11px] text-red-300 text-left flex items-center gap-2">
-            <span>🚨</span>
-            <span class="leading-tight">{{ honorData.decayInfo.warningMessage }} (已衰减 -{{ honorData.decayInfo.decayPoints }}分)</span>
+          <!-- Inactivity Status / Deload Shield Notice -->
+          <div v-if="honorData.isDeloadActive"
+               class="p-2.5 rounded-xl bg-sky-950/60 border border-sky-500/50 text-[11px] text-sky-300 text-left flex items-center justify-between gap-2 shadow-sm shadow-sky-500/20">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🛡️</span>
+              <span class="leading-tight font-medium">战术减载免战盾牌生效中 (战力已冻结免扣分)</span>
+            </div>
+            <button @click="handleToggleDeload(false)" class="text-[10px] px-2 py-0.5 rounded bg-sky-900/80 hover:bg-sky-800 text-sky-200 border border-sky-600/50 font-bold whitespace-nowrap">
+              提前归队
+            </button>
           </div>
-          <div v-else class="p-1.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-[10px] text-emerald-300 flex items-center justify-center gap-1.5">
-            <span>⚡</span>
-            <span>肌肉状态满血，未受怠惰衰减影响</span>
+
+          <div v-else-if="honorData.decayInfo.decayPoints > 0" 
+               class="p-2 rounded-xl bg-red-950/50 border border-red-500/40 text-[11px] text-red-300 text-left flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span>🚨</span>
+              <span class="leading-tight">{{ honorData.decayInfo.warningMessage }} (已衰减 -{{ honorData.decayInfo.decayPoints }}分)</span>
+            </div>
+            <button @click="handleToggleDeload(true)" class="text-[10px] px-2 py-0.5 rounded bg-sky-600 hover:bg-sky-500 text-white font-bold whitespace-nowrap">
+              开启减载盾
+            </button>
+          </div>
+
+          <div v-else class="p-2 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-[10px] text-emerald-300 flex items-center justify-between gap-1.5">
+            <div class="flex items-center gap-1.5">
+              <span>⚡</span>
+              <span>肌肉状态满血，未受怠惰衰减影响</span>
+            </div>
+            <button @click="handleToggleDeload(true)" class="text-[10px] px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 font-bold whitespace-nowrap">
+              🛡️ 减载休整
+            </button>
           </div>
 
           <!-- Progression Bar to Next Tier -->
@@ -154,7 +176,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { getFullHonorProfile, performPrestigeReset } from "../store/fitnessStore.js";
+import { getFullHonorProfile, performPrestigeReset, toggleDeloadShield } from "../store/fitnessStore.js";
 import { PRESTIGE_MEDAL_COLORS } from "../engine/honorEngine.js";
 
 defineProps({
@@ -188,6 +210,16 @@ const visibleBadges = computed(() => {
   if (activeBadgeTab.value === "consistency") return all.filter(b => b.category === "consistency" || b.category === "tonnage");
   return all.filter(b => b.category === activeBadgeTab.value);
 });
+
+function handleToggleDeload(enable) {
+  if (enable) {
+    if (confirm("🛡️ 确认申报开启【7天战术减载免战期】？\n期间战力怠惰衰减将完全冻结（0扣分），适合主动减载周或伤病休养！")) {
+      toggleDeloadShield(true, 7);
+    }
+  } else {
+    toggleDeloadShield(false);
+  }
+}
 
 function handlePrestigeReset() {
   if (confirm("确定要开启年度荣誉转生吗？您将获得更高阶的稀有服役勋章！")) {

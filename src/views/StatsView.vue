@@ -170,6 +170,24 @@
         </button>
       </div>
 
+      <!-- Tactical Deload Shield (Article 4.4) -->
+      <div class="flex items-center justify-between py-1.5 border-t border-zinc-800/80">
+        <div>
+          <div class="text-xs font-bold text-sky-300 flex items-center gap-1.5">
+            <span>🛡️</span> 战术休整 / 减载免战盾牌
+          </div>
+          <div class="text-[10px] text-zinc-400">
+            {{ isDeloadActive ? '免战期生效中：战力怠惰衰减已冻结 (0扣分)' : '主动减载周或伤病休养时开启，冻结天梯掉分' }}
+          </div>
+        </div>
+        <button @click="onToggleDeload(!isDeloadActive)"
+                class="w-12 h-6 rounded-full transition-colors relative p-0.5"
+                :class="[isDeloadActive ? 'bg-sky-500 shadow-sm shadow-sky-500/30' : 'bg-zinc-800']">
+          <div class="w-5 h-5 rounded-full bg-white transition-transform transform"
+               :class="[isDeloadActive ? 'translate-x-6' : 'translate-x-0']"></div>
+        </button>
+      </div>
+
     </div>
 
     <!-- ============================================== -->
@@ -431,12 +449,26 @@ import {
   unlockSkin,
   setUISkin,
   restoreDefaultSkin,
-  getFullHonorProfile
+  getFullHonorProfile,
+  toggleDeloadShield
 } from "../store/fitnessStore.js";
 
 const showHonorModal = ref(false);
 const showBodyModal = ref(false);
 const honorData = computed(() => getFullHonorProfile());
+const isDeloadActive = computed(() => honorData.value.isDeloadActive);
+
+function onToggleDeload(enable) {
+  if (enable) {
+    if (confirm("🛡️ 确认申报开启【7天战术减载免战期】？\n期间战力怠惰衰减将完全冻结（0扣分），适合主动减载周或伤病休养！")) {
+      toggleDeloadShield(true, 7);
+      showToast("🛡️ 已开启 7 天战术减载免战保护！");
+    }
+  } else {
+    toggleDeloadShield(false);
+    showToast("⚡ 已退出减载期，恢复常规战力机制！");
+  }
+}
 
 const vTaperRatio = computed(() => {
   const history = store.bodyMetrics || [];
