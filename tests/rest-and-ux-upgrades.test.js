@@ -95,6 +95,20 @@ describe("Rest Presets, Carousel, Auto-Finish & AI Analysis Upgrades", () => {
     expect(analysis.targetProteinGrams).toBeGreaterThanOrEqual(20);
     expect(analysis.targetCarbGrams).toBeGreaterThanOrEqual(25);
     expect(analysis.tacticalBadge).toContain("CS2");
+
+    // Test Grade D for 0 sets / 0 volume
+    const emptySummary = {
+      id: "test_empty_1",
+      planId: "plan-pull",
+      planName: "拉日 (Pull)",
+      durationSeconds: 60,
+      totalVolume: 0,
+      totalSets: 0
+    };
+    const emptyAnalysis = analyzeWorkoutSummary(emptySummary, [], "cs");
+    expect(emptyAnalysis.intensityLevel).toContain("评级 D");
+    expect(emptyAnalysis.tacticalBadge).toContain("评级 D");
+    expect(emptyAnalysis.coachComment).toContain("未记录到有效抗阻做工");
   });
 
   it("renders AI Analysis Card and Hand-Slip button in WorkoutSummaryModal", () => {
