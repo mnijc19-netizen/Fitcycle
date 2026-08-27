@@ -208,8 +208,8 @@
   box-shadow: 0 4px 14px 0 var(--fc-accent-glow) !important;
 }
 
-/* Chamber Chamfered Primary Action Buttons */
-[data-skin="chamber"] button.bg-amber-500,
+/* Chamber Chamfered Primary Action Buttons (Exclude floating action buttons / rounded pills) */
+[data-skin="chamber"] button.bg-amber-500:not(.fixed):not(.rounded-full):not([data-testid="ai-fab"]),
 [data-skin="chamber"] .fc-chamber-btn-primary {
   clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
   position: relative;
@@ -218,9 +218,17 @@
   transition: transform 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
 }
 
-[data-skin="chamber"] button.bg-amber-500:active,
+[data-skin="chamber"] button.bg-amber-500:not(.fixed):not(.rounded-full):not([data-testid="ai-fab"]):active,
 [data-skin="chamber"] .fc-chamber-btn-primary:active {
   transform: scale(0.98);
+}
+
+/* Floating Action Button (FAB) Absolute Viewport Fix */
+[data-testid="ai-fab"],
+button.fixed {
+  position: fixed !important;
+  clip-path: none !important;
+  border-radius: 9999px !important;
 }
 
 /* Chamber Precision Card Corner Markers */

@@ -1,7 +1,13 @@
 <template>
   <button v-if="!aiSession.drawerOpen" type="button" aria-label="打开 AI 助手" data-testid="ai-fab"
-          class="fixed right-4 z-40 w-12 h-12 rounded-full bg-amber-500 text-zinc-950 shadow-2xl shadow-black/70 border border-amber-300 font-black text-lg active:scale-95 transition-all flex items-center justify-center"
-          :style="{ bottom: store.restTimer.running ? '132px' : '76px' }"
+          class="!fixed right-4 z-40 w-12 h-12 rounded-full bg-amber-500 text-zinc-950 shadow-2xl shadow-black/80 border border-amber-300 font-black text-lg active:scale-95 transition-all flex items-center justify-center pointer-events-auto"
+          :style="{
+            position: 'fixed',
+            right: '16px',
+            bottom: store.restTimer.running ? '132px' : '76px',
+            clipPath: 'none',
+            borderRadius: '9999px'
+          }"
           @click="aiSession.drawerOpen = true">
     <span class="animate-pulse text-base leading-none">✦</span>
   </button>
