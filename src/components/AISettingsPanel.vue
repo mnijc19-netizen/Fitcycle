@@ -60,6 +60,10 @@
         <p v-if="!selectedModel.capabilities.tools" class="text-[10px] text-amber-400/90">该模型可聊天，但不会收到或执行任何 Fitcycle 工具。</p>
         <p v-if="aiSession.activeProvider === 'deepseek'" class="text-[10px] text-zinc-500">DeepSeek 官方接口当前不接收图片；图片问题请切换到支持视觉的智谱 GLM 模型。</p>
       </div>
+      <button type="button" data-testid="open-ai-assistant" @click="aiSession.drawerOpen = true"
+              class="w-full py-2.5 rounded-xl bg-amber-500 text-zinc-950 text-xs font-bold active:scale-95">
+        打开 AI 助手
+      </button>
     </div>
   </section>
 </template>

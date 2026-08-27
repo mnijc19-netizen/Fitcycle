@@ -2,7 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { nextTick } from "vue";
 import AIAssistantDrawer from "../src/components/AIAssistantDrawer.vue";
-import { aiSession, clearAIConnection } from "../src/ai/aiSession.js";
+import AISettingsPanel from "../src/components/AISettingsPanel.vue";
+import { aiSession, clearAIConnection, setProviderModels, setSelectedModel, setSessionApiKey } from "../src/ai/aiSession.js";
 import { startRestTimer, stopRestTimer, store } from "../src/store/fitnessStore.js";
 
 afterEach(() => {
@@ -41,6 +42,18 @@ describe("mobile AI drawer", () => {
 
     expect(input.element.value).toBe("");
     expect(aiSession.conversation).toEqual([]);
+    wrapper.unmount();
+  });
+
+  it("offers a reliable settings-page entry when a provider is connected", async () => {
+    setSessionApiKey("session-only-test-key", "deepseek");
+    setProviderModels([{ id: "deepseek-v4-flash", name: "DeepSeek V4 Flash", capabilities: { text: true, image: false, tools: true, streaming: true } }], "deepseek");
+    setSelectedModel("deepseek-v4-flash", "deepseek");
+    const wrapper = mount(AISettingsPanel);
+
+    await wrapper.get('[data-testid="open-ai-assistant"]').trigger("click");
+
+    expect(aiSession.drawerOpen).toBe(true);
     wrapper.unmount();
   });
 });
