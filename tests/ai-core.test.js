@@ -148,6 +148,31 @@ describe("Fitcycle tool safety", () => {
 });
 
 describe("assistant network isolation", () => {
+  it("parses streamed text and fragmented tool calls", async () => {
+    const encoder = new TextEncoder();
+    const events = [
+      { choices: [{ delta: { content: "训" }, finish_reason: null }] },
+      { choices: [{ delta: { content: "练", tool_calls: [{ index: 0, id: "call-", type: "function", function: { name: "get_today_", arguments: "{" } }] }, finish_reason: null }] },
+      { choices: [{ delta: { tool_calls: [{ index: 0, id: "1", function: { name: "context", arguments: "}" } }] }, finish_reason: "tool_calls" }] }
+    ];
+    const body = new ReadableStream({
+      start(controller) {
+        events.forEach((event) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`)));
+        controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+        controller.close();
+      }
+    });
+    const tokens = [];
+    const result = await streamChatCompletion({
+      apiKey: "test-key", model: "vendor/tools", messages: [], onToken: (token) => tokens.push(token)
+    }, { fetchImpl: async () => ({ ok: true, status: 200, body }) });
+
+    expect(result.content).toBe("训练");
+    expect(tokens).toEqual(["训", "练"]);
+    expect(result.toolCalls[0]).toEqual({ id: "call-1", type: "function", function: { name: "get_today_context", arguments: "{}" } });
+    expect(result.finishReason).toBe("tool_calls");
+  });
+
   it("does not send tools to a chat-only model", async () => {
     const before = persistentDataSnapshot();
     const streamImpl = vi.fn(async (request) => {
