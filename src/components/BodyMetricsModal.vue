@@ -36,21 +36,25 @@
             <span class="font-mono text-zinc-500">点击即时透视</span>
           </div>
           <div class="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none font-mono text-[10px]">
-            <button @click="applyPreset(120, 74, 46, 64, 88)"
+            <button @click="applyPreset(105, 76, 38, 57, 75)"
                     class="px-2.5 py-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold whitespace-nowrap active:scale-95 transition-all">
-              👑 阿诺德黄金比例 (1.62)
+              👑 卓越古典倒三角 (1.38)
             </button>
-            <button @click="applyPreset(108, 75, 40, 58, 78)"
+            <button @click="applyPreset(98, 76, 35, 54, 71)"
                     class="px-2.5 py-1 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/40 font-bold whitespace-nowrap active:scale-95 transition-all">
-              ⚡ 古典健体倒三角 (1.44)
+              🔥 战术精壮特工 (1.29)
             </button>
-            <button @click="applyPreset(102, 77, 37, 56, 73)"
+            <button @click="applyPreset(104, 85, 37, 60, 82)"
                     class="px-2.5 py-1 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold whitespace-nowrap active:scale-95 transition-all">
-              🔥 战术特勤倒三角 (1.32)
+              ⚡ 饱满重装力量 (1.22)
+            </button>
+            <button @click="applyPreset(92, 78, 33, 52, 68)"
+                    class="px-2.5 py-1 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-bold whitespace-nowrap active:scale-95 transition-all">
+              🌱 清爽健康匀称 (1.18)
             </button>
             <button v-if="latestMetric" @click="resetToLatest"
                     class="px-2 py-1 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 whitespace-nowrap active:scale-95 transition-all">
-              ↺ 恢复我的实测
+              ↺ 恢复实测
             </button>
           </div>
         </div>

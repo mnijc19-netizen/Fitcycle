@@ -262,19 +262,19 @@ const currentVTaper = computed(() => {
   return (safeChest.value / safeWaist.value).toFixed(2);
 });
 
-// Aesthetic V-Taper Rating Grade
+// Aesthetic V-Taper Rating Grade (Realistic Natural Sports Science Standards)
 const vTaperRating = computed(() => {
   const ratio = parseFloat(currentVTaper.value);
-  if (ratio >= 1.55) {
-    return { title: "阿诺德黄金倒三角", shortGrade: "殿堂 S+", icon: "👑", color: "amber" };
-  } else if (ratio >= 1.40) {
-    return { title: "古典健美倒三角", shortGrade: "战神 S", icon: "⚡", color: "sky" };
-  } else if (ratio >= 1.28) {
-    return { title: "硬核战术身形", shortGrade: "精英 A", icon: "🔥", color: "emerald" };
+  if (ratio >= 1.35) {
+    return { title: "卓越古典倒三角", shortGrade: "殿堂 S+", icon: "👑", color: "amber" };
+  } else if (ratio >= 1.26) {
+    return { title: "战术黄金倒三角", shortGrade: "战神 S", icon: "🔥", color: "sky" };
   } else if (ratio >= 1.18) {
-    return { title: "健壮匀称雏形", shortGrade: "先锋 B", icon: "🌱", color: "indigo" };
+    return { title: "匀称精壮体型", shortGrade: "精英 A", icon: "⚡", color: "emerald" };
+  } else if (ratio >= 1.10) {
+    return { title: "健康力量体态", shortGrade: "先锋 B", icon: "🌱", color: "indigo" };
   } else {
-    return { title: "力量稳固基石", shortGrade: "新兵 C", icon: "🛡️", color: "zinc" };
+    return { title: "力量筑基体格", shortGrade: "新兵 C", icon: "🛡️", color: "zinc" };
   }
 });
 
