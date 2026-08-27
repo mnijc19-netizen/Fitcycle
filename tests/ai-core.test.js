@@ -233,3 +233,37 @@ describe("assistant network isolation", () => {
     expect(persistentDataSnapshot()).toEqual(before);
   });
 });
+
+describe("AI message noise filtering & Markdown table rendering", () => {
+  it("strips think tags, English preambles, and tool execution logs", async () => {
+    const { cleanAIMessage } = await import("../src/utils/aiService.js");
+    const sample = `<think>
+I need to check the user's workouts.
+</think>Let me check your recent training records and today's context to give you a useful answer about yesterday's workout.我查看了你昨天的训练记录（2026-08-26 的**推日 (Push)**）。
+操作结果 · get_recent_workouts 查询完成
+查询完成`;
+
+    const cleaned = cleanAIMessage(sample);
+    expect(cleaned).not.toContain("<think>");
+    expect(cleaned).not.toContain("Let me check");
+    expect(cleaned).not.toContain("操作结果");
+    expect(cleaned).not.toContain("查询完成");
+    expect(cleaned).toContain("我查看了你昨天的训练记录");
+  });
+
+  it("renders Markdown tables with responsive wrapper and styling classes", async () => {
+    const { renderMarkdown } = await import("../src/utils/aiService.js");
+    const tableMarkdown = `
+| 动作名称 | 目标次数 | 实际完成记录 | 表现评价 |
+| :--- | :--- | :--- | :--- |
+| **上斜哑铃卧推** | 8-10次 | 22kg×10次, 26kg×8次 | 👍 渐进超负荷达标 |
+| **双杠臂屈伸** | 10-12次 | 自重×12次 | 稳定性良好 |
+`;
+    const html = renderMarkdown(tableMarkdown);
+    expect(html).toContain('class="table-wrapper"');
+    expect(html).toContain('class="ai-markdown-table"');
+    expect(html).toContain("上斜哑铃卧推");
+    expect(html).toContain("渐进超负荷达标");
+  });
+});
+
