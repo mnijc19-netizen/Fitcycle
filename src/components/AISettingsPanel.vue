@@ -53,7 +53,7 @@
         <button type="button" @click="testConnection" :disabled="loading || !draftKey.trim()"
                 class="py-2.5 rounded-xl bg-amber-500 disabled:bg-zinc-800 disabled:text-zinc-600 text-zinc-950 text-xs font-bold active:scale-95 shadow-md shadow-amber-500/10 transition-all flex items-center justify-center gap-1.5">
           <span v-if="loading" class="w-3 h-3 rounded-full border-2 border-zinc-950 border-t-transparent animate-spin"></span>
-          <span>{{ loading ? '连接中…' : '验证并获取模型' }}</span>
+          <span>{{ loading ? '连接中…' : (connected ? '刷新并获取模型' : '验证并获取模型') }}</span>
         </button>
         <button type="button" @click="clearConnection" :disabled="loading || !hasAnyConnection"
                 class="py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:bg-zinc-900 disabled:text-zinc-700 text-zinc-300 text-xs font-bold active:scale-95 transition-all">

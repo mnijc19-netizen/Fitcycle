@@ -111,8 +111,13 @@ describe("mobile AI drawer", () => {
     await flushPromises();
 
     expect(wrapper.text()).toContain("已完成深度思考");
-    expect(wrapper.text()).toContain("正在分析用户的渐进超负荷数据...");
+    const assistantMsg = aiSession.conversation.find(m => m.role === "assistant");
+    expect(assistantMsg?.reasoning).toContain("正在分析用户的渐进超负荷数据...");
     expect(wrapper.text()).toContain("你的训练表现非常扎实！");
+    
+    // Toggle reasoning box to reveal details in DOM
+    await wrapper.get('[data-testid="toggle-reasoning"]').trigger("click");
+    expect(wrapper.text()).toContain("正在分析用户的渐进超负荷数据...");
     wrapper.unmount();
   });
 

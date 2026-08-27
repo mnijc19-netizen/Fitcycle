@@ -85,8 +85,9 @@
                  class="rounded-xl border border-zinc-800 bg-zinc-950/80 overflow-hidden text-[11px] transition-all">
               <!-- Header with Toggle Button -->
               <button type="button" 
+                      data-testid="toggle-reasoning"
                       @click="message.reasoningCollapsed = !message.reasoningCollapsed"
-                      class="w-full px-3 py-2 flex items-center justify-between text-zinc-400 hover:text-zinc-200 bg-zinc-900/60 transition-colors select-none text-left">
+                      class="w-full px-3 py-2 flex items-center justify-between text-zinc-400 hover:text-zinc-200 bg-zinc-900/60 transition-colors select-none text-left cursor-pointer">
                 <span class="flex items-center gap-1.5 font-medium">
                   <span class="text-amber-400 text-xs" :class="{ 'animate-spin': message.streaming && message.isThinking }">✦</span>
                   <span class="text-zinc-300 font-bold">
