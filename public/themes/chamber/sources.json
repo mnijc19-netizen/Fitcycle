@@ -38,6 +38,12 @@
       "file": "icons/chamber-profile.svg",
       "source": "Bespoke Custom Vector (Gold Chamfered Card & Precision Crosshair)",
       "usage": "Bottom TabBar Item 5: 统计设置 (Chamber Custom Business Card)"
+    },
+    {
+      "file": "icons/chamber-watch.png",
+      "sourceUrl": "https://media.valorant-api.com/playercards/10e96429-45c2-bdfd-b8af-738853690d63/largeart.png",
+      "dimensions": "256x256",
+      "usage": "RestTimerFloat: 组间休息悬浮倒计时 (Official Riot Manifest Elegance Chamber Gold Wristwatch)"
     }
   ]
 }

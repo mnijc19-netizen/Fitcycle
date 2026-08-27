@@ -12,13 +12,12 @@
     <!-- 1. CS2 C4 THEME VARIANT -->
     <!-- ============================================== -->
     
-    <!-- CS2 Compact State (常态：微型小尺寸 C4 + 外围光环脉冲闪烁 + 倒计时，可任意拖拽，轻点展开) -->
+    <!-- CS2 Compact State -->
     <div v-if="!isExpanded && store.settings.uiSkin === 'cs'" 
          @click="toggleExpand"
          class="bg-[#080C14]/98 border border-[#F97316]/60 backdrop-blur-xl rounded-2xl pl-2 pr-3 py-1.5 shadow-2xl shadow-black flex items-center gap-2 text-white animate-in slide-in-from-right-4 duration-200 cursor-grab active:cursor-grabbing active:scale-95 group transition-transform">
       <!-- C4 Icon with surrounding red pulsing aura glow -->
       <div class="relative w-6 h-6 rounded-lg bg-[#141A12] border border-red-500/60 flex items-center justify-center flex-shrink-0">
-        <!-- Surrounding Red Pulsing Aura Ring -->
         <div class="absolute -inset-1 rounded-xl bg-red-500/30 blur-[2px] animate-pulse pointer-events-none"></div>
         <img :src="csC4TimerImg" alt="C4" class="w-full h-full object-contain p-0.5 relative z-10 drop-shadow-[0_0_6px_rgba(239,68,68,0.8)]" />
       </div>
@@ -31,23 +30,12 @@
       </div>
     </div>
 
-    <!-- CS2 Expanded Action Bar (点击后紧凑展开：只装得下按键，微型 C4 + 时间 + -15s + +30s + 关闭) -->
+    <!-- CS2 Expanded Action Bar (Directional zero-jump expansion) -->
     <div v-else-if="isExpanded && store.settings.uiSkin === 'cs'" 
          class="bg-[#080C14]/98 border border-[#F97316]/60 backdrop-blur-2xl rounded-2xl px-2.5 py-1.5 shadow-2xl shadow-black flex items-center gap-2 text-white animate-in zoom-in-95 duration-200">
       
-      <!-- Left: Mini C4 & Time (tap to collapse) -->
-      <div class="flex items-center gap-1.5 cursor-pointer" @click="toggleExpand">
-        <div class="relative w-6 h-6 rounded-lg bg-[#141A12] border border-red-500/60 flex items-center justify-center flex-shrink-0">
-          <div class="absolute -inset-1 rounded-xl bg-red-500/25 blur-[2px] animate-pulse pointer-events-none"></div>
-          <img :src="csC4TimerImg" alt="C4" class="w-full h-full object-contain p-0.5 relative z-10 drop-shadow-[0_0_6px_rgba(239,68,68,0.8)]" />
-        </div>
-        <span class="font-mono font-black text-xs text-red-500 tracking-tight drop-shadow-[0_0_8px_rgba(239,68,68,0.8)] pr-1">
-          {{ formatTime(store.restTimer.remaining) }}
-        </span>
-      </div>
-
-      <!-- Action Buttons: -15s, +30s, 关闭 -->
-      <div class="flex items-center gap-1 flex-shrink-0">
+      <!-- Action Buttons (Ordered dynamically: left when on right side, right when on left side) -->
+      <div class="flex items-center gap-1 flex-shrink-0" :class="{ 'order-1': isRightHalf, 'order-2': !isRightHalf }">
         <button @click.stop="adjustRestTimer(-15)" 
                 class="px-2 py-1 bg-[#0F172A] hover:bg-[#1E293B] active:scale-90 text-zinc-300 rounded-lg text-xs font-mono font-bold border border-zinc-700 transition-all">
           -15s
@@ -63,20 +51,31 @@
         </button>
       </div>
 
+      <!-- Mini C4 & Time (Statically aligned to edge) -->
+      <div class="flex items-center gap-1.5 cursor-pointer" :class="{ 'order-2': isRightHalf, 'order-1': !isRightHalf }" @click="toggleExpand">
+        <div class="relative w-6 h-6 rounded-lg bg-[#141A12] border border-red-500/60 flex items-center justify-center flex-shrink-0">
+          <div class="absolute -inset-1 rounded-xl bg-red-500/25 blur-[2px] animate-pulse pointer-events-none"></div>
+          <img :src="csC4TimerImg" alt="C4" class="w-full h-full object-contain p-0.5 relative z-10 drop-shadow-[0_0_6px_rgba(239,68,68,0.8)]" />
+        </div>
+        <span class="font-mono font-black text-xs text-red-500 tracking-tight drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]">
+          {{ formatTime(store.restTimer.remaining) }}
+        </span>
+      </div>
+
     </div>
 
     <!-- ============================================== -->
-    <!-- 2. CHAMBER (尚博勒) OFFICIAL RENDEZVOUS WATCH THEME VARIANT -->
+    <!-- 2. CHAMBER (尚博勒) OFFICIAL MANIFEST ELEGANCE WATCH THEME -->
     <!-- ============================================== -->
     
-    <!-- Chamber Compact State (微型官方金表 + 贵宾专线传送怀表金光) -->
+    <!-- Chamber Compact State -->
     <div v-else-if="!isExpanded && store.settings.uiSkin === 'chamber'" 
          @click="toggleExpand"
          class="bg-[#070B14]/98 border border-[#E5C378]/70 backdrop-blur-xl rounded-2xl pl-2 pr-3 py-1.5 shadow-2xl shadow-black flex items-center gap-2 text-white animate-in slide-in-from-right-4 duration-200 cursor-grab active:cursor-grabbing active:scale-95 group transition-transform">
-      <!-- Official Chamber Rendezvous Watch Icon -->
-      <div class="relative w-6 h-6 rounded-lg bg-[#0D1627] border border-[#E5C378]/60 flex items-center justify-center flex-shrink-0">
+      <!-- Official Riot Games Chamber Gold Wristwatch Icon -->
+      <div class="relative w-6 h-6 rounded-lg bg-[#0D1627] border border-[#E5C378]/60 flex items-center justify-center flex-shrink-0 overflow-hidden">
         <div class="absolute -inset-1 rounded-xl bg-[#E5C378]/25 blur-[2px] animate-pulse pointer-events-none"></div>
-        <img :src="chamberWatchImg" alt="Chamber Watch" class="w-full h-full object-contain p-0.5 relative z-10 drop-shadow-[0_0_6px_rgba(229,195,120,0.9)]" />
+        <img :src="chamberWatchImg" alt="Chamber Official Gold Watch" class="w-full h-full object-cover relative z-10 drop-shadow-[0_0_6px_rgba(229,195,120,0.9)]" />
       </div>
 
       <!-- Digital French Gold Countdown Display -->
@@ -87,23 +86,12 @@
       </div>
     </div>
 
-    <!-- Chamber Expanded Action Bar (点击后紧凑展开) -->
+    <!-- Chamber Expanded Action Bar (Directional zero-jump expansion) -->
     <div v-else-if="isExpanded && store.settings.uiSkin === 'chamber'" 
          class="bg-[#070B14]/98 border border-[#E5C378]/70 backdrop-blur-2xl rounded-2xl px-2.5 py-1.5 shadow-2xl shadow-black flex items-center gap-2 text-white animate-in zoom-in-95 duration-200">
       
-      <!-- Left: Mini Chamber Watch & Time (tap to collapse) -->
-      <div class="flex items-center gap-1.5 cursor-pointer" @click="toggleExpand">
-        <div class="relative w-6 h-6 rounded-lg bg-[#0D1627] border border-[#E5C378]/60 flex items-center justify-center flex-shrink-0">
-          <div class="absolute -inset-1 rounded-xl bg-[#E5C378]/25 blur-[2px] animate-pulse pointer-events-none"></div>
-          <img :src="chamberWatchImg" alt="Chamber Watch" class="w-full h-full object-contain p-0.5 relative z-10 drop-shadow-[0_0_6px_rgba(229,195,120,0.9)]" />
-        </div>
-        <span class="font-mono font-black text-xs text-[#F6E09E] tracking-tight drop-shadow-[0_0_8px_rgba(246,224,158,0.9)] pr-1">
-          {{ formatTime(store.restTimer.remaining) }}
-        </span>
-      </div>
-
-      <!-- Action Buttons: -15s, +30s, 关闭 -->
-      <div class="flex items-center gap-1 flex-shrink-0">
+      <!-- Action Buttons (Ordered dynamically: left when on right side, right when on left side) -->
+      <div class="flex items-center gap-1 flex-shrink-0" :class="{ 'order-1': isRightHalf, 'order-2': !isRightHalf }">
         <button @click.stop="adjustRestTimer(-15)" 
                 class="px-2 py-1 bg-[#0D1627] hover:bg-[#142036] active:scale-90 text-[#9AA8C2] rounded-lg text-xs font-mono font-bold border border-[#1E3052] transition-all">
           -15s
@@ -117,6 +105,17 @@
                 class="w-6 h-6 rounded-lg bg-[#E06D3B]/20 hover:bg-[#E06D3B]/30 text-[#E06D3B] active:scale-90 flex items-center justify-center text-xs font-bold border border-[#E06D3B]/40 transition-all">
           ✕
         </button>
+      </div>
+
+      <!-- Mini Chamber Watch & Time (Statically aligned to edge) -->
+      <div class="flex items-center gap-1.5 cursor-pointer" :class="{ 'order-2': isRightHalf, 'order-1': !isRightHalf }" @click="toggleExpand">
+        <div class="relative w-6 h-6 rounded-lg bg-[#0D1627] border border-[#E5C378]/60 flex items-center justify-center flex-shrink-0 overflow-hidden">
+          <div class="absolute -inset-1 rounded-xl bg-[#E5C378]/25 blur-[2px] animate-pulse pointer-events-none"></div>
+          <img :src="chamberWatchImg" alt="Chamber Official Gold Watch" class="w-full h-full object-cover relative z-10 drop-shadow-[0_0_6px_rgba(229,195,120,0.9)]" />
+        </div>
+        <span class="font-mono font-black text-xs text-[#F6E09E] tracking-tight drop-shadow-[0_0_8px_rgba(246,224,158,0.9)]">
+          {{ formatTime(store.restTimer.remaining) }}
+        </span>
       </div>
 
     </div>
@@ -146,29 +145,12 @@
       </span>
     </div>
 
-    <!-- Default Expanded Action Bar -->
+    <!-- Default Expanded Action Bar (Directional zero-jump expansion) -->
     <div v-else 
          class="bg-zinc-900/98 border border-zinc-700/90 backdrop-blur-2xl rounded-2xl px-2.5 py-1.5 shadow-2xl shadow-black flex items-center gap-2 text-white animate-in zoom-in-95 duration-200">
       
-      <!-- Left: Mini Progress Ring & Time (tap to collapse) -->
-      <div class="flex items-center gap-1.5 cursor-pointer" @click="toggleExpand">
-        <div class="relative w-6 h-6 flex items-center justify-center flex-shrink-0">
-          <svg class="w-6 h-6 transform -rotate-90">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" class="text-zinc-800" fill="transparent" />
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" 
-                    :stroke-dasharray="62.8" 
-                    :stroke-dashoffset="miniDashOffset" 
-                    stroke-linecap="round"
-                    class="text-emerald-400 transition-all duration-300" fill="transparent" />
-          </svg>
-        </div>
-        <span class="font-mono font-black text-xs text-emerald-400 pr-1">
-          {{ formatTime(store.restTimer.remaining) }}
-        </span>
-      </div>
-
-      <!-- Action Buttons: -15s, +30s, 关闭 -->
-      <div class="flex items-center gap-1 flex-shrink-0">
+      <!-- Action Buttons (Ordered dynamically: left when on right side, right when on left side) -->
+      <div class="flex items-center gap-1 flex-shrink-0" :class="{ 'order-1': isRightHalf, 'order-2': !isRightHalf }">
         <button @click.stop="adjustRestTimer(-15)" 
                 class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 active:scale-90 text-zinc-300 rounded-lg text-xs font-mono font-bold border border-zinc-700 transition-all">
           -15s
@@ -184,6 +166,23 @@
         </button>
       </div>
 
+      <!-- Mini Progress Ring & Time (Statically aligned to edge) -->
+      <div class="flex items-center gap-1.5 cursor-pointer" :class="{ 'order-2': isRightHalf, 'order-1': !isRightHalf }" @click="toggleExpand">
+        <div class="relative w-6 h-6 flex items-center justify-center flex-shrink-0">
+          <svg class="w-6 h-6 transform -rotate-90">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" class="text-zinc-800" fill="transparent" />
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" 
+                    :stroke-dasharray="62.8" 
+                    :stroke-dashoffset="miniDashOffset" 
+                    stroke-linecap="round"
+                    class="text-emerald-400 transition-all duration-300" fill="transparent" />
+          </svg>
+        </div>
+        <span class="font-mono font-black text-xs text-emerald-400">
+          {{ formatTime(store.restTimer.remaining) }}
+        </span>
+      </div>
+
     </div>
 
   </div>
@@ -194,7 +193,7 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
 import { store, startRestTimer, stopRestTimer, adjustRestTimer } from "../store/fitnessStore.js";
 
 const csC4TimerImg = "./themes/cs/hud/bomb_planted.svg";
-const chamberWatchImg = "./themes/chamber/icons/rendezvous.png";
+const chamberWatchImg = "./themes/chamber/icons/chamber-watch.png";
 const timerWidgetRef = ref(null);
 
 const isExpanded = ref(false);
@@ -217,34 +216,35 @@ const containerStyle = computed(() => {
   const winW = typeof window !== "undefined" ? window.innerWidth : 390;
 
   if (customPos.value) {
-    let targetX = customPos.value.x;
-    let targetY = customPos.value.y;
-
-    // Smart edge anchoring: when expanded near right edge, auto-shift left so entire bar stays on screen
-    if (isExpanded.value) {
-      const expandedWidth = 200;
-      if (targetX + expandedWidth > winW - 12) {
-        targetX = Math.max(12, winW - expandedWidth - 12);
-      }
+    if (isRightHalf.value) {
+      // Pin right edge position so expanding to the left keeps the timer badge 100% stationary
+      const compactWidth = 84;
+      const rightDistance = Math.max(8, winW - (customPos.value.x + compactWidth));
+      return {
+        right: `${rightDistance}px`,
+        left: 'auto',
+        top: `${customPos.value.y}px`,
+        bottom: 'auto',
+        transform: 'translateZ(0)',
+        webkitTransform: 'translateZ(0)'
+      };
     } else {
-      const compactWidth = 80;
-      if (targetX + compactWidth > winW - 12) {
-        targetX = Math.max(12, winW - compactWidth - 12);
-      }
+      // Pin left edge position so expanding to the right keeps the timer badge 100% stationary
+      const leftDistance = Math.max(8, customPos.value.x);
+      return {
+        left: `${leftDistance}px`,
+        right: 'auto',
+        top: `${customPos.value.y}px`,
+        bottom: 'auto',
+        transform: 'translateZ(0)',
+        webkitTransform: 'translateZ(0)'
+      };
     }
-
-    return {
-      left: `${targetX}px`,
-      top: `${targetY}px`,
-      bottom: 'auto',
-      right: 'auto',
-      transform: 'translateZ(0)',
-      webkitTransform: 'translateZ(0)'
-    };
   }
 
   return {
     right: '12px',
+    left: 'auto',
     bottom: 'max(calc(env(safe-area-inset-bottom, 0px) + 64px), 74px)',
     transform: 'translateZ(0)',
     webkitTransform: 'translateZ(0)'
