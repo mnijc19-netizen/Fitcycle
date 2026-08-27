@@ -29,5 +29,18 @@ describe("mobile AI drawer", () => {
     expect(store.restTimer.remaining).toBeLessThan(before);
     wrapper.unmount();
   });
-});
 
+  it("clears unsent drawer content when all AI connections are cleared", async () => {
+    aiSession.drawerOpen = true;
+    const wrapper = mount(AIAssistantDrawer, { attachTo: document.body });
+    const input = wrapper.get("textarea");
+    await input.setValue("尚未发送的内容");
+
+    clearAIConnection();
+    await nextTick();
+
+    expect(input.element.value).toBe("");
+    expect(aiSession.conversation).toEqual([]);
+    wrapper.unmount();
+  });
+});

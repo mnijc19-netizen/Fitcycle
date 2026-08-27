@@ -13,7 +13,7 @@
       <header class="flex items-center justify-between gap-3 px-4 py-3 border-b border-zinc-800 bg-zinc-900/95 flex-shrink-0">
         <div class="min-w-0">
           <div class="text-sm font-black text-zinc-100 flex items-center gap-2"><span class="text-amber-400">✦</span> Fitcycle AI</div>
-          <div class="text-[10px] text-zinc-500 truncate">{{ selectedModel?.name || '请先在设置中连接 OpenRouter' }}</div>
+          <div class="text-[10px] text-zinc-500 truncate">{{ selectedModel ? `${activeProvider.name} · ${selectedModel.name}` : '请先在设置中连接 AI 提供商' }}</div>
         </div>
         <div class="flex items-center gap-1.5">
           <button type="button" class="px-2 py-1.5 rounded-lg text-[10px] border border-zinc-700 text-zinc-400" @click="handleClear">清空对话</button>
@@ -79,7 +79,7 @@
         </div>
         <div class="flex items-center justify-between mt-1.5 min-h-5">
           <button v-if="retryAvailable && !generating" type="button" class="text-[10px] text-amber-400" @click="retryGeneration">重试上次请求</button>
-          <button v-if="!aiSession.apiKey" type="button" class="ml-auto text-[10px] text-amber-400" @click="goToSettings">前往设置连接</button>
+          <button v-if="!activeApiKey" type="button" class="ml-auto text-[10px] text-amber-400" @click="goToSettings">前往设置连接</button>
         </div>
       </footer>
     </section>
@@ -88,7 +88,7 @@
 
 <script setup>
 import { computed, nextTick, ref, watch } from "vue";
-import { aiSession, clearConversation } from "../ai/aiSession.js";
+import { aiSession, clearConversation, getActiveApiKey, getActiveModelId, getActiveModels, getActiveProvider } from "../ai/aiSession.js";
 import { buildUserMessage, resumeAssistantAfterDecision, runAssistantLoop } from "../ai/assistantRuntime.js";
 import { createFitcycleToolRuntime } from "../ai/fitcycleTools.js";
 import { processImageFile } from "../ai/imageProcessor.js";
@@ -108,9 +108,11 @@ const messageList = ref(null);
 const inputError = ref("");
 let abortController = null;
 
-const selectedModel = computed(() => aiSession.models.find((model) => model.id === aiSession.selectedModelId) || null);
+const activeProvider = computed(getActiveProvider);
+const activeApiKey = computed(getActiveApiKey);
+const selectedModel = computed(() => getActiveModels().find((model) => model.id === getActiveModelId()) || null);
 const sendDisabledReason = computed(() => getMessageBlockReason({
-  apiKey: aiSession.apiKey,
+  apiKey: activeApiKey.value,
   model: selectedModel.value,
   text: draft.value,
   imageCount: attachments.value.length
@@ -119,6 +121,15 @@ const inputHint = computed(() => inputError.value || sendDisabledReason.value);
 const inputHintError = computed(() => Boolean(inputError.value || (attachments.value.length && !selectedModel.value?.capabilities.image)));
 
 watch(() => aiSession.conversation.length, scrollToBottom);
+watch(() => aiSession.clearRevision, () => {
+  abortController?.abort();
+  attachments.value = [];
+  draft.value = "";
+  inputError.value = "";
+  pendingContext.value = null;
+  retryAvailable.value = false;
+  toolRuntime.clear();
+});
 
 function scrollToBottom() {
   nextTick(() => {
@@ -148,7 +159,8 @@ async function runCurrentHistory(runOptions = {}) {
   abortController = new AbortController();
   try {
     const baseOptions = {
-      apiKey: aiSession.apiKey,
+      provider: aiSession.activeProvider,
+      apiKey: activeApiKey.value,
       model: selectedModel.value.id,
       capabilities: selectedModel.value.capabilities,
       toolRuntime,

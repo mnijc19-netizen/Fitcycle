@@ -8,7 +8,7 @@ import {
   store
 } from "../src/store/fitnessStore.js";
 import {
-  OPENROUTER_KEY_SESSION_KEY,
+  AI_KEY_SESSION_KEYS,
   clearAIConnection,
   setSessionApiKey
 } from "../src/ai/aiSession.js";
@@ -61,7 +61,7 @@ describe("production data compatibility", () => {
     store.settings.unlockedSkins = ["default", "chamber"];
     setUISkin("chamber");
     expect(store.settings.uiSkin).toBe("chamber");
-    setSessionApiKey("session-secret-marker");
+    setSessionApiKey("session-secret-marker", "deepseek");
     expect(restoreDefaultSkin().success).toBe(true);
     expect(store.settings.uiSkin).toBe("default");
     expect(store.settings.unlockedSkins).toEqual(["default", "chamber"]);
@@ -69,14 +69,17 @@ describe("production data compatibility", () => {
   });
 
   it("stores the API key only in sessionStorage and excludes it from app storage and backup", async () => {
-    setSessionApiKey("session-secret-marker");
+    setSessionApiKey("session-secret-marker", "deepseek");
+    setSessionApiKey("second-secret-marker", "zhipu");
     store.settings.defaultRestSeconds = 91;
     await nextTick();
 
-    expect(sessionStorage.getItem(OPENROUTER_KEY_SESSION_KEY)).toBe("session-secret-marker");
+    expect(sessionStorage.getItem(AI_KEY_SESSION_KEYS.deepseek)).toBe("session-secret-marker");
+    expect(sessionStorage.getItem(AI_KEY_SESSION_KEYS.zhipu)).toBe("second-secret-marker");
     expect(exportBackupJSON()).not.toContain("session-secret-marker");
+    expect(exportBackupJSON()).not.toContain("second-secret-marker");
     expect(localStorage.getItem("fitcycle_app_data_v1") || "").not.toContain("session-secret-marker");
+    expect(localStorage.getItem("fitcycle_app_data_v1") || "").not.toContain("second-secret-marker");
     expect(store).not.toHaveProperty("apiKey");
   });
 });
-

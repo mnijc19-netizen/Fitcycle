@@ -1,5 +1,5 @@
 import { FITCYCLE_TOOL_DEFINITIONS } from "./fitcycleTools.js";
-import { streamChatCompletion } from "./openrouterClient.js";
+import { streamProviderChatCompletion } from "./providerClient.js";
 
 export const MAX_TOOL_ROUNDS = 4;
 
@@ -34,6 +34,7 @@ export function buildUserMessage(text, images = []) {
 
 export async function runAssistantLoop(options) {
   const {
+    provider,
     apiKey,
     model,
     capabilities,
@@ -42,7 +43,7 @@ export async function runAssistantLoop(options) {
     signal,
     onToken,
     onToolResult,
-    streamImpl = streamChatCompletion,
+    streamImpl = streamProviderChatCompletion,
     initialToolRounds = 0
   } = options;
 
@@ -51,6 +52,7 @@ export async function runAssistantLoop(options) {
 
   while (true) {
     const response = await streamImpl({
+      provider,
       apiKey,
       model,
       messages: [{ role: "system", content: FITCYCLE_SYSTEM_PROMPT }, ...history],
@@ -97,4 +99,3 @@ export async function resumeAssistantAfterDecision(options) {
   history.push(toolResultMessage(options.toolCall, result));
   return runAssistantLoop({ ...options, messages: history, initialToolRounds: options.toolRounds });
 }
-

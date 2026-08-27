@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { filterModels, getMessageBlockReason, getModelCapabilities, normalizeOpenRouterModel } from "../src/ai/modelCapabilities.js";
+import { filterModels, getMessageBlockReason, getModelCapabilities, normalizeProviderModel } from "../src/ai/modelCapabilities.js";
 import { runAssistantLoop } from "../src/ai/assistantRuntime.js";
 import { createFitcycleToolRuntime } from "../src/ai/fitcycleTools.js";
-import { fetchOpenRouterModels, streamChatCompletion, testOpenRouterConnection } from "../src/ai/openrouterClient.js";
+import { fetchProviderModels, streamProviderChatCompletion } from "../src/ai/providerClient.js";
 import { exportBackupJSON, importBackupJSON, store, stopRestTimer } from "../src/store/fitnessStore.js";
 
 let baseline;
@@ -26,34 +26,32 @@ afterEach(() => {
 });
 
 describe("dynamic model capabilities", () => {
-  it("derives image and tools support from OpenRouter metadata", () => {
-    const capable = normalizeOpenRouterModel({
-      id: "vendor/vision-tool",
-      name: "Vision Tool",
-      architecture: { input_modalities: ["text", "image"], output_modalities: ["text"] },
-      supported_parameters: ["temperature", "tools"]
-    });
-    const chatOnly = normalizeOpenRouterModel({
-      id: "vendor/chat",
-      architecture: { input_modalities: ["text"], output_modalities: ["text"] },
-      supported_parameters: ["temperature"]
-    });
+  it("derives capabilities for DeepSeek and Zhipu models", () => {
+    const capable = normalizeProviderModel("zhipu", { id: "glm-4.6v-flash" });
+    const chatOnly = normalizeProviderModel("deepseek", { id: "deepseek-v4" });
 
     expect(capable.capabilities).toEqual({ text: true, image: true, tools: true, streaming: true });
     expect(chatOnly.capabilities.image).toBe(false);
-    expect(chatOnly.capabilities.tools).toBe(false);
-    expect(filterModels([capable, chatOnly], "vision")).toEqual([capable]);
+    expect(chatOnly.capabilities.tools).toBe(true);
+    expect(filterModels([capable, chatOnly], "4.6v")).toEqual([capable]);
     expect(getMessageBlockReason({ apiKey: "key", model: chatOnly, text: "看图", imageCount: 1 })).toContain("不支持图片");
     expect(getMessageBlockReason({ apiKey: "key", model: capable, text: "看图", imageCount: 1 })).toBe("");
   });
 
-  it("validates the API key before treating a public model list as a connection", async () => {
+  it("validates provider keys while loading dynamic model lists", async () => {
     const unauthorized = vi.fn(async () => ({ ok: false, status: 401 }));
-    await expect(testOpenRouterConnection("invalid-key", { fetchImpl: unauthorized })).rejects.toThrow("API Key 无效");
+    await expect(fetchProviderModels("deepseek", "invalid-key", { fetchImpl: unauthorized })).rejects.toThrow("API Key 无效");
 
-    const publicModels = vi.fn(async () => ({ ok: true, status: 200, json: async () => ({ data: [] }) }));
-    await expect(fetchOpenRouterModels("invalid-key", { fetchImpl: publicModels })).resolves.toEqual([]);
-    expect(unauthorized).toHaveBeenCalledWith(expect.stringMatching(/\/key$/), expect.any(Object));
+    const zhipuModels = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      json: async () => ({ data: [{ id: "glm-4.6v-flash" }, { id: "glm-image" }] })
+    }));
+    const models = await fetchProviderModels("zhipu", "valid-key", { fetchImpl: zhipuModels });
+    expect(models.map((model) => model.id)).toEqual(["glm-4.6v-flash"]);
+    expect(models[0].capabilities).toMatchObject({ image: true, tools: true, streaming: true });
+    expect(unauthorized).toHaveBeenCalledWith(expect.stringMatching(/\/models$/), expect.any(Object));
+    expect(zhipuModels).toHaveBeenCalledWith(expect.stringMatching(/\/models$/), expect.any(Object));
   });
 
   it("does not advertise image input based on description text", () => {
@@ -131,6 +129,7 @@ describe("Fitcycle tool safety", () => {
     let responseIndex = 0;
     const request = vi.fn(() => ({ success: true, message: "ok", data: {} }));
     const result = await runAssistantLoop({
+      provider: "deepseek",
       apiKey: "test-key",
       model: "vendor/tools",
       capabilities: { tools: true },
@@ -163,14 +162,19 @@ describe("assistant network isolation", () => {
       }
     });
     const tokens = [];
-    const result = await streamChatCompletion({
-      apiKey: "test-key", model: "vendor/tools", messages: [], onToken: (token) => tokens.push(token)
-    }, { fetchImpl: async () => ({ ok: true, status: 200, body }) });
+    let sentBody;
+    const result = await streamProviderChatCompletion({
+      provider: "deepseek", apiKey: "test-key", model: "deepseek-v4", messages: [], onToken: (token) => tokens.push(token)
+    }, { fetchImpl: async (_url, options) => {
+      sentBody = JSON.parse(options.body);
+      return { ok: true, status: 200, body };
+    } });
 
     expect(result.content).toBe("训练");
     expect(tokens).toEqual(["训", "练"]);
     expect(result.toolCalls[0]).toEqual({ id: "call-1", type: "function", function: { name: "get_today_context", arguments: "{}" } });
     expect(result.finishReason).toBe("tool_calls");
+    expect(sentBody.thinking).toEqual({ type: "disabled" });
   });
 
   it("does not send tools to a chat-only model", async () => {
@@ -180,17 +184,17 @@ describe("assistant network isolation", () => {
       return { content: "仅聊天", toolCalls: [], finishReason: "stop" };
     });
     const result = await runAssistantLoop({
-      apiKey: "test-key", model: "vendor/chat", capabilities: { tools: false }, messages: [{ role: "user", content: "你好" }],
+      provider: "zhipu", apiKey: "test-key", model: "glm-chat", capabilities: { tools: false }, messages: [{ role: "user", content: "你好" }],
       toolRuntime: createFitcycleToolRuntime(), streamImpl
     });
     expect(result.content).toBe("仅聊天");
     expect(persistentDataSnapshot()).toEqual(before);
   });
 
-  it("keeps training state unchanged when OpenRouter fails", async () => {
+  it("keeps training state unchanged when an AI provider fails", async () => {
     const before = persistentDataSnapshot();
     await expect(runAssistantLoop({
-      apiKey: "test-key", model: "vendor/chat", capabilities: { tools: false }, messages: [{ role: "user", content: "你好" }],
+      provider: "zhipu", apiKey: "test-key", model: "glm-chat", capabilities: { tools: false }, messages: [{ role: "user", content: "你好" }],
       toolRuntime: createFitcycleToolRuntime(), streamImpl: async () => { throw new Error("offline"); }
     })).rejects.toThrow("offline");
     expect(persistentDataSnapshot()).toEqual(before);
@@ -199,7 +203,7 @@ describe("assistant network isolation", () => {
   it("propagates stop generation without changing training state", async () => {
     const before = persistentDataSnapshot();
     const controller = new AbortController();
-    const promise = streamChatCompletion({ apiKey: "test-key", model: "vendor/chat", messages: [], signal: controller.signal }, {
+    const promise = streamProviderChatCompletion({ provider: "deepseek", apiKey: "test-key", model: "deepseek-v4", messages: [], signal: controller.signal }, {
       fetchImpl: (_url, options) => new Promise((_resolve, reject) => {
         options.signal.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")), { once: true });
       })

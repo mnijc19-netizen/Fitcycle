@@ -1,7 +1,19 @@
 import { reactive } from "vue";
 
-export const OPENROUTER_KEY_SESSION_KEY = "fitcycle_openrouter_session_key";
-const MODEL_SESSION_KEY = "fitcycle_openrouter_model";
+export const AI_PROVIDERS = [
+  { id: "deepseek", name: "DeepSeek", keyLabel: "DeepSeek API Key" },
+  { id: "zhipu", name: "智谱 GLM", keyLabel: "智谱 API Key" }
+];
+export const AI_KEY_SESSION_KEYS = {
+  deepseek: "fitcycle_deepseek_session_key",
+  zhipu: "fitcycle_zhipu_session_key"
+};
+const MODEL_SESSION_KEYS = {
+  deepseek: "fitcycle_deepseek_model",
+  zhipu: "fitcycle_zhipu_model"
+};
+const PROVIDER_SESSION_KEY = "fitcycle_ai_provider";
+const LEGACY_OPENROUTER_KEYS = ["fitcycle_openrouter_session_key", "fitcycle_openrouter_model"];
 
 function readSessionValue(key) {
   try {
@@ -22,26 +34,67 @@ function writeSessionValue(key, value) {
 }
 
 export const aiSession = reactive({
-  apiKey: readSessionValue(OPENROUTER_KEY_SESSION_KEY),
-  selectedModelId: readSessionValue(MODEL_SESSION_KEY),
-  models: [],
+  activeProvider: AI_PROVIDERS.some((item) => item.id === readSessionValue(PROVIDER_SESSION_KEY))
+    ? readSessionValue(PROVIDER_SESSION_KEY)
+    : "deepseek",
+  apiKeys: {
+    deepseek: readSessionValue(AI_KEY_SESSION_KEYS.deepseek),
+    zhipu: readSessionValue(AI_KEY_SESSION_KEYS.zhipu)
+  },
+  selectedModelIds: {
+    deepseek: readSessionValue(MODEL_SESSION_KEYS.deepseek),
+    zhipu: readSessionValue(MODEL_SESSION_KEYS.zhipu)
+  },
+  modelsByProvider: { deepseek: [], zhipu: [] },
   drawerOpen: false,
   connectionState: "idle",
   connectionMessage: "",
+  clearRevision: 0,
   conversation: [],
   apiMessages: []
 });
 
-export function setSessionApiKey(apiKey) {
-  const clean = typeof apiKey === "string" ? apiKey.trim() : "";
-  aiSession.apiKey = clean;
-  writeSessionValue(OPENROUTER_KEY_SESSION_KEY, clean);
+LEGACY_OPENROUTER_KEYS.forEach((key) => writeSessionValue(key, ""));
+
+export function getActiveProvider() {
+  return AI_PROVIDERS.find((item) => item.id === aiSession.activeProvider) || AI_PROVIDERS[0];
 }
 
-export function setSelectedModel(modelId) {
+export function getActiveApiKey() {
+  return aiSession.apiKeys[aiSession.activeProvider] || "";
+}
+
+export function getActiveModels() {
+  return aiSession.modelsByProvider[aiSession.activeProvider] || [];
+}
+
+export function getActiveModelId() {
+  return aiSession.selectedModelIds[aiSession.activeProvider] || "";
+}
+
+export function setActiveProvider(provider) {
+  if (!AI_PROVIDERS.some((item) => item.id === provider)) return;
+  if (aiSession.activeProvider !== provider) clearConversation();
+  aiSession.activeProvider = provider;
+  aiSession.connectionState = "idle";
+  aiSession.connectionMessage = "";
+  writeSessionValue(PROVIDER_SESSION_KEY, provider);
+}
+
+export function setSessionApiKey(apiKey, provider = aiSession.activeProvider) {
+  const clean = typeof apiKey === "string" ? apiKey.trim() : "";
+  aiSession.apiKeys[provider] = clean;
+  writeSessionValue(AI_KEY_SESSION_KEYS[provider], clean);
+}
+
+export function setSelectedModel(modelId, provider = aiSession.activeProvider) {
   const clean = typeof modelId === "string" ? modelId : "";
-  aiSession.selectedModelId = clean;
-  writeSessionValue(MODEL_SESSION_KEY, clean);
+  aiSession.selectedModelIds[provider] = clean;
+  writeSessionValue(MODEL_SESSION_KEYS[provider], clean);
+}
+
+export function setProviderModels(models, provider = aiSession.activeProvider) {
+  aiSession.modelsByProvider[provider] = Array.isArray(models) ? models : [];
 }
 
 export function clearConversation() {
@@ -50,11 +103,14 @@ export function clearConversation() {
 }
 
 export function clearAIConnection() {
-  setSessionApiKey("");
-  setSelectedModel("");
-  aiSession.models.splice(0);
+  AI_PROVIDERS.forEach(({ id }) => {
+    setSessionApiKey("", id);
+    setSelectedModel("", id);
+    setProviderModels([], id);
+  });
+  LEGACY_OPENROUTER_KEYS.forEach((key) => writeSessionValue(key, ""));
   aiSession.connectionState = "idle";
   aiSession.connectionMessage = "";
   clearConversation();
+  aiSession.clearRevision += 1;
 }
-
