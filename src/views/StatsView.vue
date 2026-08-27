@@ -152,16 +152,9 @@
 
       <!-- State A: NOT Unlocked Yet -->
       <div v-if="!store.settings.unlockedSkins.includes('chamber')" class="space-y-2.5">
-        <div class="flex items-center justify-between">
-          <p class="text-xs text-zinc-400">
-            输入暗号，解锁隐藏界面皮肤
-          </p>
-          <button type="button"
-                  @click="passcodeInput = '诶，勃勒'"
-                  class="text-[11px] text-amber-400 hover:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-2 py-0.5 rounded-lg transition-colors flex items-center gap-1 font-medium">
-            <span>⚡ 一键填入暗号</span>
-          </button>
-        </div>
+        <p class="text-xs text-zinc-400 leading-relaxed">
+          输入暗号，解锁隐藏界面皮肤
+        </p>
 
         <div class="space-y-1.5">
           <div class="flex items-center gap-2">
@@ -175,7 +168,7 @@
                      autocorrect="off"
                      spellcheck="false"
                      @keydown.enter.prevent="handlePasscodeSubmit"
-                     placeholder="输入暗号（中文或拼音 eibole）..."
+                     placeholder="输入解锁暗号..."
                      class="w-full bg-zinc-950 border text-xs text-zinc-100 rounded-xl px-3 py-2.5 focus:outline-none transition-colors"
                      :class="[passcodeError ? 'border-red-500/80 focus:border-red-500' : 'border-zinc-800 focus:border-amber-500/60']" />
             </div>
@@ -188,7 +181,7 @@
 
           <!-- Subtle inline error message -->
           <div v-if="passcodeError" class="text-xs text-red-400 flex items-center gap-1 pl-1 pt-0.5">
-            <span>⚠️</span> 暗号不正确（可输入：诶，勃勒 或 eibole）
+            <span>⚠️</span> 暗号不正确
           </div>
         </div>
       </div>
