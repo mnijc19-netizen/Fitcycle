@@ -5,6 +5,7 @@ import {
   calculateSessionPointsEarned,
   getTierForScore,
   evaluateUnlockedBadges,
+  validateInputSanity,
   PRESTIGE_MEDAL_COLORS
 } from "../src/engine/honorEngine.js";
 import { SKIN_HONOR_SCHEMAS, getSkinHonorPresentation } from "../src/engine/skinHonorSchemas.js";
@@ -56,6 +57,24 @@ describe("Fitcycle Core Constitution & Honor Rating Engine", () => {
       const decay120 = calculateInactivityDecay(120, 1500, 1200);
       expect(decay120.decayPoints).toBeGreaterThanOrEqual(15);
       expect(decay120.warningLevel).toBe("moderate");
+    });
+
+    it("freezes decay completely when deload shield is active (Article 4.4)", () => {
+      const decayDeload = calculateInactivityDecay(200, 1500, 1200, true);
+      expect(decayDeload.decayPoints).toBe(0);
+      expect(decayDeload.warningLevel).toBe("deload");
+      expect(decayDeload.isDeload).toBe(true);
+    });
+
+    it("validates input sanity against human physiological extremes (Article 6.4)", () => {
+      const normal = validateInputSanity(100, 10, 5000);
+      expect(normal.isAnomalous).toBe(false);
+
+      const extremeWeight = validateInputSanity(500, 10, 5000);
+      expect(extremeWeight.isAnomalous).toBe(true);
+
+      const extremeReps = validateInputSanity(100, 150, 5000);
+      expect(extremeReps.isAnomalous).toBe(true);
     });
 
     it("applies 150% redemption rebound bonus after >= 5 days (120h) inactivity", () => {

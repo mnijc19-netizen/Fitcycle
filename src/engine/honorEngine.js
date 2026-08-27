@@ -1,4 +1,4 @@
-﻿// Fitcycle Core Honor, Progression & Multi-Modal METs Engine
+// Fitcycle Core Honor, Progression & Multi-Modal METs Engine
 // Strictly compliant with docs/FITCYCLE_CORE_CONSTITUTION.md
 
 /**
@@ -64,9 +64,20 @@ export function calculateEquivalentTonnage(modality, params = {}) {
  * @param {number} hoursSinceLastWorkout 
  * @param {number} currentScore 
  * @param {number} tierMinScore 
+ * @param {boolean} isDeloadShieldActive 
  * @returns {Object} { decayPoints, warningLevel, warningMessage }
  */
-export function calculateInactivityDecay(hoursSinceLastWorkout, currentScore, tierMinScore = 0) {
+export function calculateInactivityDecay(hoursSinceLastWorkout, currentScore, tierMinScore = 0, isDeloadShieldActive = false) {
+  if (isDeloadShieldActive) {
+    return {
+      decayPoints: 0,
+      warningLevel: "deload",
+      warningMessage: "🛡️ 战术休整/减载免战期生效中：战力怠惰衰减已冻结，科学恢复蓄力中！",
+      dailyRate: 0,
+      isDeload: true
+    };
+  }
+
   if (hoursSinceLastWorkout <= 72) {
     return {
       decayPoints: 0,
@@ -254,4 +265,25 @@ export function evaluateUnlockedBadges(stats = {}) {
   if (hasBrokenPR) badges.push({ id: "badge_awp_pr", category: "tactical", tier: 3, unlocked: true });
 
   return badges;
+}
+
+/**
+ * Validates sanity of user input weights, reps, and tonnage against human physiological boundaries
+ * (Constitution Article 6.4: Human Physiological Anomaly Safeguard)
+ * @param {number} weight 
+ * @param {number} reps 
+ * @param {number} volume 
+ * @returns {Object} { isAnomalous: boolean, warningMessage?: string }
+ */
+export function validateInputSanity(weight = 0, reps = 0, volume = 0) {
+  if (Number(weight) > 350) {
+    return { isAnomalous: true, warningMessage: "⚠️ 重量超过 350kg 人类生理基线，请核对是否输入手滑！" };
+  }
+  if (Number(reps) > 100) {
+    return { isAnomalous: true, warningMessage: "⚠️ 单组次数超过 100次 离群警戒线，请核对是否录入有误！" };
+  }
+  if (Number(volume) > 30000) {
+    return { isAnomalous: true, warningMessage: "⚠️ 单场容量突破 30,000kg 极限，请核对数据！" };
+  }
+  return { isAnomalous: false };
 }
