@@ -730,12 +730,25 @@ export function unlockChamberSkin(passcodeInput) {
   return unlockSkin(passcodeInput);
 }
 
+export const skinSplashState = reactive({
+  visible: false,
+  skin: "default",
+  seq: 0
+});
+
+export function triggerSkinSplash(skinName) {
+  skinSplashState.skin = skinName || "default";
+  skinSplashState.seq += 1;
+  skinSplashState.visible = true;
+}
+
 export function setUISkin(skinName) {
   const target = VALID_SKINS.includes(skinName) ? skinName : "default";
   if (target === "default" || store.settings.unlockedSkins.includes(target)) {
     store.settings.uiSkin = target;
     applySkinToDOM(target);
     if (store.settings.vibrationEnabled) triggerHaptic("light");
+    triggerSkinSplash(target);
   }
 }
 
@@ -743,6 +756,7 @@ export function restoreDefaultSkin() {
   store.settings.uiSkin = "default";
   applySkinToDOM("default");
   if (store.settings.vibrationEnabled) triggerHaptic("light");
+  triggerSkinSplash("default");
   return { success: true, message: "已恢复默认外观，训练数据未改变" };
 }
 

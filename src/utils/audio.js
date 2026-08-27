@@ -103,4 +103,72 @@ export function playWorkoutDoneSound() {
   }
 }
 
+// 播放皮肤切换全屏转场特效音效 (CS2战术重低音 / Chamber金光传送晶音 / 经典共鸣)
+export function playSkinSwitchSound(skinName) {
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+
+    if (skinName === "cs") {
+      // Tactical Sub-Bass Impact + Double Beep (CS2 Lock-in)
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.exponentialRampToValueAtTime(45, now + 0.4);
+      gain.gain.setValueAtTime(0.35, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.45);
+
+      // High Beep
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(987.77, now + 0.08); // B5
+      gain2.gain.setValueAtTime(0.2, now + 0.08);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start(now + 0.08);
+      osc2.stop(now + 0.3);
+    } else if (skinName === "chamber") {
+      // Luxury French Golden Arpeggio (Chamber Teleport)
+      const notes = [659.25, 880.00, 1174.66, 1760.00]; // E5, A5, D6, A6
+      notes.forEach((freq, i) => {
+        const startTime = now + i * 0.07;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, startTime);
+        gain.gain.setValueAtTime(0.25, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.4);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + 0.4);
+      });
+    } else {
+      // Default Amber Harmonic Pulse
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(329.63, now); // E4
+      osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.3); // E5
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.4);
+    }
+  } catch (e) {
+    console.warn("Skin audio play failed:", e);
+  }
+}
+
 

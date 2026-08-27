@@ -27,6 +27,9 @@
       @close="store.settings.hasSeenOnboarding = true"
     />
 
+    <!-- Full-Screen Cinematic Skin Game-Entry Splash Transition -->
+    <SkinSplashTransition />
+
     <!-- Fixed Bottom Mobile Navigation Bar -->
     <TabBar />
   </div>
@@ -39,6 +42,7 @@ import TabBar from "./components/TabBar.vue";
 import RestTimerFloat from "./components/RestTimerFloat.vue";
 import AIAssistantDrawer from "./components/AIAssistantDrawer.vue";
 import UserOnboardingModal from "./components/UserOnboardingModal.vue";
+import SkinSplashTransition from "./components/SkinSplashTransition.vue";
 
 import TodayView from "./views/TodayView.vue";
 import CycleView from "./views/CycleView.vue";
