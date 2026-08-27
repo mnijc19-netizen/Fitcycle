@@ -1,7 +1,40 @@
 <template>
-  <div class="pb-32 px-4 pt-2 max-w-md mx-auto space-y-4">
+  <div class="pb-32 px-4 pt-2 max-w-md mx-auto space-y-4 relative">
 
-    
+    <!-- Floating Dopamine Overload / PR Toast Overlay -->
+    <transition
+      enter-active-class="transform ease-out duration-300 transition"
+      enter-from-class="-translate-y-8 opacity-0 scale-90"
+      enter-to-class="translate-y-0 opacity-100 scale-100"
+      leave-active-class="transition ease-in duration-200"
+      leave-from-class="opacity-100 scale-100"
+      leave-to-class="-translate-y-4 opacity-0 scale-95"
+    >
+      <div v-if="overloadCelebration.visible" 
+           class="fixed top-14 left-4 right-4 z-50 max-w-sm mx-auto pointer-events-none">
+        <div class="p-3 rounded-2xl shadow-2xl backdrop-blur-xl border flex items-center gap-3"
+             :class="[
+               overloadCelebration.isPr 
+                 ? 'bg-gradient-to-r from-amber-950/95 via-orange-950/95 to-amber-950/95 border-amber-500/80 shadow-[0_0_20px_rgba(245,158,11,0.5)] text-amber-200' 
+                 : 'bg-gradient-to-r from-emerald-950/95 to-teal-950/95 border-emerald-500/80 shadow-[0_0_20px_rgba(16,185,129,0.4)] text-emerald-200'
+             ]">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+               :class="overloadCelebration.isPr ? 'bg-amber-500/30 border border-amber-400' : 'bg-emerald-500/30 border border-emerald-400'">
+            {{ overloadCelebration.isPr ? '🔥' : '⚡' }}
+          </div>
+          <div class="flex-1 min-w-0 text-left">
+            <div class="text-xs font-black truncate"
+                 :class="overloadCelebration.isPr ? 'text-amber-300 drop-shadow-[0_0_6px_rgba(245,158,11,0.8)]' : 'text-emerald-300'">
+              {{ overloadCelebration.text }}
+            </div>
+            <div class="text-[10px] text-zinc-300 font-mono mt-0.5 truncate">
+              {{ overloadCelebration.subText }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+
     <!-- ============================================== -->
     <!-- MODE 1: ACTIVE WORKOUT IN PROGRESS (打卡记录模式) -->
     <!-- ============================================== -->
@@ -113,64 +146,102 @@
             </div>
 
             <!-- Set Rows -->
-            <div v-for="(s, sIdx) in ex.sets" :key="s.id || sIdx"
-                 class="grid grid-cols-12 gap-1.5 items-center p-1.5 rounded-xl transition-all"
-                 :class="[s.completed ? 'bg-emerald-950/20 border border-emerald-500/30' : 'bg-zinc-950/70 border border-zinc-800/60']">
-              
-              <!-- Set index -->
-              <div class="col-span-2 flex items-center gap-1">
-                <span class="w-6 h-6 rounded-lg bg-zinc-800 text-xs font-mono font-bold text-zinc-300 flex items-center justify-center">
-                  {{ sIdx + 1 }}
+            <div v-for="(s, sIdx) in ex.sets" :key="s.id || sIdx" class="space-y-1">
+              <div class="grid grid-cols-12 gap-1.5 items-center p-1.5 rounded-xl transition-all relative overflow-hidden"
+                   :class="[
+                     s.completed 
+                       ? 'bg-emerald-950/30 border border-emerald-500/40 shadow-sm shadow-emerald-500/10' 
+                       : (getSetOverloadDelta(ex.name, s, sIdx)?.isPr ? 'bg-amber-950/20 border border-amber-500/40' : 'bg-zinc-950/70 border border-zinc-800/60')
+                   ]">
+                
+                <!-- Set index -->
+                <div class="col-span-2 flex items-center gap-1">
+                  <span class="w-6 h-6 rounded-lg text-xs font-mono font-bold flex items-center justify-center transition-colors"
+                        :class="s.completed ? 'bg-emerald-500/20 text-emerald-300 font-black' : 'bg-zinc-800 text-zinc-300'">
+                    {{ sIdx + 1 }}
+                  </span>
+                  <button v-if="ex.sets.length > 1 && !s.completed" 
+                          @click="removeSet(exIdx, sIdx)" 
+                          class="text-zinc-600 hover:text-red-400 text-xs">
+                    -
+                  </button>
+                </div>
+
+                <!-- Weight Input + Quick Adjust -->
+                <div class="col-span-4 flex items-center bg-zinc-900 border border-zinc-700/70 rounded-lg overflow-hidden relative">
+                  <button @click="s.weight = Math.max(0, (Number(s.weight) || 0) - 2.5)" 
+                          class="px-1.5 py-1 text-zinc-400 hover:text-white bg-zinc-800/50 text-xs font-bold active:scale-95">
+                    -
+                  </button>
+                  <input v-model.number="s.weight" type="number" step="0.5"
+                         class="w-full bg-transparent text-center text-xs font-mono font-bold text-zinc-100 focus:outline-none" />
+                  <button @click="s.weight = (Number(s.weight) || 0) + 2.5" 
+                          class="px-1.5 py-1 text-zinc-400 hover:text-white bg-zinc-800/50 text-xs font-bold active:scale-95">
+                    +
+                  </button>
+                </div>
+
+                <!-- Reps Input + Quick Adjust -->
+                <div class="col-span-4 flex items-center bg-zinc-900 border border-zinc-700/70 rounded-lg overflow-hidden">
+                  <button @click="s.reps = Math.max(0, (Number(s.reps) || 0) - 1)" 
+                          class="px-1.5 py-1 text-zinc-400 hover:text-white bg-zinc-800/50 text-xs font-bold active:scale-95">
+                    -
+                  </button>
+                  <input v-model.number="s.reps" type="number" 
+                         class="w-full bg-transparent text-center text-xs font-mono font-bold text-zinc-100 focus:outline-none" />
+                  <button @click="s.reps = (Number(s.reps) || 0) + 1" 
+                          class="px-1.5 py-1 text-zinc-400 hover:text-white bg-zinc-800/50 text-xs font-bold active:scale-95">
+                    +
+                  </button>
+                </div>
+
+                <!-- Complete Checkbox Button -->
+                <div class="col-span-2 flex justify-center">
+                  <button @click="toggleSet(exIdx, sIdx)"
+                          class="w-8 h-8 rounded-xl flex items-center justify-center transition-all active:scale-90 relative"
+                          :class="[
+                            s.completed ? 'bg-emerald-500 text-zinc-950 shadow-md shadow-emerald-500/30' : 
+                            'bg-zinc-800 hover:bg-zinc-700 text-zinc-400 border border-zinc-700'
+                          ]">
+                    <svg class="w-4 h-4 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </button>
+                </div>
+
+              </div>
+
+              <!-- Micro Overload Dopamine Delta Badge Bar -->
+              <div v-if="getSetOverloadDelta(ex.name, s, sIdx)" 
+                   class="flex items-center justify-between px-2.5 text-[9px] font-mono leading-none pb-0.5 animate-in fade-in slide-in-from-top-1 duration-200">
+                <span class="text-zinc-500">{{ getSetOverloadDelta(ex.name, s, sIdx).prevText }}</span>
+                
+                <!-- Weight PR Badge -->
+                <span v-if="getSetOverloadDelta(ex.name, s, sIdx).type === 'weight_pr'"
+                      class="px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500/20 via-orange-500/25 to-amber-500/20 border border-amber-500/70 text-amber-300 font-black shadow-[0_0_10px_rgba(245,158,11,0.5)] flex items-center gap-1 animate-pulse">
+                  <span>🔥</span>
+                  <span>{{ getSetOverloadDelta(ex.name, s, sIdx).label }}</span>
                 </span>
-                <button v-if="ex.sets.length > 1 && !s.completed" 
-                        @click="removeSet(exIdx, sIdx)" 
-                        class="text-zinc-600 hover:text-red-400 text-xs">
-                  -
-                </button>
-              </div>
 
-              <!-- Weight Input + Quick Adjust -->
-              <div class="col-span-4 flex items-center bg-zinc-900 border border-zinc-700/70 rounded-lg overflow-hidden">
-                <button @click="s.weight = Math.max(0, (Number(s.weight) || 0) - 2.5)" 
-                        class="px-1.5 py-1 text-zinc-400 hover:text-white bg-zinc-800/50 text-xs font-bold active:scale-95">
-                  -
-                </button>
-                <input v-model.number="s.weight" type="number" step="0.5"
-                       class="w-full bg-transparent text-center text-xs font-mono font-bold text-zinc-100 focus:outline-none" />
-                <button @click="s.weight = (Number(s.weight) || 0) + 2.5" 
-                        class="px-1.5 py-1 text-zinc-400 hover:text-white bg-zinc-800/50 text-xs font-bold active:scale-95">
-                  +
-                </button>
-              </div>
+                <!-- Reps Overload Badge -->
+                <span v-else-if="getSetOverloadDelta(ex.name, s, sIdx).type === 'reps_pr'"
+                      class="px-2 py-0.5 rounded-full bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/70 text-emerald-300 font-black shadow-[0_0_8px_rgba(16,185,129,0.4)] flex items-center gap-1">
+                  <span>⚡</span>
+                  <span>{{ getSetOverloadDelta(ex.name, s, sIdx).label }}</span>
+                </span>
 
-              <!-- Reps Input + Quick Adjust -->
-              <div class="col-span-4 flex items-center bg-zinc-900 border border-zinc-700/70 rounded-lg overflow-hidden">
-                <button @click="s.reps = Math.max(0, (Number(s.reps) || 0) - 1)" 
-                        class="px-1.5 py-1 text-zinc-400 hover:text-white bg-zinc-800/50 text-xs font-bold active:scale-95">
-                  -
-                </button>
-                <input v-model.number="s.reps" type="number" 
-                       class="w-full bg-transparent text-center text-xs font-mono font-bold text-zinc-100 focus:outline-none" />
-                <button @click="s.reps = (Number(s.reps) || 0) + 1" 
-                        class="px-1.5 py-1 text-zinc-400 hover:text-white bg-zinc-800/50 text-xs font-bold active:scale-95">
-                  +
-                </button>
-              </div>
+                <!-- Lighter / Warmup Badge -->
+                <span v-else-if="getSetOverloadDelta(ex.name, s, sIdx).type === 'lighter'"
+                      class="px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400 font-medium">
+                  {{ getSetOverloadDelta(ex.name, s, sIdx).label }}
+                </span>
 
-              <!-- Complete Checkbox Button -->
-              <div class="col-span-2 flex justify-center">
-                <button @click="toggleSet(exIdx, sIdx)"
-                        class="w-8 h-8 rounded-xl flex items-center justify-center transition-all active:scale-90"
-                        :class="[
-                          s.completed ? 'bg-emerald-500 text-zinc-950 shadow-md shadow-emerald-500/30' : 
-                          'bg-zinc-800 hover:bg-zinc-700 text-zinc-400 border border-zinc-700'
-                        ]">
-                  <svg class="w-4 h-4 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-                  </svg>
-                </button>
+                <!-- Matched Baseline Badge -->
+                <span v-else-if="getSetOverloadDelta(ex.name, s, sIdx).type === 'matched'"
+                      class="px-1.5 py-0.5 rounded bg-zinc-900/60 border border-zinc-800/80 text-zinc-500">
+                  {{ getSetOverloadDelta(ex.name, s, sIdx).label }}
+                </span>
               </div>
-
             </div>
 
             <!-- Add set button -->
@@ -897,8 +968,82 @@ function markRestDayCompleted() {
   showSummaryModal.value = true;
 }
 
+const overloadCelebration = ref({ visible: false, text: "", subText: "", isPr: false });
+let overloadTimeout = null;
+
+function showOverloadCelebration(text, subText, isPr = true) {
+  overloadCelebration.value = { visible: true, text, subText, isPr };
+  if (overloadTimeout) clearTimeout(overloadTimeout);
+  overloadTimeout = setTimeout(() => {
+    overloadCelebration.value.visible = false;
+  }, 2200);
+}
+
+function getSetOverloadDelta(exerciseName, s, sIdx) {
+  const lastPerf = getLastExercisePerformance(exerciseName);
+  if (!lastPerf || !lastPerf.sets || !lastPerf.sets.length) return null;
+  const prevSet = lastPerf.sets[sIdx] || lastPerf.sets[lastPerf.sets.length - 1];
+  if (!prevSet) return null;
+
+  const curW = Number(s.weight) || 0;
+  const prevW = Number(prevSet.weight) || 0;
+  const curR = Number(s.reps) || 0;
+  const prevR = Number(prevSet.reps) || 0;
+
+  if (curW > prevW) {
+    const diff = (curW - prevW).toFixed(1).replace(/\.0$/, "");
+    return {
+      type: "weight_pr",
+      label: `+${diff}kg PR`,
+      prevText: `上次: ${prevW}kg × ${prevR}`,
+      isPr: true,
+      diffVal: diff
+    };
+  } else if (curW === prevW && curR > prevR) {
+    const diff = curR - prevR;
+    return {
+      type: "reps_pr",
+      label: `+${diff}次 超负荷`,
+      prevText: `上次: ${prevW}kg × ${prevR}`,
+      isOverload: true,
+      diffVal: diff
+    };
+  } else if (curW < prevW && curW > 0) {
+    const diff = (prevW - curW).toFixed(1).replace(/\.0$/, "");
+    return {
+      type: "lighter",
+      label: `-${diff}kg 调整`,
+      prevText: `上次: ${prevW}kg × ${prevR}`,
+      isLighter: true
+    };
+  } else if (curW === prevW && curR === prevR && curW > 0) {
+    return {
+      type: "matched",
+      label: "✓ 达成基准",
+      prevText: `上次: ${prevW}kg × ${prevR}`,
+      isMatched: true
+    };
+  }
+  return null;
+}
+
 function toggleSet(exIdx, sIdx) {
+  const ex = store.activeWorkout?.exercises?.[exIdx];
+  const s = ex?.sets?.[sIdx];
+  const wasCompleted = s?.completed;
+
   toggleSetCompletion(exIdx, sIdx);
+
+  // If newly completed and is an overload PR, trigger dopamine celebration
+  if (!wasCompleted && ex && s) {
+    const delta = getSetOverloadDelta(ex.name, s, sIdx);
+    if (delta && delta.isPr) {
+      showOverloadCelebration(`🔥 ${ex.name} 破纪录！`, `重量突破 +${delta.diffVal}kg (超越上次基准)`, true);
+    } else if (delta && delta.isOverload) {
+      showOverloadCelebration(`⚡ 渐进超负荷达成！`, `${ex.name} 第 ${sIdx + 1} 组 次数突破 +${delta.diffVal}次`, false);
+    }
+  }
+
   // Auto-detect if all sets are now completed
   if (completedSetsCount.value > 0 && completedSetsCount.value === totalSetsCount.value) {
     setTimeout(() => {
