@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="currentColor">
+  <!-- Electronic Pack Chassis -->
+  <rect x="14" y="8" width="26" height="32" rx="4" fill="currentColor" />
+  <rect x="17" y="11" width="20" height="12" rx="2" fill="#080C14" />
+  <!-- Status Screen & Indicators -->
+  <rect x="19" y="13" width="16" height="4" rx="1" fill="#22C55E" opacity="0.9" />
+  <circle cx="21" cy="20" r="1.2" fill="#22C55E" />
+  <circle cx="26" cy="20" r="1.2" fill="#38BDF8" />
+  <circle cx="31" cy="20" r="1.2" fill="#EF4444" />
+  <!-- Tactical Wirecutter Pliers -->
+  <path d="M6 14 C4 18 4 24 8 28 L14 22 L11 16 Z" fill="currentColor" />
+  <path d="M12 24 L6 38 C7 40 10 40 12 37 L16 26 Z" fill="#080C14" stroke="currentColor" stroke-width="1.2" />
+  <path d="M15 21 L18 36 C20 38 23 37 23 35 L19 22 Z" fill="#080C14" stroke="currentColor" stroke-width="1.2" />
+  <circle cx="14" cy="23" r="2" fill="currentColor" />
+  <!-- Heavy Duty Terminal Cables & Clamps -->
+  <path d="M22 40 C22 46 34 46 34 40" stroke="currentColor" stroke-width="2" fill="none" />
+  <rect x="20" y="38" width="4" height="4" rx="1" fill="#38BDF8" />
+  <rect x="32" y="38" width="4" height="4" rx="1" fill="#EF4444" />
+</svg>

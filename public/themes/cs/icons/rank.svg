@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="currentColor">
+  <!-- Top Glorious Star -->
+  <polygon points="32,2 34.5,8 41,8.5 36,12.5 38,19 32,15.5 26,19 28,12.5 23,8.5 29.5,8" fill="currentColor" />
+  <!-- Central Globe -->
+  <circle cx="32" cy="34" r="14" fill="currentColor" />
+  <circle cx="32" cy="34" r="11" fill="#080C14" />
+  <!-- Globe Latitude & Longitude Grids -->
+  <line x1="21" y1="34" x2="43" y2="34" stroke="currentColor" stroke-width="1.2" />
+  <line x1="32" y1="23" x2="32" y2="45" stroke="currentColor" stroke-width="1.2" />
+  <ellipse cx="32" cy="34" rx="6.5" ry="11" fill="none" stroke="currentColor" stroke-width="1.2" />
+  <!-- Multi-Feathered Swept Dual Wings -->
+  <path d="M19 28 C12 20 4 24 2 34 C6 33 11 35 15 39 C14 36 15 32 19 28 Z" fill="currentColor" />
+  <path d="M18 36 C13 32 6 36 4 44 C8 42 12 43 16 46 Z" fill="currentColor" />
+  <path d="M45 28 C52 20 60 24 62 34 C58 33 53 35 49 39 C50 36 49 32 45 28 Z" fill="currentColor" />
+  <path d="M46 36 C51 32 58 36 60 44 C56 42 52 43 48 46 Z" fill="currentColor" />
+  <!-- Lower Crossed Combat Rifles / Ribbon -->
+  <path d="M18 50 L46 50 L42 58 L22 58 Z" fill="currentColor" />
+  <polygon points="12,54 18,50 18,58" fill="currentColor" />
+  <polygon points="52,54 46,50 46,58" fill="currentColor" />
+</svg>

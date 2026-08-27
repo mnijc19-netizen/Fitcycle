@@ -229,11 +229,11 @@ const trademarkIcon = "./themes/chamber/icons/trademark.png";
 const tourDeForceIcon = "./themes/chamber/icons/tour-de-force.png";
 const chamberProfileIcon = "./themes/chamber/icons/chamber-profile.svg";
 
-const csAwpIcon = "./themes/cs/icons/awp.jpg";
-const csC4Icon = "./themes/cs/icons/c4.jpg";
-const csRankIcon = "./themes/cs/icons/rank.jpg";
-const csKarambitIcon = "./themes/cs/icons/karambit.jpg";
-const csDefuserIcon = "./themes/cs/icons/defuser.jpg";
+const csAwpIcon = "./themes/cs/icons/awp.svg";
+const csC4Icon = "./themes/cs/icons/c4.svg";
+const csRankIcon = "./themes/cs/icons/rank.svg";
+const csKarambitIcon = "./themes/cs/icons/karambit.svg";
+const csDefuserIcon = "./themes/cs/icons/defuser.svg";
 
 function switchTab(tabName) {
   store.activeTab = tabName;
