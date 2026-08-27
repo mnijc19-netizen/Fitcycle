@@ -1,10 +1,27 @@
 ﻿# 🤖 FITCYCLE AI 代理与开发者接入纲领 (Agent Entrypoint Protocol)
 
 > **致所有接手本项目的 AI 代理 (Antigravity, Claude Code, Cursor, Windsurf, GPT, etc.)：**
-> 在对本项目进行任何读取、修改、重构或回答前，**必须强制、无条件首先阅读以下两份核心宪法与作战地图**：
+> 在对本项目进行任何读取、修改、重构或回答前，**必须强制、无条件首先阅读以下三份核心宪法与作战地图**：
 > 1. 🏛️ **项目全域架构母宪法与级联影响矩阵**：[`docs/FITCYCLE_MASTER_CONSTITUTION.md`](./docs/FITCYCLE_MASTER_CONSTITUTION.md)
 > 2. 🎯 **极速开发与手术级调度指令指南**：[`docs/FITCYCLE_SURGICAL_DISPATCH_GUIDE.md`](./docs/FITCYCLE_SURGICAL_DISPATCH_GUIDE.md)
 > 3. 📙 **运动科学、战力天梯与 METs 归一化法典**：[`docs/FITCYCLE_CORE_CONSTITUTION.md`](./docs/FITCYCLE_CORE_CONSTITUTION.md)
+
+---
+
+## ⚡ 动态修宪、层级评定与违宪冲突预警法则 (The Constitutional Evolution Law)
+
+当用户提出任何**新想法、新规则或修改请求**时，AI 代理必须严格执行以下 **4 步闭环裁决**：
+
+1. **自动层级定级 (Auto-Triage)**：
+   * 属于【Layer 0/1 母宪法公理】（如底层战力模型、生理学免责、数据安全）？
+   * 属于【Layer 2 领域计算引擎】（如新做工公式、衰减算法）？
+   * 属于【Layer 3 状态管理】还是【Layer 4 纯 UI/视效】？
+2. **违宪冲突探测 (Conflict Detection)**：
+   * 对比现有宪法条款。若发现用户的需求与既有核心公理（如：0~72h 不扣分、零皮肤侵入）产生冲突，**严禁私自盲改！必须即刻向用户高亮指出冲突条款，并提供【合规替代方案】或【确认正式修宪】供用户决策**。
+3. **即时同步入宪 (Instant Amendment)**：
+   * 确定变更后，在修改业务代码的同时，**强制同步将新规则写入 `docs/` 对应宪法文件与 `tests/` 测试用例**，保证宪法永远与最新代码 100% 同步！
+4. **Git 物理留痕 (Physical Permanence)**：
+   * 所有历史规则与演变全部物理沉淀在代码库与 Git 提交历史中，杜绝任何因 AI 上下文重置导致的遗漏。
 
 ---
 

@@ -1,4 +1,4 @@
-﻿# 🏛️ FITCYCLE 项目全域架构母宪法与级联影响矩阵
+# 🏛️ FITCYCLE 项目全域架构母宪法与级联影响矩阵
 # (Fitcycle Master Architecture Constitution & Cascading Impact Matrix)
 
 > **母宪法宗旨：** 本文件是 Fitcycle 全栈项目的**最高元规则 (Meta-Rules & Axiomatic Architecture)**。定义了系统 5 层分层契约、全域单一事实源、以及**“改动任何模块必须强制联动修改哪些下游文件”的级联变更血缘矩阵 (Cascading Change Impact Matrix)**。任何人类工程师或 AI 代理在执行任何修改前，必须严格对照本宪法。
@@ -94,9 +94,32 @@ Fitcycle 采用严格单向依赖的 5 层洋葱架构，**严禁跨层反向污
 
 ---
 
+## 🧬 第三章：宪法动态自演进、层级定级与冲突仲裁机制 (Constitution Evolution & Conflict Protocol)
+
+### 第 3.1 条【新需求自动层级定级流程 (Auto-Triage Flow)】
+当用户提出新规则或想法时，AI 代理必须按以下顺序自动定级并写入对应宪法：
+1. **Layer 0/1（母宪法公理/数据字典）** $\to$ 写入 `docs/FITCYCLE_MASTER_CONSTITUTION.md` 或 `src/engine/skinHonorSchemas.js`；
+2. **Layer 2（领域计算引擎）** $\to$ 写入 `docs/FITCYCLE_CORE_CONSTITUTION.md` 与 `src/engine/honorEngine.js`；
+3. **Layer 3（状态存储）** $\to$ 写入 `src/store/fitnessStore.js`；
+4. **Layer 4（UI 视效）** $\to$ 仅修改 Vue 组件与 CSS，不触碰底层算式。
+
+### 第 3.2 条【违宪冲突检测与即时阻断仲裁 (Conflict Arbitration)】
+*   **冲突探测**：若用户提出的新需求与既有核心宪法（如：休息免责、零硬编码、防刷分公理）发生逻辑或生物学冲突，**AI 严禁私自盲目覆盖**。
+*   **即刻上报**：AI 必须第一时间明确向用户指出：“您提出的规则与《底层宪法》第 X.X 条存在冲突（原因分析）”，并给出明确的选项：
+    *   **选项 A**：确认正式修改宪法核心条款（修宪升级）；
+    *   **选项 B**：采用符合宪法架构的无冲突替代方案（如：将硬编码改为配置字典扩展）。
+
+### 第 3.3 条【源码持久化与上下文抗丢失机制 (Context Truncation Immunity)】
+*   **对话上下文 vs 物理文件事实**：AI 对话窗口受 Token 长度限制，长久多轮对话后聊天记录会被截断压缩；
+*   **绝对物理安全机制**：Fitcycle 的全部宪法条款、算法引擎、测试用例、血缘矩阵均**物理持久化存储于本地文件系统（`docs/`、`src/`、`tests/`）并同步提交至 GitHub Git 仓库**。
+*   **零丢失保证**：任何新 AI 会话在启动的第一秒，均直接从物理磁盘全量读取完整宪法文件，**不受任何多轮对话上下文遗忘的影响，历史经验与规则 100% 永久继承！**
+
+---
+
 ## 📜 附录：AI 自动化执行红线 (Zero-Tolerance Redlines)
 
 在执行任何修改时，任何 AI 代理必须无条件遵守：
 1. **测试红线**：修改完代码后，必须自动运行全部测试套件并确保 100% PASS。
 2. **纯函数红线**：Store 的 Getter 函数严禁产生副作用修改状态（杜绝 Vue 递归死循环）。
 3. **宪法同步红线**：只要修改了涉及上述矩阵的任何规则，必须同步更新宪法文件与测试用例！
+4. **冲突预警红线**：发现逻辑违宪时必须第一时间向用户预警并提供裁决选项，严禁暗箱盲改！
