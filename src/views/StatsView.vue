@@ -159,22 +159,18 @@
         <div class="space-y-1.5">
           <div class="flex items-center gap-2">
             <div class="relative flex-1">
-              <input :type="showPasscode ? 'text' : 'password'"
+              <input type="text"
+                     inputmode="text"
                      v-model="passcodeInput"
                      maxlength="30"
                      autocomplete="off"
+                     autocapitalize="off"
+                     autocorrect="off"
+                     spellcheck="false"
                      @keydown.enter.prevent="handlePasscodeSubmit"
                      placeholder="输入解锁暗号..."
-                     class="w-full bg-zinc-950 border text-xs text-zinc-100 rounded-xl px-3 py-2.5 pr-9 focus:outline-none transition-colors font-mono"
+                     class="w-full bg-zinc-950 border text-xs text-zinc-100 rounded-xl px-3 py-2.5 focus:outline-none transition-colors"
                      :class="[passcodeError ? 'border-red-500/80 focus:border-red-500' : 'border-zinc-800 focus:border-amber-500/60']" />
-              
-              <button type="button"
-                      @click="showPasscode = !showPasscode"
-                      class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 p-1 text-xs transition-colors"
-                      :title="showPasscode ? '隐藏' : '显示'">
-                <span v-if="showPasscode">👁️</span>
-                <span v-else>🔒</span>
-              </button>
             </div>
 
             <button @click="handlePasscodeSubmit"
