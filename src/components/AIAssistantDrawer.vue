@@ -77,14 +77,48 @@
             <p class="whitespace-pre-wrap break-words">{{ message.text }}</p>
           </div>
 
-          <!-- AI Message Bubble with Markdown Tables & Copy -->
-          <div v-else class="max-w-[95%] rounded-2xl p-3.5 text-xs leading-relaxed shadow-xl bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-tl-xs space-y-2 relative group">
+          <!-- AI Message Bubble with Thinking Box, Markdown Tables & Copy -->
+          <div v-else class="max-w-[95%] rounded-2xl p-3.5 text-xs leading-relaxed shadow-xl bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-tl-xs space-y-2.5 relative group">
+            
+            <!-- 🧠 深度思考过程展示框 (Collapsible Thinking Process Box) -->
+            <div v-if="message.reasoning || (message.streaming && message.isThinking)"
+                 class="rounded-xl border border-zinc-800 bg-zinc-950/80 overflow-hidden text-[11px] transition-all">
+              <!-- Header with Toggle Button -->
+              <button type="button" 
+                      @click="message.reasoningCollapsed = !message.reasoningCollapsed"
+                      class="w-full px-3 py-2 flex items-center justify-between text-zinc-400 hover:text-zinc-200 bg-zinc-900/60 transition-colors select-none text-left">
+                <span class="flex items-center gap-1.5 font-medium">
+                  <span class="text-amber-400 text-xs" :class="{ 'animate-spin': message.streaming && message.isThinking }">✦</span>
+                  <span class="text-zinc-300 font-bold">
+                    {{ (message.streaming && message.isThinking) ? 'AI 正在深度思考…' : '已完成深度思考' }}
+                  </span>
+                </span>
+                <span class="text-[10px] text-zinc-500 flex items-center gap-1">
+                  <span>{{ message.reasoningCollapsed ? '展开' : '收起' }}</span>
+                  <span class="transform transition-transform duration-200" :class="{ 'rotate-180': !message.reasoningCollapsed }">▼</span>
+                </span>
+              </button>
+
+              <!-- Thinking Text Body -->
+              <div v-show="!message.reasoningCollapsed" 
+                   class="px-3 py-2.5 text-zinc-400 font-mono text-[11px] leading-relaxed border-t border-zinc-800/80 bg-zinc-950/60 whitespace-pre-wrap break-words max-h-48 overflow-y-auto">
+                {{ message.reasoning }}
+                <span v-if="message.streaming && message.isThinking" class="inline-block w-1.5 h-3 ml-0.5 bg-amber-400 animate-pulse align-middle"></span>
+              </div>
+            </div>
+
+            <!-- Loading initial pulse if no text and no reasoning yet -->
+            <div v-if="message.streaming && !message.text && !message.reasoning" class="flex items-center gap-2 text-zinc-400 font-mono text-[11px] py-1">
+              <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+              <span>正在连接模型并准备生成…</span>
+            </div>
+
             <!-- Rendered Clean Markdown with Responsive Table Wrapper -->
-            <div class="ai-markdown-content text-xs leading-relaxed" v-html="renderMarkdown(message.text)"></div>
-            <span v-if="message.streaming" class="inline-block w-2 h-3.5 bg-amber-400 animate-pulse align-middle ml-1"></span>
+            <div v-if="message.text" class="ai-markdown-content text-xs leading-relaxed" v-html="renderMarkdown(message.text)"></div>
+            <span v-if="message.streaming && !message.isThinking && message.text" class="inline-block w-2 h-3.5 bg-amber-400 animate-pulse align-middle ml-1"></span>
 
             <!-- Footer: Brand tag and Copy Button -->
-            <div v-if="!message.streaming && message.text" class="flex items-center justify-between pt-1 border-t border-zinc-800/60 text-[10px] text-zinc-500 font-mono">
+            <div v-if="!message.streaming && (message.text || message.reasoning)" class="flex items-center justify-between pt-1 border-t border-zinc-800/60 text-[10px] text-zinc-500 font-mono">
               <span class="flex items-center gap-1 text-zinc-400">
                 <span>✦ Fitcycle AI</span>
               </span>
@@ -152,7 +186,7 @@ import { createFitcycleToolRuntime } from "../ai/fitcycleTools.js";
 import { processImageFile } from "../ai/imageProcessor.js";
 import { getMessageBlockReason } from "../ai/modelCapabilities.js";
 import { store } from "../store/fitnessStore.js";
-import { renderMarkdown, cleanAIMessage } from "../utils/aiService.js";
+import { renderMarkdown, cleanAIMessage, extractReasoningAndContent } from "../utils/aiService.js";
 
 const MAX_ATTACHMENTS = 3;
 const toolRuntime = createFitcycleToolRuntime();
@@ -261,11 +295,19 @@ async function sendPrompt(promptText) {
 }
 
 async function runCurrentHistory(runOptions = {}) {
-  const assistantBubble = makeMessage("assistant", "", { streaming: true });
+  const assistantBubble = makeMessage("assistant", "", { 
+    streaming: true, 
+    reasoning: "", 
+    isThinking: false, 
+    reasoningCollapsed: false 
+  });
   aiSession.conversation.push(assistantBubble);
   generating.value = true;
   retryAvailable.value = false;
   abortController = new AbortController();
+  
+  let rawAccumulatedText = "";
+
   try {
     const baseOptions = {
       provider: aiSession.activeProvider,
@@ -274,7 +316,24 @@ async function runCurrentHistory(runOptions = {}) {
       capabilities: selectedModel.value?.capabilities || { text: true, tools: true, streaming: true },
       toolRuntime,
       signal: abortController.signal,
-      onToken: (token) => { assistantBubble.text += token; scrollToBottom(); },
+      onReasoning: (chunk) => {
+        assistantBubble.isThinking = true;
+        assistantBubble.reasoning += chunk;
+        scrollToBottom();
+      },
+      onToken: (token) => {
+        rawAccumulatedText += token;
+        // Check if there are embedded <think> tags in the token stream
+        const parsed = extractReasoningAndContent(rawAccumulatedText);
+        if (parsed.reasoning) {
+          assistantBubble.reasoning = parsed.reasoning;
+          assistantBubble.isThinking = parsed.isThinking;
+        } else if (assistantBubble.reasoning && !parsed.isThinking) {
+          assistantBubble.isThinking = false;
+        }
+        assistantBubble.text = parsed.content;
+        scrollToBottom();
+      },
       onToolResult: addToolResult
     };
     const result = runOptions.pending
@@ -283,15 +342,25 @@ async function runCurrentHistory(runOptions = {}) {
 
     aiSession.apiMessages = result.history;
     assistantBubble.streaming = false;
+    assistantBubble.isThinking = false;
     
-    // Clean preamble, thinking tags, and tool debug output
-    const cleanContent = cleanAIMessage(result.content || assistantBubble.text);
-    assistantBubble.text = cleanContent || (result.status === "confirmation_required" ? "这个变更需要你确认后才会执行。" : "已为你查询并处理完成。");
+    // Final clean up and parse
+    const finalParsed = extractReasoningAndContent(result.content || rawAccumulatedText || assistantBubble.text);
+    if (finalParsed.reasoning && !assistantBubble.reasoning) {
+      assistantBubble.reasoning = finalParsed.reasoning;
+    }
+    assistantBubble.text = finalParsed.content || (result.status === "confirmation_required" ? "这个变更需要你确认后才会执行。" : "已为你处理完成。");
+    
+    // Auto-collapse reasoning after thinking finishes to keep answer prominent
+    if (assistantBubble.reasoning) {
+      assistantBubble.reasoningCollapsed = true;
+    }
     
     if (result.status === "confirmation_required") pendingContext.value = result;
     if (result.status === "tool_limit") assistantBubble.text = result.content;
   } catch (error) {
     assistantBubble.streaming = false;
+    assistantBubble.isThinking = false;
     if (error?.name === "AbortError") {
       assistantBubble.text = assistantBubble.text
         ? `${assistantBubble.text}\n\n（已停止生成）`
@@ -307,6 +376,7 @@ async function runCurrentHistory(runOptions = {}) {
     scrollToBottom();
   }
 }
+
 
 async function send() {
   inputError.value = "";

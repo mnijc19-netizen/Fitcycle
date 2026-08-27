@@ -80,7 +80,7 @@
 
       <select v-model="selectedModelId" size="4"
               class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-2 py-1.5 text-xs text-zinc-200 outline-none overflow-auto font-mono">
-        <option v-for="model in visibleModels" :key="model.id" :value="model.id" class="py-1.5 px-1 rounded hover:bg-zinc-800">{{ model.name }} ({{ model.id }})</option>
+        <option v-for="model in visibleModels" :key="model.id" :value="model.id" class="py-1.5 px-1 rounded hover:bg-zinc-800">{{ formatModelLabel(model) }}</option>
       </select>
       <p v-if="!visibleModels.length" class="text-[11px] text-zinc-500">没有匹配的对话模型。</p>
 
@@ -147,6 +147,15 @@ const statusError = computed(() => aiSession.connectionState === "error");
 const visibleModels = computed(() => filterModels(activeModels.value, modelSearch.value).slice(0, 120));
 const selectedModel = computed(() => activeModels.value.find((model) => model.id === getActiveModelId()) || null);
 const selectedModelId = computed({ get: getActiveModelId, set: (value) => setSelectedModel(value) });
+
+function formatModelLabel(model) {
+  if (!model) return "";
+  if (model.name && model.name !== model.id) {
+    return `${model.name} (${model.id})`;
+  }
+  return model.id;
+}
+
 
 const portalLink = computed(() => {
   if (aiSession.activeProvider === "deepseek") return "https://platform.deepseek.com";

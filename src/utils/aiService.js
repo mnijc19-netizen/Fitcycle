@@ -52,3 +52,39 @@ export function renderMarkdown(markdownText) {
     return cleaned;
   }
 }
+
+/**
+ * Parse reasoning/thinking process from raw model text (supporting <think>...</think> tags and unclosed streaming states)
+ */
+export function extractReasoningAndContent(rawText) {
+  if (typeof rawText !== "string") return { reasoning: "", content: "", isThinking: false };
+
+  let text = rawText;
+  let reasoning = "";
+  let isThinking = false;
+
+  // 1. Check for closed <think>...</think>
+  const closedMatch = text.match(/<think>([\s\S]*?)<\/think>/i);
+  if (closedMatch) {
+    reasoning = closedMatch[1].trim();
+    text = text.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+  }
+
+  // 2. Check for open unclosed <think>... (streaming thinking state)
+  const openMatch = text.match(/<think>([\s\S]*)$/i);
+  if (openMatch && !closedMatch) {
+    reasoning = openMatch[1].trim();
+    text = text.replace(/<think>[\s\S]*$/gi, "").trim();
+    isThinking = true;
+  }
+
+  // 3. Clean up content
+  const cleanedContent = cleanAIMessage(text);
+
+  return {
+    reasoning,
+    content: cleanedContent,
+    isThinking
+  };
+}
+

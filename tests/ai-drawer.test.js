@@ -9,7 +9,7 @@ vi.mock("../src/ai/providerClient.js", () => ({
 
 import AIAssistantDrawer from "../src/components/AIAssistantDrawer.vue";
 import AISettingsPanel from "../src/components/AISettingsPanel.vue";
-import { aiSession, clearAIConnection, setProviderModels, setSelectedModel, setSessionApiKey } from "../src/ai/aiSession.js";
+import { aiSession, clearAIConnection, setActiveProvider, setProviderModels, setSelectedModel, setSessionApiKey } from "../src/ai/aiSession.js";
 import { streamProviderChatCompletion } from "../src/ai/providerClient.js";
 import { startRestTimer, stopRestTimer, store } from "../src/store/fitnessStore.js";
 
@@ -91,4 +91,48 @@ describe("mobile AI drawer", () => {
     expect(wrapper.text()).toContain("重试完成");
     wrapper.unmount();
   });
+
+  it("streams reasoning tokens into a dedicated thinking process box", async () => {
+    setActiveProvider("zhipu");
+    setSessionApiKey("session-only-test-key", "zhipu");
+    setProviderModels([{ id: "glm-4.5", name: "glm-4.5", capabilities: { text: true, image: false, tools: true, streaming: true } }], "zhipu");
+    setSelectedModel("glm-4.5", "zhipu");
+    aiSession.drawerOpen = true;
+
+    streamProviderChatCompletion.mockImplementationOnce(({ onReasoning, onToken }) => {
+      onReasoning("正在分析用户的渐进超负荷数据...");
+      onToken("你的训练表现非常扎实！");
+      return Promise.resolve({ content: "你的训练表现非常扎实！", toolCalls: [], finishReason: "stop" });
+    });
+
+    const wrapper = mount(AIAssistantDrawer, { attachTo: document.body });
+    await wrapper.get("textarea").setValue("分析我的表现");
+    await wrapper.get('[aria-label="发送"]').trigger("click");
+    await flushPromises();
+
+    expect(wrapper.text()).toContain("已完成深度思考");
+    expect(wrapper.text()).toContain("正在分析用户的渐进超负荷数据...");
+    expect(wrapper.text()).toContain("你的训练表现非常扎实！");
+    wrapper.unmount();
+  });
+
+  it("formats model names cleanly without duplicate ID in parentheses", async () => {
+    setActiveProvider("zhipu");
+    setSessionApiKey("session-only-test-key", "zhipu");
+    setProviderModels([
+      { id: "glm-4.5", name: "glm-4.5", capabilities: { text: true, image: false, tools: true, streaming: true } },
+      { id: "glm-custom", name: "智谱旗舰大模型", capabilities: { text: true, image: false, tools: true, streaming: true } }
+    ], "zhipu");
+    setSelectedModel("glm-4.5", "zhipu");
+
+    const wrapper = mount(AISettingsPanel);
+    const options = wrapper.findAll("option");
+    
+    // When id === name, option text should just be "glm-4.5"
+    expect(options[0].text()).toBe("glm-4.5");
+    // When id !== name, option text should be "智谱旗舰大模型 (glm-custom)"
+    expect(options[1].text()).toBe("智谱旗舰大模型 (glm-custom)");
+    wrapper.unmount();
+  });
 });
+

@@ -44,6 +44,7 @@ export async function runAssistantLoop(options) {
     toolRuntime,
     signal,
     onToken,
+    onReasoning,
     onToolResult,
     streamImpl = streamProviderChatCompletion,
     initialToolRounds = 0
@@ -60,8 +61,10 @@ export async function runAssistantLoop(options) {
       messages: [{ role: "system", content: FITCYCLE_SYSTEM_PROMPT }, ...history],
       tools: capabilities.tools ? FITCYCLE_TOOL_DEFINITIONS : [],
       signal,
-      onToken
+      onToken,
+      onReasoning
     });
+
 
     const assistantMessage = {
       role: "assistant",

@@ -81,7 +81,7 @@ function mergeToolCall(target, delta) {
 }
 
 export async function streamProviderChatCompletion(request, options = {}) {
-  const { provider, apiKey, model, messages, tools, signal, onToken } = request;
+  const { provider, apiKey, model, messages, tools, signal, onToken, onReasoning } = request;
   const config = getProviderConfig(provider, options.apiBase);
   if (!apiKey) throw new AIProviderError(`请先连接${config.name}`, 0, "missing_key");
   if (!model) throw new AIProviderError("请先选择模型", 0, "missing_model");
@@ -115,6 +115,7 @@ export async function streamProviderChatCompletion(request, options = {}) {
   const toolCalls = [];
   let buffer = "";
   let content = "";
+  let reasoningContent = "";
   let finishReason = null;
 
   const processEvent = (rawEvent) => {
@@ -131,6 +132,15 @@ export async function streamProviderChatCompletion(request, options = {}) {
       }
       const choice = payload?.choices?.[0];
       const delta = choice?.delta || {};
+
+      // 1. Capture reasoning/thinking tokens (DeepSeek R1 / Zhipu GLM / Qwen reasoning stream)
+      const reasoningDelta = delta.reasoning_content || delta.reasoning || delta.thought || "";
+      if (typeof reasoningDelta === "string" && reasoningDelta.length > 0) {
+        reasoningContent += reasoningDelta;
+        onReasoning?.(reasoningDelta);
+      }
+
+      // 2. Capture regular content stream
       if (typeof delta.content === "string") {
         content += delta.content;
         onToken?.(delta.content);
@@ -150,5 +160,6 @@ export async function streamProviderChatCompletion(request, options = {}) {
   }
   if (buffer.trim()) processEvent(buffer);
 
-  return { content, toolCalls: toolCalls.filter(Boolean), finishReason };
+  return { content, reasoningContent, toolCalls: toolCalls.filter(Boolean), finishReason };
 }
+
