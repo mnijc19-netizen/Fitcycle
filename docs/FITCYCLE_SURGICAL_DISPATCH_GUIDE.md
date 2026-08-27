@@ -1,4 +1,4 @@
-﻿# 🎯 FITCYCLE 极速开发与外科手术级调度指令指南
+# 🎯 FITCYCLE 极速开发与外科手术级调度指令指南
 # (Fitcycle Precision Surgical Dispatch & Development Codex)
 
 > **指南定位：** 本指南是 Fitcycle 项目的**“指哪打哪”极速开发作战地图**。无论面临任何新增需求、规则微调或功能删减，直接根据本目录索引定位靶向文件，3 步内闭环秒级解决，0 犹豫、0 割裂、0 脏代码。
@@ -12,7 +12,7 @@
 指令代号        业务场景 / 功能增减需求         🎯 靶向核心文件 (Target Files)                        🧪 秒级自动化验证指令
 =====================================================================================================================================
 [OP-SKIN]       新增/修改一套 UI 主题皮肤       ├── 1. `src/engine/skinHonorSchemas.js` (段位/勋章/字典)  npm run test tests/cs-theme.test.js
-                (如赛博朋克、中世纪、动漫)      ├── 2. `src/styles/themes.css` (CSS 变量调色盘)
+                (如赛博朋克、中世纪、动漫)      ├── 2. `src/style.css` (CSS 变量调色盘)
                                                 └── 3. `src/components/TabBar.vue` (底部导航专属图标)
 
 [OP-EXERCISE]   新增运动类型/动作库扩展         ├── 1. `src/store/fitnessStore.js` (DEFAULT_EXERCISES)   npm run test tests/compatibility.test.js

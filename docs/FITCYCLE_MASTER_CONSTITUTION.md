@@ -32,7 +32,7 @@ Fitcycle 采用严格单向依赖的 5 层洋葱架构，**严禁跨层反向污
 变更发起源 (Trigger Source)               必须强制联动更新的文件 (Mandatory Cascading Updates)
 ========================================================================================================================
 1. 新增/修改 UI 主题皮肤 (Skin)           ├── 1.1 `src/engine/skinHonorSchemas.js` (添加新皮肤的 7 阶段位、勋章、术语字典)
-                                          ├── 1.2 `src/styles/themes.css` (注入语义化 CSS 变量如 --accent, --glow)
+                                          ├── 1.2 `src/style.css` (注入语义化 CSS 变量如 --accent, --glow)
                                           ├── 1.3 `src/components/TabBar.vue` (添加新皮肤对应的 5 大专属导航图标)
                                           └── 1.4 `tests/cs-theme.test.js` 或新建皮肤测试 (验证 DOM 注入与持久化)
 
