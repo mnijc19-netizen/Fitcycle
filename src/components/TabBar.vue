@@ -37,15 +37,12 @@
                class="w-6 h-6 object-contain transition-all"
                :class="[store.activeTab === 'today' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(229,195,120,0.7)] scale-110' : 'opacity-60 grayscale-[30%]']" />
           
-          <!-- CS2 Headshot Crosshair -->
-          <svg v-else-if="store.settings.uiSkin === 'cs'" class="w-6 h-6 object-contain transition-all" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="7.5" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2" />
-            <circle cx="12" cy="12" r="2.5" fill="currentColor" />
-            <line x1="12" y1="1.5" x2="12" y2="5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <line x1="12" y1="19" x2="12" y2="22.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <line x1="1.5" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <line x1="19" y1="12" x2="22.5" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-          </svg>
+          <!-- CS2 Official AWP Weapon Icon -->
+          <img v-else-if="store.settings.uiSkin === 'cs'" 
+               :src="csAwpIcon" 
+               alt="AWP" 
+               class="w-6 h-6 rounded-md object-contain transition-all"
+               :class="[store.activeTab === 'today' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-65 grayscale-[20%]']" />
 
           <!-- Default SVG Icon -->
           <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,15 +81,12 @@
                class="w-6 h-6 object-contain transition-all"
                :class="[store.activeTab === 'cycle' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(229,195,120,0.7)] scale-110' : 'opacity-60 grayscale-[30%]']" />
 
-          <!-- CS2 C4 Explosive -->
-          <svg v-else-if="store.settings.uiSkin === 'cs'" class="w-6 h-6 object-contain transition-all" viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="6" width="18" height="13" rx="2" fill="#1E293B" stroke="currentColor" stroke-width="1.5" />
-            <rect x="7" y="6" width="4" height="13" fill="#CA8A04" opacity="0.6" />
-            <rect x="13" y="8" width="6" height="5" rx="0.5" fill="#0F172A" />
-            <circle cx="14.5" cy="10.5" r="0.9" fill="#EF4444" class="animate-pulse" />
-            <circle cx="17.5" cy="10.5" r="0.9" fill="#22C55E" />
-            <path d="M5 6 Q9 2 13 6" stroke="#EF4444" stroke-width="1.5" fill="none" />
-          </svg>
+          <!-- CS2 Official C4 Explosive Icon -->
+          <img v-else-if="store.settings.uiSkin === 'cs'" 
+               :src="csC4Icon" 
+               alt="C4" 
+               class="w-6 h-6 rounded-md object-contain transition-all"
+               :class="[store.activeTab === 'cycle' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-65 grayscale-[20%]']" />
 
           <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -125,14 +119,12 @@
                class="w-6 h-6 object-contain transition-all"
                :class="[store.activeTab === 'calendar' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(229,195,120,0.7)] scale-110' : 'opacity-60 grayscale-[30%]']" />
 
-          <!-- CS2 Global Elite / Rating Trophy -->
-          <svg v-else-if="store.settings.uiSkin === 'cs'" class="w-6 h-6 object-contain transition-all" viewBox="0 0 24 24" fill="none">
-            <path d="M2 12 Q6 7 12 9 Q18 7 22 12 Q17 17 12 15 Q7 17 2 12 Z" fill="#1E293B" stroke="currentColor" stroke-width="1.5" />
-            <circle cx="12" cy="12" r="4.5" fill="#38BDF8" stroke="currentColor" stroke-width="1.2" />
-            <line x1="8" y1="12" x2="16" y2="12" stroke="#0F172A" stroke-width="1" />
-            <line x1="12" y1="8" x2="12" y2="16" stroke="#0F172A" stroke-width="1" />
-            <polygon points="12,3 13,6 16,6 13.5,8 14.5,11 12,9 9.5,11 10.5,8 8,6 11,6" fill="currentColor" />
-          </svg>
+          <!-- CS2 Official Global Elite Rank Badge Icon -->
+          <img v-else-if="store.settings.uiSkin === 'cs'" 
+               :src="csRankIcon" 
+               alt="Global Elite" 
+               class="w-6 h-6 rounded-md object-contain transition-all"
+               :class="[store.activeTab === 'calendar' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-65 grayscale-[20%]']" />
 
           <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -165,19 +157,12 @@
                class="w-6 h-6 object-contain transition-all"
                :class="[store.activeTab === 'exercises' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(229,195,120,0.7)] scale-110' : 'opacity-60 grayscale-[30%]']" />
 
-          <!-- CS2 Karambit Knife -->
-          <svg v-else-if="store.settings.uiSkin === 'cs'" class="w-6 h-6 object-contain transition-all" viewBox="0 0 24 24" fill="none">
-            <path d="M7 4 Q17 3 20 12 Q18 16 11 11 Q14 7 7 4 Z" fill="url(#cs-karambit-gradient)" stroke="currentColor" stroke-width="1.2" />
-            <path d="M7 4 L4 11 L7 17 L11 11 Z" fill="#1E293B" stroke="currentColor" stroke-width="1.2" />
-            <circle cx="8" cy="18" r="3" fill="#0F172A" stroke="currentColor" stroke-width="1.5" />
-            <defs>
-              <linearGradient id="cs-karambit-gradient" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#F97316" />
-                <stop offset="50%" stop-color="#38BDF8" />
-                <stop offset="100%" stop-color="#A855F7" />
-              </linearGradient>
-            </defs>
-          </svg>
+          <!-- CS2 Official Karambit Knife Icon -->
+          <img v-else-if="store.settings.uiSkin === 'cs'" 
+               :src="csKarambitIcon" 
+               alt="Karambit" 
+               class="w-6 h-6 rounded-md object-contain transition-all"
+               :class="[store.activeTab === 'exercises' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-65 grayscale-[20%]']" />
 
           <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -210,16 +195,12 @@
                class="w-5 h-5 object-contain transition-all"
                :class="[store.activeTab === 'stats' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(229,195,120,0.7)] scale-110' : 'opacity-60 grayscale-[30%]']" />
 
-          <!-- CS2 Tactical Chicken with Helmet -->
-          <svg v-else-if="store.settings.uiSkin === 'cs'" class="w-6 h-6 object-contain transition-all" viewBox="0 0 24 24" fill="none">
-            <ellipse cx="12" cy="14" rx="7" ry="6" fill="#FDE047" stroke="#CA8A04" stroke-width="1.2" />
-            <circle cx="16" cy="10" r="4" fill="#FDE047" stroke="#CA8A04" stroke-width="1.2" />
-            <polygon points="19,10 22,11 19,12" fill="#F97316" />
-            <circle cx="17" cy="9.5" r="0.8" fill="#000000" />
-            <path d="M13 9 Q16 4 19 9 Z" fill="#1E293B" stroke="currentColor" stroke-width="1" />
-            <rect x="13" y="8.5" width="6.5" height="1.2" rx="0.5" fill="currentColor" />
-            <path d="M6 13 L4 11 M6 15 L4 17" stroke="#38BDF8" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
+          <!-- CS2 Official CT Defusal Kit Icon -->
+          <img v-else-if="store.settings.uiSkin === 'cs'" 
+               :src="csDefuserIcon" 
+               alt="Defuser" 
+               class="w-6 h-6 rounded-md object-contain transition-all"
+               :class="[store.activeTab === 'stats' ? 'brightness-125 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-65 grayscale-[20%]']" />
 
           <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -247,6 +228,12 @@ const rendezvousIcon = "./themes/chamber/icons/rendezvous.png";
 const trademarkIcon = "./themes/chamber/icons/trademark.png";
 const tourDeForceIcon = "./themes/chamber/icons/tour-de-force.png";
 const chamberProfileIcon = "./themes/chamber/icons/chamber-profile.svg";
+
+const csAwpIcon = "./themes/cs/icons/awp.jpg";
+const csC4Icon = "./themes/cs/icons/c4.jpg";
+const csRankIcon = "./themes/cs/icons/rank.jpg";
+const csKarambitIcon = "./themes/cs/icons/karambit.jpg";
+const csDefuserIcon = "./themes/cs/icons/defuser.jpg";
 
 function switchTab(tabName) {
   store.activeTab = tabName;

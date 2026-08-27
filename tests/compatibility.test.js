@@ -88,8 +88,8 @@ describe("production data compatibility", () => {
     expect(store.settings.unlockedSkins).toEqual(["default", "chamber", "cs"]);
 
     // Test alias passcodes
-    expect(unlockSkin("rush b").success).toBe(true);
-    expect(unlockSkin("大地球").success).toBe(true);
+    expect(unlockSkin("7355806").success).toBe(true);
+    expect(unlockSkin("起把狙！").success).toBe(true);
 
     // Switch between all 3 skins
     setUISkin("chamber");

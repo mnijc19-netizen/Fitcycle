@@ -1,0 +1,37 @@
+{
+  "theme": "Counter-Strike 2 (CS2 · 战术特勤) Bespoke Theme",
+  "version": "1.0.0",
+  "assets": [
+    {
+      "file": "hero/cs-hero.jpg",
+      "dimensions": "1920x1080",
+      "format": "JPG",
+      "usage": "Top Theme Character Scene Banner Header (SAS Operative with AWP & Tactical Gear)"
+    },
+    {
+      "file": "icons/awp.jpg",
+      "dimensions": "1024x1024",
+      "usage": "Bottom TabBar Item 1: 今日训练 (AWP Sniper Rifle)"
+    },
+    {
+      "file": "icons/c4.jpg",
+      "dimensions": "1024x1024",
+      "usage": "Bottom TabBar Item 2: 分化循环 (C4 Explosive Bomb 7355608 Keypad)"
+    },
+    {
+      "file": "icons/rank.jpg",
+      "dimensions": "1024x1024",
+      "usage": "Bottom TabBar Item 3: 训练日历 (Global Elite Rank Wings Medal)"
+    },
+    {
+      "file": "icons/karambit.jpg",
+      "dimensions": "1024x1024",
+      "usage": "Bottom TabBar Item 4: 动作库 (Karambit Marble Fade Knife)"
+    },
+    {
+      "file": "icons/defuser.jpg",
+      "dimensions": "1024x1024",
+      "usage": "Bottom TabBar Item 5: 统计设置 (CT Defusal Kit Equipment)"
+    }
+  ]
+}

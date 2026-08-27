@@ -16,24 +16,11 @@ export const PASSCODE_ALIASES = [
 ];
 
 export const CS_PASSCODE_ALIASES = [
+  "7355806",
   "7355608",
-  "rush b",
-  "rushb",
-  "rush_b",
-  "大地球",
-  "global elite",
-  "globalelite",
-  "完美世界",
-  "完美世界cs",
-  "cs2",
-  "csgo",
-  "cs",
-  "白给",
-  "大鸡腿",
-  "小鸡",
-  "eco",
-  "b1",
-  "fire in the hole"
+  "起把狙！",
+  "起把狙!",
+  "起把狙"
 ];
 
 export const VALID_SKINS = ["default", "chamber", "cs"];
