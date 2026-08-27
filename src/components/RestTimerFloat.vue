@@ -12,30 +12,23 @@
          webkitTransform: 'translateZ(0)'
        }">
 
-    <!-- 1. COMPACT SIDE-DOCKED FLOATING CAPSULE (Default: 缩在右侧，不占底部整行) -->
-    <!-- CS2 C4 Variant -->
+    <!-- 1. CS2 C4 MINIMAL CAPSULE (常态：微型小尺寸 C4 + 外围光环脉冲闪烁 + 倒计时，点击展开操作菜单) -->
     <div v-if="!isExpanded && store.settings.uiSkin === 'cs'" 
-         class="bg-[#080C14]/98 border border-[#F97316]/60 backdrop-blur-xl rounded-2xl pl-2.5 pr-2 py-1.5 shadow-2xl shadow-black flex items-center gap-2 text-white animate-in slide-in-from-right-4 duration-200">
-      <div @click="isExpanded = true" class="flex items-center gap-2 cursor-pointer active:scale-95">
-        <div class="relative w-8 h-8 rounded-lg bg-[#141A12] border border-[#F97316]/40 flex items-center justify-center overflow-hidden flex-shrink-0">
-          <img :src="csC4TimerImg" alt="C4" class="w-full h-full object-cover opacity-90" />
-          <span class="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span>
-        </div>
-        <div class="flex flex-col pr-0.5">
-          <span class="font-mono font-black text-xs text-red-500 tracking-tight drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]">
-            {{ formatTime(store.restTimer.remaining) }}
-          </span>
-          <span class="text-[8px] font-mono font-bold text-[#F97316] tracking-wider">C4 倒计时</span>
-        </div>
+         @click="isExpanded = true"
+         class="bg-[#080C14]/98 border border-[#F97316]/60 backdrop-blur-xl rounded-2xl pl-2 pr-3 py-1.5 shadow-2xl shadow-black flex items-center gap-2 text-white animate-in slide-in-from-right-4 duration-200 cursor-pointer active:scale-95 group transition-transform">
+      <!-- C4 Icon with surrounding red pulsing aura glow -->
+      <div class="relative w-6 h-6 rounded-lg bg-[#141A12] border border-red-500/60 flex items-center justify-center flex-shrink-0">
+        <!-- Surrounding Red Pulsing Aura Ring -->
+        <div class="absolute -inset-1 rounded-xl bg-red-500/30 blur-[2px] animate-pulse pointer-events-none"></div>
+        <img :src="csC4TimerImg" alt="C4" class="w-full h-full object-contain p-0.5 relative z-10 drop-shadow-[0_0_6px_rgba(239,68,68,0.8)]" />
       </div>
-      <button @click.stop="adjustRestTimer(30)" 
-              class="px-2 py-1 bg-[#F97316]/20 hover:bg-[#F97316]/30 text-[#F97316] active:scale-90 rounded-lg text-[10px] font-mono font-bold border border-[#F97316]/40 transition-all">
-        +30s
-      </button>
-      <button @click.stop="handleClose" 
-              class="w-6 h-6 rounded-lg bg-zinc-800 hover:bg-red-500/20 hover:text-red-400 active:scale-90 text-zinc-400 flex items-center justify-center text-xs font-bold transition-all">
-        ✕
-      </button>
+
+      <!-- Digital Red Countdown Display -->
+      <div class="flex flex-col">
+        <span class="font-mono font-black text-xs text-red-500 tracking-tight leading-none drop-shadow-[0_0_8px_rgba(239,68,68,0.9)]">
+          {{ formatTime(store.restTimer.remaining) }}
+        </span>
+      </div>
     </div>
 
     <!-- Default / Chamber Compact Variant -->
@@ -77,53 +70,35 @@
 
     </div>
 
-    <!-- 2. FULL EXPANDED CONTROL MODAL (When tapped to view full controls) -->
-    <!-- CS2 C4 Expanded Variant -->
+    <!-- 2. CS2 C4 EXPANDED ACTION BAR (点击后展开：微型 C4 + 时间 + -15s + +30s + 关闭) -->
     <div v-else-if="isExpanded && store.settings.uiSkin === 'cs'" 
-         class="bg-[#080C14]/98 border border-[#F97316]/60 backdrop-blur-2xl rounded-3xl p-3.5 shadow-2xl shadow-black flex items-center justify-between gap-3 text-white animate-in zoom-in-95 duration-200">
+         class="bg-[#080C14]/98 border border-[#F97316]/60 backdrop-blur-2xl rounded-2xl px-2.5 py-1.5 shadow-2xl shadow-black flex items-center gap-2 text-white animate-in zoom-in-95 duration-200">
       
-      <!-- Left: C4 Counter -->
-      <div class="flex items-center gap-3 min-w-0" @click="isExpanded = false">
-        <div class="relative w-13 h-13 rounded-2xl bg-[#141A12] border border-[#F97316]/50 overflow-hidden flex-shrink-0 shadow-lg shadow-black">
-          <img :src="csC4TimerImg" alt="C4 Bomb" class="w-full h-full object-cover" />
-          <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+      <!-- Left: Mini C4 & Time (tap to collapse) -->
+      <div class="flex items-center gap-1.5 cursor-pointer" @click="isExpanded = false">
+        <div class="relative w-6 h-6 rounded-lg bg-[#141A12] border border-red-500/60 flex items-center justify-center flex-shrink-0">
+          <div class="absolute -inset-1 rounded-xl bg-red-500/25 blur-[2px] animate-pulse pointer-events-none"></div>
+          <img :src="csC4TimerImg" alt="C4" class="w-full h-full object-contain p-0.5 relative z-10 drop-shadow-[0_0_6px_rgba(239,68,68,0.8)]" />
         </div>
-
-        <div class="truncate">
-          <div class="text-[10px] text-[#F97316] font-mono font-bold tracking-wider flex items-center gap-1.5">
-            <span>💣 C4 战术组间倒计时</span>
-            <span class="text-[8px] px-1 rounded bg-red-500/20 text-red-400 border border-red-500/30">7355608</span>
-          </div>
-          <div class="font-mono font-black text-lg text-red-500 tracking-wider drop-shadow-[0_0_10px_rgba(239,68,68,0.7)] flex items-center gap-2">
-            <span>{{ formatTime(store.restTimer.remaining) }}</span>
-            <span class="text-[10px] text-zinc-400 font-sans font-normal truncate">{{ store.restTimer.remaining === 0 ? "BOMB EXPLODED · 冲！" : "呼吸调整 · 准备下一组" }}</span>
-          </div>
-        </div>
+        <span class="font-mono font-black text-xs text-red-500 tracking-tight drop-shadow-[0_0_8px_rgba(239,68,68,0.8)] pr-1">
+          {{ formatTime(store.restTimer.remaining) }}
+        </span>
       </div>
 
-      <!-- Right: Action Buttons -->
+      <!-- Action Buttons: -15s, +30s, 关闭 -->
       <div class="flex items-center gap-1 flex-shrink-0">
         <button @click.stop="adjustRestTimer(-15)" 
-                class="px-2 py-1.5 bg-[#0F172A] hover:bg-[#1E293B] active:scale-95 text-zinc-300 rounded-xl text-xs font-bold border border-zinc-700">
+                class="px-2 py-1 bg-[#0F172A] hover:bg-[#1E293B] active:scale-90 text-zinc-300 rounded-lg text-xs font-mono font-bold border border-zinc-700 transition-all">
           -15s
         </button>
         <button @click.stop="adjustRestTimer(30)" 
-                class="px-2.5 py-1.5 bg-[#F97316]/20 hover:bg-[#F97316]/30 text-[#F97316] active:scale-95 rounded-xl text-xs font-bold border border-[#F97316]/40">
+                class="px-2 py-1 bg-[#F97316]/20 hover:bg-[#F97316]/30 active:scale-90 text-[#F97316] rounded-lg text-xs font-mono font-bold border border-[#F97316]/40 transition-all">
           +30s
         </button>
-
-        <!-- Minimize Arrow -->
-        <button @click.stop="isExpanded = false" 
-                title="收起为侧边胶囊"
-                class="p-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 active:scale-95 rounded-xl text-xs ml-0.5">
-          ↙️
-        </button>
-
-        <!-- Stop Timer (DEFUSE) -->
         <button @click.stop="handleClose" 
-                title="拆除 (DEFUSE)"
-                class="px-2.5 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/40 active:scale-95 rounded-xl text-xs font-bold">
-          DEFUSE
+                title="关闭休息计时 (DEFUSE)"
+                class="w-6 h-6 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-400 active:scale-90 flex items-center justify-center text-xs font-bold border border-red-500/30 transition-all">
+          ✕
         </button>
       </div>
 

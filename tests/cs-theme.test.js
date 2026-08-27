@@ -1,4 +1,4 @@
-﻿import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { store, setUISkin, unlockSkin, startRestTimer, stopRestTimer } from "../src/store/fitnessStore.js";
 import { getPasscodeSkin } from "../src/utils/themeManager.js";
@@ -66,6 +66,6 @@ describe("CS2 Official Theme Integration & UI Tests", () => {
     const wrapper = mount(RestTimerFloat);
     const html = wrapper.html();
     expect(html).toContain("bomb_planted.svg");
-    expect(html).toContain("C4 倒计时");
+    expect(html).toContain("45s");
   });
 });
