@@ -54,7 +54,16 @@
         <!-- Add New Measurement Form -->
         <div class="p-3.5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-3">
           <div class="flex items-center justify-between text-xs font-bold text-zinc-200">
-            <span>✍️ 录入最新身体围度 (cm)</span>
+            <div class="flex items-center gap-1.5">
+              <span>✍️ 录入最新身体围度 (cm)</span>
+              <!-- Circular Exclamation Standards Button -->
+              <button @click="showStandardsModal = true" 
+                      type="button"
+                      class="w-4 h-4 rounded-full bg-zinc-800 hover:bg-amber-500/20 text-zinc-400 hover:text-amber-400 border border-zinc-700 hover:border-amber-500/50 flex items-center justify-center text-[10px] font-black transition-all active:scale-95 cursor-pointer shadow-sm" 
+                      title="点击查看各部位科学测量标准">
+                !
+              </button>
+            </div>
             <span class="text-[10px] text-amber-400 font-mono">每周基础打卡+20分 (7天冷却) | 围度蜕变额外加分</span>
           </div>
 
@@ -129,6 +138,95 @@
       </div>
 
     </div>
+
+    <!-- Scientific Body Measurement Standards Guide Dialog -->
+    <div v-if="showStandardsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-150">
+      <div class="bg-zinc-900 border border-amber-500/50 rounded-3xl w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl overflow-hidden text-zinc-100">
+        
+        <!-- Header -->
+        <div class="p-3.5 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/80 flex-shrink-0">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">📏</span>
+            <div>
+              <h3 class="text-xs font-black text-white">人体测量学 · 科学围度取样标准</h3>
+              <p class="text-[9px] text-zinc-400 font-mono">确保数据精准可比 · 遵循《底层宪法》生理规范</p>
+            </div>
+          </div>
+          <button @click="showStandardsModal = false" 
+                  class="w-7 h-7 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-all">
+            ✕
+          </button>
+        </div>
+
+        <!-- Guide Body -->
+        <div class="p-4 overflow-y-auto space-y-2.5 text-xs leading-relaxed scrollbar-thin flex-1">
+          
+          <!-- 1. Arm -->
+          <div class="p-3 rounded-2xl bg-zinc-950/70 border border-zinc-800 space-y-1">
+            <div class="font-bold text-amber-400 flex items-center gap-1.5">
+              <span>💪 上臂最大围度 (Arm)</span>
+            </div>
+            <p class="text-zinc-300 text-[11px]">
+              <strong class="text-white">测量姿势：</strong>屈臂握拳，主动用力收缩肱二头肌与肱三头肌至最高峰值，皮尺水平垂直环绕大臂最隆起处（肌峰最高点）。
+            </p>
+            <p class="text-[10px] text-zinc-500">⚠️ 避坑：皮尺平整贴合即可，严禁死命勒进皮肤产生虚假读数。</p>
+          </div>
+
+          <!-- 2. Chest -->
+          <div class="p-3 rounded-2xl bg-zinc-950/70 border border-zinc-800 space-y-1">
+            <div class="font-bold text-sky-400 flex items-center gap-1.5">
+              <span>🛡️ 胸部水平围度 (Chest)</span>
+            </div>
+            <p class="text-zinc-300 text-[11px]">
+              <strong class="text-white">测量姿势：</strong>直立放松，双臂微张让皮尺穿过腋下，水平环绕背阔肌中段与乳头水平线。双臂自然下垂后，在<strong class="text-amber-300">正常呼气末</strong>读取数值。
+            </p>
+            <p class="text-[10px] text-zinc-500">⚠️ 避坑：切忌用力憋气挺胸耸肩（假性膨胀）。</p>
+          </div>
+
+          <!-- 3. Waist -->
+          <div class="p-3 rounded-2xl bg-zinc-950/70 border border-zinc-800 space-y-1">
+            <div class="font-bold text-emerald-400 flex items-center gap-1.5">
+              <span>🎯 腹部腰围 (Waist)</span>
+            </div>
+            <p class="text-zinc-300 text-[11px]">
+              <strong class="text-white">测量姿势：</strong>早晨空腹排空后，直立双脚与肩同宽，皮尺水平环绕肚脐上方约 1-2 cm 处（躯干最窄水平线），正常呼气末读取。
+            </p>
+            <p class="text-[10px] text-zinc-500">⚠️ 避坑：严禁吸腹收腹，保持腹直肌与核心自然静息。</p>
+          </div>
+
+          <!-- 4. Thigh -->
+          <div class="p-3 rounded-2xl bg-zinc-950/70 border border-zinc-800 space-y-1">
+            <div class="font-bold text-purple-400 flex items-center gap-1.5">
+              <span>🦵 大腿中上段围度 (Thigh)</span>
+            </div>
+            <p class="text-zinc-300 text-[11px]">
+              <strong class="text-white">测量姿势：</strong>双腿开立重心对称分布，皮尺水平环绕臀下臀大肌折痕下方约 2-3 cm 处（股四头肌隆起最粗截面）。
+            </p>
+          </div>
+
+          <!-- 5. Weight -->
+          <div class="p-3 rounded-2xl bg-zinc-950/70 border border-zinc-800 space-y-1">
+            <div class="font-bold text-pink-400 flex items-center gap-1.5">
+              <span>⚖️ 晨起净体重 (Weight)</span>
+            </div>
+            <p class="text-zinc-300 text-[11px]">
+              <strong class="text-white">测量标准：</strong>早晨起床上完厕所后、空腹状态下，着轻薄衣物使用同一台电子秤称量。
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="p-3 border-t border-zinc-800 bg-zinc-950/80 flex items-center justify-end flex-shrink-0">
+          <button @click="showStandardsModal = false" 
+                  class="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl text-xs font-black transition-all">
+            我已知晓标准
+          </button>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -141,6 +239,8 @@ defineProps({
 });
 
 defineEmits(["close"]);
+
+const showStandardsModal = ref(false);
 
 const form = ref({
   arm: null,
