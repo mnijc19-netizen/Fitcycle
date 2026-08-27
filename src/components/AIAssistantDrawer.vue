@@ -90,7 +90,10 @@
         </div>
       </div>
 
-      <div ref="messageList" class="relative z-10 flex-1 overflow-y-auto overscroll-contain px-3 py-4 space-y-3" data-testid="ai-messages">
+      <div ref="messageList" 
+           @scroll.passive="handleScroll"
+           class="relative z-10 flex-1 overflow-y-auto overscroll-contain px-3 py-4 space-y-3" 
+           data-testid="ai-messages">
         <!-- Empty State with Quick Action Chips -->
         <div v-if="!aiSession.conversation.length" class="h-full min-h-52 flex flex-col items-center justify-center text-center px-4 py-6 space-y-4">
           <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl shadow-lg shadow-amber-500/10">🤖</div>
@@ -201,6 +204,24 @@
           </div>
         </div>
       </div>
+
+      <!-- Floating Jump to bottom button when user scrolled up during generation -->
+      <transition
+        enter-active-class="transition ease-out duration-200"
+        enter-from-class="opacity-0 translate-y-2 scale-90"
+        enter-to-class="opacity-100 translate-y-0 scale-100"
+        leave-active-class="transition ease-in duration-150"
+        leave-from-class="opacity-100 translate-y-0 scale-100"
+        leave-to-class="opacity-0 translate-y-2 scale-90"
+      >
+        <button v-if="generating && userScrolledUp" 
+                type="button" 
+                @click="jumpToBottom"
+                class="absolute bottom-28 left-1/2 transform -translate-x-1/2 z-30 px-3.5 py-1.5 rounded-full bg-zinc-900/95 border border-amber-500/70 shadow-2xl shadow-black text-amber-300 text-xs font-bold flex items-center gap-1.5 backdrop-blur-xl active:scale-95">
+          <span class="animate-bounce text-sm">↓</span>
+          <span>AI 正在输出 (点击回到底部)</span>
+        </button>
+      </transition>
 
       <footer class="relative z-10 flex-shrink-0 border-t border-zinc-800 bg-zinc-900/95 px-3 pt-2.5" style="padding-bottom:max(env(safe-area-inset-bottom, 0px), 10px)">
         <!-- Attached Images Thumbnail Strip -->
@@ -365,10 +386,27 @@ watch(() => aiSession.clearRevision, () => {
   toolRuntime.clear();
 });
 
-function scrollToBottom() {
+const userScrolledUp = ref(false);
+
+function handleScroll() {
+  if (!messageList.value) return;
+  const { scrollTop, scrollHeight, clientHeight } = messageList.value;
+  const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+  // If user scrolled up more than 50px away from bottom, respect user's reading intent
+  userScrolledUp.value = distanceFromBottom > 50;
+}
+
+function scrollToBottom(force = false) {
   nextTick(() => {
-    if (messageList.value) messageList.value.scrollTop = messageList.value.scrollHeight;
+    if (!messageList.value) return;
+    if (!force && userScrolledUp.value) return;
+    messageList.value.scrollTop = messageList.value.scrollHeight;
   });
+}
+
+function jumpToBottom() {
+  userScrolledUp.value = false;
+  scrollToBottom(true);
 }
 
 function makeMessage(role, text, extra = {}) {
@@ -410,6 +448,8 @@ async function runCurrentHistory(runOptions = {}) {
   aiSession.conversation.push(assistantBubble);
   generating.value = true;
   retryAvailable.value = false;
+  userScrolledUp.value = false;
+  scrollToBottom(true);
   abortController = new AbortController();
   
   let rawAccumulatedText = "";
@@ -425,7 +465,7 @@ async function runCurrentHistory(runOptions = {}) {
       onReasoning: (chunk) => {
         assistantBubble.isThinking = true;
         assistantBubble.reasoning += chunk;
-        scrollToBottom();
+        scrollToBottom(false);
       },
       onToken: (token) => {
         rawAccumulatedText += token;
@@ -438,7 +478,7 @@ async function runCurrentHistory(runOptions = {}) {
           assistantBubble.isThinking = false;
         }
         assistantBubble.text = parsed.content;
-        scrollToBottom();
+        scrollToBottom(false);
       },
       onToolResult: addToolResult
     };
@@ -479,7 +519,9 @@ async function runCurrentHistory(runOptions = {}) {
   } finally {
     generating.value = false;
     abortController = null;
-    scrollToBottom();
+    if (!userScrolledUp.value) {
+      scrollToBottom(false);
+    }
   }
 }
 
@@ -495,6 +537,8 @@ async function send() {
   draft.value = "";
   attachments.value = [];
   pendingContext.value = null;
+  userScrolledUp.value = false;
+  scrollToBottom(true);
   await runCurrentHistory();
 }
 
