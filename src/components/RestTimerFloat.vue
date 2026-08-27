@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div v-if="store.restTimer.running && store.restTimer.remaining > 0" 
        ref="timerWidgetRef"
        class="fixed z-40 pointer-events-auto select-none touch-none"
@@ -150,17 +150,42 @@ let initialElX = 0;
 let initialElY = 0;
 let hasMoved = false;
 
+const isRightHalf = computed(() => {
+  if (!customPos.value) return true;
+  const winW = typeof window !== "undefined" ? window.innerWidth : 390;
+  return customPos.value.x > winW / 2;
+});
+
 const containerStyle = computed(() => {
+  const winW = typeof window !== "undefined" ? window.innerWidth : 390;
+
   if (customPos.value) {
+    let targetX = customPos.value.x;
+    let targetY = customPos.value.y;
+
+    // Smart edge anchoring: when expanded near right edge, auto-shift left so entire bar stays on screen
+    if (isExpanded.value) {
+      const expandedWidth = 200;
+      if (targetX + expandedWidth > winW - 12) {
+        targetX = Math.max(12, winW - expandedWidth - 12);
+      }
+    } else {
+      const compactWidth = 80;
+      if (targetX + compactWidth > winW - 12) {
+        targetX = Math.max(12, winW - compactWidth - 12);
+      }
+    }
+
     return {
-      left: `${customPos.value.x}px`,
-      top: `${customPos.value.y}px`,
+      left: `${targetX}px`,
+      top: `${targetY}px`,
       bottom: 'auto',
       right: 'auto',
       transform: 'translateZ(0)',
       webkitTransform: 'translateZ(0)'
     };
   }
+
   return {
     right: '12px',
     bottom: 'max(calc(env(safe-area-inset-bottom, 0px) + 64px), 74px)',
