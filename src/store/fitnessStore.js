@@ -762,6 +762,8 @@ export function exportBackupJSON() {
     cycleMode: store.cycleMode,
     weeklySchedule: store.weeklySchedule,
     workoutLogs: store.workoutLogs,
+    bodyMetrics: store.bodyMetrics || [],
+    honorProfile: store.honorProfile || defaultInitialState.honorProfile,
     settings: store.settings,
     exportTime: new Date().toISOString(),
     version: "1.1"
@@ -782,6 +784,16 @@ export function importBackupJSON(jsonStr) {
     if (parsed.cycleMode) store.cycleMode = parsed.cycleMode;
     if (parsed.weeklySchedule) store.weeklySchedule = parsed.weeklySchedule;
     if (parsed.workoutLogs) store.workoutLogs = parsed.workoutLogs;
+    if (parsed.bodyMetrics) {
+      store.bodyMetrics = parsed.bodyMetrics;
+    } else if (!store.bodyMetrics) {
+      store.bodyMetrics = JSON.parse(JSON.stringify(defaultInitialState.bodyMetrics));
+    }
+    if (parsed.honorProfile) {
+      store.honorProfile = parsed.honorProfile;
+    } else if (!store.honorProfile) {
+      store.honorProfile = JSON.parse(JSON.stringify(defaultInitialState.honorProfile));
+    }
     if (parsed.settings) {
       store.settings = sanitizeSettings(parsed.settings);
       applySkinToDOM(store.settings.uiSkin);
