@@ -118,48 +118,55 @@ export async function streamProviderChatCompletion(request, options = {}) {
   let reasoningContent = "";
   let finishReason = null;
 
-  const processEvent = (rawEvent) => {
-    const dataLines = rawEvent.split(/\r?\n/)
-      .filter((line) => line.startsWith("data:"))
-      .map((line) => line.slice(5).trim());
-    for (const dataText of dataLines) {
-      if (!dataText || dataText === "[DONE]") continue;
-      let payload;
-      try {
-        payload = JSON.parse(dataText);
-      } catch {
-        continue;
-      }
-      const choice = payload?.choices?.[0];
-      const delta = choice?.delta || {};
-
-      // 1. Capture reasoning/thinking tokens (DeepSeek R1 / Zhipu GLM / Qwen reasoning stream)
-      const reasoningDelta = delta.reasoning_content || delta.reasoning || delta.thought || "";
-      if (typeof reasoningDelta === "string" && reasoningDelta.length > 0) {
-        reasoningContent += reasoningDelta;
-        onReasoning?.(reasoningDelta);
-      }
-
-      // 2. Capture regular content stream
-      if (typeof delta.content === "string") {
-        content += delta.content;
-        onToken?.(delta.content);
-      }
-      if (Array.isArray(delta.tool_calls)) delta.tool_calls.forEach((toolCall) => mergeToolCall(toolCalls, toolCall));
-      if (choice?.finish_reason) finishReason = choice.finish_reason;
+  const processLine = (line) => {
+    const trimmed = line.trim();
+    if (!trimmed || !trimmed.startsWith("data:")) return;
+    const dataText = trimmed.slice(5).trim();
+    if (!dataText || dataText === "[DONE]") return;
+    let payload;
+    try {
+      payload = JSON.parse(dataText);
+    } catch {
+      return;
     }
+    const choice = payload?.choices?.[0];
+    const delta = choice?.delta || {};
+
+    // 1. Capture reasoning/thinking tokens (DeepSeek R1 / Zhipu GLM / Qwen reasoning stream)
+    const reasoningDelta = delta.reasoning_content || delta.reasoning || delta.thought || "";
+    if (typeof reasoningDelta === "string" && reasoningDelta.length > 0) {
+      reasoningContent += reasoningDelta;
+      onReasoning?.(reasoningDelta);
+    }
+
+    // 2. Capture regular content stream
+    if (typeof delta.content === "string" && delta.content.length > 0) {
+      content += delta.content;
+      onToken?.(delta.content);
+    }
+    if (Array.isArray(delta.tool_calls)) delta.tool_calls.forEach((toolCall) => mergeToolCall(toolCalls, toolCall));
+    if (choice?.finish_reason) finishReason = choice.finish_reason;
   };
 
   while (true) {
     const { value, done } = await reader.read();
-    buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
-    const events = buffer.split(/\r?\n\r?\n/);
-    buffer = events.pop() || "";
-    events.forEach(processEvent);
     if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split(/\r?\n/);
+    buffer = lines.pop() || "";
+    for (const line of lines) {
+      processLine(line);
+    }
   }
-  if (buffer.trim()) processEvent(buffer);
+  if (buffer.trim()) {
+    buffer += decoder.decode();
+    const remainingLines = buffer.split(/\r?\n/);
+    for (const line of remainingLines) {
+      processLine(line);
+    }
+  }
 
   return { content, reasoningContent, toolCalls: toolCalls.filter(Boolean), finishReason };
 }
+
 
