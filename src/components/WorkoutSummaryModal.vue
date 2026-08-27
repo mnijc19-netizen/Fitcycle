@@ -1,85 +1,169 @@
 ﻿<template>
   <div v-if="visible" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-    <div class="bg-zinc-900 border border-zinc-700/80 rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div class="bg-zinc-900 border border-zinc-700/80 rounded-3xl p-5 max-w-sm w-full max-h-[90dvh] overflow-y-auto shadow-2xl text-center relative animate-in fade-in zoom-in-95 duration-200 scrollbar-none">
       
       <!-- Top Decorative Glow -->
       <div class="absolute -top-12 -left-12 w-32 h-32 bg-amber-500/20 rounded-full blur-2xl pointer-events-none"></div>
       <div class="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500/20 rounded-full blur-2xl pointer-events-none"></div>
 
       <!-- Trophy Icon -->
-      <div class="w-16 h-16 mx-auto mb-3 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-center text-3xl shadow-inner">
+      <div class="w-14 h-14 mx-auto mb-2.5 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-center text-3xl shadow-inner">
         🏆
       </div>
 
-      <h3 class="text-xl font-black text-zinc-100 tracking-tight">
+      <h3 class="text-lg font-black text-zinc-100 tracking-tight">
         训练打卡完成！
       </h3>
-      <p class="text-xs text-amber-400 font-medium mt-1">
+      <p class="text-xs text-amber-400 font-medium mt-0.5">
         {{ summary?.planName || "今日训练" }}
       </p>
 
       <!-- Stats Grid -->
-      <div class="grid grid-cols-3 gap-2.5 my-5">
-        <div class="bg-zinc-800/80 border border-zinc-700/50 rounded-xl p-2.5">
+      <div class="grid grid-cols-3 gap-2 my-4">
+        <div class="bg-zinc-800/80 border border-zinc-700/50 rounded-xl p-2">
           <div class="text-[10px] text-zinc-400 font-medium">训练用时</div>
-          <div class="text-lg font-black text-zinc-100 font-mono mt-0.5">
+          <div class="text-base font-black text-zinc-100 font-mono mt-0.5">
             {{ Math.round((summary?.durationSeconds || 60) / 60) }}<span class="text-xs font-normal text-zinc-400 ml-0.5">分</span>
           </div>
         </div>
 
-        <div class="bg-zinc-800/80 border border-zinc-700/50 rounded-xl p-2.5">
+        <div class="bg-zinc-800/80 border border-zinc-700/50 rounded-xl p-2">
           <div class="text-[10px] text-zinc-400 font-medium">总容量</div>
-          <div class="text-lg font-black text-emerald-400 font-mono mt-0.5">
+          <div class="text-base font-black text-emerald-400 font-mono mt-0.5">
             {{ summary?.totalVolume || 0 }}<span class="text-xs font-normal text-zinc-400 ml-0.5">kg</span>
           </div>
         </div>
 
-        <div class="bg-zinc-800/80 border border-zinc-700/50 rounded-xl p-2.5">
+        <div class="bg-zinc-800/80 border border-zinc-700/50 rounded-xl p-2">
           <div class="text-[10px] text-zinc-400 font-medium">完成组数</div>
-          <div class="text-lg font-black text-sky-400 font-mono mt-0.5">
+          <div class="text-base font-black text-sky-400 font-mono mt-0.5">
             {{ summary?.totalSets || 0 }}<span class="text-xs font-normal text-zinc-400 ml-0.5">组</span>
           </div>
         </div>
       </div>
 
-      <!-- Recovery Tip -->
-      <div class="bg-zinc-950/60 border border-zinc-800 rounded-xl p-3 text-left mb-5 text-xs text-zinc-300 flex items-start gap-2.5">
-        <span class="text-base flex-shrink-0">💡</span>
-        <div>
-          <span class="font-bold text-zinc-200">补给与恢复建议：</span>
-          <p class="text-zinc-400 text-[11px] mt-0.5 leading-relaxed">
-            训练后30分钟内适量摄入20-30g优质蛋白质及适量碳水，保证今晚充足睡眠，助力肌纤维超量恢复！
+      <!-- ============================================== -->
+      <!-- FAST AI WORKOUT ANALYSIS & RECOVERY CARD -->
+      <!-- ============================================== -->
+      <div v-if="aiAnalysis" class="bg-zinc-950/80 border border-amber-500/40 rounded-2xl p-3.5 text-left mb-4 space-y-2.5 shadow-lg relative overflow-hidden">
+        <!-- AI Badge Header -->
+        <div class="flex items-center justify-between">
+          <div class="text-xs font-black text-amber-400 flex items-center gap-1.5 font-mono">
+            <span class="animate-pulse">✦</span>
+            <span>{{ aiAnalysis.tacticalBadge }}</span>
+          </div>
+          <span class="text-[10px] px-2 py-0.5 rounded-full font-bold font-mono"
+                :class="[
+                  aiAnalysis.intensityColor === 'amber' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40' :
+                  aiAnalysis.intensityColor === 'sky' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/40' :
+                  'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                ]">
+            {{ aiAnalysis.intensityLevel }}
+          </span>
+        </div>
+
+        <!-- Coach Summary Comment -->
+        <p class="text-xs text-zinc-300 leading-relaxed font-medium">
+          {{ aiAnalysis.coachComment }}
+        </p>
+
+        <!-- Progressive Overload Insight -->
+        <div class="p-2 rounded-xl bg-zinc-900/90 border border-zinc-800 text-[11px] space-y-1">
+          <div class="text-zinc-400 font-bold flex items-center gap-1">
+            <span>📈 渐进超负荷分析:</span>
+          </div>
+          <p class="text-zinc-300 leading-normal">
+            {{ aiAnalysis.overloadText }}
           </p>
         </div>
+
+        <!-- Muscle & Nutrition Advice -->
+        <div class="space-y-1 text-[11px] text-zinc-400 pt-0.5">
+          <div class="flex items-start gap-1">
+            <span class="text-amber-400 font-bold flex-shrink-0">🥗 补给:</span>
+            <span class="text-zinc-300 leading-snug">{{ aiAnalysis.nutritionAdvice }}</span>
+          </div>
+          <div class="flex items-start gap-1">
+            <span class="text-sky-400 font-bold flex-shrink-0">💤 恢复:</span>
+            <span class="text-zinc-300 leading-snug">{{ aiAnalysis.sleepAdvice }}</span>
+          </div>
+        </div>
+
+        <!-- Trigger Deep AI Conversation -->
+        <button @click="openDeepAIReview"
+                class="w-full mt-1 py-2 bg-amber-500/15 hover:bg-amber-500/25 active:scale-98 text-amber-300 rounded-xl text-xs font-bold border border-amber-500/40 flex items-center justify-center gap-1.5 transition-all">
+          <span>✦</span> 呼叫 AI 智能教练深度复盘
+        </button>
       </div>
 
-      <!-- Confirm Button -->
-      <button @click="$emit('close')" 
-              class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-black rounded-2xl shadow-lg shadow-amber-500/20 active:scale-98 transition-all">
-        太棒了，完成收工
-      </button>
+      <!-- Action Buttons -->
+      <div class="space-y-2">
+        <!-- Confirm / Dismiss Button -->
+        <button @click="$emit('close')" 
+                class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-black text-xs rounded-2xl shadow-lg shadow-amber-500/20 active:scale-98 transition-all">
+          太棒了，完成收工
+        </button>
+
+        <!-- Hand-Slip Undo / Resume Workout Button -->
+        <button @click="handleResumeWorkout"
+                class="w-full py-2 bg-zinc-950 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 text-xs font-medium rounded-xl border border-zinc-800 transition-colors flex items-center justify-center gap-1.5">
+          <span>↩️</span> 手滑了？返回继续本次训练
+        </button>
+      </div>
 
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import confetti from "canvas-confetti";
+import { store, resumeWorkoutFromSummary } from "../store/fitnessStore.js";
+import { analyzeWorkoutSummary } from "../ai/workoutAnalyzer.js";
+import { aiSession } from "../ai/aiSession.js";
 
 const props = defineProps({
   visible: Boolean,
   summary: Object
 });
 
-defineEmits(["close"]);
+const emit = defineEmits(["close"]);
+
+const aiAnalysis = computed(() => {
+  if (!props.summary) return null;
+  return analyzeWorkoutSummary(props.summary, store.workoutLogs, store.settings.uiSkin);
+});
 
 function launchConfetti() {
-  confetti({
-    particleCount: 80,
-    spread: 70,
-    origin: { y: 0.6 },
-    colors: ["#f59e0b", "#10b981", "#38bdf8", "#ec4899"]
+  try {
+    confetti({
+      particleCount: 80,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ["#f59e0b", "#10b981", "#38bdf8", "#ec4899"]
+    });
+  } catch (e) {}
+}
+
+function handleResumeWorkout() {
+  if (props.summary) {
+    resumeWorkoutFromSummary(props.summary);
+  }
+  emit("close");
+}
+
+function openDeepAIReview() {
+  if (!props.summary) return;
+  emit("close");
+  
+  // Seed conversation with today's workout performance
+  const prompt = `我刚刚完成了【${props.summary.planName}】训练！用时 ${Math.round((props.summary.durationSeconds || 60) / 60)} 分钟，完成 ${props.summary.totalSets} 组，总容量 ${props.summary.totalVolume} kg。请对我今天的训练动作质量、发力感和下次调整给出深度专业指导！`;
+  
+  aiSession.drawerOpen = true;
+  aiSession.conversation.push({
+    role: "user",
+    content: prompt,
+    timestamp: Date.now()
   });
 }
 

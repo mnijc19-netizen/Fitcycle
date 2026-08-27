@@ -453,29 +453,55 @@
       @close="showSummaryModal = false" 
     />
 
-    <!-- 7. Auto Workout Finish Celebration Modal (智能防漏结算弹窗) -->
+    <!-- 7. Auto Workout Finish Celebration Modal (智能防漏结算与加练弹窗) -->
     <div v-if="showAutoFinishModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div class="absolute inset-0 bg-black/80 backdrop-blur-md" @click="showAutoFinishModal = false"></div>
-      <div class="relative w-full max-w-sm bg-zinc-950 border border-amber-500/50 rounded-3xl p-5 shadow-2xl space-y-4 text-center animate-in zoom-in-95 duration-200">
-        <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-center text-3xl shadow-lg shadow-amber-500/20">
+      <div class="relative w-full max-w-sm bg-zinc-950 border border-amber-500/50 rounded-3xl p-5 shadow-2xl space-y-3.5 text-center animate-in zoom-in-95 duration-200">
+        <div class="w-13 h-13 mx-auto rounded-2xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-center text-3xl shadow-lg shadow-amber-500/20">
           🏆
         </div>
         <div class="space-y-1">
           <h3 class="text-base font-black text-white">所有动作组已全部达成！</h3>
           <p class="text-xs text-zinc-400 leading-relaxed">
-            今日计划共 {{ completedSetsCount }} 组全部打卡完毕！是否立即保存训练并生成战绩？
+            今日计划共 {{ completedSetsCount }} 组打卡完毕！已自动生成今日表现 AI 深度分析。
           </p>
         </div>
-        <div class="space-y-2 pt-1">
-          <button @click="showAutoFinishModal = false; handleFinishWorkout();"
-                  class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/30 active:scale-95 transition-all flex items-center justify-center gap-1.5">
-            <span>💾</span> 立即结算保存并查看战绩
-          </button>
-          <button @click="showAutoFinishModal = false"
-                  class="w-full py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 text-xs font-semibold rounded-xl border border-zinc-800 transition-colors">
-            稍后再说 / 继续加练
-          </button>
+
+        <!-- Primary Action: Save & Review -->
+        <button @click="showAutoFinishModal = false; handleFinishWorkout();"
+                class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/30 active:scale-95 transition-all flex items-center justify-center gap-1.5">
+          <span>💾</span> 立即结算保存并查看 AI 战绩
+        </button>
+
+        <!-- Quick Add-On Workout Chips (小块加练选项) -->
+        <div class="pt-1 space-y-2 text-left border-t border-zinc-800/80">
+          <div class="text-[11px] font-bold text-zinc-400 flex items-center gap-1">
+            <span>💥</span> 还想再泵一会儿？快捷加练:
+          </div>
+          <div class="grid grid-cols-2 gap-1.5">
+            <button @click="quickAddFinalSet"
+                    class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-amber-500/40 rounded-xl text-[11px] text-zinc-300 font-medium active:scale-95 transition-all flex items-center gap-1.5">
+              <span>➕</span> 最后一项力竭1组
+            </button>
+            <button @click="quickAddCoreExercises"
+                    class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-sky-500/40 rounded-xl text-[11px] text-zinc-300 font-medium active:scale-95 transition-all flex items-center gap-1.5">
+              <span>⚡</span> 核心强化 3组
+            </button>
+            <button @click="quickAddPumpExercises"
+                    class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-purple-500/40 rounded-xl text-[11px] text-zinc-300 font-medium active:scale-95 transition-all flex items-center gap-1.5">
+              <span>💪</span> 臂肩力竭泵感 3组
+            </button>
+            <button @click="quickOpenPicker"
+                    class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-emerald-500/40 rounded-xl text-[11px] text-zinc-300 font-medium active:scale-95 transition-all flex items-center gap-1.5">
+              <span>📖</span> 打开动作库任选
+            </button>
+          </div>
         </div>
+
+        <button @click="showAutoFinishModal = false"
+                class="w-full py-2 bg-zinc-950 hover:bg-zinc-900 text-zinc-400 hover:text-zinc-300 text-xs font-semibold rounded-xl border border-zinc-800 transition-colors">
+          稍后再说 / 留在当前页
+        </button>
       </div>
     </div>
 
@@ -724,6 +750,43 @@ function handleFinishWorkout() {
     latestSummary.value = res;
     showSummaryModal.value = true;
   }
+}
+
+function quickAddFinalSet() {
+  showAutoFinishModal.value = false;
+  if (store.activeWorkout?.exercises.length > 0) {
+    const lastExIdx = store.activeWorkout.exercises.length - 1;
+    addSetToExercise(lastExIdx);
+  }
+}
+
+function quickAddCoreExercises() {
+  showAutoFinishModal.value = false;
+  const coreEx = {
+    id: "ex_core_plank",
+    name: "悬垂举腿 / 卷腹平板 (核心强化)",
+    targetReps: "3组 x 15-20次",
+    defaultSets: 3,
+    category: "核心"
+  };
+  addExerciseToActiveWorkout(coreEx);
+}
+
+function quickAddPumpExercises() {
+  showAutoFinishModal.value = false;
+  const pumpEx = {
+    id: "ex_pump_arms",
+    name: "哑铃侧平举 / 弯举 (臂肩力竭泵感)",
+    targetReps: "3组 x 12-15次",
+    defaultSets: 3,
+    category: "肩臂"
+  };
+  addExerciseToActiveWorkout(pumpEx);
+}
+
+function quickOpenPicker() {
+  showAutoFinishModal.value = false;
+  showAddExerciseModal.value = true;
 }
 
 function confirmDiscard() {

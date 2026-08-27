@@ -604,6 +604,33 @@ export function discardActiveWorkout() {
   if (store.settings.vibrationEnabled) triggerHaptic("warning");
 }
 
+export function resumeWorkoutFromSummary(summary) {
+  if (!summary) return false;
+
+  // Remove the saved log entry from workoutLogs
+  store.workoutLogs = store.workoutLogs.filter(l => l.id !== summary.id);
+
+  // Re-construct activeWorkout state
+  store.activeWorkout = {
+    planId: summary.planId,
+    planName: summary.planName,
+    shortName: summary.shortName,
+    color: summary.color,
+    startTime: summary.timestamp ? (summary.timestamp - (summary.durationSeconds || 60) * 1000) : Date.now(),
+    date: summary.date || getInitialDateStr(),
+    exercises: (summary.exercises || []).map(ex => ({
+      exerciseId: ex.exerciseId,
+      name: ex.name,
+      targetReps: ex.targetReps,
+      sets: (ex.sets || []).map(s => ({ ...s }))
+    }))
+  };
+
+  store.activeTab = "today";
+  if (store.settings.vibrationEnabled) triggerHaptic("medium");
+  return true;
+}
+
 // --- LOG & PLAN MANAGEMENT ---
 export function deleteWorkoutLog(logId) {
   store.workoutLogs = store.workoutLogs.filter(l => l.id !== logId);
