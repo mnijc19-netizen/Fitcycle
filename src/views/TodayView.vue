@@ -453,6 +453,22 @@
       @close="showSummaryModal = false" 
     />
 
+    <!-- 7. Chamber Voice Line Banner Toast -->
+    <transition enter-active-class="transition duration-300 ease-out transform"
+                enter-from-class="-translate-y-8 opacity-0 scale-95"
+                enter-to-class="translate-y-0 opacity-100 scale-100"
+                leave-active-class="transition duration-300 ease-in transform"
+                leave-from-class="translate-y-0 opacity-100 scale-100"
+                leave-to-class="-translate-y-8 opacity-0 scale-95">
+      <div v-if="voiceToastText" 
+           class="fixed top-16 left-4 right-4 z-50 max-w-md mx-auto pointer-events-none flex justify-center">
+        <div class="px-4 py-2.5 rounded-2xl bg-[#0D1627]/95 border border-[#E5C378]/60 text-[#E5C378] text-xs font-bold shadow-2xl shadow-black/80 backdrop-blur-xl flex items-center gap-2">
+          <span class="text-base animate-bounce">🎯</span>
+          <span>{{ voiceToastText }}</span>
+        </div>
+      </div>
+    </transition>
+
   </div>
 </template>
 
@@ -482,6 +498,8 @@ import ExerciseDetailModal from "../components/ExerciseDetailModal.vue";
 import CycleEditorModal from "../components/CycleEditorModal.vue";
 import WorkoutSummaryModal from "../components/WorkoutSummaryModal.vue";
 import ExerciseImage from "../components/ExerciseImage.vue";
+import { playChamberUltimateSound } from "../utils/audio.js";
+
 
 
 // State
@@ -494,10 +512,23 @@ const showCycleEditorModal = ref(false);
 const showPlanPicker = ref(false);
 const showSummaryModal = ref(false);
 const latestSummary = ref(null);
+const voiceToastText = ref("");
+
+// Helper: trigger Chamber ultimate voice line on workout start
+function triggerStartVoice() {
+  if (store.settings.soundEnabled !== false && store.settings.uiSkin === "chamber") {
+    playChamberUltimateSound();
+    voiceToastText.value = "尚博勒：“他们走不了了！”";
+    setTimeout(() => {
+      voiceToastText.value = "";
+    }, 3500);
+  }
+}
 
 // Timer for elapsed workout time
 const nowTimestamp = ref(Date.now());
 let elapsedInterval = null;
+
 
 onMounted(() => {
   elapsedInterval = setInterval(() => {
@@ -573,12 +604,14 @@ function getExerciseGif(name) {
 function handleStartTodayWorkout() {
   if (currentPlan.value) {
     startWorkout(currentPlan.value.id);
+    triggerStartVoice();
   }
 }
 
 function startCustomPlan(planId) {
   showPlanPicker.value = false;
   startWorkout(planId);
+  triggerStartVoice();
 }
 
 function startEmptyWorkout() {
@@ -591,7 +624,9 @@ function startEmptyWorkout() {
     exercises: []
   };
   startWorkout(emptyPlan.id);
+  triggerStartVoice();
 }
+
 
 function markRestDayCompleted() {
   const d = new Date();
