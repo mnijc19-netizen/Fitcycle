@@ -86,6 +86,26 @@ describe("Fitcycle tool safety", () => {
     expect(store.workoutLogs.length).toBe(beforeCount + 1);
   });
 
+  it("restores a logged set and rest timer when a low-risk write is undone", () => {
+    const runtime = createFitcycleToolRuntime();
+    store.activeWorkout = {
+      id: "active-set-test", planId: "plan-push", planName: "测试", shortName: "测试", color: "amber",
+      date: "2026-08-27", startTime: Date.now() - 60000,
+      exercises: [{ exerciseId: "ex-test", name: "测试动作", sets: [{ id: "set-test", weight: 22, reps: 10, completed: false }] }]
+    };
+    stopRestTimer();
+
+    const result = runtime.request({ id: "log-and-undo", function: { name: "log_workout_set", arguments: '{"exercise_index":0,"set_index":0,"weight":1,"reps":1}' } });
+    expect(result.success).toBe(true);
+    expect(result.undoAvailable).toBe(true);
+    expect(store.activeWorkout.exercises[0].sets[0]).toMatchObject({ weight: 1, reps: 1, completed: true });
+    expect(store.restTimer.running).toBe(true);
+
+    expect(runtime.undo("log-and-undo").success).toBe(true);
+    expect(store.activeWorkout.exercises[0].sets[0]).toMatchObject({ weight: 22, reps: 10, completed: false });
+    expect(store.restTimer.running).toBe(false);
+  });
+
   it("requires confirmation for preferences and cancel leaves them unchanged", () => {
     const runtime = createFitcycleToolRuntime();
     const before = store.settings.defaultRestSeconds;

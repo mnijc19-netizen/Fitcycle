@@ -180,7 +180,10 @@ async function runCurrentHistory(runOptions = {}) {
   } catch (error) {
     assistantBubble.streaming = false;
     if (error?.name === "AbortError") {
-      assistantBubble.text = assistantBubble.text || "已停止生成。";
+      assistantBubble.text = assistantBubble.text
+        ? `${assistantBubble.text}\n\n（已停止生成）`
+        : "已停止生成。";
+      retryAvailable.value = true;
     } else {
       assistantBubble.text = error instanceof Error ? error.message : "AI 请求失败";
       retryAvailable.value = true;
