@@ -242,11 +242,15 @@ async function testConnection() {
   const targetProvider = aiSession.activeProvider;
   const key = draftKey.value.trim();
 
+  if (!key) {
+    statusText.value = "请先输入 API Key";
+    statusError.value = true;
+    loading.value = false;
+    return;
+  }
+
   try {
-    const models = await fetchProviderModels({
-      provider: targetProvider,
-      apiKey: key
-    });
+    const models = await fetchProviderModels(targetProvider, key);
 
     setSessionApiKey(key, targetProvider);
     setProviderModels(models, targetProvider);

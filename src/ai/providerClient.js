@@ -52,14 +52,24 @@ function safeFailure(providerName, status) {
 }
 
 export async function fetchProviderModels(provider, apiKey, options = {}) {
-  if (!apiKey) throw new AIProviderError("请先输入 API Key", 0, "missing_key");
-  const config = getProviderConfig(provider, options.apiBase);
-  const fetchImpl = options.fetchImpl || fetch;
+  let targetProvider = provider;
+  let targetKey = apiKey;
+  let targetOptions = options;
+
+  if (typeof provider === "object" && provider !== null) {
+    targetProvider = provider.provider;
+    targetKey = provider.apiKey;
+    targetOptions = provider.options || provider;
+  }
+
+  if (!targetKey) throw new AIProviderError("请先输入 API Key", 0, "missing_key");
+  const config = getProviderConfig(targetProvider, targetOptions?.apiBase);
+  const fetchImpl = targetOptions?.fetchImpl || fetch;
   let response;
   try {
     response = await fetchImpl(`${config.apiBase}/models`, {
-      headers: requestHeaders(apiKey),
-      signal: options.signal
+      headers: requestHeaders(targetKey),
+      signal: targetOptions?.signal
     });
   } catch (error) {
     if (error?.name === "AbortError") throw error;
@@ -77,8 +87,8 @@ export async function fetchProviderModels(provider, apiKey, options = {}) {
     throw new AIProviderError(`${config.name}模型列表格式异常`, response.status, "invalid_response");
   }
   return payload.data
-    .filter((model) => isSupportedChatModel(provider, model))
-    .map((model) => normalizeProviderModel(provider, model))
+    .filter((model) => isSupportedChatModel(targetProvider, model))
+    .map((model) => normalizeProviderModel(targetProvider, model))
     .filter((model) => model.id && model.capabilities.text && model.capabilities.streaming);
 }
 
