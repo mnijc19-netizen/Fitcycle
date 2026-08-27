@@ -342,6 +342,19 @@ const inputHint = computed(() => {
 const inputHintError = computed(() => Boolean(inputError.value || (attachments.value.length && !selectedModel.value?.capabilities.image)));
 
 watch(() => aiSession.conversation.length, scrollToBottom);
+watch(
+  () => [aiSession.drawerOpen, aiSession.pendingAutoRun],
+  async ([isOpen, isAutoRun]) => {
+    if (isOpen && isAutoRun && !generating.value) {
+      aiSession.pendingAutoRun = false;
+      if (activeApiKey.value) {
+        await runCurrentHistory();
+      } else {
+        aiSession.conversation.push(makeMessage("assistant", "⚠️ **您尚未连接大模型 API Key**。\n\n请点击下方【前往设置连接】配置您的 DeepSeek、智谱 GLM 或通义千问 API Key，即可开启大模型实时在线深度分析！"));
+      }
+    }
+  }
+);
 watch(() => aiSession.clearRevision, () => {
   abortController?.abort();
   attachments.value = [];

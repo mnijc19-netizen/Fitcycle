@@ -286,6 +286,7 @@ export const aiSession = reactive({
   selectedModelIds: initSelectedModelIds,
   modelsByProvider: initModelsByProvider,
   drawerOpen: false,
+  pendingAutoRun: false,
   connectionState: currentKey ? "connected" : "idle",
   connectionMessage: "",
   clearRevision: 0,

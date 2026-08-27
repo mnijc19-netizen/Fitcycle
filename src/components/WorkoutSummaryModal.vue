@@ -120,7 +120,7 @@ import { ref, computed, watch } from "vue";
 import confetti from "canvas-confetti";
 import { store, resumeWorkoutFromSummary } from "../store/fitnessStore.js";
 import { analyzeWorkoutSummary, buildDetailedWorkoutPrompt, buildInstantWorkoutCoachResponse } from "../ai/workoutAnalyzer.js";
-import { aiSession } from "../ai/aiSession.js";
+import { aiSession, clearConversation } from "../ai/aiSession.js";
 
 const props = defineProps({
   visible: Boolean,
@@ -157,10 +157,13 @@ function openDeepAIReview() {
   emit("close");
   
   const userPrompt = buildDetailedWorkoutPrompt(props.summary);
-  const analysis = aiAnalysis.value;
-  const instantCoachResponse = buildInstantWorkoutCoachResponse(props.summary, analysis);
   
-  aiSession.drawerOpen = true;
+  clearConversation();
+  
+  aiSession.apiMessages.push({
+    role: "user",
+    content: userPrompt
+  });
   
   aiSession.conversation.push({
     id: `user_${Date.now()}`,
@@ -168,21 +171,8 @@ function openDeepAIReview() {
     text: userPrompt
   });
 
-  aiSession.conversation.push({
-    id: `asst_${Date.now() + 1}`,
-    role: "assistant",
-    text: instantCoachResponse
-  });
-
-  aiSession.apiMessages.push({
-    role: "user",
-    content: userPrompt
-  });
-
-  aiSession.apiMessages.push({
-    role: "assistant",
-    content: instantCoachResponse
-  });
+  aiSession.pendingAutoRun = true;
+  aiSession.drawerOpen = true;
 }
 
 watch(() => props.visible, (val) => {

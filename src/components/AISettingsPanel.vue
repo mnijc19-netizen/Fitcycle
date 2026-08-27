@@ -15,33 +15,38 @@
       </span>
     </div>
 
-    <!-- Provider Selection -->
-    <div class="space-y-1.5">
-      <label class="block text-[11px] font-medium text-zinc-300">选择 AI 服务商</label>
+    <!-- 1. Provider Selection Tabs -->
+    <div class="space-y-2">
+      <label class="block text-xs font-bold text-zinc-200">1. 选择 AI 大模型服务商</label>
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" aria-label="AI 提供商">
         <button v-for="provider in AI_PROVIDERS" :key="provider.id" type="button"
-                class="py-2 px-2.5 rounded-2xl border text-xs font-bold transition-all flex flex-col items-center gap-0.5 active:scale-98"
-                :class="aiSession.activeProvider === provider.id ? 'bg-amber-500 border-amber-500 text-zinc-950 shadow-md shadow-amber-500/20' : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'"
+                class="py-2.5 px-3 rounded-2xl border text-left transition-all flex flex-col justify-between gap-1 relative overflow-hidden active:scale-95"
+                :class="aiSession.activeProvider === provider.id 
+                  ? 'bg-amber-500/15 border-amber-500 text-amber-300 ring-1 ring-amber-500/50 shadow-md shadow-amber-500/10' 
+                  : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'"
                 @click="selectProvider(provider.id)">
-          <span class="font-bold">{{ provider.name }}</span>
-          <span class="text-[9px] font-normal opacity-80 truncate max-w-full">{{ provider.tag || provider.id }}</span>
+          <div class="flex items-center justify-between w-full">
+            <span class="font-black text-xs text-white">{{ provider.name }}</span>
+            <span v-if="aiSession.apiKeys[provider.id]" class="w-2 h-2 rounded-full bg-emerald-400" title="已配置 Key"></span>
+          </div>
+          <span class="text-[10px] opacity-75 truncate leading-tight">{{ provider.tag || provider.id }}</span>
         </button>
       </div>
     </div>
 
-    <!-- API Key Input with Show/Hide Toggle & Quick Portal Link -->
-    <div class="space-y-2 pt-1">
-      <div class="flex items-center justify-between text-[11px]">
-        <label for="provider-key" class="font-medium text-zinc-300">{{ activeProvider.keyLabel }}</label>
+    <!-- 2. API Key Input with Show/Hide Toggle & Quick Portal Link -->
+    <div class="space-y-2 pt-1 border-t border-zinc-800/80">
+      <div class="flex items-center justify-between text-xs">
+        <label for="provider-key" class="font-bold text-zinc-200">2. 配置 {{ activeProvider.name }} API Key</label>
         <a :href="portalLink" target="_blank" rel="noopener noreferrer" 
            class="text-[11px] text-amber-400 hover:text-amber-300 underline flex items-center gap-0.5">
-          <span>获取 Key</span> <span>↗</span>
+          <span>获取 {{ activeProvider.name }} Key</span> <span>↗</span>
         </a>
       </div>
       
       <div class="relative">
         <input id="provider-key" v-model="draftKey" :type="showKey ? 'text' : 'password'" autocomplete="off" spellcheck="false"
-               placeholder="仅粘贴当前厂商的 API Key"
+               :placeholder="`粘贴您的 ${activeProvider.name} API Key`"
                class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3 py-2.5 pr-10 text-xs text-zinc-100 font-mono outline-none transition-colors" />
         <button type="button" @click="showKey = !showKey" 
                 class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 p-1 text-xs transition-colors">
@@ -70,17 +75,50 @@
       </div>
     </div>
 
-    <!-- Model Selection Section -->
+    <!-- 3. High-Visibility Model Selection Section -->
     <div v-if="connected" class="space-y-3 pt-2 border-t border-zinc-800/80">
-      <div class="space-y-1.5">
-        <label for="model-search" class="block text-[11px] font-medium text-zinc-300">选择或搜索 {{ activeProvider.name }} 模型</label>
-        <input id="model-search" v-model="modelSearch" type="search" placeholder="输入名称筛选模型 ID..."
-               class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3 py-2 text-xs text-zinc-100 outline-none transition-colors" />
+      <div class="flex items-center justify-between">
+        <label for="model-search" class="block text-xs font-bold text-zinc-200">
+          3. 选择生效对话模型 (共 {{ visibleModels.length }} 款可用)
+        </label>
+        <span class="text-[10px] text-amber-400 font-mono">点击直接切换</span>
       </div>
 
-      <select v-model="selectedModelId" size="4"
-              class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-2 py-1.5 text-xs text-zinc-200 outline-none overflow-auto font-mono">
-        <option v-for="model in visibleModels" :key="model.id" :value="model.id" class="py-1.5 px-1 rounded hover:bg-zinc-800">{{ formatModelLabel(model) }}</option>
+      <!-- Quick Search Bar -->
+      <div class="relative">
+        <input id="model-search" v-model="modelSearch" type="search" 
+               placeholder="🔍 输入名称搜索模型 ID (如 glm-4-plus, glm-4v, deepseek-r1)..."
+               class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3 py-2 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition-colors" />
+      </div>
+
+      <!-- Visual Model Selection Cards (High Visibility!) -->
+      <div class="max-h-60 overflow-y-auto space-y-1.5 pr-1 scrollbar-thin">
+        <div v-for="model in visibleModels" :key="model.id"
+             @click="selectedModelId = model.id"
+             class="p-2.5 rounded-xl border text-left cursor-pointer transition-all flex items-center justify-between gap-2 active:scale-98"
+             :class="selectedModelId === model.id 
+               ? 'bg-amber-500/20 border-amber-500/80 text-white shadow-sm ring-1 ring-amber-500/40' 
+               : 'bg-zinc-950/90 border-zinc-800 hover:border-zinc-700 text-zinc-300'">
+          <div class="truncate">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold text-zinc-100 font-mono">{{ model.name || model.id }}</span>
+              <span v-if="selectedModelId === model.id" class="text-[9px] px-1.5 py-0.2 rounded bg-amber-500 text-zinc-950 font-black">当前生效</span>
+            </div>
+            <div class="text-[10px] text-zinc-500 font-mono truncate mt-0.5">{{ model.id }}</div>
+          </div>
+
+          <!-- Feature Pills -->
+          <div class="flex items-center gap-1 flex-shrink-0 text-[9px] font-mono">
+            <span v-if="model.capabilities.reasoning" class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">深度思考</span>
+            <span v-if="model.capabilities.image" class="px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 font-bold">视觉识图</span>
+            <span v-if="model.capabilities.tools" class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">数据感知</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hidden select for form bindings & test compatibility -->
+      <select v-model="selectedModelId" class="hidden" aria-hidden="true">
+        <option v-for="model in visibleModels" :key="model.id" :value="model.id">{{ formatModelLabel(model) }}</option>
       </select>
       <p v-if="!visibleModels.length" class="text-[11px] text-zinc-500">没有匹配的对话模型。</p>
 
@@ -88,7 +126,7 @@
       <div v-if="selectedModel" class="rounded-2xl bg-zinc-950 border border-zinc-800/90 p-3.5 space-y-2.5">
         <div class="flex items-center justify-between">
           <div class="text-xs font-bold text-zinc-100 break-words">{{ selectedModel.name }}</div>
-          <span class="text-[10px] font-mono text-amber-400">生效中</span>
+          <span class="text-[10px] font-mono text-amber-400 font-bold">● 当前生效中</span>
         </div>
         <div class="text-[10px] text-zinc-500 font-mono break-all">{{ selectedModel.id }}</div>
         
@@ -138,61 +176,94 @@ import {
   setSessionApiKey
 } from "../ai/aiSession.js";
 import { fetchProviderModels } from "../ai/providerClient.js";
-import { filterModels } from "../ai/modelCapabilities.js";
 
 const draftKey = ref(getActiveApiKey());
-const modelSearch = ref("");
-const loading = ref(false);
 const showKey = ref(false);
+const loading = ref(false);
+const statusText = ref("");
+const statusError = ref(false);
+const modelSearch = ref("");
 
 const activeProvider = computed(getActiveProvider);
+const connected = computed(() => Boolean(getActiveApiKey()));
+const portalLink = computed(() => activeProvider.value.portal);
 const activeModels = computed(getActiveModels);
-const connected = computed(() => Boolean(getActiveApiKey() && activeModels.value.length));
-const hasAnyConnection = computed(() => AI_PROVIDERS.some(({ id }) => Boolean(aiSession.apiKeys[id])) || Boolean(draftKey.value));
-const statusText = computed(() => aiSession.connectionMessage);
-const statusError = computed(() => aiSession.connectionState === "error");
-const visibleModels = computed(() => filterModels(activeModels.value, modelSearch.value).slice(0, 120));
-const selectedModel = computed(() => activeModels.value.find((model) => model.id === getActiveModelId()) || null);
-const selectedModelId = computed({ get: getActiveModelId, set: (value) => setSelectedModel(value) });
+
+const hasAnyConnection = computed(() => Object.values(aiSession.apiKeys).some((key) => Boolean(key)));
+
+const selectedModelId = computed({
+  get() {
+    return getActiveModelId();
+  },
+  set(val) {
+    setSelectedModel(val);
+  }
+});
+
+const selectedModel = computed(() => activeModels.value.find((m) => m.id === selectedModelId.value) || null);
+
+const visibleModels = computed(() => {
+  const query = modelSearch.value.trim().toLowerCase();
+  if (!query) return activeModels.value;
+  return activeModels.value.filter((model) => {
+    const id = model.id.toLowerCase();
+    const name = (model.name || "").toLowerCase();
+    return id.includes(query) || name.includes(query);
+  });
+});
+
+watch(
+  () => aiSession.activeProvider,
+  () => {
+    draftKey.value = getActiveApiKey();
+    statusText.value = "";
+    statusError.value = false;
+    modelSearch.value = "";
+  }
+);
+
+function selectProvider(providerId) {
+  setActiveProvider(providerId);
+}
 
 function formatModelLabel(model) {
   if (!model) return "";
   if (model.name && model.name !== model.id) {
     return `${model.name} (${model.id})`;
   }
-  return model.id;
-}
-
-const portalLink = computed(() => {
-  return activeProvider.value?.portal || "https://platform.deepseek.com";
-});
-
-watch(() => aiSession.activeProvider, () => {
-  draftKey.value = getActiveApiKey();
-  modelSearch.value = "";
-});
-
-function selectProvider(provider) {
-  setActiveProvider(provider);
+  return model.name || model.id;
 }
 
 async function testConnection() {
   loading.value = true;
-  aiSession.connectionState = "loading";
-  aiSession.connectionMessage = "";
+  statusText.value = "";
+  statusError.value = false;
+
+  const targetProvider = aiSession.activeProvider;
   const key = draftKey.value.trim();
-  const provider = aiSession.activeProvider;
+
   try {
-    const models = await fetchProviderModels(provider, key);
-    if (!models.length) throw new Error(`${getActiveProvider().name}未返回可用对话模型`);
-    setSessionApiKey(key, provider);
-    setProviderModels(models, provider);
-    if (!models.some((model) => model.id === aiSession.selectedModelIds[provider])) setSelectedModel(models[0].id, provider);
-    aiSession.connectionState = "connected";
-    aiSession.connectionMessage = `${getActiveProvider().name}连接成功，已获取 ${models.length} 个对话模型。`;
-  } catch (error) {
-    aiSession.connectionState = "error";
-    aiSession.connectionMessage = error instanceof Error ? error.message : "连接失败";
+    const models = await fetchProviderModels({
+      provider: targetProvider,
+      apiKey: key
+    });
+
+    setSessionApiKey(key, targetProvider);
+    setProviderModels(models, targetProvider);
+
+    if (models.length > 0) {
+      const current = getActiveModelId();
+      const stillValid = models.some((m) => m.id === current);
+      if (!stillValid) {
+        setSelectedModel(models[0].id, targetProvider);
+      }
+    }
+
+    statusText.value = `${activeProvider.value.name} 连接成功，已获取 ${models.length} 个可用对话模型。`;
+    statusError.value = false;
+  } catch (err) {
+    statusText.value = err.message || "连接失败，请检查 API Key 是否有效。";
+    statusError.value = true;
   } finally {
     loading.value = false;
   }
@@ -201,13 +272,26 @@ async function testConnection() {
 function clearConnection() {
   clearAIConnection();
   draftKey.value = "";
-  modelSearch.value = "";
+  statusText.value = "已清除全部 AI 连接与本地密钥。";
+  statusError.value = false;
 }
 </script>
 
 <style scoped>
-.capability-badge { border-radius: 9999px; border-width: 1px; padding: 0.2rem 0.55rem; font-size: 10px; line-height: 1; font-weight: 500; }
-.capability-on { border-color: rgb(16 185 129 / 0.4); background: rgb(16 185 129 / 0.12); color: rgb(52 211 153); }
-.capability-off { border-color: rgb(63 63 70); color: rgb(113 113 122); }
+.capability-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+.capability-on {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.capability-off {
+  background-color: rgba(39, 39, 42, 0.6);
+  color: #71717a;
+  border: 1px solid rgba(63, 63, 70, 0.5);
+}
 </style>
-
