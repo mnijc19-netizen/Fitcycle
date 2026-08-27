@@ -6,7 +6,7 @@
 
     <!-- Main Dynamic Content Views -->
     <main class="flex-1 w-full max-w-md mx-auto relative"
-          :class="[store.settings.uiSkin === 'chamber' ? '-mt-4 z-10' : 'pt-2']">
+          :class="[store.settings.uiSkin === 'chamber' || store.settings.uiSkin === 'cs' ? '-mt-4 z-10' : 'pt-2']">
       <TodayView v-show="store.activeTab === 'today'" />
       <CycleView v-show="store.activeTab === 'cycle'" />
       <CalendarView v-show="store.activeTab === 'calendar'" />

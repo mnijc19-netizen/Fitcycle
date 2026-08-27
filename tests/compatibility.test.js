@@ -5,6 +5,7 @@ import {
   importBackupJSON,
   restoreDefaultSkin,
   setUISkin,
+  unlockSkin,
   store
 } from "../src/store/fitnessStore.js";
 import {
@@ -69,6 +70,36 @@ describe("production data compatibility", () => {
     expect(JSON.stringify(store.workoutLogs)).toBe(logsBefore);
   });
 
+  it("unlocks CS2 skin with classic passcodes and allows seamless multi-skin switching", () => {
+    expect(store.settings.unlockedSkins).toEqual(["default"]);
+    
+    // Unlock Chamber
+    const resChamber = unlockSkin("诶，勃勒");
+    expect(resChamber.success).toBe(true);
+    expect(resChamber.skin).toBe("chamber");
+    expect(store.settings.uiSkin).toBe("chamber");
+    expect(store.settings.unlockedSkins).toContain("chamber");
+
+    // Unlock CS2
+    const resCS = unlockSkin("7355608");
+    expect(resCS.success).toBe(true);
+    expect(resCS.skin).toBe("cs");
+    expect(store.settings.uiSkin).toBe("cs");
+    expect(store.settings.unlockedSkins).toEqual(["default", "chamber", "cs"]);
+
+    // Test alias passcodes
+    expect(unlockSkin("rush b").success).toBe(true);
+    expect(unlockSkin("大地球").success).toBe(true);
+
+    // Switch between all 3 skins
+    setUISkin("chamber");
+    expect(store.settings.uiSkin).toBe("chamber");
+    setUISkin("cs");
+    expect(store.settings.uiSkin).toBe("cs");
+    setUISkin("default");
+    expect(store.settings.uiSkin).toBe("default");
+  });
+
   it("stores the API key only in sessionStorage and excludes it from app storage and backup", async () => {
     setSessionApiKey("session-secret-marker", "deepseek");
     setSessionApiKey("second-secret-marker", "zhipu");
@@ -84,3 +115,4 @@ describe("production data compatibility", () => {
     expect(store).not.toHaveProperty("apiKey");
   });
 });
+

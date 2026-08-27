@@ -2,7 +2,7 @@ import { reactive, watch } from "vue";
 import { DEFAULT_EXERCISES, DEFAULT_PLANS, PRESET_CYCLES, SCIENCE_PRINCIPLES } from "../data/defaultPlans.js";
 import { playSetCompleteSound, playRestCompleteSound, playWorkoutDoneSound } from "../utils/audio.js";
 import { triggerHaptic } from "../utils/vibrate.js";
-import { DEFAULT_SETTINGS, sanitizeSettings, verifyPasscode, applySkinToDOM } from "../utils/themeManager.js";
+import { DEFAULT_SETTINGS, sanitizeSettings, verifyPasscode, getPasscodeSkin, VALID_SKINS, applySkinToDOM } from "../utils/themeManager.js";
 
 const STORAGE_KEY = "fitcycle_app_data_v1";
 
@@ -624,24 +624,33 @@ export function saveCustomCycle(cycleData) {
 }
 
 // --- THEME / SKIN ACTIONS ---
-export function unlockChamberSkin(passcodeInput) {
-  const isMatch = verifyPasscode(passcodeInput);
-  if (!isMatch) {
+export function unlockSkin(passcodeInput) {
+  const targetSkin = getPasscodeSkin(passcodeInput);
+  if (!targetSkin) {
     return { success: false, message: "暗号不正确" };
   }
 
-  if (!store.settings.unlockedSkins.includes("chamber")) {
-    store.settings.unlockedSkins.push("chamber");
+  if (!store.settings.unlockedSkins.includes(targetSkin)) {
+    store.settings.unlockedSkins.push(targetSkin);
   }
-  store.settings.uiSkin = "chamber";
-  applySkinToDOM("chamber");
+  store.settings.uiSkin = targetSkin;
+  applySkinToDOM(targetSkin);
 
   if (store.settings.vibrationEnabled) triggerHaptic("success");
-  return { success: true, message: "隐藏皮肤已解锁" };
+  
+  const skinMessages = {
+    chamber: "尚博勒灵感隐藏界面皮肤已激活！",
+    cs: "💥 C4 已安放！CS2 完美特训战术皮肤已激活！"
+  };
+  return { success: true, skin: targetSkin, message: skinMessages[targetSkin] || "隐藏皮肤已解锁" };
+}
+
+export function unlockChamberSkin(passcodeInput) {
+  return unlockSkin(passcodeInput);
 }
 
 export function setUISkin(skinName) {
-  const target = skinName === "chamber" ? "chamber" : "default";
+  const target = VALID_SKINS.includes(skinName) ? skinName : "default";
   if (target === "default" || store.settings.unlockedSkins.includes(target)) {
     store.settings.uiSkin = target;
     applySkinToDOM(target);

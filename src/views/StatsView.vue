@@ -144,16 +144,103 @@
         <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
           <span>🎨</span> 个性化外观
         </div>
-        <span v-if="store.settings.unlockedSkins.includes('chamber')" 
+        <span v-if="store.settings.unlockedSkins.length > 1" 
               class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 font-medium">
-          已解锁隐藏皮肤
+          已解锁 {{ store.settings.unlockedSkins.length - 1 }} 款隐藏皮肤
         </span>
       </div>
 
-      <!-- State A: NOT Unlocked Yet -->
-      <div v-if="!store.settings.unlockedSkins.includes('chamber')" class="space-y-2.5">
+      <!-- Skin Selector Cards (Shown when any skin is unlocked) -->
+      <div v-if="store.settings.unlockedSkins.length > 1" class="space-y-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <!-- Option 1: Default Skin -->
+          <button @click="handleSelectSkin('default')"
+                  class="p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[90px]"
+                  :class="[
+                    store.settings.uiSkin === 'default' 
+                      ? 'bg-zinc-800/90 border-amber-500/80 shadow-md ring-1 ring-amber-500/40' 
+                      : 'bg-zinc-950 border-zinc-800/80 hover:border-zinc-700 opacity-75'
+                  ]">
+            <div class="flex items-center justify-between w-full">
+              <span class="text-xs font-bold text-zinc-100 flex items-center gap-1">
+                <span>🌑</span> 默认外观
+              </span>
+              <span v-if="store.settings.uiSkin === 'default'" class="w-2 h-2 rounded-full bg-amber-400"></span>
+            </div>
+            <div class="text-[10px] text-zinc-400 leading-tight">
+              经典深灰黑 · 活力琥珀金
+            </div>
+            <div class="flex items-center gap-1 mt-1">
+              <span class="w-3 h-3 rounded-full bg-zinc-950 border border-zinc-700"></span>
+              <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+              <span v-if="store.settings.uiSkin === 'default'" class="text-[9px] text-amber-400 font-bold ml-auto font-mono">当前生效</span>
+            </div>
+          </button>
+
+          <!-- Option 2: Chamber Skin (if unlocked) -->
+          <button v-if="store.settings.unlockedSkins.includes('chamber')"
+                  @click="handleSelectSkin('chamber')"
+                  class="p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[90px]"
+                  :class="[
+                    store.settings.uiSkin === 'chamber' 
+                      ? 'bg-[#0D1627] border-[#E5C378] shadow-md ring-1 ring-[#E5C378]/50' 
+                      : 'bg-zinc-950 border-zinc-800/80 hover:border-zinc-700 opacity-75'
+                  ]">
+            <div class="flex items-center justify-between w-full">
+              <span class="text-xs font-bold text-zinc-100 flex items-center gap-1">
+                <span>⚜️</span> 尚博勒 (Chamber)
+              </span>
+              <span v-if="store.settings.uiSkin === 'chamber'" class="w-2 h-2 rounded-full bg-[#E5C378]"></span>
+            </div>
+            <div class="text-[10px] text-zinc-400 leading-tight">
+              法式精密深蓝 · 香槟流金
+            </div>
+            <div class="flex items-center gap-1 mt-1">
+              <span class="w-3 h-3 rounded-full bg-[#070B14] border border-[#1E3052]"></span>
+              <span class="w-3 h-3 rounded-full bg-[#E5C378]"></span>
+              <span v-if="store.settings.uiSkin === 'chamber'" class="text-[9px] text-[#E5C378] font-bold ml-auto font-mono">当前生效</span>
+            </div>
+          </button>
+
+          <!-- Option 3: CS2 Skin (if unlocked) -->
+          <button v-if="store.settings.unlockedSkins.includes('cs')"
+                  @click="handleSelectSkin('cs')"
+                  class="p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[90px]"
+                  :class="[
+                    store.settings.uiSkin === 'cs' 
+                      ? 'bg-[#0F172A] border-[#F97316] shadow-md ring-1 ring-[#F97316]/50' 
+                      : 'bg-zinc-950 border-zinc-800/80 hover:border-zinc-700 opacity-75'
+                  ]">
+            <div class="flex items-center justify-between w-full">
+              <span class="text-xs font-bold text-zinc-100 flex items-center gap-1">
+                <span>🎯</span> CS2 · 完美特训
+              </span>
+              <span v-if="store.settings.uiSkin === 'cs'" class="w-2 h-2 rounded-full bg-[#F97316]"></span>
+            </div>
+            <div class="text-[10px] text-zinc-400 leading-tight">
+              特勤暗蓝黑 · 战术金橙 & 战术小鸡
+            </div>
+            <div class="flex items-center gap-1 mt-1">
+              <span class="w-3 h-3 rounded-full bg-[#080C14] border border-[#1E293B]"></span>
+              <span class="w-3 h-3 rounded-full bg-[#F97316]"></span>
+              <span v-if="store.settings.uiSkin === 'cs'" class="text-[9px] text-[#F97316] font-bold ml-auto font-mono">当前生效</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Restore Default Skin Button (Visible when custom skin is active) -->
+        <div v-if="store.settings.uiSkin !== 'default'" class="pt-1">
+          <button @click="handleRestoreDefaultSkin"
+                  class="w-full py-2 bg-zinc-950 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 text-xs font-medium rounded-xl border border-zinc-800 transition-colors flex items-center justify-center gap-1.5">
+            <span>↩️</span> 恢复默认外观
+          </button>
+        </div>
+      </div>
+
+      <!-- Passcode Input Form (Always available to unlock more skins) -->
+      <div class="space-y-2.5 pt-1" :class="[store.settings.unlockedSkins.length > 1 ? 'border-t border-zinc-800/60 pt-3' : '']">
         <p class="text-xs text-zinc-400 leading-relaxed">
-          输入暗号，解锁隐藏界面皮肤
+          {{ store.settings.unlockedSkins.length > 1 ? '输入其他暗号，解锁更多主题皮肤' : '输入暗号，解锁隐藏界面皮肤' }}
         </p>
 
         <div class="space-y-1.5">
@@ -183,67 +270,6 @@
           <div v-if="passcodeError" class="text-xs text-red-400 flex items-center gap-1 pl-1 pt-0.5">
             <span>⚠️</span> 暗号不正确
           </div>
-        </div>
-      </div>
-
-      <!-- State B: Unlocked (Skin Selector) -->
-      <div v-else class="space-y-3">
-        <div class="grid grid-cols-2 gap-2">
-          <!-- Option 1: Default Skin -->
-          <button @click="handleSelectSkin('default')"
-                  class="p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between h-24"
-                  :class="[
-                    store.settings.uiSkin === 'default' 
-                      ? 'bg-zinc-800/90 border-amber-500/80 shadow-md ring-1 ring-amber-500/40' 
-                      : 'bg-zinc-950 border-zinc-800/80 hover:border-zinc-700 opacity-75'
-                  ]">
-            <div class="flex items-center justify-between w-full">
-              <span class="text-xs font-bold text-zinc-100 flex items-center gap-1">
-                <span>🌑</span> 默认外观
-              </span>
-              <span v-if="store.settings.uiSkin === 'default'" class="w-2 h-2 rounded-full bg-amber-400"></span>
-            </div>
-            <div class="text-[10px] text-zinc-400 leading-tight">
-              经典深灰黑 · 活力琥珀金
-            </div>
-            <div class="flex items-center gap-1 mt-1">
-              <span class="w-3 h-3 rounded-full bg-zinc-950 border border-zinc-700"></span>
-              <span class="w-3 h-3 rounded-full bg-amber-500"></span>
-              <span v-if="store.settings.uiSkin === 'default'" class="text-[9px] text-amber-400 font-bold ml-auto font-mono">当前生效</span>
-            </div>
-          </button>
-
-          <!-- Option 2: Chamber Skin -->
-          <button @click="handleSelectSkin('chamber')"
-                  class="p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between h-24"
-                  :class="[
-                    store.settings.uiSkin === 'chamber' 
-                      ? 'bg-zinc-800/90 border-amber-500/80 shadow-md ring-1 ring-amber-500/40' 
-                      : 'bg-zinc-950 border-zinc-800/80 hover:border-zinc-700 opacity-75'
-                  ]">
-            <div class="flex items-center justify-between w-full">
-              <span class="text-xs font-bold text-zinc-100 flex items-center gap-1">
-                <span>⚜️</span> 尚博勒
-              </span>
-              <span v-if="store.settings.uiSkin === 'chamber'" class="w-2 h-2 rounded-full bg-amber-400"></span>
-            </div>
-            <div class="text-[10px] text-zinc-400 leading-tight">
-              法式精密深蓝 · 香槟流金
-            </div>
-            <div class="flex items-center gap-1 mt-1">
-              <span class="w-3 h-3 rounded-full bg-[#070B14] border border-[#1E3052]"></span>
-              <span class="w-3 h-3 rounded-full bg-[#E5C378]"></span>
-              <span v-if="store.settings.uiSkin === 'chamber'" class="text-[9px] text-amber-400 font-bold ml-auto font-mono">当前生效</span>
-            </div>
-          </button>
-        </div>
-
-        <!-- Restore Default Skin Button (Visible when chamber skin is active) -->
-        <div v-if="store.settings.uiSkin === 'chamber'" class="pt-1">
-          <button @click="handleRestoreDefaultSkin"
-                  class="w-full py-2 bg-zinc-950 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 text-xs font-medium rounded-xl border border-zinc-800 transition-colors flex items-center justify-center gap-1.5">
-            <span>↩️</span> 恢复默认外观
-          </button>
         </div>
       </div>
     </div>
@@ -298,7 +324,7 @@ import {
   exportBackupJSON, 
   importBackupJSON, 
   resetAllDataToDefault,
-  unlockChamberSkin,
+  unlockSkin,
   setUISkin,
   restoreDefaultSkin
 } from "../store/fitnessStore.js";
@@ -320,7 +346,7 @@ function showToast(msg) {
 
 function handlePasscodeSubmit() {
   passcodeError.value = false;
-  const result = unlockChamberSkin(passcodeInput.value);
+  const result = unlockSkin(passcodeInput.value);
   if (result.success) {
     passcodeInput.value = "";
     passcodeError.value = false;
@@ -330,12 +356,12 @@ function handlePasscodeSubmit() {
   }
 }
 
-
-
 function handleSelectSkin(skinName) {
   setUISkin(skinName);
   if (skinName === "chamber") {
     showToast("已启用尚博勒隐藏皮肤");
+  } else if (skinName === "cs") {
+    showToast("💥 已启用 CS2 完美特训战术皮肤");
   } else {
     showToast("已切换至默认外观");
   }

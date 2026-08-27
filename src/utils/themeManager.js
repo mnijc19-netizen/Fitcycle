@@ -15,13 +15,36 @@ export const PASSCODE_ALIASES = [
   "chamber"
 ];
 
+export const CS_PASSCODE_ALIASES = [
+  "7355608",
+  "rush b",
+  "rushb",
+  "rush_b",
+  "大地球",
+  "global elite",
+  "globalelite",
+  "完美世界",
+  "完美世界cs",
+  "cs2",
+  "csgo",
+  "cs",
+  "白给",
+  "大鸡腿",
+  "小鸡",
+  "eco",
+  "b1",
+  "fire in the hole"
+];
+
+export const VALID_SKINS = ["default", "chamber", "cs"];
+
 export const DEFAULT_SETTINGS = {
   defaultRestSeconds: 90,
   soundEnabled: true,
   vibrationEnabled: true,
   weightUnit: "kg",
   theme: "dark",
-  uiSkin: "default", // 'default' | 'chamber'
+  uiSkin: "default", // 'default' | 'chamber' | 'cs'
   unlockedSkins: ["default"] // string[]
 };
 
@@ -34,13 +57,25 @@ export function normalizePasscode(input) {
 }
 
 /**
- * Verification of the secret passcode.
- * Accepts exact Chinese '诶，勃勒', half-width comma '诶,勃勒', pinyin 'eibole', or alias 'chamber'.
+ * Identifies which skin the user's passcode unlocks (chamber, cs, or null).
+ */
+export function getPasscodeSkin(input) {
+  const clean = normalizePasscode(input);
+  if (!clean) return null;
+  if (PASSCODE_ALIASES.some(alias => clean === alias.toLowerCase())) {
+    return "chamber";
+  }
+  if (CS_PASSCODE_ALIASES.some(alias => clean === alias.toLowerCase())) {
+    return "cs";
+  }
+  return null;
+}
+
+/**
+ * Verification of secret passcodes (Chamber or CS2).
  */
 export function verifyPasscode(input) {
-  const clean = normalizePasscode(input);
-  if (!clean) return false;
-  return PASSCODE_ALIASES.some(alias => clean === alias.toLowerCase());
+  return Boolean(getPasscodeSkin(input));
 }
 
 /**
@@ -49,7 +84,7 @@ export function verifyPasscode(input) {
  * - Empty / null localStorage
  * - Old schema without uiSkin or unlockedSkins
  * - Corrupted skin names or unlocked arrays
- * - Chamber selected when not in unlocked list
+ * - Chamber or CS selected when not in unlocked list
  */
 export function sanitizeSettings(rawSettings) {
   if (!rawSettings || typeof rawSettings !== "object") {
@@ -69,13 +104,13 @@ export function sanitizeSettings(rawSettings) {
     unlocked.unshift("default");
   }
   // Filter valid known skins only
-  unlocked = unlocked.filter(s => s === "default" || s === "chamber");
+  unlocked = unlocked.filter(s => VALID_SKINS.includes(s));
   sanitized.unlockedSkins = [...new Set(unlocked)];
 
   // 2. Sanitize active uiSkin
   const requestedSkin = typeof rawSettings.uiSkin === "string" ? rawSettings.uiSkin : "default";
-  if (requestedSkin === "chamber" && sanitized.unlockedSkins.includes("chamber")) {
-    sanitized.uiSkin = "chamber";
+  if (VALID_SKINS.includes(requestedSkin) && sanitized.unlockedSkins.includes(requestedSkin)) {
+    sanitized.uiSkin = requestedSkin;
   } else {
     sanitized.uiSkin = "default";
   }
@@ -94,7 +129,7 @@ export function sanitizeSettings(rawSettings) {
  * Synchronously applies data-skin attribute and mobile theme-color meta tag
  */
 export function applySkinToDOM(skin) {
-  const validSkin = skin === "chamber" ? "chamber" : "default";
+  const validSkin = VALID_SKINS.includes(skin) ? skin : "default";
   if (typeof document !== "undefined") {
     document.documentElement.setAttribute("data-skin", validSkin);
     if (document.body) {
@@ -108,6 +143,12 @@ export function applySkinToDOM(skin) {
       metaTheme.name = "theme-color";
       document.head.appendChild(metaTheme);
     }
-    metaTheme.setAttribute("content", validSkin === "chamber" ? "#070B14" : "#09090b");
+    const themeColors = {
+      chamber: "#070B14",
+      cs: "#0B0F19",
+      default: "#09090b"
+    };
+    metaTheme.setAttribute("content", themeColors[validSkin] || "#09090b");
   }
 }
+

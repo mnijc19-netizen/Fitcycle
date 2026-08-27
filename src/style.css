@@ -65,6 +65,36 @@
     --fc-card-radius: 0.75rem;
   }
 
+  /* CS2 (反恐精英 · 完美特训) Tactical Slate & CS2 Orange Theme */
+  [data-skin="cs"] {
+    --fc-bg: #080C14; /* tactical dark charcoal slate */
+    --fc-surface-1: #0F172A; /* slate-900 combat card */
+    --fc-surface-1-glass: rgba(15, 23, 42, 0.94);
+    --fc-surface-2: #1E293B; /* slate-800 secondary */
+    --fc-surface-3: #334155; /* slate-700 controls */
+    --fc-modal-bg: #0A101D;
+    --fc-modal-glass: rgba(10, 16, 29, 0.98);
+    --fc-border: #1E293B; /* tactical armor border */
+    --fc-border-subtle: rgba(249, 115, 22, 0.3); /* CS2 signature orange whisper border */
+    --fc-text-primary: #F8FAFC; /* crisp tactical white */
+    --fc-text-secondary: #94A3B8; /* combat slate gray */
+    --fc-text-muted: #64748B; /* muted tactical slate */
+
+    --fc-accent: #F97316; /* CS2 signature tactical orange */
+    --fc-accent-hover: #EA580C; /* deep orange */
+    --fc-accent-active: #C2410C;
+    --fc-accent-text: #080C14; /* dark charcoal on orange */
+    --fc-accent-glow: rgba(249, 115, 22, 0.3);
+    --fc-accent-subtle: rgba(249, 115, 22, 0.15);
+    --fc-accent-border: rgba(249, 115, 22, 0.45);
+
+    --fc-ct-blue: #38BDF8; /* Counter-Terrorist Cyan Blue */
+    --fc-t-yellow: #EAB308; /* Terrorist Desert Yellow */
+
+    --fc-btn-radius: 0.5rem;
+    --fc-card-radius: 0.875rem;
+  }
+
   * {
     -webkit-tap-highlight-color: transparent;
   }
@@ -85,6 +115,16 @@
       linear-gradient(rgba(229, 195, 120, 0.025) 1px, transparent 1px),
       linear-gradient(90deg, rgba(229, 195, 120, 0.025) 1px, transparent 1px);
     background-size: 100% 100%, 36px 36px, 36px 36px;
+    background-attachment: fixed;
+  }
+
+  [data-skin="cs"] body {
+    background-color: #080C14;
+    background-image: 
+      radial-gradient(ellipse 70% 40% at 50% -10%, rgba(56, 189, 248, 0.12), transparent 70%),
+      linear-gradient(rgba(249, 115, 22, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(249, 115, 22, 0.03) 1px, transparent 1px);
+    background-size: 100% 100%, 32px 32px, 32px 32px;
     background-attachment: fixed;
   }
 }
@@ -273,6 +313,118 @@ button.fixed {
 [data-skin="chamber"] ::selection {
   background-color: var(--fc-accent);
   color: var(--fc-accent-text);
+}
+
+/* ========================================================================= */
+/* CS2 (反恐精英 · 完美特训) THEME COMPONENT STYLES & OVERRIDES               */
+/* ========================================================================= */
+
+[data-skin="cs"] .bg-zinc-950,
+[data-skin="cs"] .bg-zinc-950\/90,
+[data-skin="cs"] .bg-zinc-950\/80 {
+  background-color: var(--fc-bg) !important;
+}
+
+[data-skin="cs"] .bg-zinc-900,
+[data-skin="cs"] .bg-zinc-900\/90,
+[data-skin="cs"] .bg-zinc-900\/95 {
+  background-color: var(--fc-surface-1) !important;
+}
+
+[data-skin="cs"] .bg-zinc-800,
+[data-skin="cs"] .bg-zinc-800\/80,
+[data-skin="cs"] .bg-zinc-800\/90 {
+  background-color: var(--fc-surface-2) !important;
+}
+
+[data-skin="cs"] .bg-zinc-700 {
+  background-color: var(--fc-surface-3) !important;
+}
+
+[data-skin="cs"] .border-zinc-800,
+[data-skin="cs"] .border-zinc-800\/80,
+[data-skin="cs"] .border-zinc-700,
+[data-skin="cs"] .border-zinc-700\/80 {
+  border-color: var(--fc-border) !important;
+}
+
+[data-skin="cs"] .text-zinc-100,
+[data-skin="cs"] .text-zinc-200 {
+  color: var(--fc-text-primary) !important;
+}
+
+[data-skin="cs"] .text-zinc-300,
+[data-skin="cs"] .text-zinc-400 {
+  color: var(--fc-text-secondary) !important;
+}
+
+[data-skin="cs"] .text-zinc-500 {
+  color: var(--fc-text-muted) !important;
+}
+
+/* Accent overrides: Amber -> CS2 Vivid Orange */
+[data-skin="cs"] .bg-amber-500 {
+  background-color: var(--fc-accent) !important;
+  color: var(--fc-accent-text) !important;
+}
+
+[data-skin="cs"] .hover\:bg-amber-400:hover {
+  background-color: var(--fc-accent-hover) !important;
+}
+
+[data-skin="cs"] .text-amber-400,
+[data-skin="cs"] .text-amber-500 {
+  color: var(--fc-accent) !important;
+}
+
+[data-skin="cs"] .border-amber-500,
+[data-skin="cs"] .border-amber-500\/40,
+[data-skin="cs"] .border-amber-500\/30 {
+  border-color: var(--fc-accent-border) !important;
+}
+
+[data-skin="cs"] .bg-amber-500\/20,
+[data-skin="cs"] .bg-amber-500\/10 {
+  background-color: var(--fc-accent-subtle) !important;
+}
+
+[data-skin="cs"] .shadow-amber-500\/20 {
+  box-shadow: 0 4px 14px 0 var(--fc-accent-glow) !important;
+}
+
+/* CS2 Tactical Card Corner Markers */
+[data-skin="cs"] .bg-zinc-900,
+[data-skin="cs"] .bg-zinc-900\/90 {
+  position: relative;
+}
+
+[data-skin="cs"] .bg-zinc-900::after,
+[data-skin="cs"] .bg-zinc-900\/90::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 5px;
+  height: 5px;
+  border-top: 2px solid var(--fc-accent);
+  border-right: 2px solid var(--fc-accent);
+  border-top-right-radius: 2px;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+[data-skin="cs"] ::selection {
+  background-color: var(--fc-accent);
+  color: var(--fc-accent-text);
+}
+
+[data-skin="cs"] .ai-markdown-content strong {
+  color: var(--fc-accent);
+}
+
+[data-skin="cs"] .ai-markdown-content blockquote {
+  border-left-color: var(--fc-accent);
+  background: rgba(249, 115, 22, 0.08);
 }
 
 /* Accessibility: Respect prefers-reduced-motion */
