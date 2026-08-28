@@ -141,7 +141,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onUnmounted } from "vue";
+import { ref, computed, watch, onUnmounted } from "vue";
 import { skinSplashState } from "../store/fitnessStore.js";
 import { playSkinSwitchSound } from "../utils/audio.js";
 import { triggerHaptic } from "../utils/vibrate.js";
@@ -149,8 +149,16 @@ import { triggerHaptic } from "../utils/vibrate.js";
 const visible = ref(false);
 const activeSkin = ref("default");
 
-const csSplashUrl = "/themes/splash/cs2-splash.png";
-const chamberSplashUrl = "/themes/splash/chamber-splash.png";
+// Dynamic Base URL Resolution for GitHub Pages & Local Dev
+function getAssetUrl(relPath) {
+  const base = import.meta.env.BASE_URL || "./";
+  const cleanBase = base.endsWith("/") ? base : base + "/";
+  const cleanPath = relPath.startsWith("./") ? relPath.slice(2) : (relPath.startsWith("/") ? relPath.slice(1) : relPath);
+  return cleanBase + cleanPath;
+}
+
+const csSplashUrl = computed(() => getAssetUrl("themes/splash/cs2-splash.png"));
+const chamberSplashUrl = computed(() => getAssetUrl("themes/splash/chamber-splash.png"));
 
 let timerId = null;
 

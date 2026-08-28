@@ -4,6 +4,12 @@
 
 ---
 
+## 🚀 [v1.5.7] - 2026-08-28 (修复全屏转场海报在 GitHub Pages 上的基准路径解析错误)
+### 🐛 资源路径自适应修复 (Dynamic Asset Base Resolution)
+- **修复全屏转场图片加载失败与问号占位符**：消除硬编码绝对路径 `/themes/splash/...`，引入 `import.meta.env.BASE_URL` 动态自适应解析函数，确保在 GitHub Pages 根域及子目录环境下均能 100% 正确加载 CS2 与 Chamber 官方高清转场海报！
+
+---
+
 ## 🚀 [v1.5.6] - 2026-08-28 (纯净零污染初始状态实装：清除所有预设初始假数据)
 ### 🧼 纯净初始态与零假数据 (Clean Slate & Zero Mock Data Principle)
 - **清除所有预设初始训练打卡数据 (`workoutLogs = []`)**：新用户初次进入网站时训练记录完全为空，绝不再预置任何昨日假打卡记录；
