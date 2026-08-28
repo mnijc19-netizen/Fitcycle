@@ -20,68 +20,39 @@
       <!-- Scrollable Content -->
       <div class="p-4 overflow-y-auto space-y-4 scrollbar-thin flex-1">
         
-        <!-- Real-Time Parametric 3D Body Morphing Visualizer -->
-        <BodyVisualizer 
-          :arm="previewArm"
-          :chest="previewChest"
-          :waist="previewWaist"
-          :thigh="previewThigh"
-          :weight="previewWeight"
-        />
-
-        <!-- Aesthetic Goal Simulation Preset Pills -->
-        <div class="space-y-1.5 text-left">
-          <div class="flex items-center justify-between text-[10px] text-zinc-400">
-            <span>✨ 黄金形体比例模拟与目标推演</span>
-            <span class="font-mono text-zinc-500">点击即时透视</span>
-          </div>
-          <div class="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none font-mono text-[10px]">
-            <button @click="applyPreset(105, 76, 38, 57, 75)"
-                    class="px-2.5 py-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold whitespace-nowrap active:scale-95 transition-all">
-              👑 卓越古典倒三角 (1.38)
-            </button>
-            <button @click="applyPreset(98, 76, 35, 54, 71)"
-                    class="px-2.5 py-1 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/40 font-bold whitespace-nowrap active:scale-95 transition-all">
-              🔥 战术精壮特工 (1.29)
-            </button>
-            <button @click="applyPreset(104, 85, 37, 60, 82)"
-                    class="px-2.5 py-1 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold whitespace-nowrap active:scale-95 transition-all">
-              ⚡ 饱满重装力量 (1.22)
-            </button>
-            <button @click="applyPreset(92, 78, 33, 52, 68)"
-                    class="px-2.5 py-1 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-bold whitespace-nowrap active:scale-95 transition-all">
-              🌱 清爽健康匀称 (1.18)
-            </button>
-            <button v-if="latestMetric" @click="resetToLatest"
-                    class="px-2 py-1 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 whitespace-nowrap active:scale-95 transition-all">
-              ↺ 恢复实测
-            </button>
-          </div>
-        </div>
-
-        <!-- V-Taper Delta Increments Banner -->
-        <div class="p-3 rounded-2xl bg-zinc-950/80 border border-zinc-800 space-y-1.5">
-          <div class="flex items-center justify-between text-xs font-bold text-zinc-300">
-            <span>📈 历史实测蜕变增量</span>
-            <span class="text-[10px] font-mono text-zinc-500">首末对比 (共 {{ history.length }} 次)</span>
+        <!-- V-Taper Golden Ratio & Progress Banner -->
+        <div class="p-4 rounded-2xl bg-gradient-to-br from-amber-500/15 via-zinc-950 to-zinc-900 border border-amber-500/40 space-y-3 shadow-lg">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-xs font-bold text-amber-300 block">🧬 黄金 V 身比例指数 (胸腰比)</span>
+              <span class="text-[10px] text-zinc-400 font-mono mt-0.5 block">自然健身理想区间: 1.25 ~ 1.40</span>
+            </div>
+            <div class="text-right">
+              <span class="text-xl font-black text-white font-mono tracking-tight">{{ vTaperRatio }}</span>
+              <span class="text-[9px] px-2 py-0.5 rounded-full border font-bold ml-1.5 align-middle"
+                    :class="vTaperGradeClass">
+                {{ vTaperGradeText }}
+              </span>
+            </div>
           </div>
           
-          <div class="grid grid-cols-3 gap-2 pt-0.5 text-center font-mono">
-            <div class="p-1.5 rounded-xl bg-zinc-900/90 border border-zinc-800">
+          <!-- Delta Progress Counters -->
+          <div class="grid grid-cols-3 gap-2 pt-1 text-center font-mono">
+            <div class="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800">
               <span class="text-[9px] text-zinc-500 block">臂围净增</span>
               <span class="text-xs font-bold" :class="armDelta >= 0 ? 'text-emerald-400' : 'text-zinc-400'">
                 {{ armDelta >= 0 ? `+${armDelta}` : armDelta }} cm
               </span>
             </div>
 
-            <div class="p-1.5 rounded-xl bg-zinc-900/90 border border-zinc-800">
+            <div class="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800">
               <span class="text-[9px] text-zinc-500 block">胸围净增</span>
               <span class="text-xs font-bold" :class="chestDelta >= 0 ? 'text-emerald-400' : 'text-zinc-400'">
                 {{ chestDelta >= 0 ? `+${chestDelta}` : chestDelta }} cm
               </span>
             </div>
 
-            <div class="p-1.5 rounded-xl bg-zinc-900/90 border border-zinc-800">
+            <div class="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800">
               <span class="text-[9px] text-zinc-500 block">腰围收紧</span>
               <span class="text-xs font-bold" :class="waistDelta <= 0 ? 'text-emerald-400' : 'text-amber-400'">
                 {{ waistDelta <= 0 ? `${waistDelta}` : `+${waistDelta}` }} cm
@@ -94,7 +65,7 @@
         <div class="p-3.5 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-3">
           <div class="flex items-center justify-between text-xs font-bold text-zinc-200">
             <div class="flex items-center gap-1.5">
-              <span>✍️ 录入/修正当前围度 (cm)</span>
+              <span>✍️ 录入最新身体围度 (cm)</span>
               <!-- Circular Exclamation Standards Button -->
               <button @click="showStandardsModal = true" 
                       type="button"
@@ -103,7 +74,7 @@
                 !
               </button>
             </div>
-            <span class="text-[10px] text-amber-400 font-mono">每周基础打卡+20分 (7天冷却) | 围度蜕变额外加分</span>
+            <span class="text-[10px] text-amber-400 font-mono">每周打卡+20分 (7天冷却)</span>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -139,7 +110,7 @@
 
             <div class="flex items-end">
               <button @click="handleSave" :disabled="!isValidForm"
-                      class="w-full py-2 bg-amber-500 disabled:bg-zinc-800 disabled:text-zinc-600 text-zinc-950 rounded-xl text-xs font-bold active:scale-95 shadow-md shadow-amber-500/10 transition-all">
+                      class="w-full py-2 bg-amber-500 disabled:bg-zinc-800 disabled:text-zinc-600 text-zinc-950 rounded-xl text-xs font-bold active:scale-95 shadow-md shadow-amber-500/10 transition-all cursor-pointer">
                 保存并加分
               </button>
             </div>
@@ -150,11 +121,11 @@
         <div class="space-y-2">
           <h3 class="text-xs font-bold text-zinc-300">历史测量记录 (共 {{ history.length }} 次)</h3>
           
-          <div class="space-y-1.5 max-h-40 overflow-y-auto pr-1 scrollbar-thin">
+          <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1 scrollbar-thin">
             <div v-for="m in sortedHistory" :key="m.id"
                  class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80 flex items-center justify-between text-xs font-mono">
-              <div class="cursor-pointer hover:opacity-80" @click="loadHistoryIntoPreview(m)">
-                <span class="text-amber-400 font-bold block text-[11px]">{{ m.date }} <span class="text-[9px] text-zinc-500 font-normal">(点击透视模型)</span></span>
+              <div>
+                <span class="text-amber-400 font-bold block text-[11px]">{{ m.date }}</span>
                 <span class="text-[10px] text-zinc-400">
                   臂:{{ m.arm }}cm | 胸:{{ m.chest }}cm | 腰:{{ m.waist }}cm | 腿:{{ m.thigh }}cm | 重:{{ m.weight }}kg
                 </span>
@@ -168,78 +139,68 @@
         </div>
 
       </div>
-
-      <!-- Modal Footer -->
-      <div class="p-3 border-t border-zinc-800/80 bg-zinc-950/80 flex items-center justify-end text-xs flex-shrink-0">
-        <button @click="$emit('close')" class="px-4 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-bold transition-all">
-          关闭
-        </button>
-      </div>
-
     </div>
 
-    <!-- Scientific Body Measurement Standards Guide Dialog -->
-    <div v-if="showStandardsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-150">
+    <!-- Nested Scientific Measurement Standards Modal -->
+    <div v-if="showStandardsModal" 
+         class="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in zoom-in-95 duration-150">
       <div class="bg-zinc-900 border border-amber-500/50 rounded-3xl w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl overflow-hidden text-zinc-100">
         
         <!-- Header -->
-        <div class="p-3.5 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/80 flex-shrink-0">
+        <div class="p-4 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/70 flex-shrink-0">
           <div class="flex items-center gap-2">
             <span class="text-lg">📏</span>
             <div>
-              <h3 class="text-xs font-black text-white">人体测量学 · 科学围度取样标准</h3>
-              <p class="text-[9px] text-zinc-400 font-mono">确保数据精准可比 · 遵循《底层宪法》生理规范</p>
+              <h3 class="text-sm font-black text-amber-400">身体围度科学测量标准指南</h3>
+              <p class="text-[10px] text-zinc-400">统一测量基准，确保肌肉蜕变数据真实有效</p>
             </div>
           </div>
           <button @click="showStandardsModal = false" 
-                  class="w-7 h-7 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-all">
+                  class="w-7 h-7 rounded-full bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-all">
             ✕
           </button>
         </div>
 
-        <!-- Guide Body -->
-        <div class="p-4 overflow-y-auto space-y-2.5 text-xs leading-relaxed scrollbar-thin flex-1">
+        <!-- Body Content -->
+        <div class="p-4 overflow-y-auto space-y-3.5 text-xs text-zinc-300 flex-1 scrollbar-thin leading-relaxed text-left">
           
           <!-- 1. Arm -->
           <div class="p-3 rounded-2xl bg-zinc-950/70 border border-zinc-800 space-y-1">
-            <div class="font-bold text-amber-400 flex items-center gap-1.5">
-              <span>💪 上臂最大围度 (Arm)</span>
+            <div class="font-bold text-amber-300 flex items-center gap-1.5">
+              <span>💪 手臂围 (Upper Arm)</span>
             </div>
             <p class="text-zinc-300 text-[11px]">
-              <strong class="text-white">测量姿势：</strong>屈臂握拳，主动用力收缩肱二头肌与肱三头肌至最高峰值，皮尺水平垂直环绕大臂最隆起处（肌峰最高点）。
+              <strong class="text-white">测量标准：</strong>曲臂充分充血或自然曲臂90度紧绷，皮尺绕大臂二头肌与三头肌<strong class="text-amber-400">最饱满突出的肌峰最高点</strong>水平测量一周。
             </p>
-            <p class="text-[10px] text-zinc-500">⚠️ 避坑：皮尺平整贴合即可，严禁死命勒进皮肤产生虚假读数。</p>
           </div>
 
           <!-- 2. Chest -->
           <div class="p-3 rounded-2xl bg-zinc-950/70 border border-zinc-800 space-y-1">
             <div class="font-bold text-sky-400 flex items-center gap-1.5">
-              <span>🛡️ 胸部水平围度 (Chest)</span>
+              <span>🛡️ 胸围 (Chest)</span>
             </div>
             <p class="text-zinc-300 text-[11px]">
-              <strong class="text-white">测量姿势：</strong>直立放松，双臂微张让皮尺穿过腋下，水平环绕背阔肌中段与乳头水平线。双臂自然下垂后，在<strong class="text-amber-300">正常呼气末</strong>读取数值。
+              <strong class="text-white">测量标准：</strong>自然站立，双臂自然下垂放松，皮尺经过<strong class="text-sky-400">双侧乳头点（乳中穴）及背阔肌下方</strong>，在正常呼气末测量水平周长（切勿刻意过度吸气挺胸）。
             </p>
-            <p class="text-[10px] text-zinc-500">⚠️ 避坑：切忌用力憋气挺胸耸肩（假性膨胀）。</p>
           </div>
 
           <!-- 3. Waist -->
           <div class="p-3 rounded-2xl bg-zinc-950/70 border border-zinc-800 space-y-1">
             <div class="font-bold text-emerald-400 flex items-center gap-1.5">
-              <span>🎯 腹部腰围 (Waist)</span>
+              <span>🎯 腰围 (Waist)</span>
             </div>
             <p class="text-zinc-300 text-[11px]">
-              <strong class="text-white">测量姿势：</strong>早晨空腹排空后，直立双脚与肩同宽，皮尺水平环绕肚脐上方约 1-2 cm 处（躯干最窄水平线），正常呼气末读取。
+              <strong class="text-white">测量标准：</strong>晨起空腹状态，身体直立放松，皮尺经过<strong class="text-emerald-400">肚脐上方最窄处或肚脐平齐处</strong>，正常呼气后测量水平周长（切勿刻意过度吸腹憋气）。
             </p>
-            <p class="text-[10px] text-zinc-500">⚠️ 避坑：严禁吸腹收腹，保持腹直肌与核心自然静息。</p>
           </div>
 
           <!-- 4. Thigh -->
           <div class="p-3 rounded-2xl bg-zinc-950/70 border border-zinc-800 space-y-1">
             <div class="font-bold text-purple-400 flex items-center gap-1.5">
-              <span>🦵 大腿中上段围度 (Thigh)</span>
+              <span>🦵 大腿围 (Thigh)</span>
             </div>
             <p class="text-zinc-300 text-[11px]">
-              <strong class="text-white">测量姿势：</strong>双腿开立重心对称分布，皮尺水平环绕臀下臀大肌折痕下方约 2-3 cm 处（股四头肌隆起最粗截面）。
+              <strong class="text-white">测量标准：</strong>双腿微微分开与肩同宽，重心平均分布，皮尺绕单侧大腿<strong class="text-purple-400">臀褶线下方约1~2厘米处（股四头肌根部最粗处）</strong>水平环绕测量。
             </p>
           </div>
 
@@ -272,7 +233,6 @@
 <script setup>
 import { ref, computed } from "vue";
 import { store, recordBodyMetric, deleteBodyMetric } from "../store/fitnessStore.js";
-import BodyVisualizer from "./BodyVisualizer.vue";
 
 defineProps({
   visible: Boolean
@@ -296,45 +256,28 @@ const sortedHistory = computed(() => [...history.value].reverse());
 const latestMetric = computed(() => history.value[history.value.length - 1] || null);
 const firstMetric = computed(() => history.value[0] || null);
 
-// Live preview data for the 3D Body Morphing Visualizer
-const previewArm = computed(() => form.value.arm || latestMetric.value?.arm || 35);
-const previewChest = computed(() => form.value.chest || latestMetric.value?.chest || 100);
-const previewWaist = computed(() => form.value.waist || latestMetric.value?.waist || 80);
-const previewThigh = computed(() => form.value.thigh || latestMetric.value?.thigh || 56);
-const previewWeight = computed(() => form.value.weight || latestMetric.value?.weight || 72);
-
-function applyPreset(chest, waist, arm, thigh, weight) {
-  form.value.chest = chest;
-  form.value.waist = waist;
-  form.value.arm = arm;
-  form.value.thigh = thigh;
-  form.value.weight = weight;
-}
-
-function resetToLatest() {
-  if (latestMetric.value) {
-    form.value.chest = latestMetric.value.chest;
-    form.value.waist = latestMetric.value.waist;
-    form.value.arm = latestMetric.value.arm;
-    form.value.thigh = latestMetric.value.thigh;
-    form.value.weight = latestMetric.value.weight;
-  } else {
-    form.value = { arm: null, chest: null, waist: null, thigh: null, weight: null };
-  }
-}
-
-function loadHistoryIntoPreview(metric) {
-  form.value.chest = metric.chest;
-  form.value.waist = metric.waist;
-  form.value.arm = metric.arm;
-  form.value.thigh = metric.thigh;
-  form.value.weight = metric.weight;
-}
-
 const vTaperRatio = computed(() => {
   if (!latestMetric.value || !latestMetric.value.waist || latestMetric.value.waist === 0) return "1.20";
   const ratio = (latestMetric.value.chest || 0) / latestMetric.value.waist;
   return ratio > 0 ? ratio.toFixed(2) : "1.20";
+});
+
+const vTaperGradeText = computed(() => {
+  const r = parseFloat(vTaperRatio.value);
+  if (r >= 1.35) return "👑 卓越倒三角";
+  if (r >= 1.26) return "🔥 战术倒三角";
+  if (r >= 1.18) return "⚡ 匀称精壮";
+  if (r >= 1.10) return "🌱 健康力量";
+  return "🛡️ 稳固体魄";
+});
+
+const vTaperGradeClass = computed(() => {
+  const r = parseFloat(vTaperRatio.value);
+  if (r >= 1.35) return "bg-amber-500/20 border-amber-500/60 text-amber-300";
+  if (r >= 1.26) return "bg-sky-500/20 border-sky-500/60 text-sky-300";
+  if (r >= 1.18) return "bg-emerald-500/20 border-emerald-500/60 text-emerald-300";
+  if (r >= 1.10) return "bg-indigo-500/20 border-indigo-500/60 text-indigo-300";
+  return "bg-zinc-800 border-zinc-700 text-zinc-400";
 });
 
 const armDelta = computed(() => {
