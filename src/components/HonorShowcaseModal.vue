@@ -26,26 +26,32 @@
           <!-- Tactical Aura Background Glow -->
           <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-          <!-- Medal Badge Icon -->
-          <div class="relative inline-flex items-center justify-center">
-            <div class="w-24 h-24 rounded-3xl bg-zinc-950/90 border-2 border-amber-500/80 shadow-[0_0_25px_rgba(245,158,11,0.35)] flex items-center justify-center p-2 transform hover:scale-105 transition-transform">
-              <img v-if="honorData.presentation.tierSvg" :src="honorData.presentation.tierSvg" alt="Rank Medal" class="w-full h-full object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]" />
+          <!-- Medal Badge Icon (Clean & Unobstructed) -->
+          <div class="flex items-center justify-center">
+            <div class="w-28 h-28 rounded-3xl bg-zinc-950/90 border-2 border-amber-500/70 shadow-[0_0_30px_rgba(245,158,11,0.3)] flex items-center justify-center p-3.5 transform hover:scale-105 transition-transform">
+              <img v-if="honorData.presentation.tierSvg" :src="honorData.presentation.tierSvg" alt="Rank Medal" class="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]" />
               <span v-else class="text-4xl">{{ honorData.presentation.tierIcon }}</span>
-            </div>
-            <!-- Annual Prestige Badge Tag -->
-            <div class="absolute -bottom-2 px-2.5 py-0.5 rounded-full text-[9px] font-black border tracking-wider flex items-center gap-1 shadow-md"
-                 :style="{ backgroundColor: prestigeInfo.glow, borderColor: prestigeInfo.border, color: prestigeInfo.color }">
-              <img v-if="prestigeSvg" :src="prestigeSvg" alt="Prestige Star" class="w-3 h-3 object-contain inline-block" />
-              <span>{{ prestigeInfo.name }}</span>
             </div>
           </div>
 
-          <!-- Rank Titles -->
-          <div class="space-y-0.5 pt-1">
+          <!-- Rank Titles & Service Medal Chips -->
+          <div class="space-y-1 pt-1">
             <div class="text-lg font-black text-white tracking-wide flex items-center justify-center gap-1.5">
               <span>{{ honorData.presentation.tierName }}</span>
             </div>
             <p class="text-xs text-amber-400/90 font-mono">{{ honorData.presentation.tierSub }}</p>
+
+            <!-- Distinct Annual Prestige Badge Pill (Non-Overlapping) -->
+            <div class="flex items-center justify-center gap-1.5 pt-1.5">
+              <div class="px-3 py-1 rounded-full text-[10px] font-black border tracking-wider flex items-center gap-1.5 shadow-sm"
+                   :style="{ backgroundColor: prestigeInfo.glow, borderColor: prestigeInfo.border, color: prestigeInfo.color }">
+                <img v-if="prestigeSvg" :src="prestigeSvg" alt="Prestige Star" class="w-3.5 h-3.5 object-contain inline-block" />
+                <span>{{ prestigeInfo.name }}</span>
+              </div>
+              <div class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-zinc-900 border border-zinc-800 text-zinc-400">
+                {{ honorData.prestigeYear }} 年度
+              </div>
+            </div>
           </div>
 
           <!-- FPS Score & Decay Notice -->
