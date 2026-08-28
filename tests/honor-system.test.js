@@ -133,7 +133,7 @@ describe("Fitcycle Core Constitution & Honor Rating Engine", () => {
       const profileBefore = getFullHonorProfile();
       const initialScore = profileBefore.score;
 
-      // 1. Initial measurement (initial sample was 14 days ago) -> awards points
+      // 1. Initial measurement (fresh user first measurement) -> awards points
       const res1 = recordBodyMetric({
         arm: 36.5,
         chest: 104,
@@ -144,7 +144,7 @@ describe("Fitcycle Core Constitution & Honor Rating Engine", () => {
 
       expect(res1.isCooldown).toBe(false);
       expect(res1.awardedPoints).toBeGreaterThan(0);
-      expect(store.bodyMetrics.length).toBeGreaterThanOrEqual(2);
+      expect(store.bodyMetrics.length).toBe(1);
 
       // 2. Immediate second measurement (0 hours later) -> triggers 7-day cooldown (0 pts)
       const scoreAfterFirst = store.honorProfile.score;
@@ -159,6 +159,7 @@ describe("Fitcycle Core Constitution & Honor Rating Engine", () => {
       expect(res2.isCooldown).toBe(true);
       expect(res2.awardedPoints).toBe(0); // 0 points awarded! Prevents exploit spam!
       expect(store.honorProfile.score).toBe(scoreAfterFirst);
+      expect(store.bodyMetrics.length).toBe(2);
     });
 
     it("evaluates prestige reset when score >= 2900", () => {

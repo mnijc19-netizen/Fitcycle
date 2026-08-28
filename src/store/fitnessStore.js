@@ -82,79 +82,7 @@ const defaultInitialState = {
     6: "plan-pull",
     0: "plan-rest"
   },
-  workoutLogs: [
-    // Pre-populate a realistic sample log for yesterday so user immediately sees how it works!
-    {
-      id: "sample-log-prev",
-      date: (() => {
-        const d = new Date();
-        d.setDate(d.getDate() - 1);
-        return getInitialDateStr(d);
-      })(),
-      planId: "plan-push",
-      planName: "推日 (Push) —— 打造铠甲胸与加宽肩膀",
-      shortName: "推日",
-      color: "amber",
-      durationSeconds: 3120, // 52 min
-      totalVolume: 5620,
-      totalSets: 17,
-      completedAt: Date.now() - 86400000,
-      exercises: [
-        {
-          exerciseId: "ex-incline-db-bench",
-          name: "上斜哑铃卧推",
-          targetReps: "8-10次",
-          sets: [
-            { id: "s-1", weight: 22, reps: 10, completed: true, isWarmup: false },
-            { id: "s-2", weight: 24, reps: 10, completed: true, isWarmup: false },
-            { id: "s-3", weight: 26, reps: 8, completed: true, isWarmup: false },
-            { id: "s-4", weight: 26, reps: 8, completed: true, isWarmup: false },
-          ]
-        },
-        {
-          exerciseId: "ex-machine-chest-press",
-          name: "固定器械推胸（最好是双轴收敛机）",
-          targetReps: "10-12次",
-          sets: [
-            { id: "s-5", weight: 45, reps: 12, completed: true, isWarmup: false },
-            { id: "s-6", weight: 50, reps: 10, completed: true, isWarmup: false },
-            { id: "s-7", weight: 50, reps: 9, completed: true, isWarmup: false },
-          ]
-        },
-        {
-          exerciseId: "ex-cable-lateral-raise",
-          name: "绳索/哑铃侧平举（更推崇绳索）",
-          targetReps: "12-15次",
-          sets: [
-            { id: "s-8", weight: 7.5, reps: 15, completed: true, isWarmup: false },
-            { id: "s-9", weight: 7.5, reps: 15, completed: true, isWarmup: false },
-            { id: "s-10", weight: 9, reps: 12, completed: true, isWarmup: false },
-            { id: "s-11", weight: 9, reps: 12, completed: true, isWarmup: false },
-          ]
-        },
-        {
-          exerciseId: "ex-machine-shoulder-press",
-          name: "固定器械推肩",
-          targetReps: "10-12次",
-          sets: [
-            { id: "s-12", weight: 35, reps: 12, completed: true, isWarmup: false },
-            { id: "s-13", weight: 40, reps: 10, completed: true, isWarmup: false },
-            { id: "s-14", weight: 40, reps: 9, completed: true, isWarmup: false },
-          ]
-        },
-        {
-          exerciseId: "ex-overhead-cable-ext",
-          name: "过头绳索臂屈伸（面向绳索龙门架）",
-          targetReps: "12-15次",
-          sets: [
-            { id: "s-15", weight: 15, reps: 15, completed: true, isWarmup: false },
-            { id: "s-16", weight: 17.5, reps: 12, completed: true, isWarmup: false },
-            { id: "s-17", weight: 17.5, reps: 11, completed: true, isWarmup: false },
-          ]
-        }
-      ]
-    }
-  ],
+  workoutLogs: [],
   activeWorkout: null,
   restTimer: {
     running: false,
@@ -164,24 +92,14 @@ const defaultInitialState = {
     minimized: false,
     intervalId: null
   },
-  bodyMetrics: [
-    {
-      id: "body-m-init",
-      date: getInitialDateStr(new Date(Date.now() - 86400000 * 14)),
-      arm: 34.0,
-      chest: 98.0,
-      waist: 82.0,
-      thigh: 56.0,
-      weight: 72.0
-    }
-  ],
+  bodyMetrics: [],
   honorProfile: {
     score: 850,
     prestigeLevel: 1,
-    prestigeYear: 2026,
+    prestigeYear: new Date().getFullYear(),
     highestScore: 850,
-    lastWorkoutTimestamp: Date.now() - 86400000,
-    unlockedBadges: ["badge_first_blood", "badge_body_init"]
+    lastWorkoutTimestamp: null,
+    unlockedBadges: []
   },
   settings: {
     ...DEFAULT_SETTINGS
@@ -768,11 +686,11 @@ export function clearWorkoutHistory() {
     prestigeLevel: 1,
     prestigeYear: new Date().getFullYear(),
     highestScore: 850,
-    lastWorkoutTimestamp: Date.now(),
-    unlockedBadges: ["badge_first_blood"]
+    lastWorkoutTimestamp: null,
+    unlockedBadges: []
   };
   if (store.settings.vibrationEnabled) triggerHaptic("warning");
-  return { success: true, message: "训练打卡与形体记录已全部清空，保留计划与皮肤设置" };
+  return { success: true, message: "训练打卡与形体记录已全部清空，回归纯净初始状态" };
 }
 
 export function resetAllDataToDefault() {

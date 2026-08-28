@@ -39,7 +39,7 @@
         </div>
         <div>
           <div class="text-xs font-black text-white truncate">身体蜕变追踪</div>
-          <div class="text-[10px] font-mono text-sky-400 font-bold mt-0.5">V身比 {{ vTaperRatio }} <span class="text-zinc-500 font-normal">❯</span></div>
+          <div class="text-[10px] font-mono text-sky-400 font-bold mt-0.5">{{ (store.bodyMetrics && store.bodyMetrics.length) ? `V身比 ${vTaperRatio}` : '未录入 · 点击记录' }} <span class="text-zinc-500 font-normal">❯</span></div>
         </div>
       </div>
     </div>

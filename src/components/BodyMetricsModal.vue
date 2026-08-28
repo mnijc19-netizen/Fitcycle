@@ -121,7 +121,13 @@
         <div class="space-y-2">
           <h3 class="text-xs font-bold text-zinc-300">历史测量记录 (共 {{ history.length }} 次)</h3>
           
-          <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1 scrollbar-thin">
+          <div v-if="history.length === 0" class="p-6 rounded-2xl bg-zinc-950/40 border border-dashed border-zinc-800 text-center space-y-1">
+            <span class="text-2xl block">📏</span>
+            <p class="text-xs font-bold text-zinc-400">暂无历史围度记录</p>
+            <p class="text-[10px] text-zinc-500 font-mono">首次录入身体各部位数据后，将在此自动生成蜕变轨迹！</p>
+          </div>
+
+          <div v-else class="space-y-1.5 max-h-48 overflow-y-auto pr-1 scrollbar-thin">
             <div v-for="m in sortedHistory" :key="m.id"
                  class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80 flex items-center justify-between text-xs font-mono">
               <div>
@@ -131,7 +137,7 @@
                 </span>
               </div>
 
-              <button @click="handleDelete(m.id)" class="text-zinc-600 hover:text-red-400 p-1 text-xs transition-colors" title="删除记录">
+              <button @click="handleDelete(m.id)" class="text-zinc-600 hover:text-red-400 p-1 text-xs transition-colors cursor-pointer" title="删除记录">
                 ✕
               </button>
             </div>
@@ -257,12 +263,13 @@ const latestMetric = computed(() => history.value[history.value.length - 1] || n
 const firstMetric = computed(() => history.value[0] || null);
 
 const vTaperRatio = computed(() => {
-  if (!latestMetric.value || !latestMetric.value.waist || latestMetric.value.waist === 0) return "1.20";
+  if (!latestMetric.value || !latestMetric.value.waist || latestMetric.value.waist === 0) return "--";
   const ratio = (latestMetric.value.chest || 0) / latestMetric.value.waist;
-  return ratio > 0 ? ratio.toFixed(2) : "1.20";
+  return ratio > 0 ? ratio.toFixed(2) : "--";
 });
 
 const vTaperGradeText = computed(() => {
+  if (vTaperRatio.value === "--") return "待首次测量";
   const r = parseFloat(vTaperRatio.value);
   if (r >= 1.35) return "👑 卓越倒三角";
   if (r >= 1.26) return "🔥 战术倒三角";
@@ -272,6 +279,7 @@ const vTaperGradeText = computed(() => {
 });
 
 const vTaperGradeClass = computed(() => {
+  if (vTaperRatio.value === "--") return "bg-zinc-800 border-zinc-700 text-zinc-400";
   const r = parseFloat(vTaperRatio.value);
   if (r >= 1.35) return "bg-amber-500/20 border-amber-500/60 text-amber-300";
   if (r >= 1.26) return "bg-sky-500/20 border-sky-500/60 text-sky-300";
