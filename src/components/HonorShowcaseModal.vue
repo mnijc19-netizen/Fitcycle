@@ -80,12 +80,12 @@
               </span>
             </div>
 
-            <!-- Shield Charging Progress Bar (1 Shield per 16 Workouts) -->
+            <!-- Shield Charging Progress Bar (1 Shield per 16 Unique Training Days) -->
             <div class="space-y-1">
               <div class="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
-                <span v-if="honorData.shieldInventory.isNoviceProbation" class="text-amber-400 font-bold">🌱 新兵筑基期 ({{ honorData.shieldInventory.currentChargeWorkouts }}/16 次)</span>
-                <span v-else>下一枚充能: {{ honorData.shieldInventory.currentChargeWorkouts }}/16 次训练</span>
-                <span class="text-sky-300 font-bold">还需 {{ honorData.shieldInventory.nextShieldRemaining }} 次打卡</span>
+                <span v-if="honorData.shieldInventory.isNoviceProbation" class="text-amber-400 font-bold">🌱 新兵筑基期 ({{ honorData.shieldInventory.currentChargeWorkouts }}/16 天)</span>
+                <span v-else>下一枚充能: {{ honorData.shieldInventory.currentChargeWorkouts }}/16 天训练 (每日计1天)</span>
+                <span class="text-sky-300 font-bold">还需 {{ honorData.shieldInventory.nextShieldRemaining }} 天打卡</span>
               </div>
               <div class="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden border border-zinc-800">
                 <div class="h-full bg-gradient-to-r from-sky-500 to-indigo-500 transition-all duration-500 rounded-full"
@@ -100,10 +100,10 @@
                 <span>运动生理减载原理 (Deload Science)</span>
               </div>
               <p class="leading-relaxed text-zinc-300">
-                连续高强度训练 4~6 周（16次+）后，中枢神经与肌腱劳损达临界值，需 7 天主动减载以消解疲劳、促发超量恢复。
+                连续规律特训 4~6 周（16天+，同日多次打卡仅计1天）后，中枢神经与肌腱劳损达临界值，需 7 天主动减载以消解疲劳、促发超量恢复。
               </p>
               <div class="flex items-center justify-between text-[9px] text-zinc-400 pt-0.5 border-t border-zinc-800/80 font-mono">
-                <span>⚡ 门槛：每 16 次特训铸造 1 枚</span>
+                <span>⚡ 门槛：每 16 天特训铸造 1 枚</span>
                 <span>⏳ 冷却：使用后享 21 天自适应期</span>
               </div>
             </div>

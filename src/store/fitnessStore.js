@@ -881,10 +881,9 @@ export function getFullHonorProfile() {
   const allUnlocked = getUnlockedBadgesList();
   const presentation = getSkinHonorPresentation(store.settings.uiSkin, finalTier, allUnlocked);
 
-  // Deload Shield Inventory & Cooldown Calculations (16 Workouts / Shield, 21-Day Cooldown)
-  const totalWorkouts = (store.workoutLogs || []).length;
+  // Deload Shield Inventory & Cooldown Calculations (16 Distinct Training Days / Shield, 21-Day Cooldown)
   const usedShields = honor.usedShieldsCount || 0;
-  const shieldInventory = calculateShieldInventory(totalWorkouts, usedShields, 0);
+  const shieldInventory = calculateShieldInventory(store.workoutLogs, usedShields, 0);
   const isCooldownActive = !!(honor.shieldCooldownUntil && honor.shieldCooldownUntil > Date.now() && !isDeloadActive);
   const cooldownDaysRemaining = isCooldownActive ? Math.ceil((honor.shieldCooldownUntil - Date.now()) / (1000 * 86400)) : 0;
   const shieldDaysRemaining = isDeloadActive ? Math.max(1, Math.ceil((honor.deloadShieldUntil - Date.now()) / (1000 * 86400))) : 0;
@@ -913,17 +912,16 @@ export function toggleDeloadShield(enable, days = 7) {
     store.honorProfile = { score: 850, prestigeLevel: 1, prestigeYear: new Date().getFullYear(), highestScore: 850, lastWorkoutTimestamp: Date.now(), unlockedBadges: [] };
   }
   const honor = store.honorProfile;
-  const totalWorkouts = (store.workoutLogs || []).length;
   const usedShields = honor.usedShieldsCount || 0;
-  const shieldInventory = calculateShieldInventory(totalWorkouts, usedShields, 0);
+  const shieldInventory = calculateShieldInventory(store.workoutLogs, usedShields, 0);
 
   if (enable) {
     // Check if user has available shields
     if (shieldInventory.available <= 0) {
       if (store.settings.vibrationEnabled) triggerHaptic("warning");
       const msg = shieldInventory.isNoviceProbation
-        ? `新兵筑基保护期（当前 ${totalWorkouts}/16 次训练）：神经募集建立阶段暂无中枢疲劳，完成 16 次规律特训后将自动铸造首枚免战盾牌！`
-        : `战术盾牌数量不足！每扎实完成 16 次有效特训充能 1 枚（当前充能进度 ${shieldInventory.currentChargeWorkouts}/16 次）。`;
+        ? `新兵筑基保护期（当前 ${shieldInventory.uniqueTrainingDays}/16 天训练）：神经募集建立阶段暂无中枢疲劳，完成 16 天规律特训后将自动铸造首枚免战盾牌！`
+        : `战术盾牌数量不足！每扎实完成 16 天有效特训（每日最多累积1天进度）充能 1 枚（当前充能进度 ${shieldInventory.currentChargeWorkouts}/16 天）。`;
       return { 
         success: false, 
         reason: "no_shield", 

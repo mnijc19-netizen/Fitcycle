@@ -183,8 +183,8 @@
           <div class="text-[10px] text-zinc-400">
             <span v-if="isDeloadActive" class="text-emerald-400 font-bold">免战休整期生效中 (剩余 {{ honorData.shieldDaysRemaining }} 天)</span>
             <span v-else-if="honorData.shieldInventory.available > 0" class="text-sky-300">当前已铸造储备: {{ honorData.shieldInventory.available }}/2 枚 (点击查看/使用)</span>
-            <span v-else-if="honorData.shieldInventory.isNoviceProbation" class="text-amber-400">新兵筑基中 ({{ honorData.shieldInventory.currentChargeWorkouts }}/16 次)</span>
-            <span v-else class="text-zinc-500">做工充能进度: {{ honorData.shieldInventory.currentChargeWorkouts }}/16 次打卡</span>
+            <span v-else-if="honorData.shieldInventory.isNoviceProbation" class="text-amber-400">新兵筑基中 ({{ honorData.shieldInventory.currentChargeWorkouts }}/16 天)</span>
+            <span v-else class="text-zinc-500">做工充能进度: {{ honorData.shieldInventory.currentChargeWorkouts }}/16 天特训</span>
           </div>
         </div>
         <span class="text-xs text-zinc-500 flex items-center gap-0.5">

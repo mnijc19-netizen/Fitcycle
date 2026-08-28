@@ -238,6 +238,24 @@ describe("Fitcycle Core Constitution & Honor Rating Engine", () => {
       expect(resReturn.success).toBe(true);
       expect(getFullHonorProfile().isDeloadActive).toBe(false);
     });
+
+    it("prevents same-day multiple workouts from spamming shield recharge progress (1 unique training day credit)", () => {
+      // User logs 20 workouts on the exact same date (e.g. 2026-08-28)
+      const sameDayLogs = Array.from({ length: 20 }, (_, i) => ({
+        id: `spam_log_${i}`,
+        date: "2026-08-28",
+        timestamp: Date.now() - i * 60000,
+        totalVolume: 2000,
+        totalSets: 10
+      }));
+
+      const inventory = calculateShieldInventory(sameDayLogs, 0, 0);
+      // Only counts as 1 valid training day!
+      expect(inventory.uniqueTrainingDays).toBe(1);
+      expect(inventory.available).toBe(0);
+      expect(inventory.currentChargeWorkouts).toBe(1);
+      expect(inventory.isNoviceProbation).toBe(true);
+    });
   });
 
   describe("7. Vector Medals & Visual SVGs Mappings", () => {

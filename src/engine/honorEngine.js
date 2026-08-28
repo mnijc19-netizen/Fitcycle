@@ -294,18 +294,42 @@ export const SHIELD_DURATION_DAYS = 7;
 export const SHIELD_COOLDOWN_DAYS = 21;
 
 /**
+ * Calculates unique calendar training days from workout logs to prevent same-day spam exploits
+ * (Article 6.5: Deload Shield Anti-Spam Integrity Law)
+ * @param {Array<Object>|number} workoutLogs 
+ * @returns {number}
+ */
+export function getUniqueTrainingDays(workoutLogs = []) {
+  if (!Array.isArray(workoutLogs)) return Math.max(0, Number(workoutLogs) || 0);
+  const uniqueDates = new Set();
+  workoutLogs.forEach(log => {
+    if (log && log.date) {
+      const sets = log.totalSets || (log.exercises ? log.exercises.reduce((acc, e) => acc + (e.sets?.length || 0), 0) : 0);
+      if (sets >= 1 || (log.durationSeconds || 0) > 0 || (log.totalVolume || 0) > 0) {
+        uniqueDates.add(log.date);
+      }
+    }
+  });
+  return uniqueDates.size;
+}
+
+/**
  * Calculates user's Deload Shield inventory, available count, and recharge progress
  * Scientific Periodization Rationale (NSCA & Israetel Periodization):
- * - After 4~6 microcycles (16~24 workouts), CNS and connective tissue fatigue accumulates to a threshold, requiring a 7-day Deload Week.
- * - Beginners must complete 16 workouts (Probationary Phase) before earning their 1st shield. No free unearned gift on day 1.
+ * - After 4~6 microcycles (16~24 distinct training days), CNS and connective tissue fatigue accumulates to a threshold, requiring a 7-day Deload Week.
+ * - Beginners must complete 16 distinct training days (Probationary Phase) before earning their 1st shield. No free unearned gift on day 1.
+ * - Same-day duplicate workouts only count as 1 training day toward Deload Shield charging.
  * - Cooldown: 21 days between uses to prevent abuse and enforce training consistency.
- * @param {number} totalWorkoutsCount 
+ * @param {Array|number} workoutsOrLogs (workoutLogs array or count of unique training days)
  * @param {number} usedShieldsCount 
  * @param {number} initialGift (defaults to 0: earned purely by sweat & consistency)
- * @returns {Object} { available, maxCapacity, totalEarned, usedCount, currentChargeWorkouts, nextShieldRemaining, chargePercent, isNoviceProbation }
+ * @returns {Object} { available, maxCapacity, totalEarned, usedCount, currentChargeWorkouts, nextShieldRemaining, chargePercent, isNoviceProbation, uniqueTrainingDays }
  */
-export function calculateShieldInventory(totalWorkoutsCount = 0, usedShieldsCount = 0, initialGift = 0) {
-  const safeWorkouts = Math.max(0, Number(totalWorkoutsCount) || 0);
+export function calculateShieldInventory(workoutsOrLogs = 0, usedShieldsCount = 0, initialGift = 0) {
+  const safeWorkouts = typeof workoutsOrLogs === "number"
+    ? Math.max(0, Number(workoutsOrLogs) || 0)
+    : getUniqueTrainingDays(workoutsOrLogs);
+
   const earnedFromWorkouts = Math.floor(safeWorkouts / WORKOUTS_PER_SHIELD);
   const totalEarned = initialGift + earnedFromWorkouts;
   const available = Math.max(0, Math.min(MAX_SHIELDS_CAPACITY, totalEarned - Math.max(0, Number(usedShieldsCount) || 0)));
@@ -322,6 +346,7 @@ export function calculateShieldInventory(totalWorkoutsCount = 0, usedShieldsCoun
     currentChargeWorkouts,
     nextShieldRemaining,
     chargePercent,
-    isNoviceProbation
+    isNoviceProbation,
+    uniqueTrainingDays: safeWorkouts
   };
 }
