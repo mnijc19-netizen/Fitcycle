@@ -1,121 +1,108 @@
 <template>
   <div class="pb-32 px-4 pt-2 max-w-md mx-auto space-y-4">
 
-    <!-- Top Header -->
-    <div class="flex items-center justify-between">
+    <!-- Top Header (Clean Apple Minimalist) -->
+    <div class="flex items-center justify-between pt-1">
       <div>
-        <h2 class="text-base font-black tracking-tight text-white flex items-center gap-2">
-          <span>数据与系统设置</span>
+        <h2 class="text-xl font-bold tracking-tight text-white">
+          统计与设置
         </h2>
         <p class="text-xs text-zinc-400 mt-0.5">
-          战力天梯、形体围度、训练容量与偏好
+          战力排位 · 训练容量 · 系统偏好
         </p>
-      </div>
-      <div class="text-[10px] font-mono text-zinc-500 font-bold px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800">
-        FITCYCLE
       </div>
     </div>
 
-    <!-- Honor Rank & Body Metrics Hero Entry Cards -->
+    <!-- Honor Rank & Body Metrics Dual Cards (Clean Glassmorphic) -->
     <div class="grid grid-cols-2 gap-2.5">
       <!-- 1. Honor & Rank Card -->
       <div @click="showHonorModal = true" 
-           class="p-3.5 rounded-2xl bg-zinc-900/90 hover:bg-zinc-850 border border-zinc-800 hover:border-amber-500/40 cursor-pointer shadow-lg shadow-black/30 space-y-2 transition-all active:scale-95 group">
+           class="p-3.5 rounded-2xl bg-zinc-900/80 hover:bg-zinc-850/90 border border-zinc-800/80 hover:border-amber-500/40 cursor-pointer shadow-sm transition-all active:scale-98 group flex flex-col justify-between">
         <div class="flex items-center justify-between">
           <div class="w-8 h-8 flex items-center justify-center">
             <img v-if="honorData.presentation.tierSvg" :src="honorData.presentation.tierSvg" alt="Rank Medal" class="w-full h-full object-contain group-hover:scale-105 transition-transform" />
             <span v-else class="text-xl group-hover:scale-105 transition-transform">{{ honorData.presentation.tierIcon }}</span>
           </div>
-          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-800 text-amber-400 border border-amber-500/30">天梯排位</span>
+          <span class="text-xs font-mono font-bold text-amber-400">{{ honorData.score }} PTS</span>
         </div>
-        <div>
-          <div class="text-xs font-black text-white truncate">{{ honorData.presentation.tierName }}</div>
-          <div class="text-[11px] font-mono text-amber-400 font-bold mt-0.5 flex items-center justify-between">
-            <span>{{ honorData.score }} PTS</span>
-            <span class="text-zinc-500 text-[10px]">❯</span>
+        <div class="mt-2.5">
+          <div class="text-xs font-bold text-zinc-100 truncate">{{ honorData.presentation.tierName.split('·')[0] }}</div>
+          <div class="text-[11px] text-zinc-400 mt-0.5 flex items-center justify-between">
+            <span>天梯排位</span>
+            <span class="text-zinc-500 group-hover:text-zinc-300 text-xs transition-colors">❯</span>
           </div>
         </div>
       </div>
 
       <!-- 2. Body Circumference Card -->
       <div @click="showBodyModal = true"
-           class="p-3.5 rounded-2xl bg-zinc-900/90 hover:bg-zinc-850 border border-zinc-800 hover:border-sky-500/40 cursor-pointer shadow-lg shadow-black/30 space-y-2 transition-all active:scale-95 group">
+           class="p-3.5 rounded-2xl bg-zinc-900/80 hover:bg-zinc-850/90 border border-zinc-800/80 hover:border-sky-500/40 cursor-pointer shadow-sm transition-all active:scale-98 group flex flex-col justify-between">
         <div class="flex items-center justify-between">
-          <div class="w-8 h-8 rounded-xl bg-zinc-800 flex items-center justify-center text-zinc-300">
+          <div class="w-8 h-8 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
-          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-800 text-sky-400 border border-sky-500/30">形体围度</span>
+          <span class="text-xs font-mono font-bold text-sky-400">
+            {{ (store.bodyMetrics && store.bodyMetrics.length) ? `V ${vTaperRatio}` : '未记录' }}
+          </span>
         </div>
-        <div>
-          <div class="text-xs font-black text-white truncate">身体蜕变追踪</div>
-          <div class="text-[11px] font-mono text-sky-400 font-bold mt-0.5 flex items-center justify-between">
-            <span>{{ (store.bodyMetrics && store.bodyMetrics.length) ? `V身比 ${vTaperRatio}` : '未录入' }}</span>
-            <span class="text-zinc-500 text-[10px]">❯</span>
+        <div class="mt-2.5">
+          <div class="text-xs font-bold text-zinc-100 truncate">形体围度追踪</div>
+          <div class="text-[11px] text-zinc-400 mt-0.5 flex items-center justify-between">
+            <span>身体档案</span>
+            <span class="text-zinc-500 group-hover:text-zinc-300 text-xs transition-colors">❯</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Overall Lifetime Metrics Grid -->
-    <div class="grid grid-cols-2 gap-2.5">
-      <div class="bg-zinc-900/90 border border-zinc-800/90 rounded-2xl p-3.5 space-y-1">
-        <div class="text-[11px] text-zinc-400 font-medium flex items-center justify-between">
-          <span>累计总容量</span>
-          <span class="text-zinc-600 font-mono text-[10px]">VOLUME</span>
+    <!-- Unified Lifetime Metrics (Apple Health / Fitness Summary Style) -->
+    <div class="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl p-4 shadow-sm">
+      <div class="text-xs font-bold text-zinc-400 mb-3 px-0.5">累计生涯数据</div>
+      <div class="grid grid-cols-2 gap-y-3.5 gap-x-4">
+        <div>
+          <div class="text-[11px] text-zinc-400">累计做工总容量</div>
+          <div class="text-lg font-black text-zinc-100 font-mono mt-0.5">
+            {{ totalVolumeMetric }} <span class="text-xs font-normal text-zinc-500">kg</span>
+          </div>
         </div>
-        <div class="text-xl font-black text-zinc-100 font-mono">
-          {{ totalVolumeMetric }} <span class="text-xs font-normal text-zinc-500">kg</span>
+        <div>
+          <div class="text-[11px] text-zinc-400">累计特训打卡</div>
+          <div class="text-lg font-black text-zinc-100 font-mono mt-0.5">
+            {{ store.workoutLogs.length }} <span class="text-xs font-normal text-zinc-500">次</span>
+          </div>
         </div>
-      </div>
-
-      <div class="bg-zinc-900/90 border border-zinc-800/90 rounded-2xl p-3.5 space-y-1">
-        <div class="text-[11px] text-zinc-400 font-medium flex items-center justify-between">
-          <span>累计特训次数</span>
-          <span class="text-zinc-600 font-mono text-[10px]">WORKOUTS</span>
+        <div>
+          <div class="text-[11px] text-zinc-400">累计训练用时</div>
+          <div class="text-lg font-black text-zinc-100 font-mono mt-0.5">
+            {{ totalHoursMetric }} <span class="text-xs font-normal text-zinc-500">小时</span>
+          </div>
         </div>
-        <div class="text-xl font-black text-zinc-100 font-mono">
-          {{ store.workoutLogs.length }} <span class="text-xs font-normal text-zinc-500">次</span>
-        </div>
-      </div>
-
-      <div class="bg-zinc-900/90 border border-zinc-800/90 rounded-2xl p-3.5 space-y-1">
-        <div class="text-[11px] text-zinc-400 font-medium flex items-center justify-between">
-          <span>累计训练时长</span>
-          <span class="text-zinc-600 font-mono text-[10px]">DURATION</span>
-        </div>
-        <div class="text-xl font-black text-zinc-100 font-mono">
-          {{ totalHoursMetric }} <span class="text-xs font-normal text-zinc-500">小时</span>
-        </div>
-      </div>
-
-      <div class="bg-zinc-900/90 border border-zinc-800/90 rounded-2xl p-3.5 space-y-1">
-        <div class="text-[11px] text-zinc-400 font-medium flex items-center justify-between">
-          <span>完成总组数</span>
-          <span class="text-zinc-600 font-mono text-[10px]">SETS</span>
-        </div>
-        <div class="text-xl font-black text-zinc-100 font-mono">
-          {{ totalSetsMetric }} <span class="text-xs font-normal text-zinc-500">组</span>
+        <div>
+          <div class="text-[11px] text-zinc-400">完成总组数</div>
+          <div class="text-lg font-black text-zinc-100 font-mono mt-0.5">
+            {{ totalSetsMetric }} <span class="text-xs font-normal text-zinc-500">组</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Recent 7-Workout Volume Trend Visualizer -->
-    <div class="bg-zinc-900/90 border border-zinc-800/90 rounded-3xl p-4 shadow-xl space-y-3">
+    <!-- Volume Trend Chart (Refined Minimalist Pills) -->
+    <div class="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl p-4 shadow-sm space-y-3">
       <div class="flex items-center justify-between">
-        <span class="text-xs font-bold text-zinc-300 tracking-wider">近期训练容量趋势 (kg)</span>
-        <span class="text-[10px] text-zinc-500 font-mono">最近 7 次特训</span>
+        <span class="text-xs font-bold text-zinc-300">近期容量走势 (kg)</span>
+        <span class="text-[10px] text-zinc-500 font-mono">近 7 次特训</span>
       </div>
 
-      <div v-if="recentVolumeStats.length" class="space-y-2 pt-2">
+      <div v-if="recentVolumeStats.length" class="pt-2">
         <div class="flex items-end justify-between gap-2 h-28 px-1">
           <div v-for="(item, idx) in recentVolumeStats" :key="idx"
                class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
             <span class="text-[9px] font-mono text-zinc-400">{{ item.volume > 0 ? `${Math.round(item.volume / 1000)}k` : '0' }}</span>
-            <div class="w-full bg-zinc-800/80 rounded-t-lg overflow-hidden flex items-end" style="height: 72px">
-              <div class="w-full transition-all duration-500 rounded-t-lg bg-amber-500/80 hover:bg-amber-400"
-                   :style="{ height: `${Math.max(10, item.percent)}%` }">
+            <div class="w-full bg-zinc-800/50 rounded-full overflow-hidden flex items-end p-0.5" style="height: 72px">
+              <div class="w-full transition-all duration-500 rounded-full bg-gradient-to-t from-amber-500 to-amber-400"
+                   :style="{ height: `${Math.max(12, item.percent)}%` }">
               </div>
             </div>
             <span class="text-[9px] text-zinc-500 font-mono truncate w-full text-center">{{ item.shortDate }}</span>
@@ -123,251 +110,228 @@
         </div>
       </div>
 
-      <div v-else class="py-8 text-center text-xs text-zinc-500">
-        记录更多训练后将生成容量走势图
+      <div v-else class="py-6 text-center text-xs text-zinc-500">
+        记录特训后将在此生成容量走势
       </div>
     </div>
 
-    <!-- User Gym Settings -->
-    <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3.5">
-      <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">
-        ⚙️ 训练与计时器偏好
-      </div>
-
-      <!-- Rest Timer Duration Setting -->
-      <div class="space-y-1.5">
-        <div class="flex items-center justify-between text-xs">
-          <span class="text-zinc-200 font-medium">默认组间休息时长</span>
-          <span class="font-bold text-amber-400 font-mono">{{ store.settings.defaultRestSeconds }} 秒</span>
+    <!-- Training Preferences (iOS Grouped Section) -->
+    <div class="space-y-1.5">
+      <div class="text-xs font-bold text-zinc-400 px-1">训练偏好</div>
+      <div class="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl p-3.5 space-y-3 shadow-sm">
+        
+        <!-- Rest Timer Duration Setting -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-zinc-200 font-medium">默认组间休息</span>
+            <span class="font-bold text-amber-400 font-mono">{{ store.settings.defaultRestSeconds }} 秒</span>
+          </div>
+          <div class="grid grid-cols-4 gap-1 p-1 bg-zinc-950/80 rounded-xl border border-zinc-800/60">
+            <button v-for="item in [
+                      { sec: 60, label: '泵感' },
+                      { sec: 90, label: '标准推荐' },
+                      { sec: 120, label: '大肌群' },
+                      { sec: 180, label: '力量' }
+                    ]" 
+                    :key="item.sec"
+                    @click="store.settings.defaultRestSeconds = item.sec"
+                    class="py-1.5 rounded-lg text-center transition-all flex flex-col items-center justify-center cursor-pointer"
+                    :class="[store.settings.defaultRestSeconds === item.sec ? 'bg-amber-500 text-zinc-950 font-bold shadow-sm' : 'text-zinc-400 hover:text-zinc-200']">
+              <span class="text-xs font-mono font-bold leading-none">{{ item.sec }}s</span>
+              <span class="text-[9px] leading-none mt-0.5 opacity-85">{{ item.label }}</span>
+            </button>
+          </div>
         </div>
-        <div class="grid grid-cols-4 gap-1.5">
-          <button v-for="item in [
-                    { sec: 60, label: '泵感' },
-                    { sec: 90, label: '标准推荐' },
-                    { sec: 120, label: '大肌群' },
-                    { sec: 180, label: '力量' }
-                  ]" 
-                  :key="item.sec"
-                  @click="store.settings.defaultRestSeconds = item.sec"
-                  class="py-2 px-1 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-0.5"
-                  :class="[store.settings.defaultRestSeconds === item.sec ? 'bg-amber-500 text-zinc-950 border-amber-500 font-bold shadow-md shadow-amber-500/20' : 'bg-zinc-950 border-zinc-800 text-zinc-300 hover:border-zinc-700']">
-            <span class="text-xs font-mono font-black leading-none">{{ item.sec }}s</span>
-            <span class="text-[9px] leading-none opacity-85 font-medium">{{ item.label }}</span>
+
+        <!-- Sound Toggle -->
+        <div class="flex items-center justify-between pt-2.5 border-t border-zinc-800/60">
+          <div>
+            <div class="text-xs font-medium text-zinc-200">打卡提示音与倒计时铃声</div>
+            <div class="text-[10px] text-zinc-500">完成单组及休息结束时播放提示音</div>
+          </div>
+          <button @click="store.settings.soundEnabled = !store.settings.soundEnabled"
+                  class="w-11 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer"
+                  :class="[store.settings.soundEnabled ? 'bg-amber-500' : 'bg-zinc-800']">
+            <div class="w-5 h-5 rounded-full bg-white transition-transform transform shadow-sm"
+                 :class="[store.settings.soundEnabled ? 'translate-x-5' : 'translate-x-0']"></div>
           </button>
         </div>
-      </div>
 
-      <!-- Sound Toggle -->
-      <div class="flex items-center justify-between py-1 border-t border-zinc-800/80">
-        <div>
-          <div class="text-xs font-medium text-zinc-200">打卡提示音与倒计时铃声</div>
-          <div class="text-[10px] text-zinc-500">完成单组及休息结束时播放清脆提示音</div>
-        </div>
-        <button @click="store.settings.soundEnabled = !store.settings.soundEnabled"
-                class="w-12 h-6 rounded-full transition-colors relative p-0.5"
-                :class="[store.settings.soundEnabled ? 'bg-amber-500' : 'bg-zinc-800']">
-          <div class="w-5 h-5 rounded-full bg-white transition-transform transform"
-               :class="[store.settings.soundEnabled ? 'translate-x-6' : 'translate-x-0']"></div>
-        </button>
-      </div>
-
-      <!-- Vibration Toggle -->
-      <div class="flex items-center justify-between py-1 border-t border-zinc-800/80">
-        <div>
-          <div class="text-xs font-medium text-zinc-200">触感强震动反馈 (Haptic)</div>
-          <div class="text-[10px] text-zinc-500">休息倒计时结束与打卡时提供穿透震动</div>
-        </div>
-        <button @click="store.settings.vibrationEnabled = !store.settings.vibrationEnabled"
-                class="w-12 h-6 rounded-full transition-colors relative p-0.5"
-                :class="[store.settings.vibrationEnabled ? 'bg-amber-500' : 'bg-zinc-800']">
-          <div class="w-5 h-5 rounded-full bg-white transition-transform transform"
-               :class="[store.settings.vibrationEnabled ? 'translate-x-6' : 'translate-x-0']"></div>
-        </button>
-      </div>
-
-      <!-- Tactical Deload Shield Status Entry (Points to Honor Showcase) -->
-      <div class="flex items-center justify-between py-1.5 border-t border-zinc-800/80 cursor-pointer hover:opacity-80 transition-opacity"
-           @click="showHonorModal = true">
-        <div>
-          <div class="text-xs font-bold text-sky-300 flex items-center gap-1.5">
-            <span>🛡️</span> 战术减载盾牌档案
+        <!-- Vibration Toggle -->
+        <div class="flex items-center justify-between pt-2.5 border-t border-zinc-800/60">
+          <div>
+            <div class="text-xs font-medium text-zinc-200">触感震动反馈 (Haptic)</div>
+            <div class="text-[10px] text-zinc-500">休息结束与打卡时提供震动反馈</div>
           </div>
-          <div class="text-[10px] text-zinc-400">
-            <span v-if="isDeloadActive" class="text-emerald-400 font-bold">免战休整期生效中 (剩余 {{ honorData.shieldDaysRemaining }} 天)</span>
-            <span v-else-if="honorData.shieldInventory.available > 0" class="text-sky-300">当前已铸造储备: {{ honorData.shieldInventory.available }}/2 枚 (点击查看/使用)</span>
-            <span v-else-if="honorData.shieldInventory.isNoviceProbation" class="text-amber-400">新兵筑基中 ({{ honorData.shieldInventory.currentChargeWorkouts }}/16 天)</span>
-            <span v-else class="text-zinc-500">做工充能进度: {{ honorData.shieldInventory.currentChargeWorkouts }}/16 天特训</span>
-          </div>
+          <button @click="store.settings.vibrationEnabled = !store.settings.vibrationEnabled"
+                  class="w-11 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer"
+                  :class="[store.settings.vibrationEnabled ? 'bg-amber-500' : 'bg-zinc-800']">
+            <div class="w-5 h-5 rounded-full bg-white transition-transform transform shadow-sm"
+                 :class="[store.settings.vibrationEnabled ? 'translate-x-5' : 'translate-x-0']"></div>
+          </button>
         </div>
-        <span class="text-xs text-zinc-500 flex items-center gap-0.5">
-          <span>查看</span>
-          <span class="text-zinc-600">→</span>
-        </span>
-      </div>
 
+        <!-- Tactical Deload Shield Status Entry -->
+        <div class="flex items-center justify-between pt-2.5 border-t border-zinc-800/60 cursor-pointer hover:opacity-80 transition-opacity"
+             @click="showHonorModal = true">
+          <div>
+            <div class="text-xs font-bold text-sky-300 flex items-center gap-1">
+              <span>🛡️</span>
+              <span>战术减载盾牌</span>
+            </div>
+            <div class="text-[10px] text-zinc-400 mt-0.5">
+              <span v-if="isDeloadActive" class="text-emerald-400 font-bold">免战休整生效中 (剩余 {{ honorData.shieldDaysRemaining }} 天)</span>
+              <span v-else-if="honorData.shieldInventory.available > 0" class="text-sky-300">储备: {{ honorData.shieldInventory.available }}/2 枚 (点击查看)</span>
+              <span v-else-if="honorData.shieldInventory.isNoviceProbation" class="text-amber-400">新兵筑基中 ({{ honorData.shieldInventory.currentChargeWorkouts }}/16 天)</span>
+              <span v-else class="text-zinc-500">充能: {{ honorData.shieldInventory.currentChargeWorkouts }}/16 天</span>
+            </div>
+          </div>
+          <span class="text-zinc-500 text-xs">❯</span>
+        </div>
+
+      </div>
     </div>
 
-    <!-- ============================================== -->
-    <!-- Personalized Appearance / Compact Skin Carousel -->
-    <!-- ============================================== -->
-    <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3 transition-all">
-      <div class="flex items-center justify-between">
-        <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
-          <span>🎨</span> 个性化外观
-        </div>
+    <!-- Appearance & Themes (iOS Inset Group) -->
+    <div class="space-y-1.5">
+      <div class="flex items-center justify-between px-1">
+        <span class="text-xs font-bold text-zinc-400">外观主题</span>
         <span v-if="store.settings.unlockedSkins.length > 1" 
-              class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 font-medium">
-          已解锁 {{ store.settings.unlockedSkins.length }} 款皮肤 (可横向滑动)
+              class="text-[10px] text-zinc-500 font-mono">
+          已解锁 {{ store.settings.unlockedSkins.length }} 款
         </span>
       </div>
 
-      <!-- Horizontal Scrollable Skin Carousel -->
-      <div v-if="store.settings.unlockedSkins.length > 1" class="space-y-2.5">
-        <div class="flex gap-2.5 overflow-x-auto pb-1.5 pt-0.5 scrollbar-none snap-x snap-mandatory">
-          <!-- Option 1: Default Skin -->
-          <button @click="handleSelectSkin('default')"
-                  class="flex-shrink-0 w-[165px] snap-start p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[96px]"
-                  :class="[
-                    store.settings.uiSkin === 'default' 
-                      ? 'bg-zinc-800/90 border-amber-500/80 shadow-md ring-1 ring-amber-500/40' 
-                      : 'bg-zinc-950 border-zinc-800/80 hover:border-zinc-700 opacity-75'
-                  ]">
-            <div class="flex items-center justify-between w-full">
-              <span class="text-xs font-bold text-zinc-100 flex items-center gap-1">
-                <span>🌑</span> 默认外观
-              </span>
-              <span v-if="store.settings.uiSkin === 'default'" class="w-2 h-2 rounded-full bg-amber-400"></span>
-            </div>
-            <div class="text-[10px] text-zinc-400 leading-tight">
-              经典深灰黑 · 活力琥珀金
-            </div>
-            <div class="flex items-center gap-1 mt-1">
-              <span class="w-2.5 h-2.5 rounded-full bg-zinc-950 border border-zinc-700"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-              <span v-if="store.settings.uiSkin === 'default'" class="text-[9px] text-amber-400 font-bold ml-auto font-mono">当前生效</span>
-            </div>
-          </button>
+      <div class="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl p-3.5 space-y-3 shadow-sm">
+        <!-- Horizontal Scrollable Skin Carousel -->
+        <div v-if="store.settings.unlockedSkins.length > 1" class="space-y-2">
+          <div class="flex gap-2.5 overflow-x-auto pb-1 scrollbar-none snap-x snap-mandatory">
+            <!-- Default Skin -->
+            <button @click="handleSelectSkin('default')"
+                    class="flex-shrink-0 w-[155px] snap-start p-3 rounded-xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[88px] cursor-pointer"
+                    :class="[
+                      store.settings.uiSkin === 'default' 
+                        ? 'bg-zinc-800/90 border-amber-500/80 shadow-sm ring-1 ring-amber-500/40' 
+                        : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80'
+                    ]">
+              <div class="flex items-center justify-between w-full">
+                <span class="text-xs font-bold text-zinc-100">默认外观</span>
+                <span v-if="store.settings.uiSkin === 'default'" class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              </div>
+              <div class="text-[10px] text-zinc-400 leading-tight">经典深灰黑 · 活力金</div>
+              <div class="flex items-center gap-1 mt-1">
+                <span class="w-2 h-2 rounded-full bg-zinc-950 border border-zinc-700"></span>
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span v-if="store.settings.uiSkin === 'default'" class="text-[9px] text-amber-400 font-bold ml-auto font-mono">使用中</span>
+              </div>
+            </button>
 
-          <!-- Option 2: Chamber Skin (if unlocked) -->
-          <button v-if="store.settings.unlockedSkins.includes('chamber')"
-                  @click="handleSelectSkin('chamber')"
-                  class="flex-shrink-0 w-[165px] snap-start p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[96px]"
-                  :class="[
-                    store.settings.uiSkin === 'chamber' 
-                      ? 'bg-[#0D1627] border-[#E5C378] shadow-md ring-1 ring-[#E5C378]/50' 
-                      : 'bg-zinc-950 border-zinc-800/80 hover:border-zinc-700 opacity-75'
-                  ]">
-            <div class="flex items-center justify-between w-full">
-              <span class="text-xs font-bold text-zinc-100 flex items-center gap-1">
-                <span>⚜️</span> 尚博勒
-              </span>
-              <span v-if="store.settings.uiSkin === 'chamber'" class="w-2 h-2 rounded-full bg-[#E5C378]"></span>
-            </div>
-            <div class="text-[10px] text-zinc-400 leading-tight">
-              法式精密深蓝 · 香槟流金
-            </div>
-            <div class="flex items-center gap-1 mt-1">
-              <span class="w-2.5 h-2.5 rounded-full bg-[#070B14] border border-[#1E3052]"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-[#E5C378]"></span>
-              <span v-if="store.settings.uiSkin === 'chamber'" class="text-[9px] text-[#E5C378] font-bold ml-auto font-mono">当前生效</span>
-            </div>
-          </button>
+            <!-- Chamber Skin -->
+            <button v-if="store.settings.unlockedSkins.includes('chamber')"
+                    @click="handleSelectSkin('chamber')"
+                    class="flex-shrink-0 w-[155px] snap-start p-3 rounded-xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[88px] cursor-pointer"
+                    :class="[
+                      store.settings.uiSkin === 'chamber' 
+                        ? 'bg-[#0D1627] border-[#E5C378] shadow-sm ring-1 ring-[#E5C378]/50' 
+                        : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80'
+                    ]">
+              <div class="flex items-center justify-between w-full">
+                <span class="text-xs font-bold text-zinc-100">尚博勒</span>
+                <span v-if="store.settings.uiSkin === 'chamber'" class="w-1.5 h-1.5 rounded-full bg-[#E5C378]"></span>
+              </div>
+              <div class="text-[10px] text-zinc-400 leading-tight">精密深蓝 · 香槟金</div>
+              <div class="flex items-center gap-1 mt-1">
+                <span class="w-2 h-2 rounded-full bg-[#070B14] border border-[#1E3052]"></span>
+                <span class="w-2 h-2 rounded-full bg-[#E5C378]"></span>
+                <span v-if="store.settings.uiSkin === 'chamber'" class="text-[9px] text-[#E5C378] font-bold ml-auto font-mono">使用中</span>
+              </div>
+            </button>
 
-          <!-- Option 3: CS2 Skin (if unlocked) -->
-          <button v-if="store.settings.unlockedSkins.includes('cs')"
-                  @click="handleSelectSkin('cs')"
-                  class="flex-shrink-0 w-[165px] snap-start p-3 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[96px]"
-                  :class="[
-                    store.settings.uiSkin === 'cs' 
-                      ? 'bg-[#0F172A] border-[#F97316] shadow-md ring-1 ring-[#F97316]/50' 
-                      : 'bg-zinc-950 border-zinc-800/80 hover:border-zinc-700 opacity-75'
-                  ]">
-            <div class="flex items-center justify-between w-full">
-              <span class="text-xs font-bold text-zinc-100 flex items-center gap-1">
-                <span>🎯</span> CS2 特训
-              </span>
-              <span v-if="store.settings.uiSkin === 'cs'" class="w-2 h-2 rounded-full bg-[#F97316]"></span>
-            </div>
-            <div class="text-[10px] text-zinc-400 leading-tight">
-              官方正版全景 · 索尔曼&戴劳
-            </div>
-            <div class="flex items-center gap-1 mt-1">
-              <span class="w-2.5 h-2.5 rounded-full bg-[#080C14] border border-[#1E293B]"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-[#F97316]"></span>
-              <span v-if="store.settings.uiSkin === 'cs'" class="text-[9px] text-[#F97316] font-bold ml-auto font-mono">当前生效</span>
-            </div>
-          </button>
-        </div>
-
-        <!-- Restore Default Skin Button (Visible when custom skin is active) -->
-        <div v-if="store.settings.uiSkin !== 'default'" class="pt-0.5">
-          <button @click="handleRestoreDefaultSkin"
-                  class="w-full py-2 bg-zinc-950 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 text-xs font-medium rounded-xl border border-zinc-800 transition-colors flex items-center justify-center gap-1.5">
-            <span>↩️</span> 恢复默认外观
-          </button>
-        </div>
-      </div>
-
-      <!-- Passcode Input Form (Always available to unlock more skins) -->
-      <div class="space-y-2.5 pt-1" :class="[store.settings.unlockedSkins.length > 1 ? 'border-t border-zinc-800/60 pt-3' : '']">
-        <p class="text-xs text-zinc-400 leading-relaxed">
-          {{ store.settings.unlockedSkins.length > 1 ? '输入其他暗号，解锁更多主题皮肤' : '输入暗号，解锁隐藏界面皮肤' }}
-        </p>
-
-        <div class="space-y-1.5">
-          <div class="flex items-center gap-2">
-            <div class="relative flex-1">
-              <input type="text"
-                     name="skin_passcode"
-                     v-model="passcodeInput"
-                     maxlength="30"
-                     autocomplete="off"
-                     autocapitalize="off"
-                     autocorrect="off"
-                     spellcheck="false"
-                     @keydown.enter.prevent="handlePasscodeSubmit"
-                     placeholder="输入解锁暗号..."
-                     class="w-full bg-zinc-950 border text-xs text-zinc-100 rounded-xl px-3 py-2.5 focus:outline-none transition-colors"
-                     :class="[passcodeError ? 'border-red-500/80 focus:border-red-500' : 'border-zinc-800 focus:border-amber-500/60']" />
-            </div>
-
-            <button @click="handlePasscodeSubmit"
-                    class="py-2.5 px-4 bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center flex-shrink-0">
-              确认
+            <!-- CS2 Skin -->
+            <button v-if="store.settings.unlockedSkins.includes('cs')"
+                    @click="handleSelectSkin('cs')"
+                    class="flex-shrink-0 w-[155px] snap-start p-3 rounded-xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[88px] cursor-pointer"
+                    :class="[
+                      store.settings.uiSkin === 'cs' 
+                        ? 'bg-[#0F172A] border-[#F97316] shadow-sm ring-1 ring-[#F97316]/50' 
+                        : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80'
+                    ]">
+              <div class="flex items-center justify-between w-full">
+                <span class="text-xs font-bold text-zinc-100">CS2 特训</span>
+                <span v-if="store.settings.uiSkin === 'cs'" class="w-1.5 h-1.5 rounded-full bg-[#F97316]"></span>
+              </div>
+              <div class="text-[10px] text-zinc-400 leading-tight">战术竞技 · 索尔曼&戴劳</div>
+              <div class="flex items-center gap-1 mt-1">
+                <span class="w-2 h-2 rounded-full bg-[#080C14] border border-[#1E293B]"></span>
+                <span class="w-2 h-2 rounded-full bg-[#F97316]"></span>
+                <span v-if="store.settings.uiSkin === 'cs'" class="text-[9px] text-[#F97316] font-bold ml-auto font-mono">使用中</span>
+              </div>
             </button>
           </div>
 
-          <!-- Subtle inline error message -->
-          <div v-if="passcodeError" class="text-xs text-red-400 flex items-center gap-1 pl-1 pt-0.5">
-            <span>⚠️</span> 暗号不正确
+          <!-- Restore Default Button (only if custom skin active) -->
+          <div v-if="store.settings.uiSkin !== 'default'" class="pt-0.5">
+            <button @click="handleRestoreDefaultSkin"
+                    class="w-full py-1.5 bg-zinc-950/80 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 text-xs rounded-xl border border-zinc-800 transition-colors cursor-pointer">
+              恢复默认外观
+            </button>
           </div>
         </div>
+
+        <!-- Inline Unlock Passcode Bar -->
+        <div class="space-y-1.5" :class="[store.settings.unlockedSkins.length > 1 ? 'border-t border-zinc-800/60 pt-2.5' : '']">
+          <div class="flex items-center gap-2">
+            <input type="text"
+                   name="skin_passcode"
+                   v-model="passcodeInput"
+                   maxlength="30"
+                   autocomplete="off"
+                   autocapitalize="off"
+                   autocorrect="off"
+                   spellcheck="false"
+                   @keydown.enter.prevent="handlePasscodeSubmit"
+                   placeholder="输入解锁暗号..."
+                   class="flex-1 bg-zinc-950/80 border text-xs text-zinc-100 rounded-xl px-3 py-2 focus:outline-none transition-colors"
+                   :class="[passcodeError ? 'border-red-500/80 focus:border-red-500' : 'border-zinc-800 focus:border-amber-500/60']" />
+            <button @click="handlePasscodeSubmit"
+                    class="py-2 px-3.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-bold text-xs rounded-xl transition-all cursor-pointer flex-shrink-0">
+              解锁
+            </button>
+          </div>
+          <div v-if="passcodeError" class="text-[11px] text-red-400 pl-1">
+            暗号不正确
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <!-- Fitcycle AI Coach Settings Compact Entry Card -->
-    <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl flex items-center justify-between cursor-pointer hover:border-amber-500/40 active:scale-98 transition-all group"
-         @click="showAISettingsModal = true"
-         data-testid="open-ai-settings-modal">
-      <div class="flex items-center gap-3 min-w-0">
-        <div class="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-lg text-amber-400 flex-shrink-0 shadow-lg shadow-amber-500/10">
-          ✦
-        </div>
-        <div class="min-w-0">
-          <div class="flex items-center gap-2">
-            <h3 class="text-xs font-bold text-zinc-100">智能教练设置 (Fitcycle AI)</h3>
-            <span class="text-[10px] px-2 py-0.5 rounded-full border font-mono font-medium"
-                  :class="aiConnected ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-400' : 'border-zinc-700 bg-zinc-950 text-zinc-500'">
-              {{ aiConnected ? '● 已就绪' : '○ 未连接' }}
-            </span>
+    <!-- AI Coach Entry (Clean Inset Group) -->
+    <div class="space-y-1.5">
+      <div class="text-xs font-bold text-zinc-400 px-1">智能教练</div>
+      <div class="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl p-3.5 flex items-center justify-between cursor-pointer hover:border-amber-500/40 active:scale-98 transition-all group shadow-sm"
+           @click="showAISettingsModal = true"
+           data-testid="open-ai-settings-modal">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 flex-shrink-0">
+            ✦
           </div>
-          <p class="text-[11px] text-zinc-400 truncate mt-0.5">
-            {{ aiConnected ? `${activeAIProvider.name} · ${activeAIModel?.name || getActiveModelId()}` : '点击连接 DeepSeek / 智谱 / 通义千问 / 硅基流动' }}
-          </p>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <h3 class="text-xs font-bold text-zinc-100">AI 智能教练</h3>
+              <span class="text-[9px] px-1.5 py-0.2 rounded-full border font-mono font-medium"
+                    :class="aiConnected ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-400' : 'border-zinc-700 bg-zinc-950 text-zinc-500'">
+                {{ aiConnected ? '已就绪' : '未连接' }}
+              </span>
+            </div>
+            <p class="text-[11px] text-zinc-400 truncate mt-0.5">
+              {{ aiConnected ? `${activeAIProvider.name} · ${activeAIModel?.name || getActiveModelId()}` : '点击配置 DeepSeek / 智谱 / 通义千问' }}
+            </p>
+          </div>
         </div>
-      </div>
-      <div class="text-zinc-500 group-hover:text-amber-400 transition-colors text-sm font-bold pl-2">
-        ›
+        <div class="text-zinc-500 group-hover:text-zinc-300 text-xs transition-colors pl-2">
+          ❯
+        </div>
       </div>
     </div>
 
@@ -385,7 +349,7 @@
           <header class="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-900/95 flex-shrink-0">
             <div class="flex items-center gap-2">
               <span class="text-amber-400 font-bold text-sm">✦</span>
-              <h2 class="text-xs font-bold text-zinc-100 uppercase tracking-wider">智能教练配置 (Fitcycle AI)</h2>
+              <h2 class="text-xs font-bold text-zinc-100 uppercase tracking-wider">AI 智能教练配置</h2>
             </div>
             <button type="button" @click="showAISettingsModal = false" class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer">✕</button>
           </header>
@@ -398,95 +362,117 @@
       </div>
     </Teleport>
 
-    <!-- Rules Codex & Onboarding Guide Hub -->
-    <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-2.5">
-      <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center justify-between">
-        <span class="flex items-center gap-1.5">
-          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
-          规则法典与功能指南
-        </span>
-        <span class="text-[10px] text-amber-400 font-mono">GUIDE & CODEX</span>
-      </div>
-
-      <div class="grid grid-cols-2 gap-2 pt-1">
-        <!-- Button 1: Open Rules Codex Modal -->
-        <button @click="showRulesModal = true"
-                class="p-3 bg-zinc-950 hover:bg-zinc-850 active:scale-98 border border-zinc-800 hover:border-amber-500/40 rounded-2xl text-left transition-all space-y-1 group cursor-pointer">
-          <div class="text-amber-400 font-bold text-xs flex items-center gap-1.5 group-hover:text-amber-300">
-            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-            <span>排位与衰减规则</span>
+    <!-- Guides & Codex (Clean iOS Inset List) -->
+    <div class="space-y-1.5">
+      <div class="text-xs font-bold text-zinc-400 px-1">使用指南与规则</div>
+      <div class="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl overflow-hidden divide-y divide-zinc-800/60 shadow-sm">
+        <div @click="showRulesModal = true"
+             class="p-3.5 hover:bg-zinc-850/60 active:bg-zinc-800 cursor-pointer flex items-center justify-between transition-colors">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center text-amber-400 text-xs">
+              ⚖️
+            </div>
+            <div>
+              <div class="text-xs font-bold text-zinc-100">天梯排位与做工规则</div>
+              <div class="text-[10px] text-zinc-400 mt-0.5">段位体系、积分计算与衰减机制</div>
+            </div>
           </div>
-          <p class="text-[10px] text-zinc-400 leading-tight">
-            查阅天梯段位、做工积分、4阶衰减与减载盾牌说明
-          </p>
-        </button>
+          <span class="text-zinc-500 text-xs">❯</span>
+        </div>
 
-        <!-- Button 2: Open Onboarding Tour Modal -->
-        <button @click="showOnboardingModal = true"
-                class="p-3 bg-zinc-950 hover:bg-zinc-850 active:scale-98 border border-zinc-800 hover:border-sky-500/40 rounded-2xl text-left transition-all space-y-1 group cursor-pointer">
-          <div class="text-sky-400 font-bold text-xs flex items-center gap-1.5 group-hover:text-sky-300">
-            <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
-            <span>网站功能向导</span>
+        <div @click="showOnboardingModal = true"
+             class="p-3.5 hover:bg-zinc-850/60 active:bg-zinc-800 cursor-pointer flex items-center justify-between transition-colors">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center text-sky-400 text-xs">
+              🧭
+            </div>
+            <div>
+              <div class="text-xs font-bold text-zinc-100">新手功能向导</div>
+              <div class="text-[10px] text-zinc-400 mt-0.5">浏览核心功能与操作流程</div>
+            </div>
           </div>
-          <p class="text-[10px] text-zinc-400 leading-tight">
-            重新浏览 5 步全功能新手领航指南与特色功能
-          </p>
-        </button>
+          <span class="text-zinc-500 text-xs">❯</span>
+        </div>
       </div>
     </div>
 
-    <!-- Data Backup & Reset -->
-    <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3">
-      <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
-        <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-        </svg>
-        数据安全与备份
-      </div>
-      <p class="text-[11px] text-zinc-400 leading-relaxed">
-        所有计划与打卡记录均保存在手机本地浏览器中，离线可用。建议定期导出备份文件或在不同设备间迁移数据。
-      </p>
-
-      <div class="grid grid-cols-2 gap-2 pt-1">
+    <!-- Data Backup & Reset (Clean iOS Inset List) -->
+    <div class="space-y-1.5">
+      <div class="text-xs font-bold text-zinc-400 px-1">数据管理</div>
+      <div class="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl overflow-hidden divide-y divide-zinc-800/60 shadow-sm">
+        <!-- Export -->
         <button @click="handleExport" 
-                class="py-3 bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-xs font-bold text-zinc-200 rounded-xl border border-zinc-700/80 flex items-center justify-center gap-1.5 cursor-pointer">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-          </svg>
-          导出备份 JSON
+                class="w-full p-3.5 hover:bg-zinc-850/60 active:bg-zinc-800 flex items-center justify-between transition-colors text-left cursor-pointer">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-300 text-xs">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-zinc-100">导出数据备份</div>
+              <div class="text-[10px] text-zinc-500 mt-0.5">下载 JSON 备份文件至本地</div>
+            </div>
+          </div>
+          <span class="text-zinc-500 text-xs">❯</span>
         </button>
 
+        <!-- Import -->
         <button @click="triggerFileInput" 
-                class="py-3 bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-xs font-bold text-zinc-200 rounded-xl border border-zinc-700/80 flex items-center justify-center gap-1.5 cursor-pointer">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
-          导入备份文件
+                class="w-full p-3.5 hover:bg-zinc-850/60 active:bg-zinc-800 flex items-center justify-between transition-colors text-left cursor-pointer">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-300 text-xs">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-zinc-100">导入恢复数据</div>
+              <div class="text-[10px] text-zinc-500 mt-0.5">从 JSON 备份文件还原记录</div>
+            </div>
+          </div>
+          <span class="text-zinc-500 text-xs">❯</span>
         </button>
         <input ref="fileInput" type="file" accept=".json" class="hidden" @change="handleFileSelected" />
-      </div>
 
-      <div class="space-y-2 pt-2 border-t border-zinc-800">
-        <!-- Option 1: Clear Workout Logs Only (Preserves custom plans and unlocked skins) -->
+        <!-- Clear Logs -->
         <button @click="handleClearHistory" 
-                class="w-full py-2.5 bg-zinc-950 hover:bg-amber-950/25 active:scale-98 text-amber-400 hover:text-amber-300 text-xs font-bold rounded-xl border border-amber-500/30 hover:border-amber-500/50 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-          </svg>
-          清空所有打卡与训练记录 (试用体验重置)
+                class="w-full p-3.5 hover:bg-zinc-850/60 active:bg-zinc-800 flex items-center justify-between transition-colors text-left cursor-pointer">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 text-xs">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-amber-400">清空历史打卡记录</div>
+              <div class="text-[10px] text-zinc-500 mt-0.5">清除打卡日志，保留自定义计划与皮肤</div>
+            </div>
+          </div>
+          <span class="text-zinc-500 text-xs">❯</span>
         </button>
 
-        <!-- Option 2: Full Factory Reset (All data & default plans) -->
+        <!-- Factory Reset -->
         <button @click="handleResetDefaults" 
-                class="w-full py-2 bg-zinc-950 hover:bg-red-950/30 active:scale-98 text-zinc-500 hover:text-red-400 text-[11px] font-semibold rounded-xl border border-zinc-800/80 transition-colors flex items-center justify-center gap-1 cursor-pointer">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          恢复出厂默认设置 (重置全部计划与数据)
+                class="w-full p-3.5 hover:bg-zinc-850/60 active:bg-zinc-800 flex items-center justify-between transition-colors text-left cursor-pointer">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 text-xs">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-red-400/90">恢复出厂默认设置</div>
+              <div class="text-[10px] text-zinc-500 mt-0.5">重置全部计划与数据为初始状态</div>
+            </div>
+          </div>
+          <span class="text-zinc-500 text-xs">❯</span>
         </button>
       </div>
+
+      <p class="text-[10px] text-zinc-500 px-1 pt-1 leading-relaxed">
+        所有数据均保存在本地浏览器中，离线可用。建议定期导出备份。
+      </p>
     </div>
 
     <!-- In-page Toast Notification -->
