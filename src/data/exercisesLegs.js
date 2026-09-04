@@ -1,4 +1,4 @@
-﻿export const LEG_EXERCISES = [
+export const LEG_EXERCISES = [
   {
     id: "ex-hack-squat",
     name: "哈克深蹲 / 倒蹬腿举",
@@ -6,6 +6,7 @@
     category: "腿部",
     target: "股四头肌 (大腿前侧)",
     secondaryMuscles: ["臀大肌", "内收肌群"],
+    aliases: ["哈克深蹲", "哈克机", "倒蹬", "倒蹬腿举", "腿举机", "45度倒蹬", "器械深蹲", "大腿前侧", "Hack Squat", "Leg Press"],
     gifUrl: "./exercises/hack-squat.gif",
     defaultSets: 4,
     defaultReps: "8-12",
@@ -30,6 +31,7 @@
     category: "腿部",
     target: "下肢整体 / 力量三大项黄金之首",
     secondaryMuscles: ["臀大肌", "股四头肌", "腘绳肌", "竖脊肌", "核心"],
+    aliases: ["深蹲", "杠铃深蹲", "高杠深蹲", "低杠深蹲", "传统深蹲", "后蹲", "三大项深蹲", "Squat"],
     gifUrl: "./exercises/barbell-squat.gif",
     defaultSets: 4,
     defaultReps: "6-8",
@@ -54,6 +56,7 @@
     category: "腿部",
     target: "腘绳肌 (大腿后侧) / 臀大肌",
     secondaryMuscles: ["竖脊肌", "核心肌群", "上背"],
+    aliases: ["硬拉", "RDL", "罗马尼亚硬拉", "杠铃硬拉", "杠铃RDL", "大腿后侧", "臀大肌", "后链训练"],
     gifUrl: "./exercises/rdl.gif",
     defaultSets: 3,
     defaultReps: "10-12",
@@ -67,31 +70,59 @@
     },
     commonMistakes: ["腰椎弯曲弓背导致椎间盘受压", "把硬拉做成了深蹲（膝盖过度前屈）"],
     substitutes: [
-      { name: "坐姿腿弯举", reason: "纯器械孤立大腿后侧" },
+      { name: "俯卧器械腿弯举", reason: "纯器械孤立大腿后侧" },
+      { name: "哑铃罗马尼亚硬拉", reason: "自由手腕轨迹更友好" },
       { name: "臀推 / 杠铃臀桥", reason: "专注臀大肌增厚" }
     ]
   },
   {
+    id: "ex-dumbbell-rdl",
+    name: "哑铃罗马尼亚硬拉",
+    englishName: "Dumbbell Romanian Deadlift (Dumbbell RDL)",
+    category: "腿部",
+    target: "腘绳肌 (大腿后侧) / 臀大肌",
+    secondaryMuscles: ["竖脊肌", "核心肌群", "前臂握力"],
+    aliases: ["哑铃硬拉", "哑铃RDL", "罗马尼亚硬拉哑铃", "哑铃练腿后侧", "哑铃翘臀", "Dumbbell RDL"],
+    gifUrl: "./exercises/dumbbell-rdl.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    scienceDetail: "自由度极高的后链黄金动作！哑铃允许手腕自然处于身体两侧微内旋轨迹，比杠铃对下背部更加温和，能更深体会臀部后推与大腿后侧肌纤维的极致拉伸。",
+    tags: ["哑铃后链", "体态挺拔", "翘臀与后侧"],
+    tips: {
+      prep: "双脚与髋同宽站立，双手各持一只哑铃垂于大腿前侧，挺胸沉肩锁紧腹压。",
+      execution: "微屈膝锁死膝盖角度，以髋关节为折叠轴心，臀部主动向正后方平推（想象屁股关门）。",
+      peak: "哑铃顺着小腿下放至膝盖下方，感受大腿后侧强烈拉伸感后，收紧臀肌向前推髋站直。",
+      negative: "下放过程全程控制3秒，哑铃贴紧腿部滑动，脊柱全程保持中立不弓腰。"
+    },
+    commonMistakes: ["把硬拉做成了深蹲（膝盖过度前移弯曲）", "腰椎弯曲弓背借力"],
+    substitutes: [
+      { name: "罗马尼亚硬拉 (RDL)", reason: "杠铃冲击更大绝对负荷" },
+      { name: "俯卧器械腿弯举", reason: "器械单关节孤立腘绳肌" }
+    ]
+  },
+  {
     id: "ex-seated-leg-curl",
-    name: "坐姿腿弯举",
-    englishName: "Seated Leg Curl",
+    name: "俯卧器械腿弯举 (Lying Leg Curl)",
+    englishName: "Lying Leg Curl",
     category: "腿部",
     target: "腘绳肌 (大腿后侧孤立)",
     secondaryMuscles: ["小腿后群"],
+    aliases: ["坐姿腿弯举", "腿弯举", "俯卧腿弯举", "卧姿腿弯举", "器械腿弯举", "腘绳肌弯举", "俯卧屈腿", "勾腿", "练腿后侧", "Lying Leg Curl", "Leg Curl"],
     gifUrl: "./exercises/seated-leg-curl.gif",
     defaultSets: 3,
     defaultReps: "12-15",
-    scienceDetail: "孤立大腿后侧。坐姿屈髋状态下比趴姿更能深度拉伸腘绳肌近端，运动生理学证明其增肌肥大效率显著更高。",
-    tags: ["孤立拉伸", "高效增肌", "腘绳肌神器"],
+    scienceDetail: "孤立大腿后侧腘绳肌的黄金动作！俯卧姿态下完全剥离腰椎负担，通过膝关节屈曲让腘绳肌在近端到远端全面受力，高效增厚大腿后侧线条。",
+    tags: ["俯卧孤立", "安全护腰", "腘绳肌神器"],
     tips: {
-      prep: "坐入器械背靠紧，大腿上方固定挡板压实大腿根部，脚后跟搭在滚轴上方。",
-      execution: "用大腿后侧腘绳肌发力，将滚轴向座椅下方快速勾回到底。",
-      peak: "勾至最底端时顶峰挤压后侧肌群1.5秒。",
-      negative: "抵抗阻力慢速控制还原，直至双腿几乎伸直拉伸。"
+      prep: "俯卧趴在器械软垫上，膝盖微露出垫边，双手抓稳前方扶手，滚轴垫置于脚后跟跟腱上方。",
+      execution: "用大腿后侧腘绳肌集中发力，将小腿向上弯曲勾向臀部方向。",
+      peak: "勾至最顶点时顶峰收缩挤压后侧肌群1.5秒，保持骨盆紧贴垫面勿翘起借力。",
+      negative: "匀速对抗阻力下放3秒，直至双腿几乎伸直但膝关节保持微屈不锁死。"
     },
-    commonMistakes: ["大腿挡板未压紧导致大腿随动作乱晃", "回放时完全放松失去离心张力"],
+    commonMistakes: ["发力时骨盆抬起离开软垫借腰力", "回放时完全放松失去离心张力"],
     substitutes: [
       { name: "罗马尼亚硬拉 (RDL)", reason: "复合拉伸后链" },
+      { name: "哑铃罗马尼亚硬拉", reason: "自由重量拉伸" },
       { name: "器械腿屈伸", reason: "前侧对抗肌群" }
     ]
   },
@@ -102,6 +133,7 @@
     category: "腿部",
     target: "股四头肌单关节孤立 / 前侧拉丝",
     secondaryMuscles: ["膝关节韧带强化"],
+    aliases: ["腿屈伸", "踢腿机", "坐姿踢腿", "器械腿屈伸", "股四头肌孤立", "坐姿腿屈伸", "Leg Extension"],
     gifUrl: "./exercises/leg-extension.gif",
     defaultSets: 3,
     defaultReps: "12-15",
@@ -126,6 +158,7 @@
     category: "腿部",
     target: "臀大肌极度孤立 / 翘臀之王",
     secondaryMuscles: ["腘绳肌", "大腿内收肌", "核心"],
+    aliases: ["臀推", "杠铃臀推", "臀桥", "杠铃臀桥", "练臀之王", "翘臀动作", "Hip Thrust"],
     gifUrl: "./exercises/hip-thrust.gif",
     defaultSets: 4,
     defaultReps: "10-12",
@@ -150,6 +183,7 @@
     category: "腿部",
     target: "小腿腓肠肌 / 比目鱼肌",
     secondaryMuscles: ["足底筋膜", "踝关节稳定性"],
+    aliases: ["提踵", "小腿提踵", "站姿提踵", "坐姿提踵", "练小腿", "腓肠肌", "比目鱼肌", "Calf Raise"],
     gifUrl: "./exercises/calf-raise.gif",
     defaultSets: 3,
     defaultReps: "15-20",

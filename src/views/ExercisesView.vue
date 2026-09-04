@@ -5,15 +5,19 @@
     <div class="flex items-center justify-between">
       <div>
         <h2 class="text-lg font-black text-white flex items-center gap-2">
-          <span>🏋️</span> 动作库与 3D 动图
+          <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l3 3m0 0l-3 3m3-3h8m0 0l-3-3m3 3l-3 3M4 6h16a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/>
+          </svg>
+          <span>动作库与 3D 轨迹</span>
         </h2>
-        <p class="text-xs text-zinc-400">
-          全套 3D 动作轨迹演示、发力要点与平替库
+        <p class="text-xs text-zinc-400 mt-0.5">
+          全套 3D 解剖动图、离心向心发力要点与平替矩阵
         </p>
       </div>
       <button @click="openCreateExercise" 
-              class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 text-xs font-black rounded-xl shadow-md shadow-amber-500/20">
-        ➕ 新建动作
+              class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 text-xs font-black rounded-xl shadow-md shadow-amber-500/20 flex items-center gap-1.5 transition-all">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        <span>新建动作</span>
       </button>
     </div>
 
@@ -191,6 +195,8 @@ const filteredExercises = computed(() => {
     const q = searchQuery.value.trim().toLowerCase();
     if (!q) return matchCat;
     const matchQuery = ex.name.toLowerCase().includes(q) || 
+                       (ex.englishName && ex.englishName.toLowerCase().includes(q)) ||
+                       (ex.aliases && ex.aliases.some(a => a.toLowerCase().includes(q))) ||
                        (ex.target && ex.target.toLowerCase().includes(q)) || 
                        (ex.tags && ex.tags.some(t => t.toLowerCase().includes(q)));
     return matchCat && matchQuery;

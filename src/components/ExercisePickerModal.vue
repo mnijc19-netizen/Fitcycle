@@ -168,6 +168,8 @@ const filteredExercises = computed(() => {
     const q = searchQuery.value.trim().toLowerCase();
     if (!q) return matchCat;
     const matchQuery = ex.name.toLowerCase().includes(q) || 
+                       (ex.englishName && ex.englishName.toLowerCase().includes(q)) ||
+                       (ex.aliases && ex.aliases.some(a => a.toLowerCase().includes(q))) ||
                        (ex.target && ex.target.toLowerCase().includes(q)) || 
                        (ex.tags && ex.tags.some(t => t.toLowerCase().includes(q)));
     return matchCat && matchQuery;

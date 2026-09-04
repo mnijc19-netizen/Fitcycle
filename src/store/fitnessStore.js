@@ -36,7 +36,17 @@ function loadSavedState() {
             const defClean = (defEx.name || "").replace(/[\s\(\)\/（）\-]/g, '');
             return eClean === defClean || (eClean.length >= 4 && (defClean.includes(eClean) || eClean.includes(defClean)));
           });
-          return customMatch ? { ...defEx, ...customMatch, gifUrl: defEx.gifUrl, tips: defEx.tips, substitutes: defEx.substitutes, scienceDetail: defEx.scienceDetail || customMatch.scienceDetail } : defEx;
+          return customMatch ? { 
+            ...defEx, 
+            ...customMatch, 
+            name: defEx.name, 
+            englishName: defEx.englishName, 
+            aliases: defEx.aliases,
+            gifUrl: defEx.gifUrl, 
+            tips: defEx.tips, 
+            substitutes: defEx.substitutes, 
+            scienceDetail: defEx.scienceDetail || customMatch.scienceDetail 
+          } : defEx;
         });
         // Also keep any purely custom exercises added by user that don't match default
         const customOnly = parsed.exercises.filter(e => !DEFAULT_EXERCISES.some(d => {

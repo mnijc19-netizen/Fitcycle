@@ -6,14 +6,18 @@
     <div class="flex items-center justify-between">
       <div>
         <h2 class="text-lg font-black text-white flex items-center gap-2">
-          <span>📅</span> 训练日历与足迹
+          <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" stroke-width="2"/>
+            <path stroke-width="2" d="M16 2v4M8 2v4M3 10h18"/>
+          </svg>
+          <span>训练日历与足迹</span>
         </h2>
-        <p class="text-xs text-zinc-400">
-          直观查看哪天训练了什么、打卡记录与总容量
+        <p class="text-xs text-zinc-400 mt-0.5">
+          周期训练日程、历史打卡与累计做工容量
         </p>
       </div>
       <button @click="jumpToToday" 
-              class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-xs text-zinc-300 rounded-lg border border-zinc-700">
+              class="px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 active:scale-95 text-xs text-zinc-300 rounded-xl border border-zinc-800 transition-all">
         回到今天
       </button>
     </div>

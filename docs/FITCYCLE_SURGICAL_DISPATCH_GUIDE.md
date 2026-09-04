@@ -15,9 +15,13 @@
                 (如赛博朋克、中世纪、动漫)      ├── 2. `src/style.css` (CSS 变量调色盘)
                                                 └── 3. `src/components/TabBar.vue` (底部导航专属图标)
 
-[OP-EXERCISE]   新增运动类型/动作库扩展         ├── 1. `src/store/fitnessStore.js` (DEFAULT_EXERCISES)   npm run test tests/compatibility.test.js
-                (如跑步机、爬楼机、普拉提)      ├── 2. `src/engine/honorEngine.js` (METs 做工折算比)
-                                                └── 3. `src/components/ExerciseDetailModal.vue` (发力图解)
+[OP-BRAND]       FitCycle 品牌重塑与矢量 Logo   ├── 1. `src/components/FitCycleLogo.vue` (莫比乌斯环)   npm test -- tests/fitcycle-exercises-and-brand.test.js
+                (Apple/Linear大厂级无衬线字标)   ├── 2. `src/components/Navbar.vue` (顶栏无遮挡排版)
+                                                └── 3. `public/favicon.svg` & `index.html` (品牌标识)
+
+[OP-EXERCISE]   动作库 1-to-1 纠偏与扩充 (63款)  ├── 1. `src/data/exercises*.js` (姿态纠偏/别名/动图)     npm test -- tests/fitcycle-exercises-and-brand.test.js
+                (彻底杜绝卧姿放坐姿/全向别名)   ├── 2. `src/store/fitnessStore.js` (63款权威动作库)      npm test -- tests/compatibility.test.js
+                                                └── 3. `src/views/ExercisesView.vue` (别名与英文搜索)
 
 [OP-RANK]       调整段位分、天梯排位加减分      ├── 1. `src/engine/honorEngine.js` (FPS 积分与衰减公式)   npm run test tests/honor-system.test.js
                 (如衰减周期、150%复苏加成)      ├── 2. `src/engine/skinHonorSchemas.js` (全皮肤称号对齐)
@@ -98,6 +102,8 @@ c:\Users\17479\Desktop\健身计划小程序\
 │   │   └── fitnessStore.js               # 动作库、分化周期、打卡日志、形体围度单一事实源
 │   │
 │   ├── components/                       # 🎨 卷一：UI 组件与战术 HUD 模态窗
+│   │   ├── FitCycleLogo.vue              # 黄金比例双环莫比乌斯矢量 Logo
+│   │   ├── Navbar.vue                    # 国际标准无遮挡顶部导航与战术 HUD
 │   │   ├── TabBar.vue                    # 底部 5 大导航与主题自适应高亮
 │   │   ├── RestTimerFloat.vue            # C4 / 极简组间休息智能悬浮窗 (带边缘防遮挡)
 │   │   ├── HonorShowcaseModal.vue        # 荣誉殿堂、天梯排位与 6 阶服役勋章展馆
@@ -117,7 +123,8 @@ c:\Users\17479\Desktop\健身计划小程序\
 │   └── styles/
 │       └── themes.css                    # Tailwind 语义化主题调色盘与 HUD 动画
 │
-└── tests/                                # 🧪 质量防护网 (全套自动化 Vitest 52+ 用例)
+└── tests/                                # 🧪 质量防护网 (全套自动化 Vitest 65+ 用例)
+    ├── fitcycle-exercises-and-brand.test.js # 品牌 Logo、63 款动作 1-to-1 物理对齐与别名断言
     ├── honor-system.test.js              # 战力天梯、METs、衰减、150%复苏、7天冷却断言
     ├── compatibility.test.js             # 备份导入导出、数据向下兼容断言
     ├── ai-core.test.js                   # 多厂商大模型鉴权与多模态识图断言

@@ -1,4 +1,29 @@
-﻿export const SHOULDER_EXERCISES = [
+export const SHOULDER_EXERCISES = [
+  {
+    id: "ex-overhead-barbell-press",
+    name: "杠铃推肩 / 军式推举 (OHP)",
+    englishName: "Barbell Overhead Press (OHP)",
+    category: "肩部",
+    target: "三角肌前中束 / 上肢绝对垂直推力之王",
+    secondaryMuscles: ["肱三头肌", "斜方肌上中束", "核心稳定肌群"],
+    aliases: ["推肩", "杠铃推举", "军推", "军式推举", "军工推举", "站姿推肩", "坐姿推肩", "杠铃推肩", "垂直推举", "OHP", "Overhead Press", "Military Press"],
+    gifUrl: "./exercises/overhead-barbell-press.gif",
+    defaultSets: 4,
+    defaultReps: "6-8",
+    scienceDetail: "上肢垂直推力力量之王！直接考验并提升全身核心传导力与三角肌前中束的爆发负荷，打造刀枪不入的厚实肩峰与强壮上肢骨架。",
+    tags: ["垂直推力之王", "虎头肩基石", "大负荷力量"],
+    tips: {
+      prep: "双手握距略宽于肩，握紧杠铃置于上胸锁骨处，挺胸沉肩收下巴，全身核心绷紧成铁板。",
+      execution: "垂直向上推起杠铃，杠铃掠过面部后头部自然微前送回正，将杠铃推至头顶最高点伸直。",
+      peak: "在头顶顶点顶峰推至最高，三角肌整体用力收紧1秒。",
+      negative: "慢速平稳沿垂直轨迹控制下放回锁骨处。"
+    },
+    commonMistakes: ["腰部过度向后反弓后仰变成斜板卧推", "手腕向后严重背屈"],
+    substitutes: [
+      { name: "史密斯推肩", reason: "轨道固定更防前后晃动" },
+      { name: "坐姿哑铃推肩", reason: "自由关节角度" }
+    ]
+  },
   {
     id: "ex-cable-lateral-raise",
     name: "绳索侧平举",
@@ -6,6 +31,7 @@
     category: "肩部",
     target: "三角肌中束 (决定肩宽)",
     secondaryMuscles: ["三角肌前束", "斜方肌"],
+    aliases: ["绳索侧平举", "滑轮侧平举", "龙门架侧平举", "侧平举", "练中束", "肩宽", "中束飞鸟", "Cable Lateral Raise"],
     gifUrl: "./exercises/cable-lateral-raise.gif",
     defaultSets: 4,
     defaultReps: "12-15",
@@ -20,7 +46,7 @@
     commonMistakes: ["耸肩用斜方肌甩起重量", "手腕抬得比手肘高导致中束卸力"],
     substitutes: [
       { name: "站姿哑铃侧平举", reason: "随处可练的经典中束动作" },
-      { name: "固定器械推肩", reason: "复合推举打造厚度" }
+      { name: "坐姿哑铃推肩", reason: "复合推举打造厚度" }
     ]
   },
   {
@@ -30,6 +56,7 @@
     category: "肩部",
     target: "三角肌中束 / 随时随地打造肩宽",
     secondaryMuscles: ["斜方肌上束"],
+    aliases: ["哑铃侧平举", "侧平举", "站姿侧平举", "飞鸟侧平举", "哑铃飞鸟肩", "中束", "Dumbbell Lateral Raise"],
     gifUrl: "./exercises/dumbbell-lateral-raise.gif",
     defaultSets: 4,
     defaultReps: "12-15",
@@ -44,31 +71,7 @@
     commonMistakes: ["用身体上下颠晃甩动哑铃", "手腕翘起高于手肘"],
     substitutes: [
       { name: "绳索侧平举", reason: "底部张力更充足" },
-      { name: "固定器械推肩", reason: "冲刺更大负荷" }
-    ]
-  },
-  {
-    id: "ex-machine-shoulder-press",
-    name: "固定器械推肩",
-    englishName: "Machine Shoulder Press",
-    category: "肩部",
-    target: "三角肌前中束 / 3D虎头肩",
-    secondaryMuscles: ["肱三头肌", "上胸部"],
-    gifUrl: "./exercises/machine-shoulder-press.gif",
-    defaultSets: 3,
-    defaultReps: "10-12",
-    scienceDetail: "前束和三头肌充分热身后的冲刺王牌，用器械推举最大化保障肩关节安全，专注大重量突破围度。",
-    tags: ["大重量", "安全冲刺", "立体虎头肩"],
-    tips: {
-      prep: "座椅调至把手略低于耳朵高度，腰背贴紧靠垫，沉肩收腹。",
-      execution: "由三角肌前束主动发力向上推起把手，避免肘部过度后张。",
-      peak: "推至顶端微屈肘，不要锁死手肘以维持肌肉持续张力。",
-      negative: "缓慢下落还原，直到把手下落至耳朵下沿水平。"
-    },
-    commonMistakes: ["腰部过度向前拱起悬空变成斜板卧推", "下放幅度太浅只有半程"],
-    substitutes: [
-      { name: "坐姿哑铃推肩", reason: "自由平衡与稳定肌群" },
-      { name: "史密斯推肩", reason: "垂直轨道冲击负荷" }
+      { name: "坐姿哑铃推肩", reason: "冲刺更大负荷" }
     ]
   },
   {
@@ -78,6 +81,7 @@
     category: "肩部",
     target: "三角肌前中束 / 围度与协调",
     secondaryMuscles: ["肱三头肌", "上斜方肌"],
+    aliases: ["坐姿哑铃推肩", "哑铃推肩", "哑铃推举", "坐姿推举", "哑铃肩推", "推肩", "Dumbbell Shoulder Press"],
     gifUrl: "./exercises/seated-dumbbell-shoulder-press.gif",
     defaultSets: 4,
     defaultReps: "8-10",
@@ -91,8 +95,34 @@
     },
     commonMistakes: ["推起时头部过度前伸", "下放太低导致肩关节活动度不足受损"],
     substitutes: [
-      { name: "阿诺德推举", reason: "结合前束旋转长行程" },
-      { name: "固定器械推肩", reason: "器械稳定冲刺大重量" }
+      { name: "杠铃推肩 / 军式推举 (OHP)", reason: "杠铃复合垂直推力之王" },
+      { name: "史密斯推肩", reason: "垂直导轨安全冲刺" },
+      { name: "阿诺德推举", reason: "结合前束旋转长行程" }
+    ]
+  },
+  {
+    id: "ex-machine-shoulder-press",
+    name: "坐姿器械/哑铃推肩",
+    englishName: "Seated Machine / DB Shoulder Press",
+    category: "肩部",
+    target: "三角肌前中束 / 3D虎头肩",
+    secondaryMuscles: ["肱三头肌", "上胸部"],
+    aliases: ["固定器械推肩", "器械推肩", "坐姿推肩", "推肩", "推胸推肩", "Machine Shoulder Press"],
+    gifUrl: "./exercises/machine-shoulder-press.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    scienceDetail: "前束和三头肌充分热身后的冲刺王牌，坐姿推举最大化保障肩关节安全，专注负荷突破打造立体3D虎头肩。",
+    tags: ["大重量", "安全冲刺", "立体虎头肩"],
+    tips: {
+      prep: "座椅调至合适高度，双手举至耳朵水平，腰背贴紧靠垫，沉肩收腹。",
+      execution: "由三角肌前中束主动发力向上推起，避免肘部过度后张。",
+      peak: "推至顶端微屈肘，不要锁死手肘以维持肌肉持续张力。",
+      negative: "缓慢下落还原，直到把手/哑铃下落至耳朵下沿水平。"
+    },
+    commonMistakes: ["腰部过度向前拱起悬空变成斜板卧推", "下放幅度太浅只有半程"],
+    substitutes: [
+      { name: "坐姿哑铃推肩", reason: "自由平衡与稳定肌群" },
+      { name: "史密斯推肩", reason: "垂直轨道冲击负荷" }
     ]
   },
   {
@@ -102,6 +132,7 @@
     category: "肩部",
     target: "三角肌前中束 / 稳定大重量推举",
     secondaryMuscles: ["肱三头肌", "上胸部"],
+    aliases: ["史密斯推肩", "史密斯机推肩", "史密斯肩推", "史密斯推举", "Smith Shoulder Press"],
     gifUrl: "./exercises/smith-shoulder-press.gif",
     defaultSets: 4,
     defaultReps: "8-10",
@@ -115,7 +146,7 @@
     },
     commonMistakes: ["身体前移变成斜板推胸", "手腕过度后翻"],
     substitutes: [
-      { name: "固定器械推肩", reason: "双轴收敛轨迹" },
+      { name: "杠铃推肩 / 军式推举 (OHP)", reason: "自由杠铃力量之王" },
       { name: "坐姿哑铃推肩", reason: "自由平衡" }
     ]
   },
@@ -126,6 +157,7 @@
     category: "肩部",
     target: "三角肌前束与中束 / 长行程旋转",
     secondaryMuscles: ["肱三头肌", "上胸部"],
+    aliases: ["阿诺德推举", "阿诺德推肩", "阿诺德", "旋转推肩", "Arnold Press"],
     gifUrl: "./exercises/arnold-press.gif",
     defaultSets: 3,
     defaultReps: "10-12",
@@ -140,7 +172,7 @@
     commonMistakes: ["旋转过快导致动作脱节", "使用过大重量伤肩袖"],
     substitutes: [
       { name: "坐姿哑铃推肩", reason: "标准垂直推举" },
-      { name: "前平举", reason: "孤立三角肌前束" }
+      { name: "哑铃前平举", reason: "孤立三角肌前束" }
     ]
   },
   {
@@ -150,6 +182,7 @@
     category: "肩部",
     target: "三角肌前束单关节孤立",
     secondaryMuscles: ["上胸锁骨头"],
+    aliases: ["前平举", "哑铃前平举", "站姿前平举", "练前束", "Dumbbell Front Raise"],
     gifUrl: "./exercises/front-raise.gif",
     defaultSets: 3,
     defaultReps: "12-15",
@@ -174,6 +207,7 @@
     category: "肩部",
     target: "三角肌前束 / 恒定张力",
     secondaryMuscles: ["上胸部"],
+    aliases: ["绳索前平举", "滑轮前平举", "绳索前束", "Cable Front Raise"],
     gifUrl: "./exercises/cable-front-raise.gif",
     defaultSets: 3,
     defaultReps: "12-15",
@@ -198,6 +232,7 @@
     category: "肩部",
     target: "三角肌后束 / 冈下肌 / 3D球形肩",
     secondaryMuscles: ["斜方肌中下部", "菱形肌"],
+    aliases: ["面拉", "绳索面拉", "脸拉", "练后束", "圆肩矫正", "肩袖外旋", "Face Pull"],
     gifUrl: "./exercises/face-pull.gif",
     defaultSets: 4,
     defaultReps: "15",
@@ -222,6 +257,7 @@
     category: "肩部",
     target: "三角肌后束单关节孤立",
     secondaryMuscles: ["菱形肌", "斜方肌中束"],
+    aliases: ["反向飞鸟", "蝴蝶机后束", "反向蝴蝶机", "俯身器械飞鸟", "后束飞鸟", "Reverse Pec Deck", "Reverse Fly"],
     gifUrl: "./exercises/reverse-pec-deck.gif",
     defaultSets: 4,
     defaultReps: "12-15",
@@ -246,6 +282,7 @@
     category: "肩部",
     target: "三角肌后束 / 上背部小肌群",
     secondaryMuscles: ["菱形肌", "冈下肌"],
+    aliases: ["俯身飞鸟", "哑铃俯身飞鸟", "俯身侧平举", "俯身哑铃飞鸟", "后束哑铃", "Rear Delt Fly"],
     gifUrl: "./exercises/bent-over-rear-delt-fly.gif",
     defaultSets: 3,
     defaultReps: "12-15",

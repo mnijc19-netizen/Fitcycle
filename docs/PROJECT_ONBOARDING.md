@@ -1,11 +1,11 @@
-﻿# 🚀 FITCYCLE 新 AI 代理与开发者 0 秒上手白皮书 (Project Onboarding Guide)
+# 🚀 FITCYCLE 新 AI 代理与开发者 0 秒上手白皮书 (Project Onboarding Guide)
 
 > **目标：** 无论您是第一次打开本项目的全新 AI（GPT-4o, Claude 3.7, DeepSeek, Antigravity, Cursor），还是新加入的人类开发者，**阅读本文档 60 秒即可通透全盘架构、技术栈、核心脉络与开发禁区！**
 
 ---
 
 ## 🎯 一、Fitcycle 是什么？（一句话定位）
-**Fitcycle（包皮健身）** 是一款专为手机端打造的、极简高颜值的**硬核运动科学打卡与电竞化战力排位 Web APP（PWA）**。
+**FitCycle** 是一款专为手机端打造的、极简高颜值的**硬核运动科学打卡与电竞化战力排位 Web APP（PWA）**。
 - **目标用户**：追求严谨渐进超负荷、形体比例与趣味游戏化激励的健身人群；
 - **核心特色**：离线优先、推拉腿分化循环、FPS 战力天梯、多皮肤无缝切换（CS2/Chamber）、多模型 AI 私教抽屉。
 

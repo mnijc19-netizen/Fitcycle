@@ -1,109 +1,121 @@
 <template>
   <div class="pb-32 px-4 pt-2 max-w-md mx-auto space-y-4">
 
-    
     <!-- Top Header -->
-    <div>
-      <h2 class="text-lg font-black text-white flex items-center gap-2">
-        <span>📊</span> 训练数据与系统设置
-      </h2>
-      <p class="text-xs text-zinc-400">
-        综合战力天梯、形体围度、训练容量分析与偏好设置
-      </p>
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-base font-black tracking-tight text-white flex items-center gap-2">
+          <span>数据与系统设置</span>
+        </h2>
+        <p class="text-xs text-zinc-400 mt-0.5">
+          战力天梯、形体围度、训练容量与偏好
+        </p>
+      </div>
+      <div class="text-[10px] font-mono text-zinc-500 font-bold px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800">
+        FITCYCLE
+      </div>
     </div>
 
     <!-- Honor Rank & Body Metrics Hero Entry Cards -->
     <div class="grid grid-cols-2 gap-2.5">
       <!-- 1. Honor & Rank Card -->
       <div @click="showHonorModal = true" 
-           class="p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/15 via-zinc-950 to-zinc-900 border border-amber-500/40 hover:border-amber-400 cursor-pointer shadow-lg shadow-black/40 space-y-1.5 transition-all active:scale-95 group">
+           class="p-3.5 rounded-2xl bg-zinc-900/90 hover:bg-zinc-850 border border-zinc-800 hover:border-amber-500/40 cursor-pointer shadow-lg shadow-black/30 space-y-2 transition-all active:scale-95 group">
         <div class="flex items-center justify-between">
           <div class="w-8 h-8 flex items-center justify-center">
-            <img v-if="honorData.presentation.tierSvg" :src="honorData.presentation.tierSvg" alt="Rank Medal" class="w-full h-full object-contain group-hover:scale-110 transition-transform filter drop-shadow-[0_0_6px_rgba(245,158,11,0.5)]" />
-            <span v-else class="text-2xl group-hover:scale-110 transition-transform">{{ honorData.presentation.tierIcon }}</span>
+            <img v-if="honorData.presentation.tierSvg" :src="honorData.presentation.tierSvg" alt="Rank Medal" class="w-full h-full object-contain group-hover:scale-105 transition-transform" />
+            <span v-else class="text-xl group-hover:scale-105 transition-transform">{{ honorData.presentation.tierIcon }}</span>
           </div>
-          <span class="text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-500 text-zinc-950">天梯排位</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-800 text-amber-400 border border-amber-500/30">天梯排位</span>
         </div>
         <div>
           <div class="text-xs font-black text-white truncate">{{ honorData.presentation.tierName }}</div>
-          <div class="text-[10px] font-mono text-amber-400 font-bold mt-0.5">{{ honorData.score }} PTS <span class="text-zinc-500 font-normal">❯</span></div>
+          <div class="text-[11px] font-mono text-amber-400 font-bold mt-0.5 flex items-center justify-between">
+            <span>{{ honorData.score }} PTS</span>
+            <span class="text-zinc-500 text-[10px]">❯</span>
+          </div>
         </div>
       </div>
 
       <!-- 2. Body Circumference Card -->
       <div @click="showBodyModal = true"
-           class="p-3.5 rounded-2xl bg-gradient-to-br from-sky-500/15 via-zinc-950 to-zinc-900 border border-sky-500/40 hover:border-sky-400 cursor-pointer shadow-lg shadow-black/40 space-y-1.5 transition-all active:scale-95 group">
+           class="p-3.5 rounded-2xl bg-zinc-900/90 hover:bg-zinc-850 border border-zinc-800 hover:border-sky-500/40 cursor-pointer shadow-lg shadow-black/30 space-y-2 transition-all active:scale-95 group">
         <div class="flex items-center justify-between">
-          <span class="text-2xl group-hover:scale-110 transition-transform">📐</span>
-          <span class="text-[9px] font-black px-1.5 py-0.2 rounded bg-sky-500 text-zinc-950">形体围度</span>
+          <div class="w-8 h-8 rounded-xl bg-zinc-800 flex items-center justify-center text-zinc-300">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-zinc-800 text-sky-400 border border-sky-500/30">形体围度</span>
         </div>
         <div>
           <div class="text-xs font-black text-white truncate">身体蜕变追踪</div>
-          <div class="text-[10px] font-mono text-sky-400 font-bold mt-0.5">{{ (store.bodyMetrics && store.bodyMetrics.length) ? `V身比 ${vTaperRatio}` : '未录入 · 点击记录' }} <span class="text-zinc-500 font-normal">❯</span></div>
+          <div class="text-[11px] font-mono text-sky-400 font-bold mt-0.5 flex items-center justify-between">
+            <span>{{ (store.bodyMetrics && store.bodyMetrics.length) ? `V身比 ${vTaperRatio}` : '未录入' }}</span>
+            <span class="text-zinc-500 text-[10px]">❯</span>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Overall Lifetime Metrics Grid -->
     <div class="grid grid-cols-2 gap-2.5">
-      <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-3.5 space-y-1">
-        <div class="text-xs text-zinc-400 font-medium flex items-center gap-1">
-          <span>🏋️</span> 累计总容量
+      <div class="bg-zinc-900/90 border border-zinc-800/90 rounded-2xl p-3.5 space-y-1">
+        <div class="text-[11px] text-zinc-400 font-medium flex items-center justify-between">
+          <span>累计总容量</span>
+          <span class="text-zinc-600 font-mono text-[10px]">VOLUME</span>
         </div>
-        <div class="text-xl font-black text-emerald-400 font-mono">
-          {{ totalVolumeMetric }} <span class="text-xs font-normal text-zinc-400">kg</span>
-        </div>
-      </div>
-
-      <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-3.5 space-y-1">
-        <div class="text-xs text-zinc-400 font-medium flex items-center gap-1">
-          <span>🔥</span> 累计打卡次数
-        </div>
-        <div class="text-xl font-black text-amber-400 font-mono">
-          {{ store.workoutLogs.length }} <span class="text-xs font-normal text-zinc-400">次</span>
+        <div class="text-xl font-black text-zinc-100 font-mono">
+          {{ totalVolumeMetric }} <span class="text-xs font-normal text-zinc-500">kg</span>
         </div>
       </div>
 
-      <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-3.5 space-y-1">
-        <div class="text-xs text-zinc-400 font-medium flex items-center gap-1">
-          <span>⏱️</span> 累计训练时长
+      <div class="bg-zinc-900/90 border border-zinc-800/90 rounded-2xl p-3.5 space-y-1">
+        <div class="text-[11px] text-zinc-400 font-medium flex items-center justify-between">
+          <span>累计特训次数</span>
+          <span class="text-zinc-600 font-mono text-[10px]">WORKOUTS</span>
         </div>
-        <div class="text-xl font-black text-sky-400 font-mono">
-          {{ totalHoursMetric }} <span class="text-xs font-normal text-zinc-400">小时</span>
+        <div class="text-xl font-black text-zinc-100 font-mono">
+          {{ store.workoutLogs.length }} <span class="text-xs font-normal text-zinc-500">次</span>
         </div>
       </div>
 
-      <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-3.5 space-y-1">
-        <div class="text-xs text-zinc-400 font-medium flex items-center gap-1">
-          <span>🎯</span> 完成总组数
+      <div class="bg-zinc-900/90 border border-zinc-800/90 rounded-2xl p-3.5 space-y-1">
+        <div class="text-[11px] text-zinc-400 font-medium flex items-center justify-between">
+          <span>累计训练时长</span>
+          <span class="text-zinc-600 font-mono text-[10px]">DURATION</span>
         </div>
-        <div class="text-xl font-black text-purple-400 font-mono">
-          {{ totalSetsMetric }} <span class="text-xs font-normal text-zinc-400">组</span>
+        <div class="text-xl font-black text-zinc-100 font-mono">
+          {{ totalHoursMetric }} <span class="text-xs font-normal text-zinc-500">小时</span>
+        </div>
+      </div>
+
+      <div class="bg-zinc-900/90 border border-zinc-800/90 rounded-2xl p-3.5 space-y-1">
+        <div class="text-[11px] text-zinc-400 font-medium flex items-center justify-between">
+          <span>完成总组数</span>
+          <span class="text-zinc-600 font-mono text-[10px]">SETS</span>
+        </div>
+        <div class="text-xl font-black text-zinc-100 font-mono">
+          {{ totalSetsMetric }} <span class="text-xs font-normal text-zinc-500">组</span>
         </div>
       </div>
     </div>
 
     <!-- Recent 7-Workout Volume Trend Visualizer -->
-    <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3">
+    <div class="bg-zinc-900/90 border border-zinc-800/90 rounded-3xl p-4 shadow-xl space-y-3">
       <div class="flex items-center justify-between">
-        <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider">近期训练容量趋势 (kg)</span>
-        <span class="text-[10px] text-zinc-500 font-mono">最近 7 次</span>
+        <span class="text-xs font-bold text-zinc-300 tracking-wider">近期训练容量趋势 (kg)</span>
+        <span class="text-[10px] text-zinc-500 font-mono">最近 7 次特训</span>
       </div>
 
       <div v-if="recentVolumeStats.length" class="space-y-2 pt-2">
         <div class="flex items-end justify-between gap-2 h-28 px-1">
           <div v-for="(item, idx) in recentVolumeStats" :key="idx"
-               class="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+               class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
             <span class="text-[9px] font-mono text-zinc-400">{{ item.volume > 0 ? `${Math.round(item.volume / 1000)}k` : '0' }}</span>
-            <div class="w-full bg-zinc-800 rounded-t-lg overflow-hidden flex items-end" style="height: 70px">
-              <div class="w-full transition-all duration-500 rounded-t-lg"
-                   :class="[
-                     item.color === 'amber' ? 'bg-amber-500' :
-                     item.color === 'sky' ? 'bg-sky-500' :
-                     item.color === 'purple' ? 'bg-purple-500' :
-                     'bg-emerald-500'
-                   ]"
-                   :style="{ height: `${Math.max(8, item.percent)}%` }">
+            <div class="w-full bg-zinc-800/80 rounded-t-lg overflow-hidden flex items-end" style="height: 72px">
+              <div class="w-full transition-all duration-500 rounded-t-lg bg-amber-500/80 hover:bg-amber-400"
+                   :style="{ height: `${Math.max(10, item.percent)}%` }">
               </div>
             </div>
             <span class="text-[9px] text-zinc-500 font-mono truncate w-full text-center">{{ item.shortDate }}</span>

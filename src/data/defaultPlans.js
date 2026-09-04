@@ -1,4 +1,4 @@
-﻿import { CHEST_EXERCISES } from "./exercisesChest.js";
+import { CHEST_EXERCISES } from "./exercisesChest.js";
 import { BACK_EXERCISES } from "./exercisesBack.js";
 import { SHOULDER_EXERCISES } from "./exercisesShoulders.js";
 import { ARM_EXERCISES } from "./exercisesArms.js";
@@ -28,7 +28,7 @@ export const DEFAULT_PLANS = [
       { exerciseId: "ex-incline-db-bench", name: "上斜哑铃卧推", setsCount: 4, targetReps: "8-10次", defaultWeight: 20 },
       { exerciseId: "ex-machine-chest-press", name: "固定器械推胸", setsCount: 3, targetReps: "10-12次", defaultWeight: 45 },
       { exerciseId: "ex-cable-lateral-raise", name: "绳索侧平举", setsCount: 4, targetReps: "12-15次", defaultWeight: 7.5 },
-      { exerciseId: "ex-machine-shoulder-press", name: "固定器械推肩", setsCount: 3, targetReps: "10-12次", defaultWeight: 35 },
+      { exerciseId: "ex-seated-dumbbell-shoulder-press", name: "坐姿哑铃推肩", setsCount: 3, targetReps: "10-12次", defaultWeight: 20 },
       { exerciseId: "ex-overhead-cable-ext", name: "过头绳索臂屈伸", setsCount: 3, targetReps: "12-15次", defaultWeight: 15 }
     ]
   },
@@ -43,7 +43,7 @@ export const DEFAULT_PLANS = [
     exercises: [
       { exerciseId: "ex-lat-pulldown", name: "对握/宽握高位下拉", setsCount: 4, targetReps: "10-12次", defaultWeight: 45 },
       { exerciseId: "ex-chest-supported-row", name: "胸垫胸前划船 (T-Bar)", setsCount: 3, targetReps: "8-10次", defaultWeight: 40 },
-      { exerciseId: "ex-straight-arm-pulldown", name: "直臂下压 (Pulldown / Pullover)", setsCount: 3, targetReps: "12-15次", defaultWeight: 20 },
+      { exerciseId: "ex-seated-cable-row", name: "坐姿绳索划船", setsCount: 3, targetReps: "10-12次", defaultWeight: 40 },
       { exerciseId: "ex-face-pull", name: "绳索面拉 (Face Pull)", setsCount: 4, targetReps: "15次", defaultWeight: 15 },
       { exerciseId: "ex-incline-db-curl", name: "上斜哑铃弯举", setsCount: 3, targetReps: "10-12次", defaultWeight: 10 },
       { exerciseId: "ex-hammer-curl", name: "哑铃锤式弯举", setsCount: 3, targetReps: "12次", defaultWeight: 12 }
@@ -60,7 +60,7 @@ export const DEFAULT_PLANS = [
     exercises: [
       { exerciseId: "ex-hack-squat", name: "哈克深蹲 / 倒蹬腿举", setsCount: 4, targetReps: "8-12次", defaultWeight: 60 },
       { exerciseId: "ex-rdl", name: "罗马尼亚硬拉 (RDL)", setsCount: 3, targetReps: "10-12次", defaultWeight: 50 },
-      { exerciseId: "ex-seated-leg-curl", name: "坐姿腿弯举", setsCount: 3, targetReps: "12-15次", defaultWeight: 35 },
+      { exerciseId: "ex-seated-leg-curl", name: "俯卧器械腿弯举", setsCount: 3, targetReps: "12-15次", defaultWeight: 35 },
       { exerciseId: "ex-calf-raise", name: "站姿/坐姿提踵", setsCount: 3, targetReps: "15-20次", defaultWeight: 40 }
     ]
   },

@@ -403,24 +403,25 @@
             <!-- Top Fast Start Button -->
             <button v-if="!todayCycle.isRest" 
                     @click="handleStartTodayWorkout"
-                    class="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 active:scale-95 text-zinc-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 flex items-center gap-1 flex-shrink-0 transition-all">
-              <span>🚀 立即开练</span>
+                    class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-black text-xs rounded-xl shadow-md shadow-amber-500/20 flex items-center gap-1.5 flex-shrink-0 transition-all">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <span>立即开练</span>
             </button>
           </div>
 
           <!-- Urgency & Muscle Status Detail Rows -->
           <div class="mt-2.5 pt-2.5 border-t border-zinc-800/80 space-y-1.5 text-xs">
             <!-- 1. Total Inactivity Counter -->
-            <div class="flex items-start gap-1.5 text-zinc-300">
-              <span class="text-amber-400 flex-shrink-0 font-bold">⏱️ 怠惰计时:</span>
-              <span class="leading-relaxed" :class="timeSinceLastWorkout.urgencyLevel === 'danger' ? 'text-red-300 font-bold' : ''">
+            <div class="flex items-start gap-2 text-zinc-300">
+              <span class="text-zinc-500 flex-shrink-0 font-mono text-[11px]">怠惰计时 (INACTIVITY):</span>
+              <span class="leading-relaxed" :class="timeSinceLastWorkout.urgencyLevel === 'danger' ? 'text-red-400 font-bold' : 'text-zinc-300'">
                 {{ timeSinceLastWorkout.subText }}
               </span>
             </div>
 
             <!-- 2. Today's Split Muscle Recovery State -->
-            <div class="flex items-start gap-1.5 text-zinc-400">
-              <span class="text-sky-400 flex-shrink-0 font-bold">🧬 肌群状态:</span>
+            <div class="flex items-start gap-2 text-zinc-400">
+              <span class="text-zinc-500 flex-shrink-0 font-mono text-[11px]">肌群状态 (RECOVERY):</span>
               <span class="leading-relaxed text-zinc-300">
                 {{ splitRecoveryInfo.desc }}
               </span>
@@ -439,8 +440,7 @@
             </button>
 
             <button @click="showBodyModal = true"
-                    class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-zinc-950/80 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-mono text-zinc-300 transition-all active:scale-95">
-              <span>📐</span>
+                    class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-zinc-950/80 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-mono text-zinc-300 transition-all active:scale-95">
               <span>形体围度</span>
               <span class="text-[9px] text-zinc-500">❯</span>
             </button>
