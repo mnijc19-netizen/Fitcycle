@@ -7,7 +7,7 @@
       <div class="absolute inset-0" @click="$emit('close')"></div>
 
       <!-- Rules Codex Container -->
-      <div class="relative w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-3xl p-5 shadow-2xl space-y-4 max-h-[85vh] flex flex-col animate-in zoom-in-95 duration-200">
+      <div class="relative w-full max-w-md bg-[var(--fc-modal-bg,#18181b)] border border-zinc-800 rounded-3xl p-5 shadow-2xl space-y-4 max-h-[85vh] flex flex-col animate-in zoom-in-95 duration-200">
         
         <!-- Modal Header -->
         <div class="flex items-center justify-between pb-3 border-b border-zinc-800/80 flex-shrink-0">

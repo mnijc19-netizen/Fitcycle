@@ -23,23 +23,28 @@
 
     <!-- Deload Shield Active Status Banner in CycleView -->
     <div v-if="isDeloadActive" 
-         class="p-3.5 rounded-3xl bg-gradient-to-r from-sky-950/90 to-zinc-950 border border-sky-500/50 shadow-lg shadow-sky-950/30 flex items-center justify-between gap-3 text-left">
+         class="p-3.5 rounded-3xl border shadow-lg flex items-center justify-between gap-3 text-left"
+         :class="store.settings.themeMode === 'light' ? 'bg-sky-50 border-sky-300 shadow-sky-100/50 text-slate-900' : 'bg-gradient-to-r from-sky-950/90 to-zinc-950 border-sky-500/50 shadow-sky-950/30 text-white'">
       <div class="flex items-center gap-2.5 min-w-0">
         <div class="w-9 h-9 rounded-xl bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-lg flex-shrink-0 animate-pulse">
           🛡️
         </div>
         <div class="min-w-0">
-          <div class="text-xs font-black text-white flex items-center gap-1.5">
+          <div class="text-xs font-black flex items-center gap-1.5"
+               :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">
             <span>战术减载免战期生效中</span>
-            <span class="text-[10px] text-sky-400 font-mono font-bold">剩余 {{ shieldDaysRemaining }} 天</span>
+            <span class="text-[10px] font-mono font-bold"
+                  :class="store.settings.themeMode === 'light' ? 'text-sky-700' : 'text-sky-400'">剩余 {{ shieldDaysRemaining }} 天</span>
           </div>
-          <p class="text-[10px] text-zinc-400 truncate mt-0.5">
+          <p class="text-[10px] truncate mt-0.5"
+             :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
             分化循环已进入休整保护模式，战力分 100% 冻结免扣
           </p>
         </div>
       </div>
       <button @click="toggleDeloadShield(false)" 
-              class="px-2.5 py-1 bg-sky-900/80 hover:bg-sky-800 text-sky-200 text-xs font-bold rounded-xl border border-sky-600/50 flex-shrink-0 active:scale-95 transition-all cursor-pointer">
+              class="px-2.5 py-1 text-xs font-bold rounded-xl border flex-shrink-0 active:scale-95 transition-all cursor-pointer"
+              :class="store.settings.themeMode === 'light' ? 'bg-sky-600 hover:bg-sky-700 text-white border-sky-600 shadow-sm' : 'bg-sky-900/80 hover:bg-sky-800 text-sky-200 border-sky-600/50'">
         提前归队
       </button>
     </div>

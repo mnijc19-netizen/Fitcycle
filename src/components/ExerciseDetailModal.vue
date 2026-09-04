@@ -34,7 +34,7 @@
            style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
         
         <!-- 3D Muscle Diagram / Animation Display Box -->
-        <div class="w-full h-60 bg-zinc-950 border border-zinc-800 rounded-3xl overflow-hidden flex items-center justify-center relative p-2 shadow-2xl">
+        <div class="w-full h-60 bg-zinc-950 border border-zinc-800 rounded-3xl overflow-hidden flex items-center justify-center relative p-2 shadow-2xl" data-theme-preserve="true">
           <img v-if="exercise?.gifUrl && !gifError" 
                :src="exercise.gifUrl" 
                :alt="exercise.name" 

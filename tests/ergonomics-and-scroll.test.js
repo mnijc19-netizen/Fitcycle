@@ -79,6 +79,10 @@ describe("Mobile Ergonomics & Scroll Lock Suite", () => {
     expect(cssContent).toContain(".scrollbar-none");
     expect(cssContent).toContain("scrollbar-width: none");
     expect(cssContent).toContain(".overscroll-contain");
+    expect(cssContent).toContain(".text-zinc-950");
+    expect(cssContent).toContain("#09090B !important");
+    expect(cssContent).toContain('[data-theme-preserve="true"]');
+    expect(cssContent).toContain('[class*="bg-emerald-950"]');
   });
 
   it("Universal Scroll: getUniversalScrollTop detects scroll from multiple engines (window/html/body)", async () => {

@@ -4,7 +4,7 @@
     <!-- Top Header (Clean Apple Minimalist) -->
     <div class="flex items-center justify-between pt-1">
       <div>
-        <h2 class="text-xl font-bold tracking-tight text-white">
+        <h2 class="text-xl font-bold tracking-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">
           统计与设置
         </h2>
         <p class="text-xs text-zinc-400 mt-0.5">
@@ -17,7 +17,10 @@
     <div class="grid grid-cols-2 gap-2.5">
       <!-- 1. Honor & Rank Card -->
       <div @click="showHonorModal = true" 
-           class="p-3.5 rounded-2xl bg-zinc-900/80 hover:bg-zinc-850/90 border border-zinc-800/80 hover:border-amber-500/40 cursor-pointer shadow-sm transition-all active:scale-98 group flex flex-col justify-between">
+           class="p-3.5 rounded-2xl cursor-pointer shadow-sm transition-all active:scale-98 group flex flex-col justify-between"
+           :class="store.settings.themeMode === 'light' 
+             ? 'bg-white hover:bg-slate-50 border border-slate-200 hover:border-amber-500/40' 
+             : 'bg-zinc-900/80 hover:bg-zinc-850/90 border border-zinc-800/80 hover:border-amber-500/40'">
         <div class="flex items-center justify-between">
           <div class="w-8 h-8 flex items-center justify-center">
             <img v-if="honorData.presentation.tierSvg" :src="honorData.presentation.tierSvg" alt="Rank Medal" class="w-full h-full object-contain group-hover:scale-105 transition-transform" />
@@ -26,7 +29,7 @@
           <span class="text-xs font-mono font-bold text-amber-400">{{ honorData.score }} PTS</span>
         </div>
         <div class="mt-2.5">
-          <div class="text-xs font-bold text-zinc-100 truncate">{{ honorData.presentation.tierName.split('·')[0] }}</div>
+          <div class="text-xs font-bold truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">{{ honorData.presentation.tierName.split('·')[0] }}</div>
           <div class="text-[11px] text-zinc-400 mt-0.5 flex items-center justify-between">
             <span>天梯排位</span>
             <span class="text-zinc-500 group-hover:text-zinc-300 text-xs transition-colors">❯</span>
@@ -36,7 +39,10 @@
 
       <!-- 2. Body Circumference Card -->
       <div @click="showBodyModal = true"
-           class="p-3.5 rounded-2xl bg-zinc-900/80 hover:bg-zinc-850/90 border border-zinc-800/80 hover:border-sky-500/40 cursor-pointer shadow-sm transition-all active:scale-98 group flex flex-col justify-between">
+           class="p-3.5 rounded-2xl cursor-pointer shadow-sm transition-all active:scale-98 group flex flex-col justify-between"
+           :class="store.settings.themeMode === 'light' 
+             ? 'bg-white hover:bg-slate-50 border border-slate-200 hover:border-sky-500/40' 
+             : 'bg-zinc-900/80 hover:bg-zinc-850/90 border border-zinc-800/80 hover:border-sky-500/40'">
         <div class="flex items-center justify-between">
           <div class="w-8 h-8 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,7 +54,7 @@
           </span>
         </div>
         <div class="mt-2.5">
-          <div class="text-xs font-bold text-zinc-100 truncate">形体围度追踪</div>
+          <div class="text-xs font-bold truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">形体围度追踪</div>
           <div class="text-[11px] text-zinc-400 mt-0.5 flex items-center justify-between">
             <span>身体档案</span>
             <span class="text-zinc-500 group-hover:text-zinc-300 text-xs transition-colors">❯</span>
@@ -58,30 +64,31 @@
     </div>
 
     <!-- Unified Lifetime Metrics (Apple Health / Fitness Summary Style) -->
-    <div class="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl p-4 shadow-sm">
+    <div class="rounded-2xl p-4 shadow-sm border"
+         :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-200' : 'bg-zinc-900/80 border-zinc-800/80'">
       <div class="text-xs font-bold text-zinc-400 mb-3 px-0.5">累计生涯数据</div>
       <div class="grid grid-cols-2 gap-y-3.5 gap-x-4">
         <div>
           <div class="text-[11px] text-zinc-400">累计做工总容量</div>
-          <div class="text-lg font-black text-zinc-100 font-mono mt-0.5">
+          <div class="text-lg font-black font-mono mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">
             {{ totalVolumeMetric }} <span class="text-xs font-normal text-zinc-500">kg</span>
           </div>
         </div>
         <div>
           <div class="text-[11px] text-zinc-400">累计特训打卡</div>
-          <div class="text-lg font-black text-zinc-100 font-mono mt-0.5">
+          <div class="text-lg font-black font-mono mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">
             {{ store.workoutLogs.length }} <span class="text-xs font-normal text-zinc-500">次</span>
           </div>
         </div>
         <div>
           <div class="text-[11px] text-zinc-400">累计训练用时</div>
-          <div class="text-lg font-black text-zinc-100 font-mono mt-0.5">
+          <div class="text-lg font-black font-mono mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">
             {{ totalHoursMetric }} <span class="text-xs font-normal text-zinc-500">小时</span>
           </div>
         </div>
         <div>
           <div class="text-[11px] text-zinc-400">完成总组数</div>
-          <div class="text-lg font-black text-zinc-100 font-mono mt-0.5">
+          <div class="text-lg font-black font-mono mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">
             {{ totalSetsMetric }} <span class="text-xs font-normal text-zinc-500">组</span>
           </div>
         </div>
@@ -89,9 +96,10 @@
     </div>
 
     <!-- Volume Trend Chart (Refined Minimalist Pills) -->
-    <div class="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl p-4 shadow-sm space-y-3">
+    <div class="rounded-2xl p-4 shadow-sm space-y-3 border"
+         :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-200' : 'bg-zinc-900/80 border-zinc-800/80'">
       <div class="flex items-center justify-between">
-        <span class="text-xs font-bold text-zinc-300">近期容量走势 (kg)</span>
+        <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-300'">近期容量走势 (kg)</span>
         <span class="text-[10px] text-zinc-500 font-mono">近 7 次特训</span>
       </div>
 
@@ -100,7 +108,9 @@
           <div v-for="(item, idx) in recentVolumeStats" :key="idx"
                class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
             <span class="text-[9px] font-mono text-zinc-400">{{ item.volume > 0 ? `${Math.round(item.volume / 1000)}k` : '0' }}</span>
-            <div class="w-full bg-zinc-800/50 rounded-full overflow-hidden flex items-end p-0.5" style="height: 72px">
+            <div class="w-full rounded-full overflow-hidden flex items-end p-0.5" 
+                 :class="store.settings.themeMode === 'light' ? 'bg-slate-100' : 'bg-zinc-800/50'"
+                 style="height: 72px">
               <div class="w-full transition-all duration-500 rounded-full bg-gradient-to-t from-amber-500 to-amber-400"
                    :style="{ height: `${Math.max(12, item.percent)}%` }">
               </div>
@@ -118,15 +128,17 @@
     <!-- Training Preferences (iOS Grouped Section) -->
     <div class="space-y-1.5">
       <div class="text-xs font-bold text-zinc-400 px-1">训练偏好</div>
-      <div class="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl p-3.5 space-y-3 shadow-sm">
+      <div class="rounded-2xl p-3.5 space-y-3 shadow-sm border"
+           :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-200' : 'bg-zinc-900/80 border-zinc-800/80'">
         
         <!-- Rest Timer Duration Setting -->
         <div class="space-y-2">
           <div class="flex items-center justify-between text-xs">
-            <span class="text-zinc-200 font-medium">默认组间休息</span>
+            <span class="font-medium" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">默认组间休息</span>
             <span class="font-bold text-amber-400 font-mono">{{ store.settings.defaultRestSeconds }} 秒</span>
           </div>
-          <div class="grid grid-cols-4 gap-1 p-1 bg-zinc-950/80 rounded-xl border border-zinc-800/60">
+          <div class="grid grid-cols-4 gap-1 p-1 rounded-xl border"
+               :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border-slate-200' : 'bg-zinc-950/80 border-zinc-800/60'">
             <button v-for="item in [
                       { sec: 60, label: '泵感' },
                       { sec: 90, label: '标准推荐' },
@@ -136,7 +148,7 @@
                     :key="item.sec"
                     @click="store.settings.defaultRestSeconds = item.sec"
                     class="py-1.5 rounded-lg text-center transition-all flex flex-col items-center justify-center cursor-pointer"
-                    :class="[store.settings.defaultRestSeconds === item.sec ? 'bg-amber-500 text-zinc-950 font-bold shadow-sm' : 'text-zinc-400 hover:text-zinc-200']">
+                    :class="[store.settings.defaultRestSeconds === item.sec ? 'bg-amber-500 text-zinc-950 font-bold shadow-sm' : (store.settings.themeMode === 'light' ? 'text-slate-600 hover:text-slate-900' : 'text-zinc-400 hover:text-zinc-200')]">
               <span class="text-xs font-mono font-bold leading-none">{{ item.sec }}s</span>
               <span class="text-[9px] leading-none mt-0.5 opacity-85">{{ item.label }}</span>
             </button>
@@ -146,12 +158,12 @@
         <!-- Sound Toggle -->
         <div class="flex items-center justify-between pt-2.5 border-t border-zinc-800/60">
           <div>
-            <div class="text-xs font-medium text-zinc-200">打卡提示音与倒计时铃声</div>
+            <div class="text-xs font-medium" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">打卡提示音与倒计时铃声</div>
             <div class="text-[10px] text-zinc-500">完成单组及休息结束时播放提示音</div>
           </div>
           <button @click="store.settings.soundEnabled = !store.settings.soundEnabled"
                   class="w-11 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer"
-                  :class="[store.settings.soundEnabled ? 'bg-amber-500' : 'bg-zinc-800']">
+                  :class="[store.settings.soundEnabled ? 'bg-amber-500' : (store.settings.themeMode === 'light' ? 'bg-slate-200' : 'bg-zinc-800')]">
             <div class="w-5 h-5 rounded-full bg-white transition-transform transform shadow-sm"
                  :class="[store.settings.soundEnabled ? 'translate-x-5' : 'translate-x-0']"></div>
           </button>
@@ -160,12 +172,12 @@
         <!-- Vibration Toggle -->
         <div class="flex items-center justify-between pt-2.5 border-t border-zinc-800/60">
           <div>
-            <div class="text-xs font-medium text-zinc-200">触感震动反馈 (Haptic)</div>
+            <div class="text-xs font-medium" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">触感震动反馈 (Haptic)</div>
             <div class="text-[10px] text-zinc-500">休息结束与打卡时提供震动反馈</div>
           </div>
           <button @click="store.settings.vibrationEnabled = !store.settings.vibrationEnabled"
                   class="w-11 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer"
-                  :class="[store.settings.vibrationEnabled ? 'bg-amber-500' : 'bg-zinc-800']">
+                  :class="[store.settings.vibrationEnabled ? 'bg-amber-500' : (store.settings.themeMode === 'light' ? 'bg-slate-200' : 'bg-zinc-800')]">
             <div class="w-5 h-5 rounded-full bg-white transition-transform transform shadow-sm"
                  :class="[store.settings.vibrationEnabled ? 'translate-x-5' : 'translate-x-0']"></div>
           </button>
@@ -202,20 +214,22 @@
         </span>
       </div>
 
-      <div class="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl p-3.5 space-y-3 shadow-sm">
+      <div class="rounded-2xl p-3.5 space-y-3 shadow-sm border"
+           :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-200' : 'bg-zinc-900/80 border-zinc-800/80'">
         <!-- Day / Night Appearance Mode Segmented Controller -->
         <div class="space-y-1.5 pb-1">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-zinc-200">环境光感</span>
-            <span class="text-[10px] text-zinc-400 font-mono">
+            <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">环境光感</span>
+            <span class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">
               {{ store.settings.themeMode === 'light' ? '白昼晨光高反差' : '深邃夜色护眼' }}
             </span>
           </div>
-          <div class="grid grid-cols-2 gap-2 p-1 bg-zinc-950/60 rounded-xl border border-zinc-800/80">
+          <div class="grid grid-cols-2 gap-2 p-1 rounded-xl border"
+               :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border-slate-200' : 'bg-zinc-950/60 border-zinc-800/80'">
             <button @click="handleSelectThemeMode('dark')"
                     type="button"
                     class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer"
-                    :class="store.settings.themeMode !== 'light' ? 'bg-zinc-800 text-amber-400 shadow-sm border border-zinc-700' : 'text-zinc-400 hover:text-zinc-200'">
+                    :class="store.settings.themeMode !== 'light' ? 'bg-zinc-800 text-amber-400 shadow-sm border border-zinc-700' : (store.settings.themeMode === 'light' ? 'text-slate-600 hover:text-slate-900' : 'text-zinc-400 hover:text-zinc-200')">
               <span class="text-sm">🌙</span>
               <span>深邃夜色</span>
             </button>
@@ -235,8 +249,8 @@
         <!-- Horizontal Scrollable Skin Carousel -->
         <div v-if="store.settings.unlockedSkins.length > 1" class="space-y-2 border-t border-zinc-800/60 pt-2.5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-zinc-200">主题世界观</span>
-            <span class="text-[10px] text-zinc-400 font-mono">
+            <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">主题世界观</span>
+            <span class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">
               {{ store.settings.unlockedSkins.length }} 款已就绪
             </span>
           </div>
@@ -246,18 +260,19 @@
                     class="flex-shrink-0 w-[155px] snap-start p-3 rounded-xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[88px] cursor-pointer"
                     :class="[
                       store.settings.uiSkin === 'default' 
-                        ? 'bg-zinc-800/90 border-amber-500/80 shadow-sm ring-1 ring-amber-500/40' 
-                        : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80'
+                        ? (store.settings.themeMode === 'light' ? 'bg-amber-50/90 border-amber-500 shadow-sm ring-1 ring-amber-500/40 text-slate-900' : 'bg-zinc-800/90 border-amber-500/80 shadow-sm ring-1 ring-amber-500/40 text-white') 
+                        : (store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700' : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80 text-zinc-300')
                     ]">
               <div class="flex items-center justify-between w-full">
-                <span class="text-xs font-bold text-zinc-100">默认外观</span>
+                <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">默认外观</span>
                 <span v-if="store.settings.uiSkin === 'default'" class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
               </div>
-              <div class="text-[10px] text-zinc-400 leading-tight">科学力量 · 深空/陶瓷白</div>
+              <div class="text-[10px] leading-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">科学力量 · 深空/陶瓷白</div>
               <div class="flex items-center gap-1 mt-1">
                 <span class="w-2 h-2 rounded-full bg-zinc-950 border border-zinc-700"></span>
                 <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                <span v-if="store.settings.uiSkin === 'default'" class="text-[9px] text-amber-400 font-bold ml-auto font-mono">使用中</span>
+                <span v-if="store.settings.uiSkin === 'default'" class="text-[9px] font-bold ml-auto font-mono"
+                      :class="store.settings.themeMode === 'light' ? 'text-amber-700' : 'text-amber-400'">使用中</span>
               </div>
             </button>
 
@@ -267,18 +282,19 @@
                     class="flex-shrink-0 w-[155px] snap-start p-3 rounded-xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[88px] cursor-pointer"
                     :class="[
                       store.settings.uiSkin === 'chamber' 
-                        ? 'bg-[#0D1627] border-[#E5C378] shadow-sm ring-1 ring-[#E5C378]/50' 
-                        : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80'
+                        ? (store.settings.themeMode === 'light' ? 'bg-[#F0ECE1] border-[#9A7228] shadow-sm ring-1 ring-[#9A7228]/50 text-[#141B26]' : 'bg-[#0D1627] border-[#E5C378] shadow-sm ring-1 ring-[#E5C378]/50 text-[#F7F6F2]') 
+                        : (store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700' : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80 text-zinc-300')
                     ]">
               <div class="flex items-center justify-between w-full">
-                <span class="text-xs font-bold text-zinc-100">尚博勒</span>
+                <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">尚博勒</span>
                 <span v-if="store.settings.uiSkin === 'chamber'" class="w-1.5 h-1.5 rounded-full bg-[#E5C378]"></span>
               </div>
-              <div class="text-[10px] text-zinc-400 leading-tight">法式特工 · 深蓝/白西装</div>
+              <div class="text-[10px] leading-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">法式特工 · 深蓝/白西装</div>
               <div class="flex items-center gap-1 mt-1">
                 <span class="w-2 h-2 rounded-full bg-[#070B14] border border-[#1E3052]"></span>
                 <span class="w-2 h-2 rounded-full bg-[#E5C378]"></span>
-                <span v-if="store.settings.uiSkin === 'chamber'" class="text-[9px] text-[#E5C378] font-bold ml-auto font-mono">使用中</span>
+                <span v-if="store.settings.uiSkin === 'chamber'" class="text-[9px] font-bold ml-auto font-mono"
+                      :class="store.settings.themeMode === 'light' ? 'text-[#9A7228]' : 'text-[#E5C378]'">使用中</span>
               </div>
             </button>
 
@@ -288,18 +304,19 @@
                     class="flex-shrink-0 w-[155px] snap-start p-3 rounded-xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[88px] cursor-pointer"
                     :class="[
                       store.settings.uiSkin === 'cs' 
-                        ? 'bg-[#0F172A] border-[#F97316] shadow-sm ring-1 ring-[#F97316]/50' 
-                        : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80'
+                        ? (store.settings.themeMode === 'light' ? 'bg-[#E2E8F0] border-[#E04E00] shadow-sm ring-1 ring-[#E04E00]/50 text-[#090D16]' : 'bg-[#0F172A] border-[#F97316] shadow-sm ring-1 ring-[#F97316]/50 text-[#F8FAFC]') 
+                        : (store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700' : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80 text-zinc-300')
                     ]">
               <div class="flex items-center justify-between w-full">
-                <span class="text-xs font-bold text-zinc-100">CS2 特训</span>
+                <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">CS2 特训</span>
                 <span v-if="store.settings.uiSkin === 'cs'" class="w-1.5 h-1.5 rounded-full bg-[#F97316]"></span>
               </div>
-              <div class="text-[10px] text-zinc-400 leading-tight">战术竞技 · 枪铁/极地雪原</div>
+              <div class="text-[10px] leading-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">战术竞技 · 枪铁/极地雪原</div>
               <div class="flex items-center gap-1 mt-1">
                 <span class="w-2 h-2 rounded-full bg-[#080C14] border border-[#1E293B]"></span>
                 <span class="w-2 h-2 rounded-full bg-[#F97316]"></span>
-                <span v-if="store.settings.uiSkin === 'cs'" class="text-[9px] text-[#F97316] font-bold ml-auto font-mono">使用中</span>
+                <span v-if="store.settings.uiSkin === 'cs'" class="text-[9px] font-bold ml-auto font-mono"
+                      :class="store.settings.themeMode === 'light' ? 'text-[#E04E00]' : 'text-[#F97316]'">使用中</span>
               </div>
             </button>
 
@@ -309,18 +326,19 @@
                     class="flex-shrink-0 w-[155px] snap-start p-3 rounded-xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[88px] cursor-pointer"
                     :class="[
                       store.settings.uiSkin === 'monochrome' 
-                        ? 'bg-[#121212] border-white shadow-sm ring-1 ring-white/50' 
-                        : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80'
+                        ? (store.settings.themeMode === 'light' ? 'bg-[#EFEFEF] border-black shadow-sm ring-1 ring-black/50 text-black' : 'bg-[#121212] border-white shadow-sm ring-1 ring-white/50 text-white') 
+                        : (store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700' : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80 text-zinc-300')
                     ]">
               <div class="flex items-center justify-between w-full">
-                <span class="text-xs font-bold text-zinc-100">典藏黑白</span>
+                <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">典藏黑白</span>
                 <span v-if="store.settings.uiSkin === 'monochrome'" class="w-1.5 h-1.5 rounded-full bg-white"></span>
               </div>
-              <div class="text-[10px] text-zinc-400 leading-tight">极简纯粹 · 刀锋秩序</div>
+              <div class="text-[10px] leading-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">极简纯粹 · 刀锋秩序</div>
               <div class="flex items-center gap-1 mt-1">
                 <span class="w-2 h-2 rounded-full bg-black border border-white/60"></span>
                 <span class="w-2 h-2 rounded-full bg-white"></span>
-                <span v-if="store.settings.uiSkin === 'monochrome'" class="text-[9px] text-white font-bold ml-auto font-mono">使用中</span>
+                <span v-if="store.settings.uiSkin === 'monochrome'" class="text-[9px] font-bold ml-auto font-mono"
+                      :class="store.settings.themeMode === 'light' ? 'text-black' : 'text-white'">使用中</span>
               </div>
             </button>
           </div>
@@ -328,7 +346,8 @@
           <!-- Restore Default Button (only if custom skin active) -->
           <div v-if="store.settings.uiSkin !== 'default'" class="pt-0.5">
             <button @click="handleRestoreDefaultSkin"
-                    class="w-full py-1.5 bg-zinc-950/80 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 text-xs rounded-xl border border-zinc-800 transition-colors cursor-pointer">
+                    class="w-full py-1.5 text-xs rounded-xl border transition-colors cursor-pointer"
+                    :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200' : 'bg-zinc-950/80 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border-zinc-800'">
               恢复默认外观
             </button>
           </div>
@@ -347,14 +366,16 @@
                    spellcheck="false"
                    @keydown.enter.prevent="handlePasscodeSubmit"
                    placeholder="输入解锁暗号..."
-                   class="flex-1 bg-zinc-950/80 border text-xs text-zinc-100 rounded-xl px-3 py-2 focus:outline-none transition-colors"
-                   :class="[passcodeError ? 'border-red-500/80 focus:border-red-500' : 'border-zinc-800 focus:border-amber-500/60']" />
+                   class="flex-1 border text-xs rounded-xl px-3 py-2 focus:outline-none transition-colors"
+                   :class="store.settings.themeMode === 'light'
+                     ? (passcodeError ? 'bg-white border-red-400 text-slate-900 placeholder-slate-400' : 'bg-slate-50 border-slate-200 focus:border-amber-600 text-slate-900 placeholder-slate-400')
+                     : (passcodeError ? 'bg-zinc-950/80 border-red-500/80 focus:border-red-500 text-zinc-100 placeholder-zinc-500' : 'bg-zinc-950/80 border-zinc-800 focus:border-amber-500/60 text-zinc-100 placeholder-zinc-500')" />
             <button @click="handlePasscodeSubmit"
                     class="py-2 px-3.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-bold text-xs rounded-xl transition-all cursor-pointer flex-shrink-0">
               解锁
             </button>
           </div>
-          <div v-if="passcodeError" class="text-[11px] text-red-400 pl-1">
+          <div v-if="passcodeError" class="text-[11px] text-red-500 pl-1 font-medium">
             暗号不正确
           </div>
         </div>

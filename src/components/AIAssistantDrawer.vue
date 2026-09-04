@@ -43,14 +43,16 @@
       <div v-if="store.settings.uiSkin === 'cs'" 
            class="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-20">
         <img :src="csAiBg" alt="CS2 AI Backdrop" class="w-full h-full object-cover object-bottom filter contrast-125" />
-        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-zinc-950/80"></div>
+        <div class="absolute inset-0"
+             :class="store.settings.themeMode === 'light' ? 'bg-gradient-to-t from-white via-white/50 to-white/90' : 'bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-zinc-950/80'"></div>
       </div>
 
       <!-- Chamber Luxury Background Backdrop -->
       <div v-else-if="store.settings.uiSkin === 'chamber'" 
            class="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-15">
         <img :src="chamberAiBg" alt="Chamber AI Backdrop" class="w-full h-full object-cover object-center" />
-        <div class="absolute inset-0 bg-gradient-to-t from-[#070B14] via-[#070B14]/40 to-[#070B14]/80"></div>
+        <div class="absolute inset-0"
+             :class="store.settings.themeMode === 'light' ? 'bg-gradient-to-t from-[#F9F8F5] via-[#F9F8F5]/50 to-[#F9F8F5]/90' : 'bg-gradient-to-t from-[#070B14] via-[#070B14]/40 to-[#070B14]/80'"></div>
       </div>
 
       <header class="relative z-10 flex items-center justify-between gap-3 px-4 py-3 border-b border-zinc-800 bg-zinc-900/95 flex-shrink-0">
@@ -352,17 +354,35 @@ const visualViewportHeight = ref(typeof window !== "undefined" && window.visualV
 const visualViewportTop = ref(typeof window !== "undefined" && window.visualViewport ? window.visualViewport.offsetTop : 0);
 const isKeyboardOpen = ref(false);
 
+let viewportListenersAttached = false;
+
 function updateVisualViewport() {
-  if (typeof window === "undefined" || !window.visualViewport) return;
+  if (typeof window === "undefined" || !window.visualViewport || !aiSession.drawerOpen) return;
   visualViewportHeight.value = window.visualViewport.height;
   visualViewportTop.value = window.visualViewport.offsetTop;
 
   const diff = window.innerHeight - window.visualViewport.height;
   isKeyboardOpen.value = diff > 140;
 
-  if (window.scrollY > 0) {
+  // STRICT GUARD: Only counteract WebKit keyboard scroll jumps when drawer is open AND keyboard is active
+  if (isKeyboardOpen.value && window.scrollY > 0) {
     window.scrollTo(0, 0);
   }
+}
+
+function attachViewportListeners() {
+  if (typeof window === "undefined" || !window.visualViewport || viewportListenersAttached) return;
+  window.visualViewport.addEventListener("resize", updateVisualViewport);
+  window.visualViewport.addEventListener("scroll", updateVisualViewport);
+  viewportListenersAttached = true;
+  updateVisualViewport();
+}
+
+function detachViewportListeners() {
+  if (typeof window === "undefined" || !window.visualViewport || !viewportListenersAttached) return;
+  window.visualViewport.removeEventListener("resize", updateVisualViewport);
+  window.visualViewport.removeEventListener("scroll", updateVisualViewport);
+  viewportListenersAttached = false;
 }
 
 const containerDynamicStyle = computed(() => {
@@ -450,10 +470,9 @@ function closeDrawer() {
 }
 
 onMounted(() => {
-  if (typeof window !== "undefined" && window.visualViewport) {
-    updateVisualViewport();
-    window.visualViewport.addEventListener("resize", updateVisualViewport);
-    window.visualViewport.addEventListener("scroll", updateVisualViewport);
+  // Never attach visualViewport listener globally on mount - isolated to drawerOpen lifecycle
+  if (aiSession.drawerOpen) {
+    attachViewportListeners();
   }
 });
 
@@ -461,19 +480,18 @@ watch(() => aiSession.drawerOpen, (val) => {
   if (val) {
     lockBodyScroll();
     isKeyboardOpen.value = false;
+    attachViewportListeners();
     nextTick(() => {
       updateVisualViewport();
     });
   } else {
+    detachViewportListeners();
     unlockBodyScroll();
   }
 }, { immediate: true });
 
 onUnmounted(() => {
-  if (typeof window !== "undefined" && window.visualViewport) {
-    window.visualViewport.removeEventListener("resize", updateVisualViewport);
-    window.visualViewport.removeEventListener("scroll", updateVisualViewport);
-  }
+  detachViewportListeners();
   if (aiSession.drawerOpen) unlockBodyScroll();
 });
 

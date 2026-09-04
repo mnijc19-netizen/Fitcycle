@@ -108,7 +108,7 @@
           <div>
             <label class="text-xs text-zinc-400 font-medium">动作名称 *</label>
             <input v-model="newEx.name" type="text" placeholder="例如：哑铃上斜飞鸟" 
-                   class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white" />
+                   class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-zinc-100" />
           </div>
           <div>
             <label class="text-xs text-zinc-400 font-medium">所属肌群</label>
@@ -125,12 +125,12 @@
           <div>
             <label class="text-xs text-zinc-400 font-medium">目标部位与发力要点</label>
             <input v-model="newEx.target" type="text" placeholder="例如：上胸部外沿、注重底部拉伸" 
-                   class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white" />
+                   class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-zinc-100" />
           </div>
           <div>
             <label class="text-xs text-zinc-400 font-medium">科学发力细节与注意事项（可选）</label>
             <textarea v-model="newEx.scienceDetail" rows="3" placeholder="填写动作细节、感受度提示..." 
-                      class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white"></textarea>
+                      class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-zinc-100"></textarea>
           </div>
         </div>
         <button @click="saveAndSelectCustom" 

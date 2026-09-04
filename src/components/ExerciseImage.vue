@@ -1,5 +1,6 @@
-﻿<template>
+<template>
   <div class="relative overflow-hidden bg-zinc-950 flex items-center justify-center select-none"
+       data-theme-preserve="true"
        :class="[customClass || 'rounded-2xl w-full aspect-square']">
     
     <!-- If External GIF loaded successfully -->

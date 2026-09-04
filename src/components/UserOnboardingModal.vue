@@ -54,13 +54,13 @@
              class="w-full flex-shrink-0 snap-center flex flex-col justify-between min-h-[305px] space-y-3">
           
           <!-- Interactive Visual Demo Preview Stage (沉浸式功能微缩展演舞台) -->
-          <div class="rounded-2xl p-3 border shadow-inner relative overflow-hidden bg-gradient-to-b from-zinc-900/90 via-zinc-950/90 to-zinc-950/95"
-               :class="slide.stageBorder">
+          <div class="rounded-2xl p-3 border shadow-inner relative overflow-hidden"
+               :class="[slide.stageBorder, store.settings.themeMode === 'light' ? 'bg-white border-slate-200' : 'bg-gradient-to-b from-zinc-900/90 via-zinc-950/90 to-zinc-950/95']">
 
             <!-- SLIDE 0: 渐进超负荷与单组比对 -->
             <div v-if="idx === 0" class="space-y-2 text-left">
               <div class="flex items-center justify-between text-[11px]">
-                <span class="font-bold text-white flex items-center gap-1">
+                <span class="font-bold flex items-center gap-1" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">
                   <span>🏋️</span> 杠铃卧推 · 第 1 组
                 </span>
                 <span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono text-[9px] font-black border border-amber-500/40 animate-pulse">
@@ -69,7 +69,7 @@
               </div>
               <div class="p-2 rounded-xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-between">
                 <div>
-                  <div class="text-sm font-black font-mono text-white">100.0 kg × 8 次</div>
+                  <div class="text-sm font-black font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">100.0 kg × 8 次</div>
                   <div class="text-[9px] text-zinc-400 font-mono">上次基准: 95.0kg × 8次</div>
                 </div>
                 <span class="px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 font-mono text-[10px] font-bold border border-emerald-500/30">
@@ -81,7 +81,7 @@
             <!-- SLIDE 1: FPS 战力天梯与排位 -->
             <div v-else-if="idx === 1" class="space-y-2 text-left">
               <div class="flex items-center justify-between text-[11px]">
-                <span class="font-bold text-white flex items-center gap-1">
+                <span class="font-bold flex items-center gap-1" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">
                   <span>🏆</span> CS2 战力天梯排位
                 </span>
                 <span class="px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300 font-mono text-[9px] font-bold border border-orange-500/40">
@@ -92,7 +92,7 @@
                 <div class="flex items-center gap-2">
                   <span class="text-2xl">👑</span>
                   <div>
-                    <div class="text-xs font-black text-white">全球精英 (The Global Elite)</div>
+                    <div class="text-xs font-black" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">全球精英 (The Global Elite)</div>
                     <div class="text-[9px] text-zinc-400">已解锁 6 阶至尊服役勋章</div>
                   </div>
                 </div>

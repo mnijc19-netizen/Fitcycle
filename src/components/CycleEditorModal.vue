@@ -53,7 +53,7 @@
         <div>
           <label class="text-xs font-bold text-zinc-400 tracking-wider uppercase">循环名称</label>
           <input v-model="editCycle.name" type="text" 
-                 class="w-full mt-1.5 bg-zinc-950 border border-zinc-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white" />
+                 class="w-full mt-1.5 bg-zinc-950 border border-zinc-700/80 rounded-xl px-3.5 py-2.5 text-xs text-zinc-100" />
         </div>
 
         <!-- Days Sequence -->

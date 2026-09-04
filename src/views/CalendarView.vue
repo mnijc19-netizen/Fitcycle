@@ -31,12 +31,12 @@
         </h3>
         <div class="flex items-center gap-1.5">
           <button @click="prevMonth" 
-                  class="w-8 h-8 rounded-full bg-zinc-950 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800/80 flex items-center justify-center text-sm transition-colors cursor-pointer"
+                  class="w-8 h-8 rounded-full bg-zinc-950 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 border border-zinc-800/80 flex items-center justify-center text-sm transition-colors cursor-pointer"
                   title="上一月">
             ‹
           </button>
           <button @click="nextMonth" 
-                  class="w-8 h-8 rounded-full bg-zinc-950 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800/80 flex items-center justify-center text-sm transition-colors cursor-pointer"
+                  class="w-8 h-8 rounded-full bg-zinc-950 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 border border-zinc-800/80 flex items-center justify-center text-sm transition-colors cursor-pointer"
                   title="下一月">
             ›
           </button>

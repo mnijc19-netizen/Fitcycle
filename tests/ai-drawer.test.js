@@ -202,6 +202,27 @@ describe("mobile AI drawer", () => {
     expect(aiSession.drawerOpen).toBe(false);
     wrapper.unmount();
   });
+
+  it("never hijacks scroll or calls window.scrollTo(0, 0) when drawer is closed", async () => {
+    const scrollToMock = vi.fn();
+    window.scrollTo = scrollToMock;
+    window.scrollY = 350;
+
+    aiSession.drawerOpen = false;
+    const wrapper = mount(AIAssistantDrawer, { attachTo: document.body });
+
+    // Simulate visualViewport scroll and resize while drawer is closed
+    if (window.visualViewport) {
+      window.visualViewport.dispatchEvent(new Event("scroll"));
+      window.visualViewport.dispatchEvent(new Event("resize"));
+    }
+    window.dispatchEvent(new Event("scroll"));
+    document.dispatchEvent(new Event("scroll"));
+
+    await nextTick();
+    expect(scrollToMock).not.toHaveBeenCalled();
+    wrapper.unmount();
+  });
 });
 
 

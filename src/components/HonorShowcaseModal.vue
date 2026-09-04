@@ -20,7 +20,7 @@
               </svg>
             </div>
             <div>
-              <h2 class="text-sm font-black text-white tracking-wide">荣誉殿堂 · 战力天梯</h2>
+              <h2 class="text-sm font-black tracking-wide" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">荣誉殿堂 · 战力天梯</h2>
               <p class="text-[10px] text-zinc-400 font-mono">{{ honorData.presentation.skinName }}</p>
             </div>
           </div>
@@ -35,14 +35,16 @@
            style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
         
         <!-- Hero Rank Card -->
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border border-amber-500/40 p-4 shadow-lg shadow-black/50 text-center space-y-3">
+        <div class="relative overflow-hidden rounded-2xl border p-4 shadow-lg text-center space-y-3"
+             :class="store.settings.themeMode === 'light' ? 'bg-gradient-to-br from-white via-slate-50 to-slate-100 border-amber-500/30 shadow-slate-200/50' : 'bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 border-amber-500/40 shadow-black/50'">
           
           <!-- Tactical Aura Background Glow -->
           <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
           <!-- Medal Badge Icon (Clean & Unobstructed) -->
           <div class="flex items-center justify-center">
-            <div class="w-28 h-28 rounded-3xl bg-zinc-950/90 border-2 border-amber-500/70 shadow-[0_0_30px_rgba(245,158,11,0.3)] flex items-center justify-center p-3.5 transform hover:scale-105 transition-transform">
+            <div class="w-28 h-28 rounded-3xl border-2 shadow-[0_0_30px_rgba(245,158,11,0.3)] flex items-center justify-center p-3.5 transform hover:scale-105 transition-transform"
+                 :class="store.settings.themeMode === 'light' ? 'bg-white border-amber-500/50' : 'bg-zinc-950/90 border-amber-500/70'">
               <img v-if="honorData.presentation.tierSvg" :src="honorData.presentation.tierSvg" alt="Rank Medal" class="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]" />
               <span v-else class="text-4xl">{{ honorData.presentation.tierIcon }}</span>
             </div>
@@ -50,7 +52,8 @@
 
           <!-- Rank Titles & Service Medal Chips -->
           <div class="space-y-1 pt-1">
-            <div class="text-lg font-black text-white tracking-wide flex items-center justify-center gap-1.5">
+            <div class="text-lg font-black tracking-wide flex items-center justify-center gap-1.5"
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">
               <span>{{ honorData.presentation.tierName }}</span>
             </div>
             <p class="text-xs text-amber-400/90 font-mono">{{ honorData.presentation.tierSub }}</p>

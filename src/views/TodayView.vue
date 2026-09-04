@@ -298,12 +298,7 @@
       
       <!-- Apple Fitness Hero Card -->
       <div class="rounded-3xl border p-5 shadow-2xl relative overflow-hidden transition-all"
-           :class="[
-             honorData.isDeloadActive ? 'bg-gradient-to-br from-sky-950/80 via-zinc-900 to-zinc-950 border-sky-500/40 shadow-sky-950/20' :
-             store.settings.uiSkin === 'cs' ? 'bg-gradient-to-br from-[#0c121e] via-[#080c14] to-zinc-950 border-orange-500/40 shadow-black' :
-             store.settings.uiSkin === 'chamber' ? 'bg-gradient-to-br from-[#0b1224] via-[#070b14] to-zinc-950 border-[#E5C378]/35' :
-             'bg-gradient-to-br from-zinc-900/95 via-zinc-900 to-zinc-950 border-zinc-800'
-           ]">
+           :class="todayHeroCardClasses">
         
         <!-- Ambient Top Glow -->
         <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full blur-3xl opacity-20 pointer-events-none"
@@ -327,11 +322,12 @@
                   ]">
               {{ todayCycle.name }}
             </span>
-            <span class="text-xs text-zinc-400 font-mono">{{ todayFormatted }}</span>
+            <span class="text-xs font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">{{ todayFormatted }}</span>
           </div>
 
           <button @click="openCycleEditor" 
-                  class="text-xs font-medium text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1 cursor-pointer">
+                  class="text-xs font-medium transition-colors flex items-center gap-1 cursor-pointer"
+                  :class="store.settings.themeMode === 'light' ? 'text-amber-700 hover:text-amber-800' : 'text-amber-400 hover:text-amber-300'">
             <span>{{ store.activeCycle.name.split(' ')[0] }}</span>
             <span class="text-[10px]">❯</span>
           </button>
@@ -339,19 +335,20 @@
 
         <!-- 2. Hero Title & Specs -->
         <div class="mt-3 mb-4 relative z-10">
-          <h1 class="text-2xl font-black text-white tracking-tight leading-tight">
+          <h1 class="text-2xl font-black tracking-tight leading-tight"
+              :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">
             {{ currentPlan?.name || todayCycle.name }}
           </h1>
           
           <div v-if="!todayCycle.isRest && currentPlan?.exercises?.length" 
                class="flex items-center gap-2 mt-2 text-xs font-mono text-zinc-400">
-            <span class="text-zinc-200 font-bold">{{ currentPlan.exercises.length }} 动作</span>
+            <span class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-200'">{{ currentPlan.exercises.length }} 动作</span>
             <span class="text-zinc-600">·</span>
-            <span class="text-emerald-400 font-bold">{{ todayTotalSets }} 组做工</span>
+            <span class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-emerald-700' : 'text-emerald-400'">{{ todayTotalSets }} 组做工</span>
             <span class="text-zinc-600">·</span>
-            <span>约 45 分钟</span>
+            <span :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">约 45 分钟</span>
           </div>
-          <div v-else class="text-xs text-zinc-400 mt-1">
+          <div v-else class="text-xs mt-1" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
             充分享受休息，促进肌肉超量恢复与中枢神经修复
           </div>
         </div>
@@ -374,12 +371,12 @@
             <span>打卡今日休整</span>
           </button>
 
-          <div class="flex items-center justify-center gap-4 pt-1 text-xs text-zinc-400">
-            <button @click="showPlanPicker = true" class="hover:text-zinc-200 transition-colors cursor-pointer">
+          <div class="flex items-center justify-center gap-4 pt-1 text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+            <button @click="showPlanPicker = true" class="hover:text-amber-500 transition-colors cursor-pointer">
               切换计划
             </button>
-            <span class="text-zinc-700">|</span>
-            <button @click="startEmptyWorkout" class="hover:text-zinc-200 transition-colors cursor-pointer">
+            <span :class="store.settings.themeMode === 'light' ? 'text-slate-300' : 'text-zinc-700'">|</span>
+            <button @click="startEmptyWorkout" class="hover:text-amber-500 transition-colors cursor-pointer">
               自由空白训练
             </button>
           </div>
@@ -395,13 +392,13 @@
             <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/40 flex items-center gap-1">
               <span>🛡️</span> 战术免战休整期
             </span>
-            <span class="text-xs font-bold text-white">战力已冻结 (剩 {{ honorData.shieldDaysRemaining }} 天)</span>
+            <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">战力已冻结 (剩 {{ honorData.shieldDaysRemaining }} 天)</span>
             <button @click="toggleDeloadShield(false)" 
                     class="px-2 py-0.5 bg-sky-900/80 hover:bg-sky-800 text-sky-200 text-[10px] font-bold rounded-lg border border-sky-600/40 cursor-pointer">
               提前归队
             </button>
           </div>
-          <p class="text-[11px] text-sky-200/80 leading-snug">
+          <p class="text-[11px] leading-snug" :class="store.settings.themeMode === 'light' ? 'text-sky-800 font-medium' : 'text-sky-200/80'">
             处于周期化减载期，战力怠惰衰减强制冻结（0扣分），中枢神经超量修复中。
           </p>
         </div>
@@ -776,6 +773,42 @@ watch(anyTodayModalOpen, (isOpen) => {
 });
 
 const honorData = computed(() => getFullHonorProfile());
+
+const todayHeroCardClasses = computed(() => {
+  const isLight = store.settings.themeMode === "light";
+  const skin = store.settings.uiSkin;
+
+  if (honorData.value.isDeloadActive) {
+    return isLight
+      ? "bg-gradient-to-br from-sky-50 via-white to-sky-100/50 border-sky-300 shadow-md shadow-sky-100"
+      : "bg-gradient-to-br from-sky-950/80 via-zinc-900 to-zinc-950 border-sky-500/40 shadow-sky-950/20";
+  }
+
+  if (isLight) {
+    if (skin === "cs") {
+      return "bg-gradient-to-br from-white via-slate-50 to-slate-100 border-orange-500/30 shadow-md shadow-slate-200/60";
+    }
+    if (skin === "chamber") {
+      return "bg-gradient-to-br from-[#FFFDF9] via-[#FAF6ED] to-[#F3EDE0] border-[#C5A059]/40 shadow-md shadow-stone-200/60";
+    }
+    if (skin === "monochrome") {
+      return "bg-white border-neutral-300 shadow-md shadow-neutral-200/50";
+    }
+    return "bg-gradient-to-br from-white via-slate-50 to-slate-100 border-slate-200 shadow-md shadow-slate-200/50";
+  }
+
+  // Dark Mode
+  if (skin === "cs") {
+    return "bg-gradient-to-br from-[#0c121e] via-[#080c14] to-zinc-950 border-orange-500/40 shadow-black";
+  }
+  if (skin === "chamber") {
+    return "bg-gradient-to-br from-[#0b1224] via-[#070b14] to-zinc-950 border-[#E5C378]/35";
+  }
+  if (skin === "monochrome") {
+    return "bg-black border-neutral-800 shadow-black";
+  }
+  return "bg-gradient-to-br from-zinc-900/95 via-zinc-900 to-zinc-950 border-zinc-800";
+});
 
 // Timer for elapsed workout time
 const nowTimestamp = ref(Date.now());

@@ -15,7 +15,10 @@
     <!-- CS2 Compact State -->
     <div v-if="!isExpanded && store.settings.uiSkin === 'cs'" 
          @click="toggleExpand"
-         class="bg-[#080C14]/98 border border-[#F97316]/60 backdrop-blur-xl rounded-2xl pl-2 pr-3 py-1.5 shadow-2xl shadow-black flex items-center gap-2 text-white animate-in slide-in-from-right-4 duration-200 cursor-grab active:cursor-grabbing active:scale-95 group transition-transform">
+         class="backdrop-blur-xl rounded-2xl pl-2 pr-3 py-1.5 flex items-center gap-2 animate-in slide-in-from-right-4 duration-200 cursor-grab active:cursor-grabbing active:scale-95 group transition-transform"
+         :class="store.settings.themeMode === 'light' 
+           ? 'bg-[#F1F5F9]/98 border border-[#E04E00]/60 shadow-xl shadow-orange-950/15 text-[#090D16]' 
+           : 'bg-[#080C14]/98 border border-[#F97316]/60 shadow-2xl shadow-black text-white'">
       <!-- C4 Icon with surrounding red pulsing aura glow -->
       <div class="relative w-6 h-6 rounded-lg bg-[#141A12] border border-red-500/60 flex items-center justify-center flex-shrink-0">
         <div class="absolute -inset-1 rounded-xl bg-red-500/30 blur-[2px] animate-pulse pointer-events-none"></div>
@@ -24,7 +27,8 @@
 
       <!-- Digital Red Countdown Display -->
       <div class="flex flex-col">
-        <span class="font-mono font-black text-xs text-red-500 tracking-tight leading-none drop-shadow-[0_0_8px_rgba(239,68,68,0.9)]">
+        <span class="font-mono font-black text-xs tracking-tight leading-none"
+              :class="store.settings.themeMode === 'light' ? 'text-[#C2410C]' : 'text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.9)]'">
           {{ formatTime(store.restTimer.remaining) }}
         </span>
       </div>
@@ -32,21 +36,26 @@
 
     <!-- CS2 Expanded Action Bar (Directional zero-jump expansion) -->
     <div v-else-if="isExpanded && store.settings.uiSkin === 'cs'" 
-         class="bg-[#080C14]/98 border border-[#F97316]/60 backdrop-blur-2xl rounded-2xl px-2.5 py-1.5 shadow-2xl shadow-black flex items-center gap-2 text-white animate-in zoom-in-95 duration-200">
+         class="backdrop-blur-2xl rounded-2xl px-2.5 py-1.5 flex items-center gap-2 animate-in zoom-in-95 duration-200"
+         :class="store.settings.themeMode === 'light' 
+           ? 'bg-[#F1F5F9]/98 border border-[#E04E00]/60 shadow-xl shadow-orange-950/15 text-[#090D16]' 
+           : 'bg-[#080C14]/98 border border-[#F97316]/60 shadow-2xl shadow-black text-white'">
       
       <!-- Action Buttons (Ordered dynamically: left when on right side, right when on left side) -->
       <div class="flex items-center gap-1 flex-shrink-0" :class="{ 'order-1': isRightHalf, 'order-2': !isRightHalf }">
         <button @click.stop="adjustRestTimer(-15)" 
-                class="px-2 py-1 bg-[#0F172A] hover:bg-[#1E293B] active:scale-90 text-zinc-300 rounded-lg text-xs font-mono font-bold border border-zinc-700 transition-all">
+                class="px-2 py-1 active:scale-90 rounded-lg text-xs font-mono font-bold border transition-all"
+                :class="store.settings.themeMode === 'light' ? 'bg-slate-200 hover:bg-slate-300 text-slate-800 border-slate-300' : 'bg-[#0F172A] hover:bg-[#1E293B] text-zinc-300 border-zinc-700'">
           -15s
         </button>
         <button @click.stop="adjustRestTimer(30)" 
-                class="px-2 py-1 bg-[#F97316]/20 hover:bg-[#F97316]/30 active:scale-90 text-[#F97316] rounded-lg text-xs font-mono font-bold border border-[#F97316]/40 transition-all">
+                class="px-2 py-1 active:scale-90 rounded-lg text-xs font-mono font-bold border transition-all"
+                :class="store.settings.themeMode === 'light' ? 'bg-orange-500/15 hover:bg-orange-500/25 text-[#C2410C] border-orange-500/40' : 'bg-[#F97316]/20 hover:bg-[#F97316]/30 text-[#F97316] border-[#F97316]/40'">
           +30s
         </button>
         <button @click.stop="handleClose" 
                 title="关闭休息计时 (DEFUSE)"
-                class="w-6 h-6 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-400 active:scale-90 flex items-center justify-center text-xs font-bold border border-red-500/30 transition-all">
+                class="w-6 h-6 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-500 active:scale-90 flex items-center justify-center text-xs font-bold border border-red-500/30 transition-all">
           ✕
         </button>
       </div>
@@ -57,7 +66,8 @@
           <div class="absolute -inset-1 rounded-xl bg-red-500/25 blur-[2px] animate-pulse pointer-events-none"></div>
           <img :src="csC4TimerImg" alt="C4" class="w-full h-full object-contain p-0.5 relative z-10 drop-shadow-[0_0_6px_rgba(239,68,68,0.8)]" />
         </div>
-        <span class="font-mono font-black text-xs text-red-500 tracking-tight drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]">
+        <span class="font-mono font-black text-xs tracking-tight"
+              :class="store.settings.themeMode === 'light' ? 'text-[#C2410C]' : 'text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]'">
           {{ formatTime(store.restTimer.remaining) }}
         </span>
       </div>
@@ -71,16 +81,22 @@
     <!-- Chamber Compact State -->
     <div v-else-if="!isExpanded && store.settings.uiSkin === 'chamber'" 
          @click="toggleExpand"
-         class="bg-gradient-to-r from-[#070B14]/98 to-[#0D1627]/98 border border-[#E5C378]/70 backdrop-blur-2xl rounded-2xl pl-2 pr-3 py-1.5 shadow-[0_0_15px_rgba(229,195,120,0.25)] flex items-center gap-2 text-white animate-in slide-in-from-right-4 duration-200 cursor-grab active:cursor-grabbing active:scale-95 group transition-all">
+         class="backdrop-blur-2xl rounded-2xl pl-2 pr-3 py-1.5 flex items-center gap-2 animate-in slide-in-from-right-4 duration-200 cursor-grab active:cursor-grabbing active:scale-95 group transition-all"
+         :class="store.settings.themeMode === 'light'
+           ? 'bg-[#F9F8F5]/98 border border-[#9A7228]/70 shadow-lg shadow-amber-950/10 text-[#141B26]'
+           : 'bg-gradient-to-r from-[#070B14]/98 to-[#0D1627]/98 border border-[#E5C378]/70 shadow-[0_0_15px_rgba(229,195,120,0.25)] text-white'">
       <!-- Bespoke Gold Wristwatch Icon -->
-      <div class="relative w-7 h-7 rounded-xl bg-gradient-to-b from-[#0D1627] to-[#070B14] border border-[#E5C378]/60 flex items-center justify-center flex-shrink-0 shadow-md shadow-black/70">
-        <div class="absolute -inset-1 rounded-xl bg-[#E5C378]/25 blur-[3px] animate-pulse pointer-events-none"></div>
-        <img :src="chamberWatchImg" alt="Chamber Luxury Gold Watch" class="w-full h-full object-contain p-0.5 relative z-10 drop-shadow-[0_0_6px_rgba(246,224,158,0.8)]" />
+      <div class="relative w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md"
+           :class="store.settings.themeMode === 'light' ? 'bg-amber-100/60 border border-[#9A7228]/40 shadow-amber-900/10' : 'bg-gradient-to-b from-[#0D1627] to-[#070B14] border border-[#E5C378]/60 shadow-black/70'">
+        <div class="absolute -inset-1 rounded-xl blur-[3px] animate-pulse pointer-events-none"
+             :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20' : 'bg-[#E5C378]/25'"></div>
+        <img :src="chamberWatchImg" alt="Chamber Luxury Gold Watch" class="w-full h-full object-contain p-0.5 relative z-10" />
       </div>
 
       <!-- Digital French Gold Countdown Display -->
       <div class="flex flex-col">
-        <span class="font-mono font-black text-xs text-[#F6E09E] tracking-tight leading-none drop-shadow-[0_0_10px_rgba(246,224,158,0.85)]">
+        <span class="font-mono font-black text-xs tracking-tight leading-none"
+              :class="store.settings.themeMode === 'light' ? 'text-[#9A7228]' : 'text-[#F6E09E] drop-shadow-[0_0_10px_rgba(246,224,158,0.85)]'">
           {{ formatTime(store.restTimer.remaining) }}
         </span>
       </div>
@@ -88,32 +104,41 @@
 
     <!-- Chamber Expanded Action Bar (Directional zero-jump expansion) -->
     <div v-else-if="isExpanded && store.settings.uiSkin === 'chamber'" 
-         class="bg-gradient-to-r from-[#070B14]/98 to-[#0D1627]/98 border border-[#E5C378]/70 backdrop-blur-2xl rounded-2xl px-2.5 py-1.5 shadow-[0_0_20px_rgba(229,195,120,0.3)] flex items-center gap-2 text-white animate-in zoom-in-95 duration-200">
+         class="backdrop-blur-2xl rounded-2xl px-2.5 py-1.5 flex items-center gap-2 animate-in zoom-in-95 duration-200"
+         :class="store.settings.themeMode === 'light'
+           ? 'bg-[#F9F8F5]/98 border border-[#9A7228]/70 shadow-lg shadow-amber-950/10 text-[#141B26]'
+           : 'bg-gradient-to-r from-[#070B14]/98 to-[#0D1627]/98 border border-[#E5C378]/70 shadow-[0_0_20px_rgba(229,195,120,0.3)] text-white'">
       
       <!-- Action Buttons (Ordered dynamically: left when on right side, right when on left side) -->
       <div class="flex items-center gap-1 flex-shrink-0" :class="{ 'order-1': isRightHalf, 'order-2': !isRightHalf }">
         <button @click.stop="adjustRestTimer(-15)" 
-                class="px-2 py-1 bg-[#0D1627] hover:bg-[#142036] active:scale-90 text-[#9AA8C2] rounded-lg text-xs font-mono font-bold border border-[#1E3052] transition-all">
+                class="px-2 py-1 active:scale-90 rounded-lg text-xs font-mono font-bold border transition-all"
+                :class="store.settings.themeMode === 'light' ? 'bg-[#F0ECE1] hover:bg-[#E5DEC9] text-[#2C384D] border-[#D8CEB9]' : 'bg-[#0D1627] hover:bg-[#142036] text-[#9AA8C2] border-[#1E3052]'">
           -15s
         </button>
         <button @click.stop="adjustRestTimer(30)" 
-                class="px-2 py-1 bg-[#E5C378]/20 hover:bg-[#E5C378]/30 active:scale-90 text-[#F6E09E] rounded-lg text-xs font-mono font-bold border border-[#E5C378]/50 transition-all">
+                class="px-2 py-1 active:scale-90 rounded-lg text-xs font-mono font-bold border transition-all"
+                :class="store.settings.themeMode === 'light' ? 'bg-[#9A7228]/15 hover:bg-[#9A7228]/25 text-[#9A7228] border-[#9A7228]/40' : 'bg-[#E5C378]/20 hover:bg-[#E5C378]/30 text-[#F6E09E] border-[#E5C378]/50'">
           +30s
         </button>
         <button @click.stop="handleClose" 
                 title="关闭休息计时"
-                class="w-6 h-6 rounded-lg bg-[#E06D3B]/20 hover:bg-[#E06D3B]/30 text-[#E06D3B] active:scale-90 flex items-center justify-center text-xs font-bold border border-[#E06D3B]/40 transition-all">
+                class="w-6 h-6 rounded-lg active:scale-90 flex items-center justify-center text-xs font-bold border transition-all"
+                :class="store.settings.themeMode === 'light' ? 'bg-orange-500/15 hover:bg-orange-500/25 text-[#C84B1A] border-orange-500/30' : 'bg-[#E06D3B]/20 hover:bg-[#E06D3B]/30 text-[#E06D3B] border-[#E06D3B]/40'">
           ✕
         </button>
       </div>
 
       <!-- Mini Chamber Watch & Time (Statically aligned to edge) -->
       <div class="flex items-center gap-1.5 cursor-pointer" :class="{ 'order-2': isRightHalf, 'order-1': !isRightHalf }" @click="toggleExpand">
-        <div class="relative w-7 h-7 rounded-xl bg-gradient-to-b from-[#0D1627] to-[#070B14] border border-[#E5C378]/60 flex items-center justify-center flex-shrink-0 shadow-md shadow-black/70">
-          <div class="absolute -inset-1 rounded-xl bg-[#E5C378]/25 blur-[3px] animate-pulse pointer-events-none"></div>
-          <img :src="chamberWatchImg" alt="Chamber Luxury Gold Watch" class="w-full h-full object-contain p-0.5 relative z-10 drop-shadow-[0_0_6px_rgba(246,224,158,0.8)]" />
+        <div class="relative w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md"
+             :class="store.settings.themeMode === 'light' ? 'bg-amber-100/60 border border-[#9A7228]/40' : 'bg-gradient-to-b from-[#0D1627] to-[#070B14] border border-[#E5C378]/60'">
+          <div class="absolute -inset-1 rounded-xl blur-[3px] animate-pulse pointer-events-none"
+               :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20' : 'bg-[#E5C378]/25'"></div>
+          <img :src="chamberWatchImg" alt="Chamber Luxury Gold Watch" class="w-full h-full object-contain p-0.5 relative z-10" />
         </div>
-        <span class="font-mono font-black text-xs text-[#F6E09E] tracking-tight drop-shadow-[0_0_10px_rgba(246,224,158,0.85)] pr-0.5">
+        <span class="font-mono font-black text-xs tracking-tight pr-0.5"
+              :class="store.settings.themeMode === 'light' ? 'text-[#9A7228]' : 'text-[#F6E09E] drop-shadow-[0_0_10px_rgba(246,224,158,0.85)]'">
           {{ formatTime(store.restTimer.remaining) }}
         </span>
       </div>
@@ -127,41 +152,53 @@
     <!-- Default Compact Variant -->
     <div v-else-if="!isExpanded" 
          @click="toggleExpand"
-         class="bg-zinc-900/95 border border-emerald-500/40 backdrop-blur-xl rounded-full pl-2 pr-3 py-1.5 shadow-2xl shadow-black/80 flex items-center gap-2 text-white animate-in slide-in-from-right-4 duration-200 cursor-grab active:cursor-grabbing active:scale-95 transition-transform">
+         class="backdrop-blur-xl rounded-full pl-2 pr-3 py-1.5 flex items-center gap-2 animate-in slide-in-from-right-4 duration-200 cursor-grab active:cursor-grabbing active:scale-95 transition-transform"
+         :class="store.settings.themeMode === 'light'
+           ? 'bg-white/98 border border-emerald-600/40 shadow-xl shadow-slate-900/10 text-[#0F172A]'
+           : 'bg-zinc-900/95 border border-emerald-500/40 shadow-2xl shadow-black/80 text-white'">
       
       <div class="relative w-6 h-6 flex items-center justify-center flex-shrink-0">
         <svg class="w-6 h-6 transform -rotate-90">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" class="text-zinc-800" fill="transparent" />
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" 
+                  :class="store.settings.themeMode === 'light' ? 'text-slate-200' : 'text-zinc-800'" fill="transparent" />
           <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" 
                   :stroke-dasharray="62.8" 
                   :stroke-dashoffset="miniDashOffset" 
                   stroke-linecap="round"
-                  class="text-emerald-400 transition-all duration-300" fill="transparent" />
+                  :class="store.settings.themeMode === 'light' ? 'text-emerald-600' : 'text-emerald-400'"
+                  class="transition-all duration-300" fill="transparent" />
         </svg>
       </div>
 
-      <span class="font-mono font-black text-xs text-emerald-400">
+      <span class="font-mono font-black text-xs"
+            :class="store.settings.themeMode === 'light' ? 'text-emerald-700' : 'text-emerald-400'">
         {{ formatTime(store.restTimer.remaining) }}
       </span>
     </div>
 
     <!-- Default Expanded Action Bar (Directional zero-jump expansion) -->
     <div v-else 
-         class="bg-zinc-900/98 border border-zinc-700/90 backdrop-blur-2xl rounded-2xl px-2.5 py-1.5 shadow-2xl shadow-black flex items-center gap-2 text-white animate-in zoom-in-95 duration-200">
+         class="backdrop-blur-2xl rounded-2xl px-2.5 py-1.5 flex items-center gap-2 animate-in zoom-in-95 duration-200"
+         :class="store.settings.themeMode === 'light'
+           ? 'bg-white/98 border border-slate-300 shadow-xl shadow-slate-900/10 text-[#0F172A]'
+           : 'bg-zinc-900/98 border border-zinc-700/90 shadow-2xl shadow-black text-white'">
       
       <!-- Action Buttons (Ordered dynamically: left when on right side, right when on left side) -->
       <div class="flex items-center gap-1 flex-shrink-0" :class="{ 'order-1': isRightHalf, 'order-2': !isRightHalf }">
         <button @click.stop="adjustRestTimer(-15)" 
-                class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 active:scale-90 text-zinc-300 rounded-lg text-xs font-mono font-bold border border-zinc-700 transition-all">
+                class="px-2 py-1 active:scale-90 rounded-lg text-xs font-mono font-bold border transition-all"
+                :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border-zinc-700'">
           -15s
         </button>
         <button @click.stop="adjustRestTimer(30)" 
-                class="px-2 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 active:scale-90 text-emerald-300 rounded-lg text-xs font-mono font-bold border border-emerald-500/30 transition-all">
+                class="px-2 py-1 active:scale-90 rounded-lg text-xs font-mono font-bold border transition-all"
+                :class="store.settings.themeMode === 'light' ? 'bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-700 border-emerald-500/30' : 'bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border-emerald-500/30'">
           +30s
         </button>
         <button @click.stop="handleClose" 
                 title="关闭休息计时"
-                class="w-6 h-6 rounded-lg bg-zinc-800 hover:bg-red-500/20 hover:text-red-400 active:scale-90 text-zinc-400 flex items-center justify-center text-xs font-bold border border-zinc-700 transition-all">
+                class="w-6 h-6 rounded-lg active:scale-90 flex items-center justify-center text-xs font-bold border transition-all"
+                :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-red-100 text-slate-500 hover:text-red-600 border-slate-300' : 'bg-zinc-800 hover:bg-red-500/20 hover:text-red-400 text-zinc-400 border-zinc-700'">
           ✕
         </button>
       </div>
@@ -170,15 +207,18 @@
       <div class="flex items-center gap-1.5 cursor-pointer" :class="{ 'order-2': isRightHalf, 'order-1': !isRightHalf }" @click="toggleExpand">
         <div class="relative w-6 h-6 flex items-center justify-center flex-shrink-0">
           <svg class="w-6 h-6 transform -rotate-90">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" class="text-zinc-800" fill="transparent" />
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" 
+                    :class="store.settings.themeMode === 'light' ? 'text-slate-200' : 'text-zinc-800'" fill="transparent" />
             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" 
                     :stroke-dasharray="62.8" 
                     :stroke-dashoffset="miniDashOffset" 
                     stroke-linecap="round"
-                    class="text-emerald-400 transition-all duration-300" fill="transparent" />
+                    :class="store.settings.themeMode === 'light' ? 'text-emerald-600' : 'text-emerald-400'"
+                    class="transition-all duration-300" fill="transparent" />
           </svg>
         </div>
-        <span class="font-mono font-black text-xs text-emerald-400">
+        <span class="font-mono font-black text-xs"
+              :class="store.settings.themeMode === 'light' ? 'text-emerald-700' : 'text-emerald-400'">
           {{ formatTime(store.restTimer.remaining) }}
         </span>
       </div>

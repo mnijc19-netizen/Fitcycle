@@ -20,7 +20,7 @@
               </svg>
             </div>
             <div>
-              <h2 class="text-sm font-black text-white tracking-wide">身体形体围度追踪板</h2>
+              <h2 class="text-sm font-black tracking-wide" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">身体形体围度追踪板</h2>
               <p class="text-[10px] text-zinc-400 font-mono">手臂、胸肌、大腿与 V 字腰身蜕变</p>
             </div>
           </div>
@@ -35,19 +35,20 @@
              style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
           
           <!-- V-Taper Golden Ratio & Progress Banner -->
-          <div class="p-4 rounded-2xl bg-gradient-to-br from-amber-500/15 via-zinc-950 to-zinc-900 border border-amber-500/40 space-y-3 shadow-lg">
+          <div class="p-4 rounded-2xl border space-y-3 shadow-lg"
+               :class="store.settings.themeMode === 'light' ? 'bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-slate-50 border-amber-500/30' : 'bg-gradient-to-br from-amber-500/15 via-zinc-950 to-zinc-900 border-amber-500/40'">
             <div class="flex items-center justify-between">
               <div>
                 <div class="flex items-center gap-1.5">
                   <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                   </svg>
-                  <span class="text-xs font-bold text-amber-300">黄金 V 身比例指数 (胸腰比)</span>
+                  <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-300'">黄金 V 身比例指数 (胸腰比)</span>
                 </div>
-                <span class="text-[10px] text-zinc-400 font-mono mt-0.5 block">自然健身理想区间: 1.25 ~ 1.40</span>
+                <span class="text-[10px] font-mono mt-0.5 block" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">自然健身理想区间: 1.25 ~ 1.40</span>
               </div>
               <div class="text-right">
-                <span class="text-xl font-black text-white font-mono tracking-tight">{{ vTaperRatio }}</span>
+                <span class="text-xl font-black font-mono tracking-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">{{ vTaperRatio }}</span>
                 <span class="text-[9px] px-2 py-0.5 rounded-full border font-bold ml-1.5 align-middle"
                       :class="vTaperGradeClass">
                   {{ vTaperGradeText }}

@@ -168,7 +168,7 @@
             <div>
               <label class="text-xs text-zinc-400 font-medium">动作名称 *</label>
               <input v-model="newEx.name" type="text" placeholder="例如：上斜绳索夹胸" 
-                     class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500" />
+                     class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-zinc-100 focus:outline-none focus:border-amber-500" />
             </div>
 
             <div>
@@ -187,13 +187,13 @@
             <div>
               <label class="text-xs text-zinc-400 font-medium">目标肌群与发力点</label>
               <input v-model="newEx.target" type="text" placeholder="例如：胸大肌上部纤维、强调内收峰收缩" 
-                     class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500" />
+                     class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-zinc-100 focus:outline-none focus:border-amber-500" />
             </div>
 
             <div>
               <label class="text-xs text-zinc-400 font-medium">动作美学目的与科学细节</label>
               <textarea v-model="newEx.scienceDetail" rows="3" placeholder="为什么做这个动作？刺激哪个位置？" 
-                        class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"></textarea>
+                        class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-zinc-100 focus:outline-none focus:border-amber-500"></textarea>
             </div>
           </div>
 
