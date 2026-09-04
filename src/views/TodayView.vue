@@ -622,27 +622,31 @@
     />
 
     <!-- 5. Choose Other Plan Modal -->
-    <div v-if="showPlanPicker" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4">
-      <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-md w-full p-4 space-y-3 animate-in slide-in-from-bottom duration-200">
-        <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
-          <h3 class="text-base font-bold text-zinc-100">选择计划开始训练</h3>
-          <button @click="showPlanPicker = false" class="p-1.5 bg-zinc-800 rounded-full text-zinc-400">✕</button>
-        </div>
-        <div class="space-y-2 max-h-80 overflow-y-auto">
-          <div v-for="p in store.plans" :key="p.id"
-               @click="startCustomPlan(p.id)"
-               class="p-3 bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 rounded-2xl cursor-pointer flex items-center justify-between">
-            <div>
-              <div class="text-xs font-bold text-zinc-100">{{ p.name }}</div>
-              <div class="text-[11px] text-zinc-400 mt-0.5">{{ p.coreTarget }}</div>
+    <Teleport to="body">
+      <div v-if="showPlanPicker" 
+           class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-xl p-0 sm:p-4 animate-in fade-in duration-200"
+           style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
+        <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-md w-full p-4 space-y-3 animate-in slide-in-from-bottom duration-200 shadow-2xl">
+          <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
+            <h3 class="text-sm font-black text-zinc-100">选择计划开始训练</h3>
+            <button @click="showPlanPicker = false" class="w-7 h-7 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer">✕</button>
+          </div>
+          <div class="space-y-2 max-h-80 overflow-y-auto">
+            <div v-for="p in store.plans" :key="p.id"
+                 @click="startCustomPlan(p.id)"
+                 class="p-3 bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 rounded-2xl cursor-pointer flex items-center justify-between transition-colors">
+              <div>
+                <div class="text-xs font-bold text-zinc-100">{{ p.name }}</div>
+                <div class="text-[11px] text-zinc-400 mt-0.5">{{ p.coreTarget }}</div>
+              </div>
+              <button class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold rounded-xl text-xs transition-colors cursor-pointer">
+                开始
+              </button>
             </div>
-            <button class="px-3 py-1.5 bg-amber-500 text-zinc-950 font-bold rounded-xl text-xs">
-              开始
-            </button>
           </div>
         </div>
       </div>
-    </div>
+    </Teleport>
 
     <!-- 6. Summary modal -->
     <WorkoutSummaryModal 
@@ -664,56 +668,66 @@
     />
 
     <!-- 7. Auto Workout Finish Celebration Modal (智能防漏结算与加练弹窗) -->
-    <div v-if="showAutoFinishModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div class="absolute inset-0 bg-black/80 backdrop-blur-md" @click="showAutoFinishModal = false"></div>
-      <div class="relative w-full max-w-sm bg-zinc-950 border border-amber-500/50 rounded-3xl p-5 shadow-2xl space-y-3.5 text-center animate-in zoom-in-95 duration-200">
-        <div class="w-13 h-13 mx-auto rounded-2xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-center text-3xl shadow-lg shadow-amber-500/20">
-          🏆
-        </div>
-        <div class="space-y-1">
-          <h3 class="text-base font-black text-white">所有动作组已全部达成！</h3>
-          <p class="text-xs text-zinc-400 leading-relaxed">
-            今日计划共 {{ completedSetsCount }} 组打卡完毕！已自动生成今日表现 AI 深度分析。
-          </p>
-        </div>
-
-        <!-- Primary Action: Save & Review -->
-        <button @click="showAutoFinishModal = false; handleFinishWorkout();"
-                class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/30 active:scale-95 transition-all flex items-center justify-center gap-1.5">
-          <span>💾</span> 立即结算保存并查看 AI 战绩
-        </button>
-
-        <!-- Quick Add-On Workout Chips (小块加练选项) -->
-        <div class="pt-1 space-y-2 text-left border-t border-zinc-800/80">
-          <div class="text-[11px] font-bold text-zinc-400 flex items-center gap-1">
-            <span>💥</span> 还想再泵一会儿？快捷加练:
+    <Teleport to="body">
+      <div v-if="showAutoFinishModal" 
+           class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200"
+           style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
+        <div class="absolute inset-0" @click="showAutoFinishModal = false"></div>
+        <div class="relative w-full max-w-sm bg-zinc-950 border border-amber-500/50 rounded-3xl p-5 shadow-2xl space-y-3.5 text-center animate-in zoom-in-95 duration-200">
+          <div class="w-12 h-12 mx-auto rounded-2xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-center text-amber-400 shadow-lg shadow-amber-500/20">
+            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+              <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/>
+            </svg>
           </div>
-          <div class="grid grid-cols-2 gap-1.5">
-            <button @click="quickAddFinalSet"
-                    class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-amber-500/40 rounded-xl text-[11px] text-zinc-300 font-medium active:scale-95 transition-all flex items-center gap-1.5">
-              <span>➕</span> 最后一项力竭1组
-            </button>
-            <button @click="quickAddCoreExercises"
-                    class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-sky-500/40 rounded-xl text-[11px] text-zinc-300 font-medium active:scale-95 transition-all flex items-center gap-1.5">
-              <span>⚡</span> 核心强化 3组
-            </button>
-            <button @click="quickAddPumpExercises"
-                    class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-purple-500/40 rounded-xl text-[11px] text-zinc-300 font-medium active:scale-95 transition-all flex items-center gap-1.5">
-              <span>💪</span> 臂肩力竭泵感 3组
-            </button>
-            <button @click="quickOpenPicker"
-                    class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-emerald-500/40 rounded-xl text-[11px] text-zinc-300 font-medium active:scale-95 transition-all flex items-center gap-1.5">
-              <span>📖</span> 打开动作库任选
-            </button>
+          <div class="space-y-1">
+            <h3 class="text-base font-black text-white">所有动作组已全部达成！</h3>
+            <p class="text-xs text-zinc-400 leading-relaxed">
+              今日计划共 {{ completedSetsCount }} 组打卡完毕！已自动生成今日表现 AI 深度分析。
+            </p>
           </div>
-        </div>
 
-        <button @click="showAutoFinishModal = false"
-                class="w-full py-2 bg-zinc-950 hover:bg-zinc-900 text-zinc-400 hover:text-zinc-300 text-xs font-semibold rounded-xl border border-zinc-800 transition-colors">
-          稍后再说 / 留在当前页
-        </button>
+          <!-- Primary Action: Save & Review -->
+          <button @click="showAutoFinishModal = false; handleFinishWorkout();"
+                  class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/30 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <svg class="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+            </svg>
+            立即结算保存并查看 AI 战绩
+          </button>
+
+          <!-- Quick Add-On Workout Chips (小块加练选项) -->
+          <div class="pt-1 space-y-2 text-left border-t border-zinc-800/80">
+            <div class="text-[11px] font-bold text-zinc-400 flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              还想再泵一会儿？快捷加练:
+            </div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button @click="quickAddFinalSet"
+                      class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-amber-500/40 rounded-xl text-[11px] text-zinc-300 font-medium active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+                <span class="text-amber-400 font-bold">+</span> 最后一项力竭1组
+              </button>
+              <button @click="quickAddCoreExercises"
+                      class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-sky-500/40 rounded-xl text-[11px] text-zinc-300 font-medium active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+                <span class="text-sky-400 font-bold">✦</span> 核心强化 3组
+              </button>
+              <button @click="quickAddPumpExercises"
+                      class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-purple-500/40 rounded-xl text-[11px] text-zinc-300 font-medium active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+                <span class="text-purple-400 font-bold">▲</span> 臂肩力竭泵感 3组
+              </button>
+              <button @click="quickOpenPicker"
+                      class="p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-emerald-500/40 rounded-xl text-[11px] text-zinc-300 font-medium active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+                <span class="text-emerald-400 font-bold">≡</span> 打开动作库任选
+              </button>
+            </div>
+          </div>
+
+          <button @click="showAutoFinishModal = false"
+                  class="w-full py-2 bg-zinc-900 hover:bg-zinc-850 text-zinc-400 hover:text-zinc-300 text-xs font-semibold rounded-xl border border-zinc-800 transition-colors cursor-pointer">
+            稍后再说 / 留在当前页
+          </button>
+        </div>
       </div>
-    </div>
+    </Teleport>
 
   </div>
 </template>

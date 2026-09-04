@@ -102,53 +102,57 @@
     />
 
     <!-- Quick Create Modal -->
-    <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4">
-      <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-md w-full p-4 space-y-3 animate-in slide-in-from-bottom duration-200">
-        <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
-          <h3 class="text-base font-bold text-zinc-100">添加自定义动作</h3>
-          <button @click="showCreateModal = false" class="p-1.5 bg-zinc-800 rounded-full text-zinc-400">✕</button>
-        </div>
-
-        <div class="space-y-3">
-          <div>
-            <label class="text-xs text-zinc-400 font-medium">动作名称 *</label>
-            <input v-model="newEx.name" type="text" placeholder="例如：上斜绳索夹胸" 
-                   class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white" />
+    <Teleport to="body">
+      <div v-if="showCreateModal" 
+           class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-xl p-0 sm:p-4 animate-in fade-in duration-200"
+           style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
+        <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-md w-full p-4 space-y-3 animate-in slide-in-from-bottom duration-200 shadow-2xl">
+          <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
+            <h3 class="text-sm font-black text-zinc-100">添加自定义动作</h3>
+            <button @click="showCreateModal = false" class="w-7 h-7 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer">✕</button>
           </div>
 
-          <div>
-            <label class="text-xs text-zinc-400 font-medium">所属部位</label>
-            <div class="grid grid-cols-4 gap-1.5 mt-1">
-              <button v-for="c in categories.filter(x => x !== '全部')" :key="c"
-                      type="button"
-                      @click="newEx.category = c"
-                      class="py-1.5 text-xs rounded-lg border text-center"
-                      :class="[newEx.category === c ? 'bg-amber-500 text-zinc-950 border-amber-500 font-bold' : 'bg-zinc-950 border-zinc-800 text-zinc-300']">
-                {{ c }}
-              </button>
+          <div class="space-y-3">
+            <div>
+              <label class="text-xs text-zinc-400 font-medium">动作名称 *</label>
+              <input v-model="newEx.name" type="text" placeholder="例如：上斜绳索夹胸" 
+                     class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500" />
+            </div>
+
+            <div>
+              <label class="text-xs text-zinc-400 font-medium">所属部位</label>
+              <div class="grid grid-cols-4 gap-1.5 mt-1">
+                <button v-for="c in categories.filter(x => x !== '全部')" :key="c"
+                        type="button"
+                        @click="newEx.category = c"
+                        class="py-1.5 text-xs rounded-lg border text-center transition-colors cursor-pointer"
+                        :class="[newEx.category === c ? 'bg-amber-500 text-zinc-950 border-amber-500 font-bold' : 'bg-zinc-950 border-zinc-800 text-zinc-300']">
+                  {{ c }}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label class="text-xs text-zinc-400 font-medium">目标肌群与发力点</label>
+              <input v-model="newEx.target" type="text" placeholder="例如：胸大肌上部纤维、强调内收峰收缩" 
+                     class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500" />
+            </div>
+
+            <div>
+              <label class="text-xs text-zinc-400 font-medium">动作美学目的与科学细节</label>
+              <textarea v-model="newEx.scienceDetail" rows="3" placeholder="为什么做这个动作？刺激哪个位置？" 
+                        class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"></textarea>
             </div>
           </div>
 
-          <div>
-            <label class="text-xs text-zinc-400 font-medium">目标肌群与发力点</label>
-            <input v-model="newEx.target" type="text" placeholder="例如：胸大肌上部纤维、强调内收峰收缩" 
-                   class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white" />
-          </div>
-
-          <div>
-            <label class="text-xs text-zinc-400 font-medium">动作美学目的与科学细节</label>
-            <textarea v-model="newEx.scienceDetail" rows="3" placeholder="为什么做这个动作？刺激哪个位置？" 
-                      class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-white"></textarea>
-          </div>
+          <button @click="saveNewExercise" 
+                  :disabled="!newEx.name.trim()"
+                  class="w-full py-3 bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-zinc-950 font-black rounded-xl text-xs mt-2 transition-all cursor-pointer">
+            确认添加至动作库
+          </button>
         </div>
-
-        <button @click="saveNewExercise" 
-                :disabled="!newEx.name.trim()"
-                class="w-full py-3 bg-amber-500 disabled:opacity-40 text-zinc-950 font-bold rounded-xl text-xs mt-2">
-          确认添加至动作库
-        </button>
       </div>
-    </div>
+    </Teleport>
 
   </div>
 </template>

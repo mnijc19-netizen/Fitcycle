@@ -1,6 +1,9 @@
 <template>
-  <div v-if="visible" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4">
-    <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
+  <Teleport to="body">
+    <div v-if="visible" 
+         class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-xl p-0 sm:p-4"
+         style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
+      <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
       
       <!-- Modal Header -->
       <div class="p-4 border-b border-zinc-800 flex items-center justify-between">
@@ -130,8 +133,9 @@
         </button>
       </div>
 
+      </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <script setup>

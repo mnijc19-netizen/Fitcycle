@@ -1,8 +1,11 @@
 <template>
-  <div v-if="visible" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-sm p-0 sm:p-4">
-    
-    <!-- Backdrop dismiss -->
-    <div class="absolute inset-0" @click="$emit('close')"></div>
+  <Teleport to="body">
+    <div v-if="visible" 
+         class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-xl p-0 sm:p-4"
+         style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
+      
+      <!-- Backdrop dismiss -->
+      <div class="absolute inset-0" @click="$emit('close')"></div>
 
     <!-- Modal Card / Bottom Sheet -->
     <div class="relative z-10 bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-md w-full h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
@@ -239,13 +242,15 @@
       <!-- Bottom Sticky CTA Button (Yellow / Amber prominent bar) -->
       <div class="p-3.5 bg-zinc-950 border-t border-zinc-800/80 flex-shrink-0 safe-bottom-padding">
         <button @click="handleActionStart" 
-                class="w-full py-3.5 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-400 hover:from-amber-300 hover:to-amber-400 active:scale-98 text-zinc-950 font-black text-sm rounded-2xl shadow-xl shadow-amber-500/25 transition-all flex items-center justify-center gap-2">
-          <span>🚀</span> {{ store.activeWorkout ? '加入/替换至当前训练' : '立即开始训练打卡' }}
+                class="w-full py-3.5 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-400 hover:from-amber-300 hover:to-amber-400 active:scale-98 text-zinc-950 font-black text-sm rounded-2xl shadow-xl shadow-amber-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <span>{{ store.activeWorkout ? '加入/替换至当前训练' : '立即开始训练打卡' }}</span>
         </button>
       </div>
 
     </div>
-  </div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup>

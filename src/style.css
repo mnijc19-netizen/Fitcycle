@@ -271,27 +271,6 @@ button.fixed {
   border-radius: 9999px !important;
 }
 
-/* Chamber Precision Card Corner Markers */
-[data-skin="chamber"] .bg-zinc-900,
-[data-skin="chamber"] .bg-zinc-900\/90 {
-  position: relative;
-}
-
-[data-skin="chamber"] .bg-zinc-900::after,
-[data-skin="chamber"] .bg-zinc-900\/90::after {
-  content: "";
-  position: absolute;
-  top: -1px;
-  right: -1px;
-  width: 6px;
-  height: 6px;
-  border-top: 2px solid var(--fc-accent);
-  border-right: 2px solid var(--fc-accent);
-  border-top-right-radius: 2px;
-  pointer-events: none;
-  opacity: 0.7;
-}
-
 /* Chamber Precision Unlock Flash Animation */
 @keyframes chamber-unlock-pulse {
   0% {
@@ -390,27 +369,6 @@ button.fixed {
 
 [data-skin="cs"] .shadow-amber-500\/20 {
   box-shadow: 0 4px 14px 0 var(--fc-accent-glow) !important;
-}
-
-/* CS2 Tactical Card Corner Markers */
-[data-skin="cs"] .bg-zinc-900,
-[data-skin="cs"] .bg-zinc-900\/90 {
-  position: relative;
-}
-
-[data-skin="cs"] .bg-zinc-900::after,
-[data-skin="cs"] .bg-zinc-900\/90::after {
-  content: "";
-  position: absolute;
-  top: -1px;
-  right: -1px;
-  width: 5px;
-  height: 5px;
-  border-top: 2px solid var(--fc-accent);
-  border-right: 2px solid var(--fc-accent);
-  border-top-right-radius: 2px;
-  pointer-events: none;
-  opacity: 0.8;
 }
 
 [data-skin="cs"] ::selection {

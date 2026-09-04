@@ -1,26 +1,31 @@
 <template>
-  <div v-if="visible" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <!-- Backdrop blur -->
-    <div class="absolute inset-0 bg-black/85 backdrop-blur-md" @click="$emit('close')"></div>
+  <Teleport to="body">
+    <div v-if="visible" 
+         class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200"
+         style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
+      <!-- Backdrop blur -->
+      <div class="absolute inset-0" @click="$emit('close')"></div>
 
-    <!-- Rules Codex Container -->
-    <div class="relative w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-3xl p-5 shadow-2xl space-y-4 max-h-[85vh] flex flex-col animate-in zoom-in-95 duration-200">
-      
-      <!-- Modal Header -->
-      <div class="flex items-center justify-between pb-3 border-b border-zinc-800/80 flex-shrink-0">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 text-base">
-            📜
+      <!-- Rules Codex Container -->
+      <div class="relative w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-3xl p-5 shadow-2xl space-y-4 max-h-[85vh] flex flex-col animate-in zoom-in-95 duration-200">
+        
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between pb-3 border-b border-zinc-800/80 flex-shrink-0">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+              <svg class="w-4 h-4 fill-none stroke-currentColor stroke-2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-white">FitCycle 运动科学与排位规则法典</h3>
+              <p class="text-[10px] text-zinc-400 font-mono">GAME RULES & SPORTS SCIENCE CODEX</p>
+            </div>
           </div>
-          <div>
-            <h3 class="text-sm font-black text-white">FitCycle 运动科学与排位规则法典</h3>
-            <p class="text-[10px] text-zinc-400 font-mono">GAME RULES & SPORTS SCIENCE CODEX</p>
-          </div>
+          <button @click="$emit('close')" class="w-8 h-8 rounded-full bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer">
+            ✕
+          </button>
         </div>
-        <button @click="$emit('close')" class="w-8 h-8 rounded-full bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors">
-          ✕
-        </button>
-      </div>
 
       <!-- Category Filter Tabs (Horizontal Scrollable) -->
       <div class="flex items-center gap-1.5 overflow-x-auto pb-1 flex-shrink-0 scrollbar-none">
@@ -241,6 +246,7 @@
 
     </div>
   </div>
+  </Teleport>
 </template>
 
 <script setup>

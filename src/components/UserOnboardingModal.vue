@@ -1,11 +1,14 @@
 <template>
-  <div v-if="visible" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <!-- Non-intrusive Translucent Backdrop (Allows user to see the page underneath) -->
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" @click="handleComplete"></div>
+  <Teleport to="body">
+    <div v-if="visible" 
+         class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200"
+         style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
+      <!-- Non-intrusive Translucent Backdrop (Allows user to see the page underneath) -->
+      <div class="absolute inset-0" @click="handleComplete"></div>
 
-    <!-- Floating Glassmorphic Sheet Modal with Dynamic Ambient Aura -->
-    <div class="relative w-full max-w-sm bg-zinc-950/95 border rounded-3xl p-4 shadow-2xl backdrop-blur-2xl space-y-3 overflow-hidden animate-in zoom-in-95 duration-200 transition-colors"
-         :class="currentSlideTheme.border">
+      <!-- Floating Glassmorphic Sheet Modal with Dynamic Ambient Aura -->
+      <div class="relative w-full max-w-sm bg-zinc-950/95 border rounded-3xl p-4 shadow-2xl backdrop-blur-2xl space-y-3 overflow-hidden animate-in zoom-in-95 duration-200 transition-colors"
+           :class="currentSlideTheme.border">
       
       <!-- Dynamic Ambient Lighting Pulse Background -->
       <div class="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl opacity-25 pointer-events-none transition-all duration-700"
@@ -220,20 +223,21 @@
 
           <button v-else
                   @click="handleComplete"
-                  class="flex-1 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-zinc-950 font-black text-xs rounded-xl shadow-lg shadow-emerald-500/30 active:scale-98 transition-all flex items-center justify-center gap-1.5">
-            <span>🚀 开启特训之旅</span>
+                  class="flex-1 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-zinc-950 font-black text-xs rounded-xl shadow-lg shadow-emerald-500/30 active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <span>开启特训之旅</span>
           </button>
         </div>
 
         <!-- Subtle Swipe Hint -->
         <p class="text-[10px] text-center text-zinc-500 font-mono">
-          👈 左右滑动自由探索
+          左右滑动自由探索
         </p>
 
       </div>
 
     </div>
   </div>
+  </Teleport>
 </template>
 
 <script setup>

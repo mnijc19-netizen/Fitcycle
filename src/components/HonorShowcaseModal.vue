@@ -1,21 +1,28 @@
 <template>
-  <div v-if="visible" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-    <div class="bg-zinc-900 border border-zinc-700/80 rounded-3xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-zinc-100">
-      
-      <!-- Modal Header -->
-      <div class="p-4 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/60 flex-shrink-0">
-        <div class="flex items-center gap-2">
-          <span class="text-xl">🏆</span>
-          <div>
-            <h2 class="text-sm font-black text-white tracking-wide">荣誉殿堂 · 战力天梯</h2>
-            <p class="text-[10px] text-zinc-400 font-mono">{{ honorData.presentation.skinName }}</p>
+  <Teleport to="body">
+    <div v-if="visible" 
+         class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-xl p-0 sm:p-4 animate-in fade-in duration-200"
+         style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
+      <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl w-full max-w-lg max-h-[85vh] flex flex-col shadow-2xl overflow-hidden text-zinc-100">
+        
+        <!-- Modal Header -->
+        <div class="p-4 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/80 flex-shrink-0">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 flex-shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-sm font-black text-white tracking-wide">荣誉殿堂 · 战力天梯</h2>
+              <p class="text-[10px] text-zinc-400 font-mono">{{ honorData.presentation.skinName }}</p>
+            </div>
           </div>
+          <button @click="$emit('close')" 
+                  class="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-zinc-400 hover:text-white flex items-center justify-center text-sm transition-all cursor-pointer">
+            ✕
+          </button>
         </div>
-        <button @click="$emit('close')" 
-                class="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-zinc-400 hover:text-white flex items-center justify-center text-sm transition-all">
-          ✕
-        </button>
-      </div>
 
       <!-- Scrollable Content -->
       <div class="p-4 overflow-y-auto space-y-4 scrollbar-thin flex-1">
@@ -230,7 +237,8 @@
       </div>
 
     </div>
-  </div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup>

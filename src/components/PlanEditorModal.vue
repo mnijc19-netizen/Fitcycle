@@ -1,23 +1,25 @@
-﻿<template>
-  <div v-if="visible" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4">
-    <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
-      
-      <!-- Header -->
-      <div class="p-4 border-b border-zinc-800 flex items-center justify-between">
-        <div>
-          <h3 class="text-base font-bold text-zinc-100 flex items-center gap-1.5">
-            <span>📝</span> {{ editPlan.id ? '编辑训练计划' : '创建新计划' }}
-          </h3>
-          <p class="text-xs text-zinc-400">
-            自定义此计划下的动作、目标组数与次数建议
-          </p>
+<template>
+  <Teleport to="body">
+    <div v-if="visible" 
+         class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-xl p-0 sm:p-4 animate-in fade-in duration-200"
+         style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
+      <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
+        
+        <!-- Header -->
+        <div class="p-4 border-b border-zinc-800 flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-zinc-100 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span>{{ editPlan.id ? '编辑训练计划' : '创建新计划' }}</span>
+            </h3>
+            <p class="text-xs text-zinc-400 mt-0.5">
+              自定义此计划下的动作、目标组数与次数建议
+            </p>
+          </div>
+          <button @click="$emit('close')" class="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer">
+            ✕
+          </button>
         </div>
-        <button @click="$emit('close')" class="p-2 text-zinc-400 hover:text-white rounded-full bg-zinc-800">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-      </div>
 
       <!-- Body Content -->
       <div class="overflow-y-auto flex-1 p-4 space-y-4">
@@ -131,6 +133,7 @@
     />
 
   </div>
+  </Teleport>
 </template>
 
 <script setup>

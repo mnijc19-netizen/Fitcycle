@@ -372,41 +372,50 @@
     </div>
 
     <!-- Full AI Settings Modal Sheet -->
-    <div v-if="showAISettingsModal" class="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <!-- Backdrop -->
-      <div class="absolute inset-0 bg-black/80 backdrop-blur-md" @click="showAISettingsModal = false"></div>
-      
-      <!-- Modal Container with Fixed Header and Scrollable Body -->
-      <section class="relative w-full max-w-lg h-[min(88dvh,720px)] bg-zinc-950 border border-zinc-700 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in fade-in slide-in-from-bottom-6 duration-200">
-        <!-- Fixed Header -->
-        <header class="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-900/95 flex-shrink-0">
-          <div class="flex items-center gap-2">
-            <span class="text-amber-400 font-bold text-sm">✦</span>
-            <h2 class="text-xs font-bold text-zinc-100 uppercase tracking-wider">智能教练配置 (Fitcycle AI)</h2>
+    <Teleport to="body">
+      <div v-if="showAISettingsModal" 
+           class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200"
+           style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
+        <!-- Backdrop -->
+        <div class="absolute inset-0" @click="showAISettingsModal = false"></div>
+        
+        <!-- Modal Container with Fixed Header and Scrollable Body -->
+        <section class="relative w-full max-w-lg h-[min(88dvh,720px)] bg-zinc-950 border border-zinc-700 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in fade-in slide-in-from-bottom-6 duration-200">
+          <!-- Fixed Header -->
+          <header class="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-900/95 flex-shrink-0">
+            <div class="flex items-center gap-2">
+              <span class="text-amber-400 font-bold text-sm">✦</span>
+              <h2 class="text-xs font-bold text-zinc-100 uppercase tracking-wider">智能教练配置 (Fitcycle AI)</h2>
+            </div>
+            <button type="button" @click="showAISettingsModal = false" class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer">✕</button>
+          </header>
+
+          <!-- Scrollable Content Area with Generous Bottom Padding -->
+          <div class="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4" style="padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 6rem), 5rem);">
+            <AISettingsPanel @open-chat="handleOpenChatFromSettings" />
           </div>
-          <button type="button" @click="showAISettingsModal = false" class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center text-xs transition-colors">✕</button>
-        </header>
+        </section>
+      </div>
+    </Teleport>
 
-        <!-- Scrollable Content Area with Generous Bottom Padding -->
-        <div class="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4" style="padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 6rem), 5rem);">
-          <AISettingsPanel @open-chat="handleOpenChatFromSettings" />
-        </div>
-      </section>
-    </div>
-
-    <!-- 📜 Rules Codex & Onboarding Guide Hub -->
+    <!-- Rules Codex & Onboarding Guide Hub -->
     <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-2.5">
       <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center justify-between">
-        <span>📖 规则法典与功能指南</span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+          规则法典与功能指南
+        </span>
         <span class="text-[10px] text-amber-400 font-mono">GUIDE & CODEX</span>
       </div>
 
       <div class="grid grid-cols-2 gap-2 pt-1">
         <!-- Button 1: Open Rules Codex Modal -->
         <button @click="showRulesModal = true"
-                class="p-3 bg-zinc-950 hover:bg-zinc-850 active:scale-98 border border-zinc-800 hover:border-amber-500/40 rounded-2xl text-left transition-all space-y-1 group">
+                class="p-3 bg-zinc-950 hover:bg-zinc-850 active:scale-98 border border-zinc-800 hover:border-amber-500/40 rounded-2xl text-left transition-all space-y-1 group cursor-pointer">
           <div class="text-amber-400 font-bold text-xs flex items-center gap-1.5 group-hover:text-amber-300">
-            <span>📜</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
             <span>排位与衰减规则</span>
           </div>
           <p class="text-[10px] text-zinc-400 leading-tight">
@@ -416,9 +425,9 @@
 
         <!-- Button 2: Open Onboarding Tour Modal -->
         <button @click="showOnboardingModal = true"
-                class="p-3 bg-zinc-950 hover:bg-zinc-850 active:scale-98 border border-zinc-800 hover:border-sky-500/40 rounded-2xl text-left transition-all space-y-1 group">
+                class="p-3 bg-zinc-950 hover:bg-zinc-850 active:scale-98 border border-zinc-800 hover:border-sky-500/40 rounded-2xl text-left transition-all space-y-1 group cursor-pointer">
           <div class="text-sky-400 font-bold text-xs flex items-center gap-1.5 group-hover:text-sky-300">
-            <span>💡</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
             <span>网站功能向导</span>
           </div>
           <p class="text-[10px] text-zinc-400 leading-tight">
@@ -430,8 +439,11 @@
 
     <!-- Data Backup & Reset -->
     <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3">
-      <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">
-        💾 数据安全与备份
+      <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+        </svg>
+        数据安全与备份
       </div>
       <p class="text-[11px] text-zinc-400 leading-relaxed">
         所有计划与打卡记录均保存在手机本地浏览器中，离线可用。建议定期导出备份文件或在不同设备间迁移数据。
@@ -439,13 +451,19 @@
 
       <div class="grid grid-cols-2 gap-2 pt-1">
         <button @click="handleExport" 
-                class="py-3 bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-xs font-bold text-zinc-200 rounded-xl border border-zinc-700/80 flex items-center justify-center gap-1.5">
-          <span>📤</span> 导出备份 JSON
+                class="py-3 bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-xs font-bold text-zinc-200 rounded-xl border border-zinc-700/80 flex items-center justify-center gap-1.5 cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+          </svg>
+          导出备份 JSON
         </button>
 
         <button @click="triggerFileInput" 
-                class="py-3 bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-xs font-bold text-zinc-200 rounded-xl border border-zinc-700/80 flex items-center justify-center gap-1.5">
-          <span>📥</span> 导入备份文件
+                class="py-3 bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-xs font-bold text-zinc-200 rounded-xl border border-zinc-700/80 flex items-center justify-center gap-1.5 cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          导入备份文件
         </button>
         <input ref="fileInput" type="file" accept=".json" class="hidden" @change="handleFileSelected" />
       </div>
@@ -453,22 +471,28 @@
       <div class="space-y-2 pt-2 border-t border-zinc-800">
         <!-- Option 1: Clear Workout Logs Only (Preserves custom plans and unlocked skins) -->
         <button @click="handleClearHistory" 
-                class="w-full py-2.5 bg-zinc-950 hover:bg-amber-950/25 active:scale-98 text-amber-400 hover:text-amber-300 text-xs font-bold rounded-xl border border-amber-500/30 hover:border-amber-500/50 transition-all flex items-center justify-center gap-1.5">
-          <span>🗑️</span> 清空所有打卡与训练记录 (试用体验重置)
+                class="w-full py-2.5 bg-zinc-950 hover:bg-amber-950/25 active:scale-98 text-amber-400 hover:text-amber-300 text-xs font-bold rounded-xl border border-amber-500/30 hover:border-amber-500/50 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+          清空所有打卡与训练记录 (试用体验重置)
         </button>
 
         <!-- Option 2: Full Factory Reset (All data & default plans) -->
         <button @click="handleResetDefaults" 
-                class="w-full py-2 bg-zinc-950 hover:bg-red-950/30 active:scale-98 text-zinc-500 hover:text-red-400 text-[11px] font-semibold rounded-xl border border-zinc-800/80 transition-colors flex items-center justify-center gap-1">
-          <span>⚠️</span> 恢复出厂默认设置 (重置全部计划与数据)
+                class="w-full py-2 bg-zinc-950 hover:bg-red-950/30 active:scale-98 text-zinc-500 hover:text-red-400 text-[11px] font-semibold rounded-xl border border-zinc-800/80 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          恢复出厂默认设置 (重置全部计划与数据)
         </button>
       </div>
     </div>
 
     <!-- In-page Toast Notification -->
     <div v-if="toastText"
-         class="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-zinc-900/95 border border-amber-500/50 shadow-2xl rounded-full text-xs font-bold text-amber-400 flex items-center gap-2 backdrop-blur-md">
-      <span>✨</span>
+         class="fixed top-16 left-1/2 -translate-x-1/2 z-[150] px-4 py-2 bg-zinc-900/95 border border-amber-500/50 shadow-2xl rounded-full text-xs font-bold text-amber-400 flex items-center gap-2 backdrop-blur-md">
+      <span class="animate-pulse text-sm">✦</span>
       <span>{{ toastText }}</span>
     </div>
 
