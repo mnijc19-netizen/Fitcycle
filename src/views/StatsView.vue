@@ -203,8 +203,43 @@
       </div>
 
       <div class="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl p-3.5 space-y-3 shadow-sm">
+        <!-- Day / Night Appearance Mode Segmented Controller -->
+        <div class="space-y-1.5 pb-1">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-zinc-200">环境光感</span>
+            <span class="text-[10px] text-zinc-400 font-mono">
+              {{ store.settings.themeMode === 'light' ? '白昼晨光高反差' : '深邃夜色护眼' }}
+            </span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 p-1 bg-zinc-950/60 rounded-xl border border-zinc-800/80">
+            <button @click="handleSelectThemeMode('dark')"
+                    type="button"
+                    class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer"
+                    :class="store.settings.themeMode !== 'light' ? 'bg-zinc-800 text-amber-400 shadow-sm border border-zinc-700' : 'text-zinc-400 hover:text-zinc-200'">
+              <span class="text-sm">🌙</span>
+              <span>深邃夜色</span>
+            </button>
+            <button @click="handleSelectThemeMode('light')"
+                    type="button"
+                    class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer"
+                    :class="store.settings.themeMode === 'light' ? 'bg-white text-zinc-900 shadow-sm border border-slate-200' : 'text-zinc-400 hover:text-zinc-200'">
+              <span class="text-sm">☀️</span>
+              <span>白昼晨光</span>
+            </button>
+          </div>
+          <p class="text-[10px] text-zinc-500 leading-tight">
+            💡 切换明暗底色不更改当前段位称号与世界观，仅在日光强光下提供更极致清晰的文字对比度。
+          </p>
+        </div>
+
         <!-- Horizontal Scrollable Skin Carousel -->
-        <div v-if="store.settings.unlockedSkins.length > 1" class="space-y-2">
+        <div v-if="store.settings.unlockedSkins.length > 1" class="space-y-2 border-t border-zinc-800/60 pt-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-zinc-200">主题世界观</span>
+            <span class="text-[10px] text-zinc-400 font-mono">
+              {{ store.settings.unlockedSkins.length }} 款已就绪
+            </span>
+          </div>
           <div class="flex gap-2.5 overflow-x-auto pb-1 scrollbar-none snap-x snap-mandatory">
             <!-- Default Skin -->
             <button @click="handleSelectSkin('default')"
@@ -218,7 +253,7 @@
                 <span class="text-xs font-bold text-zinc-100">默认外观</span>
                 <span v-if="store.settings.uiSkin === 'default'" class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
               </div>
-              <div class="text-[10px] text-zinc-400 leading-tight">经典深灰黑 · 活力金</div>
+              <div class="text-[10px] text-zinc-400 leading-tight">科学力量 · 深空/陶瓷白</div>
               <div class="flex items-center gap-1 mt-1">
                 <span class="w-2 h-2 rounded-full bg-zinc-950 border border-zinc-700"></span>
                 <span class="w-2 h-2 rounded-full bg-amber-500"></span>
@@ -239,7 +274,7 @@
                 <span class="text-xs font-bold text-zinc-100">尚博勒</span>
                 <span v-if="store.settings.uiSkin === 'chamber'" class="w-1.5 h-1.5 rounded-full bg-[#E5C378]"></span>
               </div>
-              <div class="text-[10px] text-zinc-400 leading-tight">精密深蓝 · 香槟金</div>
+              <div class="text-[10px] text-zinc-400 leading-tight">法式特工 · 深蓝/白西装</div>
               <div class="flex items-center gap-1 mt-1">
                 <span class="w-2 h-2 rounded-full bg-[#070B14] border border-[#1E3052]"></span>
                 <span class="w-2 h-2 rounded-full bg-[#E5C378]"></span>
@@ -260,11 +295,32 @@
                 <span class="text-xs font-bold text-zinc-100">CS2 特训</span>
                 <span v-if="store.settings.uiSkin === 'cs'" class="w-1.5 h-1.5 rounded-full bg-[#F97316]"></span>
               </div>
-              <div class="text-[10px] text-zinc-400 leading-tight">战术竞技 · 索尔曼&戴劳</div>
+              <div class="text-[10px] text-zinc-400 leading-tight">战术竞技 · 枪铁/极地雪原</div>
               <div class="flex items-center gap-1 mt-1">
                 <span class="w-2 h-2 rounded-full bg-[#080C14] border border-[#1E293B]"></span>
                 <span class="w-2 h-2 rounded-full bg-[#F97316]"></span>
                 <span v-if="store.settings.uiSkin === 'cs'" class="text-[9px] text-[#F97316] font-bold ml-auto font-mono">使用中</span>
+              </div>
+            </button>
+
+            <!-- Monochrome Skin (典藏黑白) -->
+            <button v-if="store.settings.unlockedSkins.includes('monochrome')"
+                    @click="handleSelectSkin('monochrome')"
+                    class="flex-shrink-0 w-[155px] snap-start p-3 rounded-xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[88px] cursor-pointer"
+                    :class="[
+                      store.settings.uiSkin === 'monochrome' 
+                        ? 'bg-[#121212] border-white shadow-sm ring-1 ring-white/50' 
+                        : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80'
+                    ]">
+              <div class="flex items-center justify-between w-full">
+                <span class="text-xs font-bold text-zinc-100">典藏黑白</span>
+                <span v-if="store.settings.uiSkin === 'monochrome'" class="w-1.5 h-1.5 rounded-full bg-white"></span>
+              </div>
+              <div class="text-[10px] text-zinc-400 leading-tight">极简纯粹 · 刀锋秩序</div>
+              <div class="flex items-center gap-1 mt-1">
+                <span class="w-2 h-2 rounded-full bg-black border border-white/60"></span>
+                <span class="w-2 h-2 rounded-full bg-white"></span>
+                <span v-if="store.settings.uiSkin === 'monochrome'" class="text-[9px] text-white font-bold ml-auto font-mono">使用中</span>
               </div>
             </button>
           </div>
@@ -537,7 +593,8 @@ import {
   setUISkin,
   restoreDefaultSkin,
   getFullHonorProfile,
-  toggleDeloadShield
+  toggleDeloadShield,
+  setThemeMode
 } from "../store/fitnessStore.js";
 
 const showHonorModal = ref(false);
@@ -592,6 +649,11 @@ function showToast(msg) {
   }, 2500);
 }
 
+function handleSelectThemeMode(mode) {
+  setThemeMode(mode);
+  showToast(mode === "light" ? "☀️ 已切换为白昼晨光高反差模式" : "🌙 已切换为深邃夜色护眼模式");
+}
+
 function handlePasscodeSubmit() {
   passcodeError.value = false;
   const result = unlockSkin(passcodeInput.value);
@@ -610,6 +672,8 @@ function handleSelectSkin(skinName) {
     showToast("已启用尚博勒隐藏皮肤");
   } else if (skinName === "cs") {
     showToast("💥 已启用 CS2 完美特训战术皮肤");
+  } else if (skinName === "monochrome") {
+    showToast("已启用典藏黑白纯粹美学皮肤");
   } else {
     showToast("已切换至默认外观");
   }

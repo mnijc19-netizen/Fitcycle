@@ -4,7 +4,7 @@ import { playSetCompleteSound, playRestCompleteSound, playWorkoutDoneSound } fro
 import { triggerHaptic } from "../utils/vibrate.js";
 import { universalScrollToTop } from "../utils/scrollUtils.js";
 import { requestNotificationPermission, sendRestCompleteNotification, updateDocumentTitleForTimer, setRestCompleteTitle, resetDocumentTitle } from "../utils/notification.js";
-import { DEFAULT_SETTINGS, sanitizeSettings, verifyPasscode, getPasscodeSkin, VALID_SKINS, applySkinToDOM } from "../utils/themeManager.js";
+import { DEFAULT_SETTINGS, sanitizeSettings, verifyPasscode, getPasscodeSkin, VALID_SKINS, VALID_THEME_MODES, applySkinToDOM, applyThemeToDOM } from "../utils/themeManager.js";
 import { calculateInactivityDecay, calculateSessionPointsEarned, getTierForScore, evaluateUnlockedBadges, calculateEquivalentTonnage, calculateShieldInventory } from "../engine/honorEngine.js";
 import { getSkinHonorPresentation } from "../engine/skinHonorSchemas.js";
 
@@ -121,14 +121,14 @@ const defaultInitialState = {
 const saved = loadSavedState();
 export const store = reactive(saved ? { ...defaultInitialState, ...saved, settings: sanitizeSettings(saved.settings) } : defaultInitialState);
 
-// Immediately apply current skin to document
-applySkinToDOM(store.settings.uiSkin);
+// Immediately apply current skin and theme mode to document
+applyThemeToDOM(store.settings.uiSkin, store.settings.themeMode);
 
-// Watch for UI skin changes and keep DOM attribute / theme-color updated
+// Watch for UI skin and theme mode changes and keep DOM attributes / theme-color updated
 watch(
-  () => store.settings.uiSkin,
-  (newSkin) => {
-    applySkinToDOM(newSkin);
+  [() => store.settings.uiSkin, () => store.settings.themeMode],
+  ([newSkin, newMode]) => {
+    applyThemeToDOM(newSkin, newMode);
   },
   { immediate: true }
 );
@@ -635,6 +635,21 @@ export function saveCustomCycle(cycleData) {
 }
 
 // --- THEME / SKIN ACTIONS ---
+export function setThemeMode(mode) {
+  const targetMode = VALID_THEME_MODES.includes(mode) ? mode : "dark";
+  store.settings.themeMode = targetMode;
+  store.settings.theme = targetMode;
+  applyThemeToDOM(store.settings.uiSkin, targetMode);
+  if (store.settings.vibrationEnabled) triggerHaptic("light");
+}
+
+export function toggleThemeMode() {
+  const currentMode = store.settings.themeMode === "light" ? "light" : "dark";
+  const nextMode = currentMode === "light" ? "dark" : "light";
+  setThemeMode(nextMode);
+  return nextMode;
+}
+
 export function unlockSkin(passcodeInput) {
   const targetSkin = getPasscodeSkin(passcodeInput);
   if (!targetSkin) {
@@ -645,13 +660,14 @@ export function unlockSkin(passcodeInput) {
     store.settings.unlockedSkins.push(targetSkin);
   }
   store.settings.uiSkin = targetSkin;
-  applySkinToDOM(targetSkin);
+  applyThemeToDOM(targetSkin, store.settings.themeMode);
 
   if (store.settings.vibrationEnabled) triggerHaptic("success");
   
   const skinMessages = {
     chamber: "尚博勒灵感隐藏界面皮肤已激活！",
-    cs: "💥 C4 已安放！CS2 完美特训战术皮肤已激活！"
+    cs: "💥 C4 已安放！CS2 完美特训战术皮肤已激活！",
+    monochrome: "典藏极简黑白纯粹美学皮肤已激活！"
   };
   return { success: true, skin: targetSkin, message: skinMessages[targetSkin] || "隐藏皮肤已解锁" };
 }
@@ -676,7 +692,7 @@ export function setUISkin(skinName) {
   const target = VALID_SKINS.includes(skinName) ? skinName : "default";
   if (target === "default" || store.settings.unlockedSkins.includes(target)) {
     store.settings.uiSkin = target;
-    applySkinToDOM(target);
+    applyThemeToDOM(target, store.settings.themeMode);
     if (store.settings.vibrationEnabled) triggerHaptic("light");
     triggerSkinSplash(target);
   }
@@ -684,7 +700,7 @@ export function setUISkin(skinName) {
 
 export function restoreDefaultSkin() {
   store.settings.uiSkin = "default";
-  applySkinToDOM("default");
+  applyThemeToDOM("default", store.settings.themeMode);
   if (store.settings.vibrationEnabled) triggerHaptic("light");
   triggerSkinSplash("default");
   return { success: true, message: "已恢复默认外观，训练数据未改变" };
@@ -708,7 +724,7 @@ export function clearWorkoutHistory() {
 export function resetAllDataToDefault() {
   localStorage.removeItem(STORAGE_KEY);
   Object.assign(store, JSON.parse(JSON.stringify(defaultInitialState)));
-  applySkinToDOM("default");
+  applyThemeToDOM("default", "dark");
   if (store.settings.vibrationEnabled) triggerHaptic("warning");
 }
 
@@ -755,7 +771,7 @@ export function importBackupJSON(jsonStr) {
     }
     if (parsed.settings) {
       store.settings = sanitizeSettings(parsed.settings);
-      applySkinToDOM(store.settings.uiSkin);
+      applyThemeToDOM(store.settings.uiSkin, store.settings.themeMode);
     }
     if (store.settings.vibrationEnabled) triggerHaptic("success");
     return true;

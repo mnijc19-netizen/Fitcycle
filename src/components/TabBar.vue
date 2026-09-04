@@ -1,12 +1,6 @@
 <template>
   <nav class="fixed bottom-0 left-0 right-0 z-30 px-2 pt-1.5 transition-colors duration-200"
-       :class="[
-         store.settings.uiSkin === 'chamber' 
-           ? 'bg-[#070B14]/98 backdrop-blur-2xl border-t border-[#E5C378]/30 shadow-2xl shadow-black' 
-           : store.settings.uiSkin === 'cs'
-           ? 'bg-[#080C14]/98 backdrop-blur-2xl border-t border-[#F97316]/40 shadow-2xl shadow-black'
-           : 'bg-zinc-950/95 backdrop-blur-xl border-t border-zinc-800/80'
-       ]"
+       :class="tabBarThemeClasses"
        style="padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px); transform: translateZ(0); -webkit-transform: translateZ(0);">
     
     <!-- Top fine hairline shimmer for Chamber & CS2 -->
@@ -231,6 +225,7 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { store } from "../store/fitnessStore.js";
 import { triggerHaptic } from "../utils/vibrate.js";
 import { universalScrollToTop } from "../utils/scrollUtils.js";
@@ -245,6 +240,29 @@ const csCycleIcon = "./themes/cs/icons/c4.svg";
 const csCalendarIcon = "./themes/cs/icons/defuser.svg";
 const csExercisesIcon = "./themes/cs/icons/awp.svg";
 const csStatsIcon = "./themes/cs/icons/skillgroup18.svg";
+
+const tabBarThemeClasses = computed(() => {
+  const isLight = store.settings.themeMode === "light";
+  const skin = store.settings.uiSkin;
+  if (skin === "chamber") {
+    return isLight
+      ? "bg-[#F9F8F5]/96 backdrop-blur-2xl border-t border-[#D8CEB9] shadow-lg shadow-black/5"
+      : "bg-[#070B14]/98 backdrop-blur-2xl border-t border-[#E5C378]/30 shadow-2xl shadow-black";
+  }
+  if (skin === "cs") {
+    return isLight
+      ? "bg-[#F1F5F9]/96 backdrop-blur-2xl border-t border-slate-300 shadow-lg shadow-black/5"
+      : "bg-[#090D15]/98 backdrop-blur-2xl border-t border-[#FA5A00]/40 shadow-2xl shadow-black";
+  }
+  if (skin === "monochrome") {
+    return isLight
+      ? "bg-white/96 backdrop-blur-2xl border-t border-neutral-300 shadow-lg shadow-black/5"
+      : "bg-black/98 backdrop-blur-2xl border-t border-neutral-800 shadow-2xl shadow-black";
+  }
+  return isLight
+    ? "bg-[#F6F8FA]/96 backdrop-blur-xl border-t border-slate-200 shadow-lg shadow-black/5"
+    : "bg-[#0B0D11]/95 backdrop-blur-xl border-t border-zinc-800/80";
+});
 
 function switchTab(tabName) {
   if (store.activeTab === tabName) {

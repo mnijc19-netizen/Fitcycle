@@ -103,6 +103,11 @@ Fitcycle 采用严格单向依赖的 5 层洋葱架构，**严禁跨层反向污
     * **动态安全区与浮动交互吸附**：针对普通浏览器（0px safe-area）与独立 WebApp（通常 34px Home 条 safe-area）的动态突变，浮动操作胶囊必须基于 `calc(max(env(safe-area-inset-bottom, 0px), 8px) + [TabBarOffset])` 动态吸附，严禁硬编码固定 bottom 导致被底栏遮挡；
     * **跨容器宿主滚动三角适配**：多端/PWA 容器滚动宿主可能在 `window`、`documentElement` 或 `body` 漂移。回顶与位移必须通过 `src/utils/scrollUtils.js` 三角取值与多宿主同步 `scrollTo`，确保 100% 顺滑回顶；
     * **主导航粘性层级保护**：顶部 Navbar 必须为根级独立 `position: sticky top-0` 容器，严禁包裹在等高外层 div 中导致滚动逃逸，彻底保护手机系统状态栏（时间/电池）。
+*   **公理 1.7（明暗光感与世界观解耦公理 Orthogonal Appearance & Lore Parity Axiom）**：
+    * **身份与光感绝对正交**：系统的【外观明暗底色 (`data-mode="dark" | "light"`)】与【世界观称号系统 (`data-skin="default" | "chamber" | "cs" | "monochrome"`)】必须保持 100% 架构级解耦；
+    * **段位称谓神圣不可篡改**：用户在白天强光或夜间暗光下切换明暗底色，当前所属的段位荣誉、特工称号、徽章称谓与做工吨位**绝对保持 100% 连贯不变**，严禁因切换底色而篡改用户段位；
+    * **全场景 WCAG AA/AAA 对比度保障**：所有 8 大色谱矩阵（3 套暗夜、3 套白昼、2 套典藏黑白）在任何材质下均需满足主要文字 $\ge 4.5:1$（AA）甚至 $\ge 7:1$（AAA），按钮与控件在 Normal/Hover/Active 下严格达标，杜绝眩光、灰底灰字或反差不足。
+
 
 
 ### 卷二：【训练分化、周期与动作库宪法】

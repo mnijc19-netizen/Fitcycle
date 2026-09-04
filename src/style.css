@@ -8,89 +8,230 @@
     --sar: env(safe-area-inset-right, 0px);
   }
 
-  /* Default Theme (Classic Dark Zinc + Amber) */
-  :root, [data-skin="default"] {
-    --fc-bg: #09090b; /* zinc-950 */
-    --fc-surface-1: #18181b; /* zinc-900 */
-    --fc-surface-1-glass: rgba(24, 24, 27, 0.92);
-    --fc-surface-2: #27272a; /* zinc-800 */
-    --fc-surface-3: #3f3f46; /* zinc-700 */
-    --fc-modal-bg: #18181b;
-    --fc-modal-glass: rgba(24, 24, 27, 0.98);
-    --fc-border: #27272a; /* zinc-800 */
-    --fc-border-subtle: #3f3f46; /* zinc-700 */
-    --fc-text-primary: #f4f4f5; /* zinc-100 */
-    --fc-text-secondary: #a1a1aa; /* zinc-400 */
-    --fc-text-muted: #71717a; /* zinc-500 */
-    
-    --fc-accent: #f59e0b; /* amber-500 */
-    --fc-accent-hover: #d97706; /* amber-600 */
-    --fc-accent-active: #b45309;
-    --fc-accent-text: #09090b;
+  /* ========================================================================= */
+  /* LAYER 2 & 3: 4-LAYER TOKEN ARCHITECTURE (8 THEME PALETTE MATRIX)          */
+  /* ========================================================================= */
+
+  /* 1.1 Default Appearance · Apple Pro Space Black (Dark) */
+  :root,
+  [data-skin="default"][data-theme="dark"],
+  [data-skin="default"][data-mode="dark"],
+  [data-skin="default"]:not([data-theme="light"]):not([data-mode="light"]),
+  :root:not([data-theme="light"]):not([data-mode="light"]):not([data-skin="cs"]):not([data-skin="chamber"]):not([data-skin="monochrome"]) {
+    --fc-bg: #0B0D11;
+    --fc-surface-1: #12151C;
+    --fc-surface-1-glass: rgba(18, 21, 28, 0.92);
+    --fc-surface-2: #191D26;
+    --fc-surface-3: #232836;
+    --fc-modal-bg: #12151C;
+    --fc-modal-glass: rgba(18, 21, 28, 0.98);
+    --fc-border: #262C3A;
+    --fc-border-subtle: rgba(245, 158, 11, 0.25);
+    --fc-text-primary: #F8FAFC;
+    --fc-text-secondary: #A0AEC0;
+    --fc-text-muted: #718096;
+    --fc-accent: #F59E0B;
+    --fc-accent-hover: #D97706;
+    --fc-accent-active: #B45309;
+    --fc-accent-text: #0B0D11;
     --fc-accent-glow: rgba(245, 158, 11, 0.25);
     --fc-accent-subtle: rgba(245, 158, 11, 0.15);
     --fc-accent-border: rgba(245, 158, 11, 0.35);
-
     --fc-btn-radius: 0.75rem;
     --fc-card-radius: 1rem;
   }
 
-  /* Chamber (尚博勒) Bespoke Precision Navy & Champagne Gold Theme */
-  [data-skin="chamber"] {
-    --fc-bg: #070B14; /* deep bespoke navy */
-    --fc-surface-1: #0D1627; /* navy-black primary card */
-    --fc-surface-1-glass: rgba(13, 22, 39, 0.94);
-    --fc-surface-2: #142036; /* cool slate navy subcard */
-    --fc-surface-3: #1B2B4A; /* elevated controls */
-    --fc-modal-bg: #0A111F;
-    --fc-modal-glass: rgba(10, 17, 31, 0.98);
-    --fc-border: #1E3052; /* blueprint precision border */
-    --fc-border-subtle: rgba(229, 195, 120, 0.25); /* champagne gold whisper border */
-    --fc-text-primary: #F7F6F2; /* ivory warm white */
-    --fc-text-secondary: #9AA8C2; /* low-saturation cool blue-gray */
-    --fc-text-muted: #5C6E8F; /* muted blueprint slate */
+  /* 1.2 Default Appearance · Ceramic Pure White (Light) */
+  [data-skin="default"][data-theme="light"],
+  [data-skin="default"][data-mode="light"],
+  [data-theme="light"]:not([data-skin="cs"]):not([data-skin="chamber"]):not([data-skin="monochrome"]),
+  [data-mode="light"]:not([data-skin="cs"]):not([data-skin="chamber"]):not([data-skin="monochrome"]) {
+    --fc-bg: #F6F8FA;
+    --fc-surface-1: #FFFFFF;
+    --fc-surface-1-glass: rgba(255, 255, 255, 0.92);
+    --fc-surface-2: #EDF1F5;
+    --fc-surface-3: #E2E8F0;
+    --fc-modal-bg: #FFFFFF;
+    --fc-modal-glass: rgba(255, 255, 255, 0.98);
+    --fc-border: #D0D7DE;
+    --fc-border-subtle: rgba(217, 119, 6, 0.25);
+    --fc-text-primary: #0F172A;
+    --fc-text-secondary: #334155;
+    --fc-text-muted: #64748B;
+    --fc-accent: #D97706;
+    --fc-accent-hover: #CC7000;
+    --fc-accent-active: #B45309;
+    --fc-accent-text: #0F172A;
+    --fc-accent-glow: rgba(217, 119, 6, 0.2);
+    --fc-accent-subtle: rgba(217, 119, 6, 0.12);
+    --fc-accent-border: rgba(217, 119, 6, 0.35);
+    --fc-btn-radius: 0.75rem;
+    --fc-card-radius: 1rem;
+  }
 
-    --fc-accent: #E5C378; /* bespoke refined champagne gold */
-    --fc-accent-hover: #D4AF37; /* classic gold */
+  /* 2.1 CS2 Special Drill · Tactical Gunmetal (Dark) */
+  [data-skin="cs"][data-theme="dark"],
+  [data-skin="cs"][data-mode="dark"],
+  [data-skin="cs"]:not([data-theme="light"]):not([data-mode="light"]) {
+    --fc-bg: #090D15;
+    --fc-surface-1: #0F172A;
+    --fc-surface-1-glass: rgba(15, 23, 42, 0.94);
+    --fc-surface-2: #172134;
+    --fc-surface-3: #212E46;
+    --fc-modal-bg: #0F172A;
+    --fc-modal-glass: rgba(15, 23, 42, 0.98);
+    --fc-border: #1E2C44;
+    --fc-border-subtle: rgba(250, 90, 0, 0.3);
+    --fc-text-primary: #F8FAFC;
+    --fc-text-secondary: #9EABC0;
+    --fc-text-muted: #718096;
+    --fc-accent: #FA5A00;
+    --fc-accent-hover: #E04E00;
+    --fc-accent-active: #C2410C;
+    --fc-accent-text: #090D15;
+    --fc-accent-glow: rgba(250, 90, 0, 0.3);
+    --fc-accent-subtle: rgba(250, 90, 0, 0.15);
+    --fc-accent-border: rgba(250, 90, 0, 0.45);
+    --fc-ct-blue: #38BDF8;
+    --fc-t-yellow: #EAB308;
+    --fc-btn-radius: 0.5rem;
+    --fc-card-radius: 0.875rem;
+  }
+
+  /* 2.2 CS2 Special Drill · Arctic Tactical (Light) */
+  [data-skin="cs"][data-theme="light"],
+  [data-skin="cs"][data-mode="light"] {
+    --fc-bg: #F1F5F9;
+    --fc-surface-1: #FFFFFF;
+    --fc-surface-1-glass: rgba(255, 255, 255, 0.94);
+    --fc-surface-2: #E2E8F0;
+    --fc-surface-3: #CBD5E1;
+    --fc-modal-bg: #FFFFFF;
+    --fc-modal-glass: rgba(255, 255, 255, 0.98);
+    --fc-border: #CBD5E1;
+    --fc-border-subtle: rgba(224, 78, 0, 0.25);
+    --fc-text-primary: #090D16;
+    --fc-text-secondary: #1E293B;
+    --fc-text-muted: #475569;
+    --fc-accent: #E04E00;
+    --fc-accent-hover: #FA5A00;
+    --fc-accent-active: #C2410C;
+    --fc-accent-text: #090D16;
+    --fc-accent-glow: rgba(194, 65, 12, 0.25);
+    --fc-accent-subtle: rgba(194, 65, 12, 0.12);
+    --fc-accent-border: rgba(194, 65, 12, 0.35);
+    --fc-ct-blue: #0284C7;
+    --fc-t-yellow: #B45309;
+    --fc-btn-radius: 0.5rem;
+    --fc-card-radius: 0.875rem;
+  }
+
+  /* 3.1 Chamber · French Navy & Champagne Gold (Dark) */
+  [data-skin="chamber"][data-theme="dark"],
+  [data-skin="chamber"][data-mode="dark"],
+  [data-skin="chamber"]:not([data-theme="light"]):not([data-mode="light"]) {
+    --fc-bg: #070B14;
+    --fc-surface-1: #0C1424;
+    --fc-surface-1-glass: rgba(12, 20, 36, 0.94);
+    --fc-surface-2: #131F37;
+    --fc-surface-3: #1C2B48;
+    --fc-modal-bg: #0C1424;
+    --fc-modal-glass: rgba(12, 20, 36, 0.98);
+    --fc-border: #1E3052;
+    --fc-border-subtle: rgba(229, 195, 120, 0.25);
+    --fc-text-primary: #F7F6F2;
+    --fc-text-secondary: #A2B0CA;
+    --fc-text-muted: #7080A0;
+    --fc-accent: #E5C378;
+    --fc-accent-hover: #D4AF37;
     --fc-accent-active: #B8972E;
-    --fc-accent-text: #070B14; /* deep navy on gold */
+    --fc-accent-text: #070B14;
     --fc-accent-glow: rgba(229, 195, 120, 0.25);
     --fc-accent-subtle: rgba(229, 195, 120, 0.12);
     --fc-accent-border: rgba(229, 195, 120, 0.4);
-
-    --fc-accent-tie: #E06D3B; /* bespoke tie orange */
-    --fc-accent-telecom: #9B5DE5; /* telecom purple */
-
+    --fc-accent-tie: #E06D3B;
+    --fc-accent-telecom: #9B5DE5;
     --fc-btn-radius: 0.375rem;
     --fc-card-radius: 0.75rem;
   }
 
-  /* CS2 (反恐精英 · 完美特训) Tactical Slate & CS2 Orange Theme */
-  [data-skin="cs"] {
-    --fc-bg: #080C14; /* tactical dark charcoal slate */
-    --fc-surface-1: #0F172A; /* slate-900 combat card */
-    --fc-surface-1-glass: rgba(15, 23, 42, 0.94);
-    --fc-surface-2: #1E293B; /* slate-800 secondary */
-    --fc-surface-3: #334155; /* slate-700 controls */
-    --fc-modal-bg: #0A101D;
-    --fc-modal-glass: rgba(10, 16, 29, 0.98);
-    --fc-border: #1E293B; /* tactical armor border */
-    --fc-border-subtle: rgba(249, 115, 22, 0.3); /* CS2 signature orange whisper border */
-    --fc-text-primary: #F8FAFC; /* crisp tactical white */
-    --fc-text-secondary: #94A3B8; /* combat slate gray */
-    --fc-text-muted: #64748B; /* muted tactical slate */
+  /* 3.2 Chamber · Ivory Bespoke Suit (Light) */
+  [data-skin="chamber"][data-theme="light"],
+  [data-skin="chamber"][data-mode="light"] {
+    --fc-bg: #F9F8F5;
+    --fc-surface-1: #FFFFFF;
+    --fc-surface-1-glass: rgba(255, 255, 255, 0.94);
+    --fc-surface-2: #F0ECE1;
+    --fc-surface-3: #E5DEC9;
+    --fc-modal-bg: #FFFFFF;
+    --fc-modal-glass: rgba(255, 255, 255, 0.98);
+    --fc-border: #D8CEB9;
+    --fc-border-subtle: rgba(184, 142, 62, 0.3);
+    --fc-text-primary: #141B26;
+    --fc-text-secondary: #2C384D;
+    --fc-text-muted: #5C6B82;
+    --fc-accent: #C5A059;
+    --fc-accent-hover: #B38C44;
+    --fc-accent-active: #967232;
+    --fc-accent-text: #141B26;
+    --fc-accent-glow: rgba(197, 160, 89, 0.25);
+    --fc-accent-subtle: rgba(197, 160, 89, 0.15);
+    --fc-accent-border: rgba(197, 160, 89, 0.45);
+    --fc-accent-tie: #C84B1A;
+    --fc-accent-telecom: #7C3AED;
+    --fc-btn-radius: 0.375rem;
+    --fc-card-radius: 0.75rem;
+  }
 
-    --fc-accent: #F97316; /* CS2 signature tactical orange */
-    --fc-accent-hover: #EA580C; /* deep orange */
-    --fc-accent-active: #C2410C;
-    --fc-accent-text: #080C14; /* dark charcoal on orange */
-    --fc-accent-glow: rgba(249, 115, 22, 0.3);
-    --fc-accent-subtle: rgba(249, 115, 22, 0.15);
-    --fc-accent-border: rgba(249, 115, 22, 0.45);
+  /* 4.1 Collector's Monochrome Edition · Pure Obsidian (Dark) */
+  [data-skin="monochrome"][data-theme="dark"],
+  [data-skin="monochrome"][data-mode="dark"],
+  [data-skin="monochrome"]:not([data-theme="light"]):not([data-mode="light"]) {
+    --fc-bg: #000000;
+    --fc-surface-1: #121212;
+    --fc-surface-1-glass: rgba(18, 18, 18, 0.94);
+    --fc-surface-2: #1E1E1E;
+    --fc-surface-3: #2A2A2A;
+    --fc-modal-bg: #121212;
+    --fc-modal-glass: rgba(18, 18, 18, 0.98);
+    --fc-border: #383838;
+    --fc-border-subtle: rgba(255, 255, 255, 0.25);
+    --fc-text-primary: #FFFFFF;
+    --fc-text-secondary: #B3B3B3;
+    --fc-text-muted: #808080;
+    --fc-accent: #FFFFFF;
+    --fc-accent-hover: #E5E5E5;
+    --fc-accent-active: #CCCCCC;
+    --fc-accent-text: #000000;
+    --fc-accent-glow: rgba(255, 255, 255, 0.3);
+    --fc-accent-subtle: rgba(255, 255, 255, 0.15);
+    --fc-accent-border: rgba(255, 255, 255, 0.4);
+    --fc-btn-radius: 0.5rem;
+    --fc-card-radius: 0.875rem;
+  }
 
-    --fc-ct-blue: #38BDF8; /* Counter-Terrorist Cyan Blue */
-    --fc-t-yellow: #EAB308; /* Terrorist Desert Yellow */
-
+  /* 4.2 Collector's Monochrome Edition · Pure Minimalist (Light) */
+  [data-skin="monochrome"][data-theme="light"],
+  [data-skin="monochrome"][data-mode="light"] {
+    --fc-bg: #FFFFFF;
+    --fc-surface-1: #F8F8F8;
+    --fc-surface-1-glass: rgba(248, 248, 248, 0.94);
+    --fc-surface-2: #EFEFEF;
+    --fc-surface-3: #E0E0E0;
+    --fc-modal-bg: #FFFFFF;
+    --fc-modal-glass: rgba(255, 255, 255, 0.98);
+    --fc-border: #D0D0D0;
+    --fc-border-subtle: rgba(0, 0, 0, 0.2);
+    --fc-text-primary: #000000;
+    --fc-text-secondary: #2E2E2E;
+    --fc-text-muted: #595959;
+    --fc-accent: #000000;
+    --fc-accent-hover: #262626;
+    --fc-accent-active: #404040;
+    --fc-accent-text: #FFFFFF;
+    --fc-accent-glow: rgba(0, 0, 0, 0.2);
+    --fc-accent-subtle: rgba(0, 0, 0, 0.08);
+    --fc-accent-border: rgba(0, 0, 0, 0.3);
     --fc-btn-radius: 0.5rem;
     --fc-card-radius: 0.875rem;
   }
@@ -138,7 +279,10 @@
     background: transparent !important;
   }
 
-  [data-skin="chamber"] body {
+  /* Chamber Dark Body */
+  [data-skin="chamber"][data-theme="dark"] body,
+  [data-skin="chamber"][data-mode="dark"] body,
+  [data-skin="chamber"]:not([data-theme="light"]):not([data-mode="light"]) body {
     background-color: #070B14;
     background-image: 
       radial-gradient(ellipse 80% 50% at 50% -20%, rgba(30, 48, 82, 0.35), transparent 75%),
@@ -148,10 +292,37 @@
     background-attachment: fixed;
   }
 
-  [data-skin="cs"] body {
-    background-color: #080C14;
+  /* Chamber Light Body */
+  [data-skin="chamber"][data-theme="light"] body,
+  [data-skin="chamber"][data-mode="light"] body {
+    background-color: #F9F8F5;
     background-image: 
-      linear-gradient(to bottom, rgba(8, 12, 20, 0.75), rgba(8, 12, 20, 0.95)),
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(197, 160, 89, 0.12), transparent 75%),
+      linear-gradient(rgba(197, 160, 89, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(197, 160, 89, 0.04) 1px, transparent 1px);
+    background-size: 100% 100%, 36px 36px, 36px 36px;
+    background-attachment: fixed;
+  }
+
+  /* CS2 Dark Body */
+  [data-skin="cs"][data-theme="dark"] body,
+  [data-skin="cs"][data-mode="dark"] body,
+  [data-skin="cs"]:not([data-theme="light"]):not([data-mode="light"]) body {
+    background-color: #090D15;
+    background-image: 
+      linear-gradient(to bottom, rgba(9, 13, 21, 0.75), rgba(9, 13, 21, 0.95)),
+      url('/themes/cs/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+
+  /* CS2 Light Body */
+  [data-skin="cs"][data-theme="light"] body,
+  [data-skin="cs"][data-mode="light"] body {
+    background-color: #F1F5F9;
+    background-image: 
+      linear-gradient(to bottom, rgba(241, 245, 249, 0.85), rgba(241, 245, 249, 0.98)),
       url('/themes/cs/background.jpg');
     background-size: cover;
     background-position: center;
@@ -246,81 +417,143 @@
 }
 
 /* ========================================================================= */
-/* CHAMBER THEME COMPONENT STYLES & OVERRIDES                                */
+/* UNIVERSAL SEMANTIC CLASS BRIDGING (ZERO-DEFECT RETROFIT)                  */
 /* ========================================================================= */
 
-[data-skin="chamber"] .bg-zinc-950,
-[data-skin="chamber"] .bg-zinc-950\/90,
-[data-skin="chamber"] .bg-zinc-950\/80 {
+.bg-zinc-950,
+.bg-zinc-950\/90,
+.bg-zinc-950\/80,
+.bg-zinc-950\/70,
+.bg-zinc-950\/50 {
   background-color: var(--fc-bg) !important;
 }
 
-[data-skin="chamber"] .bg-zinc-900,
-[data-skin="chamber"] .bg-zinc-900\/90,
-[data-skin="chamber"] .bg-zinc-900\/95 {
+.bg-zinc-900,
+.bg-zinc-900\/95,
+.bg-zinc-900\/90,
+.bg-zinc-900\/80,
+.bg-zinc-900\/70,
+.bg-zinc-900\/60,
+.bg-zinc-900\/50,
+.bg-zinc-900\/40 {
   background-color: var(--fc-surface-1) !important;
 }
 
-[data-skin="chamber"] .bg-zinc-800,
-[data-skin="chamber"] .bg-zinc-800\/80,
-[data-skin="chamber"] .bg-zinc-800\/90 {
+.bg-zinc-800,
+.bg-zinc-800\/90,
+.bg-zinc-800\/80,
+.bg-zinc-800\/70,
+.bg-zinc-800\/60,
+.bg-zinc-800\/50,
+.bg-zinc-800\/40,
+.bg-zinc-800\/30 {
   background-color: var(--fc-surface-2) !important;
 }
 
-[data-skin="chamber"] .bg-zinc-700 {
+.bg-zinc-700,
+.bg-zinc-700\/80,
+.bg-zinc-700\/60,
+.bg-zinc-700\/50 {
   background-color: var(--fc-surface-3) !important;
 }
 
-[data-skin="chamber"] .border-zinc-800,
-[data-skin="chamber"] .border-zinc-800\/80,
-[data-skin="chamber"] .border-zinc-700,
-[data-skin="chamber"] .border-zinc-700\/80 {
+.border-zinc-800,
+.border-zinc-800\/80,
+.border-zinc-800\/60,
+.border-zinc-800\/50,
+.border-zinc-700,
+.border-zinc-700\/80,
+.border-zinc-700\/50 {
   border-color: var(--fc-border) !important;
 }
 
-[data-skin="chamber"] .text-zinc-100,
-[data-skin="chamber"] .text-zinc-200 {
+.border-zinc-600,
+.border-zinc-600\/50 {
+  border-color: var(--fc-border-subtle) !important;
+}
+
+.text-zinc-100,
+.text-zinc-200 {
   color: var(--fc-text-primary) !important;
 }
 
-[data-skin="chamber"] .text-zinc-300,
-[data-skin="chamber"] .text-zinc-400 {
+.text-zinc-300,
+.text-zinc-400 {
   color: var(--fc-text-secondary) !important;
 }
 
-[data-skin="chamber"] .text-zinc-500 {
+.text-zinc-500,
+.text-zinc-600 {
   color: var(--fc-text-muted) !important;
 }
 
-/* Accent overrides: Amber -> Champagne Gold */
-[data-skin="chamber"] .bg-amber-500 {
+/* Accent & Action class bridging */
+.bg-amber-500 {
   background-color: var(--fc-accent) !important;
   color: var(--fc-accent-text) !important;
 }
 
-[data-skin="chamber"] .hover\:bg-amber-400:hover {
+.hover\:bg-amber-400:hover {
   background-color: var(--fc-accent-hover) !important;
 }
 
-[data-skin="chamber"] .text-amber-400,
-[data-skin="chamber"] .text-amber-500 {
+.active\:bg-amber-600:active {
+  background-color: var(--fc-accent-active) !important;
+}
+
+.text-amber-400,
+.text-amber-500 {
   color: var(--fc-accent) !important;
 }
 
-[data-skin="chamber"] .border-amber-500,
-[data-skin="chamber"] .border-amber-500\/40,
-[data-skin="chamber"] .border-amber-500\/30 {
+.border-amber-500,
+.border-amber-500\/50,
+.border-amber-500\/40,
+.border-amber-500\/30 {
   border-color: var(--fc-accent-border) !important;
 }
 
-[data-skin="chamber"] .bg-amber-500\/20,
-[data-skin="chamber"] .bg-amber-500\/10 {
+.bg-amber-500\/20,
+.bg-amber-500\/15,
+.bg-amber-500\/10 {
   background-color: var(--fc-accent-subtle) !important;
 }
 
-[data-skin="chamber"] .shadow-amber-500\/20 {
+.shadow-amber-500\/20,
+.shadow-amber-500\/10 {
   box-shadow: 0 4px 14px 0 var(--fc-accent-glow) !important;
 }
+
+/* Global Selection */
+::selection {
+  background-color: var(--fc-accent);
+  color: var(--fc-accent-text);
+}
+
+/* Light mode text-white safety interception */
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-mode="light"] h1,
+[data-mode="light"] h2,
+[data-mode="light"] h3,
+[data-mode="light"] h4,
+[data-theme="light"] .text-white:not(.bg-amber-500):not(.bg-amber-600):not(.bg-orange-500):not(.bg-orange-600):not(.bg-red-500):not(.bg-emerald-500):not(.bg-sky-500):not(.bg-purple-500):not(.btn-solid):not([data-theme-preserve="true"]),
+[data-mode="light"] .text-white:not(.bg-amber-500):not(.bg-amber-600):not(.bg-orange-500):not(.bg-orange-600):not(.bg-red-500):not(.bg-emerald-500):not(.bg-sky-500):not(.bg-purple-500):not(.btn-solid):not([data-theme-preserve="true"]) {
+  color: var(--fc-text-primary) !important;
+}
+
+[data-theme="light"] button.bg-amber-500 .text-white,
+[data-mode="light"] button.bg-amber-500 .text-white,
+[data-theme="light"] .btn-solid .text-white,
+[data-mode="light"] .btn-solid .text-white {
+  color: var(--fc-accent-text) !important;
+}
+
+/* ========================================================================= */
+/* BESPOKE SKIN IDENTITY ACCENTS & SPECIAL BEHAVIORS                         */
+/* ========================================================================= */
 
 /* Chamber Chamfered Primary Action Buttons (Exclude floating action buttons / rounded pills) */
 [data-skin="chamber"] button.bg-amber-500:not(.fixed):not(.rounded-full):not([data-testid="ai-fab"]),
@@ -362,92 +595,14 @@ button.fixed {
   animation: chamber-unlock-pulse 600ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Selection */
-[data-skin="chamber"] ::selection {
-  background-color: var(--fc-accent);
-  color: var(--fc-accent-text);
+/* Skin-specific AI content accents */
+[data-skin="chamber"] .ai-markdown-content strong {
+  color: #e5c378; /* champagne gold */
 }
 
-/* ========================================================================= */
-/* CS2 (反恐精英 · 完美特训) THEME COMPONENT STYLES & OVERRIDES               */
-/* ========================================================================= */
-
-[data-skin="cs"] .bg-zinc-950,
-[data-skin="cs"] .bg-zinc-950\/90,
-[data-skin="cs"] .bg-zinc-950\/80 {
-  background-color: var(--fc-bg) !important;
-}
-
-[data-skin="cs"] .bg-zinc-900,
-[data-skin="cs"] .bg-zinc-900\/90,
-[data-skin="cs"] .bg-zinc-900\/95 {
-  background-color: var(--fc-surface-1) !important;
-}
-
-[data-skin="cs"] .bg-zinc-800,
-[data-skin="cs"] .bg-zinc-800\/80,
-[data-skin="cs"] .bg-zinc-800\/90 {
-  background-color: var(--fc-surface-2) !important;
-}
-
-[data-skin="cs"] .bg-zinc-700 {
-  background-color: var(--fc-surface-3) !important;
-}
-
-[data-skin="cs"] .border-zinc-800,
-[data-skin="cs"] .border-zinc-800\/80,
-[data-skin="cs"] .border-zinc-700,
-[data-skin="cs"] .border-zinc-700\/80 {
-  border-color: var(--fc-border) !important;
-}
-
-[data-skin="cs"] .text-zinc-100,
-[data-skin="cs"] .text-zinc-200 {
-  color: var(--fc-text-primary) !important;
-}
-
-[data-skin="cs"] .text-zinc-300,
-[data-skin="cs"] .text-zinc-400 {
-  color: var(--fc-text-secondary) !important;
-}
-
-[data-skin="cs"] .text-zinc-500 {
-  color: var(--fc-text-muted) !important;
-}
-
-/* Accent overrides: Amber -> CS2 Vivid Orange */
-[data-skin="cs"] .bg-amber-500 {
-  background-color: var(--fc-accent) !important;
-  color: var(--fc-accent-text) !important;
-}
-
-[data-skin="cs"] .hover\:bg-amber-400:hover {
-  background-color: var(--fc-accent-hover) !important;
-}
-
-[data-skin="cs"] .text-amber-400,
-[data-skin="cs"] .text-amber-500 {
-  color: var(--fc-accent) !important;
-}
-
-[data-skin="cs"] .border-amber-500,
-[data-skin="cs"] .border-amber-500\/40,
-[data-skin="cs"] .border-amber-500\/30 {
-  border-color: var(--fc-accent-border) !important;
-}
-
-[data-skin="cs"] .bg-amber-500\/20,
-[data-skin="cs"] .bg-amber-500\/10 {
-  background-color: var(--fc-accent-subtle) !important;
-}
-
-[data-skin="cs"] .shadow-amber-500\/20 {
-  box-shadow: 0 4px 14px 0 var(--fc-accent-glow) !important;
-}
-
-[data-skin="cs"] ::selection {
-  background-color: var(--fc-accent);
-  color: var(--fc-accent-text);
+[data-skin="chamber"] .ai-markdown-content blockquote {
+  border-left-color: #e5c378;
+  background: rgba(229, 195, 120, 0.08);
 }
 
 [data-skin="cs"] .ai-markdown-content strong {

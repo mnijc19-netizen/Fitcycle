@@ -96,6 +96,38 @@ export const SKIN_HONOR_SCHEMAS = {
       badge_headshot_ace: { name: "一击必杀 (One-Tap)", desc: "单场预设动作组数 100% 满额完成", icon: "🎯" },
       badge_awp_pr: { name: "金色终结者 (Tour de Force)", desc: "单场打破主项历史最高负荷 (PR)", icon: "💥" }
     }
+  },
+
+  monochrome: {
+    name: "典藏黑白纯粹美学 (Collector's Monochrome)",
+    tiers: {
+      tier_1: { name: "I · 原点黑白", sub: "Beginner · 纯粹原点 · 规范基础动作", icon: "⚪", color: "zinc" },
+      tier_2: { name: "II · 秩序雕刻", sub: "Structure · 秩序成型 · 推拉腿分化", icon: "🔘", color: "zinc" },
+      tier_3: { name: "III · 律动中坚", sub: "Rhythm · 规律自律 · 肌肉雕琢", icon: "◽", color: "zinc" },
+      tier_4: { name: "IV · 刀锋淬炼", sub: "Blade · 锋芒初露 · 自重抗衡突破", icon: "▫️", color: "zinc" },
+      tier_5: { name: "V · 纯粹宗匠", sub: "Master · 沉稳内敛 · 纯粹做工突破", icon: "▪️", color: "zinc" },
+      tier_6: { name: "VI · 曜石巅峰", sub: "Obsidian · 曜石锋芒 · 出勤肉量双绝", icon: "◾", color: "zinc" },
+      tier_7: { name: "VII · 极简神话", sub: "Mythic Mono · 返璞归真 · 极简天梯殿堂", icon: "⬛", color: "zinc" }
+    },
+    badges: {
+      badge_first_blood: { name: "第一道锋芒", desc: "完成人生中第 1 次推拉腿纯粹打卡", icon: "⚪" },
+      badge_consecutive_7d: { name: "秩序先锋", desc: "累计完成 7 场正规纯粹训练", icon: "🔘" },
+      badge_monthly_iron: { name: "黑白自律", desc: "连续 4 周达成每周分化目标", icon: "◽" },
+      badge_veteran_100: { name: "百炼纯粹", desc: "终身累计打卡达到 100 场", icon: "▫️" },
+      badge_centurion_1000: { name: "极简宗师", desc: "终身累计打卡达到 1000 场传奇", icon: "⬛" },
+      badge_tonnage_10t: { name: "十吨基准", desc: "累计总做工达到 10,000 kg", icon: "📦" },
+      badge_tonnage_50t: { name: "五十吨沉淀", desc: "累计总做工达到 50,000 kg", icon: "✈️" },
+      badge_tonnage_100t: { name: "百吨曜石", desc: "累计总做工达到 100,000 kg", icon: "🚆" },
+      badge_tonnage_1000t: { name: "百万吨极简", desc: "终身累计做工突破 1,000,000 kg", icon: "🌌" },
+      badge_body_init: { name: "纯粹测绘", desc: "建立首份身体形体解剖围度档案", icon: "📐" },
+      badge_arm_titan: { name: "刀锋手臂", desc: "手臂围度较初始增长突破 +2.0 cm", icon: "💪" },
+      badge_chest_armor: { name: "纯黑胸膛", desc: "胸围较初始增长突破 +3.5 cm", icon: "🛡️" },
+      badge_v_taper: { name: "极简 V 身", desc: "腰围收细且胸背宽度提升达成黄金比例", icon: "⏳" },
+      badge_bench_bw: { name: "自重锋芒", desc: "卧推做工重量突破 1.0 倍自身体重", icon: "🏋️" },
+      badge_squat_1_5bw: { name: "纯粹深蹲", desc: "深蹲/腿举做工重量突破 1.5 倍自身体重", icon: "🚜" },
+      badge_headshot_ace: { name: "极致专注", desc: "单场所有预设动作组数 100% 满额完成", icon: "🎯" },
+      badge_awp_pr: { name: "破壁者 (PR)", desc: "打破主项动作历史最高负荷纪录 (PR)", icon: "💥" }
+    }
   }
 };
 
@@ -111,6 +143,7 @@ export const TIER_MEDAL_SVGS = {
 
 export const SKIN_TIER_MEDAL_SVGS = {
   default: TIER_MEDAL_SVGS,
+  monochrome: TIER_MEDAL_SVGS,
   cs: {
     tier_1: "./themes/medals/cs-rank-1.svg",
     tier_2: "./themes/medals/cs-rank-2.svg",

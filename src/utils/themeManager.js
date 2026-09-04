@@ -23,7 +23,16 @@ export const CS_PASSCODE_ALIASES = [
   "起把狙"
 ];
 
-export const VALID_SKINS = ["default", "chamber", "cs"];
+export const MONOCHROME_PASSCODE_ALIASES = [
+  "monochrome",
+  "黑白",
+  "极简黑白",
+  "典藏黑白",
+  "mono"
+];
+
+export const VALID_SKINS = ["default", "chamber", "cs", "monochrome"];
+export const VALID_THEME_MODES = ["dark", "light"];
 
 export const DEFAULT_SETTINGS = {
   defaultRestSeconds: 90,
@@ -31,8 +40,9 @@ export const DEFAULT_SETTINGS = {
   soundEnabled: true,
   vibrationEnabled: true,
   weightUnit: "kg",
-  theme: "dark",
-  uiSkin: "default", // 'default' | 'chamber' | 'cs'
+  theme: "dark", // legacy compatibility
+  themeMode: "dark", // 'dark' | 'light'
+  uiSkin: "default", // 'default' | 'chamber' | 'cs' | 'monochrome'
   unlockedSkins: ["default"], // string[]
   hasSeenOnboarding: false
 };
@@ -57,11 +67,14 @@ export function getPasscodeSkin(input) {
   if (CS_PASSCODE_ALIASES.some(alias => clean === alias.toLowerCase())) {
     return "cs";
   }
+  if (MONOCHROME_PASSCODE_ALIASES.some(alias => clean === alias.toLowerCase())) {
+    return "monochrome";
+  }
   return null;
 }
 
 /**
- * Verification of secret passcodes (Chamber or CS2).
+ * Verification of secret passcodes (Chamber, CS2, or Monochrome).
  */
 export function verifyPasscode(input) {
   return Boolean(getPasscodeSkin(input));
@@ -73,7 +86,8 @@ export function verifyPasscode(input) {
  * - Empty / null localStorage
  * - Old schema without uiSkin or unlockedSkins
  * - Corrupted skin names or unlocked arrays
- * - Chamber or CS selected when not in unlocked list
+ * - Chamber, CS, or Monochrome selected when not in unlocked list
+ * - Migration from legacy theme property to themeMode ('dark' | 'light')
  */
 export function sanitizeSettings(rawSettings) {
   if (!rawSettings || typeof rawSettings !== "object") {
@@ -104,7 +118,16 @@ export function sanitizeSettings(rawSettings) {
     sanitized.uiSkin = "default";
   }
 
-  // 3. Ensure other numerical/boolean settings are safe
+  // 3. Sanitize themeMode (with legacy theme property support)
+  const legacyTheme = typeof rawSettings.theme === "string" ? rawSettings.theme : null;
+  const requestedMode = typeof rawSettings.themeMode === "string"
+    ? rawSettings.themeMode
+    : (legacyTheme || DEFAULT_SETTINGS.themeMode);
+
+  sanitized.themeMode = VALID_THEME_MODES.includes(requestedMode) ? requestedMode : "dark";
+  sanitized.theme = sanitized.themeMode; // keep legacy property aligned
+
+  // 4. Ensure other numerical/boolean settings are safe
   if (typeof sanitized.defaultRestSeconds !== "number" || sanitized.defaultRestSeconds <= 0) {
     sanitized.defaultRestSeconds = DEFAULT_SETTINGS.defaultRestSeconds;
   }
@@ -118,14 +141,21 @@ export function sanitizeSettings(rawSettings) {
 }
 
 /**
- * Synchronously applies data-skin attribute and mobile theme-color meta tag
+ * Synchronously applies data-skin and data-theme attributes, and mobile theme-color meta tag.
  */
-export function applySkinToDOM(skin) {
+export function applyThemeToDOM(skin = "default", mode = "dark") {
   const validSkin = VALID_SKINS.includes(skin) ? skin : "default";
+  const validMode = VALID_THEME_MODES.includes(mode) ? mode : "dark";
+
   if (typeof document !== "undefined") {
     document.documentElement.setAttribute("data-skin", validSkin);
+    document.documentElement.setAttribute("data-theme", validMode);
+    document.documentElement.setAttribute("data-mode", validMode);
+
     if (document.body) {
       document.body.setAttribute("data-skin", validSkin);
+      document.body.setAttribute("data-theme", validMode);
+      document.body.setAttribute("data-mode", validMode);
     }
 
     // Update browser theme-color for mobile status bar (iOS/Android)
@@ -136,11 +166,21 @@ export function applySkinToDOM(skin) {
       document.head.appendChild(metaTheme);
     }
     const themeColors = {
-      chamber: "#070B14",
-      cs: "#0B0F19",
-      default: "#09090b"
+      default: { dark: "#0B0D11", light: "#F6F8FA" },
+      cs: { dark: "#090D15", light: "#F1F5F9" },
+      chamber: { dark: "#070B14", light: "#F9F8F5" },
+      monochrome: { dark: "#000000", light: "#FFFFFF" }
     };
-    metaTheme.setAttribute("content", themeColors[validSkin] || "#09090b");
+    const activeColor = themeColors[validSkin]?.[validMode] || (validMode === "light" ? "#F6F8FA" : "#0B0D11");
+    metaTheme.setAttribute("content", activeColor);
   }
+}
+
+/**
+ * Backward-compatible helper that delegates to applyThemeToDOM preserving current mode.
+ */
+export function applySkinToDOM(skin) {
+  const currentMode = (typeof document !== "undefined" && (document.documentElement.getAttribute("data-theme") || document.documentElement.getAttribute("data-mode"))) || "dark";
+  applyThemeToDOM(skin, currentMode);
 }
 

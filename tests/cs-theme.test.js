@@ -68,4 +68,58 @@ describe("CS2 Official Theme Integration & UI Tests", () => {
     expect(html).toContain("bomb_planted.svg");
     expect(html).toContain("45s");
   });
+
+  it("unlocks monochrome skin via passcodes and syncs DOM", () => {
+    expect(getPasscodeSkin("典藏黑白")).toBe("monochrome");
+    expect(getPasscodeSkin("monochrome")).toBe("monochrome");
+    expect(getPasscodeSkin("黑白")).toBe("monochrome");
+    
+    const res = unlockSkin("典藏黑白");
+    expect(res.success).toBe(true);
+    expect(store.settings.unlockedSkins).toContain("monochrome");
+    expect(store.settings.uiSkin).toBe("monochrome");
+    expect(document.documentElement.dataset.skin).toBe("monochrome");
+  });
+
+  it("toggles light/dark themeMode while preserving honor rank and lore 100% immutable", async () => {
+    unlockSkin("7355806"); // Activate CS2
+    expect(store.settings.uiSkin).toBe("cs");
+
+    const { getFullHonorProfile, toggleThemeMode, setThemeMode } = await import("../src/store/fitnessStore.js");
+    const initialHonor = getFullHonorProfile();
+    const initialTierName = initialHonor.presentation.tierName;
+    const initialSkinName = initialHonor.presentation.skinName;
+
+    // Switch to light mode
+    setThemeMode("light");
+    expect(store.settings.themeMode).toBe("light");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+    expect(document.documentElement.getAttribute("data-mode")).toBe("light");
+
+    // Honor rank and presentation must be strictly identical!
+    const lightHonor = getFullHonorProfile();
+    expect(lightHonor.presentation.tierName).toBe(initialTierName);
+    expect(lightHonor.presentation.skinName).toBe(initialSkinName);
+
+    // Toggle back to dark mode
+    toggleThemeMode();
+    expect(store.settings.themeMode).toBe("dark");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+    expect(document.documentElement.getAttribute("data-mode")).toBe("dark");
+  });
+
+  it("renders light/dark toggle button in Navbar and responds to click", async () => {
+    const { setThemeMode } = await import("../src/store/fitnessStore.js");
+    setThemeMode("dark");
+
+    const wrapper = mount(Navbar);
+    expect(wrapper.html()).toContain("☀️");
+
+    // Click toggle button
+    const toggleBtn = wrapper.find('button[title="切换为白昼晨光"]');
+    expect(toggleBtn.exists()).toBe(true);
+    await toggleBtn.trigger("click");
+
+    expect(store.settings.themeMode).toBe("light");
+  });
 });

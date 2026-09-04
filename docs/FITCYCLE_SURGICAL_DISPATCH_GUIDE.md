@@ -11,9 +11,10 @@
 =====================================================================================================================================
 指令代号        业务场景 / 功能增减需求         🎯 靶向核心文件 (Target Files)                        🧪 秒级自动化验证指令
 =====================================================================================================================================
-[OP-SKIN]       新增/修改一套 UI 主题皮肤       ├── 1. `src/engine/skinHonorSchemas.js` (段位/勋章/字典)  npm run test tests/cs-theme.test.js
-                (如赛博朋克、中世纪、动漫)      ├── 2. `src/style.css` (CSS 变量调色盘)
-                                                └── 3. `src/components/TabBar.vue` (底部导航专属图标)
+[OP-SKIN]       UI 主题皮肤与白昼/暗夜正交系统  ├── 1. `src/engine/skinHonorSchemas.js` (段位/勋章/字典)  npm run test tests/cs-theme.test.js
+                (深空黑/枪铁灰/白西装/典藏黑白) ├── 2. `src/style.css` (8大调色盘与 WCAG 对比度)
+                                                ├── 3. `src/utils/themeManager.js` (DOM 与 Theme-color 同步)
+                                                └── 4. `src/components/Navbar.vue` & `StatsView.vue` (模式切换)
 
 [OP-BRAND]       FitCycle 品牌重塑与矢量 Logo   ├── 1. `src/components/FitCycleLogo.vue` (莫比乌斯环)   npm test -- tests/fitcycle-exercises-and-brand.test.js
                 (Apple/Linear大厂级无衬线字标)   ├── 2. `src/components/Navbar.vue` (顶栏无遮挡排版)

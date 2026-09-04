@@ -27,7 +27,8 @@
             </div>
 
             <div class="flex items-center gap-1.5">
-              <span class="text-base font-black tracking-tight text-white font-sans leading-none">
+              <span class="text-base font-black tracking-tight font-sans leading-none"
+                    :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">
                 FitCycle
               </span>
               <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-md border leading-none tracking-wider uppercase"
@@ -47,6 +48,16 @@
                     class="h-8 px-3 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 animate-pulse active:scale-95 cursor-pointer shadow-sm">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
               <span>训练中</span>
+            </button>
+
+            <!-- Light / Dark Mode Toggle (☀️ / 🌙) -->
+            <button @click="handleToggleThemeMode"
+                    type="button"
+                    :title="store.settings.themeMode === 'light' ? '切换为深邃夜色' : '切换为白昼晨光'"
+                    class="h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold shadow-sm active:scale-95 transition-all border cursor-pointer"
+                    :class="themeModeButtonClasses">
+              <span v-if="store.settings.themeMode === 'light'" class="text-xs leading-none">🌙</span>
+              <span v-else class="text-xs leading-none">☀️</span>
             </button>
 
             <!-- Enlarged AI Coach Trigger Button (Prominent & Thumb-friendly) -->
@@ -97,7 +108,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { store, getCycleDayForDate, getFullHonorProfile } from "../store/fitnessStore.js";
+import { store, getCycleDayForDate, getFullHonorProfile, toggleThemeMode } from "../store/fitnessStore.js";
 import { aiSession } from "../ai/aiSession.js";
 import CycleEditorModal from "./CycleEditorModal.vue";
 import FitCycleLogo from "./FitCycleLogo.vue";
@@ -105,6 +116,18 @@ import { triggerHaptic } from "../utils/vibrate.js";
 
 const honorData = computed(() => getFullHonorProfile());
 const showCycleModal = ref(false);
+
+function handleToggleThemeMode() {
+  toggleThemeMode();
+}
+
+const themeModeButtonClasses = computed(() => {
+  const isLight = store.settings.themeMode === "light";
+  if (isLight) {
+    return "bg-slate-200/80 hover:bg-slate-300 text-slate-800 border-slate-300 shadow-inner";
+  }
+  return "bg-zinc-900/90 hover:bg-zinc-800 text-amber-400 border-zinc-700/80 shadow-sm";
+});
 
 // CS2 Agents Switcher
 const csAgentIndex = ref(0);
@@ -136,58 +159,78 @@ const todayFormatted = computed(() => {
 
 // Dynamic Theme Style Computations
 const navbarThemeClasses = computed(() => {
+  const isLight = store.settings.themeMode === "light";
   const skin = store.settings.uiSkin;
-  if (skin === "cs") return "bg-[#080c14]/90 border-orange-500/20";
-  if (skin === "chamber") return "bg-[#060a14]/90 border-[#E5C378]/20";
-  return "bg-zinc-950/90 border-white/5";
+  if (skin === "cs") {
+    return isLight
+      ? "bg-[#F1F5F9]/92 border-slate-300/80 text-[#090D16]"
+      : "bg-[#090D15]/92 border-orange-500/20 text-[#F8FAFC]";
+  }
+  if (skin === "chamber") {
+    return isLight
+      ? "bg-[#F9F8F5]/92 border-[#D8CEB9]/80 text-[#141B26]"
+      : "bg-[#070B14]/92 border-[#E5C378]/20 text-[#F7F6F2]";
+  }
+  if (skin === "monochrome") {
+    return isLight
+      ? "bg-white/92 border-neutral-300 text-black"
+      : "bg-black/92 border-neutral-800 text-white";
+  }
+  return isLight
+    ? "bg-[#F6F8FA]/92 border-slate-200/90 text-[#0F172A]"
+    : "bg-[#0B0D11]/92 border-white/5 text-[#F8FAFC]";
 });
 
 const logoFrameClasses = computed(() => {
+  const isLight = store.settings.themeMode === "light";
   const skin = store.settings.uiSkin;
-  if (skin === "cs") return "bg-zinc-900 border-orange-500/40 shadow-orange-500/20";
-  if (skin === "chamber") return "bg-[#0a1122] border-[#E5C378]/40 shadow-[#E5C378]/20";
-  return "bg-zinc-900 border-amber-500/30 shadow-amber-500/10";
+  if (skin === "cs") return isLight ? "bg-white border-orange-500/40 shadow-sm" : "bg-zinc-900 border-orange-500/40 shadow-orange-500/20";
+  if (skin === "chamber") return isLight ? "bg-white border-[#C5A059]/40 shadow-sm" : "bg-[#0a1122] border-[#E5C378]/40 shadow-[#E5C378]/20";
+  if (skin === "monochrome") return isLight ? "bg-white border-black/30 shadow-sm" : "bg-black border-white/40 shadow-sm";
+  return isLight ? "bg-white border-amber-500/30 shadow-sm" : "bg-zinc-900 border-amber-500/30 shadow-amber-500/10";
 });
 
 const themeBadgeText = computed(() => {
   const skin = store.settings.uiSkin;
   if (skin === "cs") return "TACTICAL";
   if (skin === "chamber") return "HAUTE";
+  if (skin === "monochrome") return "MONO";
   return "PRO";
 });
 
 const badgeThemeClasses = computed(() => {
+  const isLight = store.settings.themeMode === "light";
   const skin = store.settings.uiSkin;
-  if (skin === "cs") return "bg-orange-500/15 border-orange-500/40 text-orange-400";
-  if (skin === "chamber") return "bg-[#E5C378]/15 border-[#E5C378]/40 text-[#E5C378]";
-  return "bg-amber-500/15 border-amber-500/30 text-amber-400";
+  if (skin === "cs") return isLight ? "bg-orange-500/15 border-orange-500/40 text-[#E04E00]" : "bg-orange-500/15 border-orange-500/40 text-orange-400";
+  if (skin === "chamber") return isLight ? "bg-[#C5A059]/15 border-[#C5A059]/40 text-[#967232]" : "bg-[#E5C378]/15 border-[#E5C378]/40 text-[#E5C378]";
+  if (skin === "monochrome") return isLight ? "bg-neutral-200 border-neutral-400 text-neutral-900" : "bg-neutral-800 border-neutral-600 text-neutral-200";
+  return isLight ? "bg-amber-500/15 border-amber-500/40 text-amber-700" : "bg-amber-500/15 border-amber-500/30 text-amber-400";
 });
 
 const cycleHighlightClass = computed(() => {
+  const isLight = store.settings.themeMode === "light";
   const skin = store.settings.uiSkin;
-  if (skin === "cs") return "text-orange-400";
-  if (skin === "chamber") return "text-[#E5C378]";
-  return "text-amber-400";
+  if (skin === "cs") return isLight ? "text-[#E04E00]" : "text-orange-400";
+  if (skin === "chamber") return isLight ? "text-[#967232]" : "text-[#E5C378]";
+  if (skin === "monochrome") return isLight ? "text-black" : "text-white";
+  return isLight ? "text-amber-700" : "text-amber-400";
 });
 
 const aiButtonClasses = computed(() => {
+  const isLight = store.settings.themeMode === "light";
   const skin = store.settings.uiSkin;
-  if (skin === "cs") return "bg-orange-500/15 hover:bg-orange-500/25 text-orange-400 border-orange-500/30";
-  if (skin === "chamber") return "bg-[#E5C378]/15 hover:bg-[#E5C378]/25 text-[#E5C378] border-[#E5C378]/30";
-  return "bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border-amber-500/30";
-});
-
-const cycleButtonClasses = computed(() => {
-  const skin = store.settings.uiSkin;
-  if (skin === "cs") return "bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 border-orange-500/30";
-  if (skin === "chamber") return "bg-[#0b1224] hover:bg-[#131d36] text-zinc-300 border-[#E5C378]/30";
-  return "bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 border-zinc-800";
+  if (skin === "cs") return isLight ? "bg-orange-500/15 hover:bg-orange-500/25 text-[#E04E00] border-orange-500/40" : "bg-orange-500/15 hover:bg-orange-500/25 text-orange-400 border-orange-500/30";
+  if (skin === "chamber") return isLight ? "bg-[#C5A059]/15 hover:bg-[#C5A059]/25 text-[#967232] border-[#C5A059]/40" : "bg-[#E5C378]/15 hover:bg-[#E5C378]/25 text-[#E5C378] border-[#E5C378]/30";
+  if (skin === "monochrome") return isLight ? "bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border-neutral-300" : "bg-neutral-900 hover:bg-neutral-800 text-neutral-100 border-neutral-700";
+  return isLight ? "bg-amber-500/15 hover:bg-amber-500/25 text-amber-700 border-amber-500/40" : "bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border-amber-500/30";
 });
 
 const ribbonThemeClasses = computed(() => {
+  const isLight = store.settings.themeMode === "light";
   const skin = store.settings.uiSkin;
-  if (skin === "cs") return "bg-orange-950/25 border-orange-500/30 text-orange-400";
-  if (skin === "chamber") return "bg-[#0B101B]/80 border-[#E5C378]/25 text-[#E5C378]";
-  return "bg-zinc-900/60 border-zinc-800/80 text-zinc-300";
+  if (skin === "cs") return isLight ? "bg-slate-200/80 border-slate-300 text-slate-800" : "bg-orange-950/25 border-orange-500/30 text-orange-400";
+  if (skin === "chamber") return isLight ? "bg-[#F0ECE1] border-[#D8CEB9] text-[#2C384D]" : "bg-[#0B101B]/80 border-[#E5C378]/25 text-[#E5C378]";
+  if (skin === "monochrome") return isLight ? "bg-neutral-100 border-neutral-300 text-neutral-800" : "bg-neutral-900 border-neutral-800 text-neutral-300";
+  return isLight ? "bg-slate-100 border-slate-200 text-slate-700" : "bg-zinc-900/60 border-zinc-800/80 text-zinc-300";
 });
 </script>
