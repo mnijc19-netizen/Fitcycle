@@ -282,276 +282,241 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- MODE 2: OVERVIEW & START (未开始训练状态) -->
+    <!-- MODE 2: UNIFIED TODAY COCKPIT (合一今日特训驾驶舱) -->
     <!-- ============================================== -->
-    <div v-else class="space-y-4">
+    <div v-else class="space-y-3.5">
       
-      <!-- Top Cycle Track / Timeline Pill -->
-      <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl">
-        <div class="flex items-center justify-between mb-3">
-          <div class="text-xs font-bold text-zinc-400 tracking-wider uppercase flex items-center gap-1.5">
-            <span>🔄</span> {{ store.activeCycle.name }}
-          </div>
-          <button @click="openCycleEditor" class="text-xs text-amber-400 hover:text-amber-300 font-medium">
-            调整分化 ❯
-          </button>
-        </div>
-
-        <!-- 4-day / N-day Cycle Timeline rail -->
-        <div class="grid grid-cols-4 gap-2">
-          <div v-for="(day, idx) in store.activeCycle.days" :key="idx"
-               @click="setTodayAsIndex(idx)"
-               class="p-2.5 rounded-2xl border text-center transition-all cursor-pointer relative"
-               :class="[
-                 todayCycle.cycleIndex === idx ? 
-                 'bg-amber-500 text-zinc-950 border-amber-400 shadow-lg shadow-amber-500/25 font-bold ring-2 ring-amber-400/40' : 
-                 'bg-zinc-950/70 border-zinc-800 text-zinc-300 hover:border-zinc-700'
-               ]">
-            <div class="text-[10px] opacity-75 font-mono">Day {{ idx + 1 }}</div>
-            <div class="text-sm font-black my-0.5">{{ day.shortName || (day.isRest ? '休' : '练') }}</div>
-            <div class="text-[9px] truncate opacity-80">{{ day.name.split(' ')[0] }}</div>
-            <div v-if="todayCycle.cycleIndex === idx" 
-                 class="absolute -top-1.5 -right-1 px-1.5 py-0.2 bg-zinc-950 text-amber-400 rounded-full text-[8px] font-black border border-amber-400">
-              今日
-            </div>
-          </div>
-        </div>
-
-        <!-- Shift forward / backward helper -->
-        <div class="mt-3 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-400">
-          <button @click="shiftCycle(-1)" class="hover:text-white flex items-center gap-1">
-            ◀ 前移1天
-          </button>
-          <span class="text-zinc-500 text-[11px]">点击上方卡片可直接切换今日进度</span>
-          <button @click="shiftCycle(1)" class="hover:text-white flex items-center gap-1">
-            后推1天 ▶
-          </button>
-        </div>
-      </div>
-
-      <!-- 战备催练与肌群恢复看板 (Tactical Readiness & Urgency Card) -->
-      <div class="rounded-3xl border p-4 shadow-xl relative overflow-hidden transition-all"
+      <!-- Primary Unified Fitness Cockpit Card -->
+      <div class="rounded-3xl border p-4 sm:p-5 shadow-2xl relative overflow-hidden transition-all"
            :class="[
              honorData.isDeloadActive ? 'bg-gradient-to-br from-sky-950/90 via-zinc-950 to-zinc-900 border-sky-500/50 shadow-sky-950/30' :
-             store.settings.uiSkin === 'cs' ? 'bg-[#080C14]/95 border-[#F97316]/50 shadow-black' :
-             store.settings.uiSkin === 'chamber' ? 'bg-[#0B101B]/95 border-amber-500/40' :
-             'bg-zinc-900/90 border-zinc-800'
+             store.settings.uiSkin === 'cs' ? 'bg-gradient-to-br from-[#0c121e] via-[#080c14] to-zinc-950 border-orange-500/40 shadow-black' :
+             store.settings.uiSkin === 'chamber' ? 'bg-gradient-to-br from-[#0b1224] via-[#070b14] to-zinc-950 border-[#E5C378]/35' :
+             'bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-950 border-zinc-800'
            ]">
         
-        <!-- Ambient Background Pulse -->
-        <div class="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-20 pointer-events-none"
+        <!-- Ambient Top Glow -->
+        <div class="absolute -top-12 -right-12 w-44 h-44 rounded-full blur-3xl opacity-20 pointer-events-none"
              :class="[
-               honorData.isDeloadActive ? 'bg-sky-400 animate-pulse' :
-               timeSinceLastWorkout.urgencyLevel === 'danger' ? 'bg-red-500 animate-pulse' :
-               timeSinceLastWorkout.urgencyLevel === 'warn' ? 'bg-amber-500' : 'bg-emerald-500'
+               honorData.isDeloadActive ? 'bg-sky-400' :
+               todayCycle.isRest ? 'bg-emerald-400' :
+               store.settings.uiSkin === 'cs' ? 'bg-orange-500' :
+               store.settings.uiSkin === 'chamber' ? 'bg-[#E5C378]' : 'bg-amber-400'
              ]"></div>
 
-        <!-- Mode A: If Deload Shield is ACTIVE (战术免战休整模式) -->
-        <div v-if="honorData.isDeloadActive" class="space-y-3">
-          <div class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-black border bg-sky-500/20 text-sky-300 border-sky-500/50 flex items-center gap-1.5 animate-pulse flex-shrink-0">
-                <span>🛡️</span>
-                <span>战术免战休整期</span>
-              </span>
-              <span class="text-xs font-black text-white truncate">战力已冻结 (剩 {{ honorData.shieldDaysRemaining }} 天)</span>
-            </div>
-            <button @click="toggleDeloadShield(false)" 
-                    class="px-2.5 py-1 bg-sky-900/80 hover:bg-sky-800 text-sky-200 text-xs font-bold rounded-xl border border-sky-600/50 active:scale-95 transition-all flex-shrink-0">
-              提前归队
-            </button>
+        <!-- 1. Header Row: Date & Plan Target Badge -->
+        <div class="flex items-center justify-between gap-2 relative z-10">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-black tracking-wide"
+                  :class="[
+                    todayCycle.isRest ? 'bg-emerald-500 text-zinc-950' :
+                    todayCycle.color === 'amber' ? 'bg-amber-500 text-zinc-950' :
+                    todayCycle.color === 'sky' ? 'bg-sky-500 text-zinc-950' :
+                    todayCycle.color === 'purple' ? 'bg-purple-500 text-white' :
+                    'bg-amber-500 text-zinc-950'
+                  ]">
+              {{ todayCycle.name }}
+            </span>
+            <span class="text-xs text-zinc-400 font-mono">{{ todayFormatted }}</span>
           </div>
 
-          <p class="text-xs text-sky-200/80 leading-relaxed pt-0.5">
-            当前处于科学周期化减载/休整期，战力怠惰衰减强制冻结（0扣分），中枢神经与关节超量修复中。
+          <!-- Quick Cycle Settings Entry -->
+          <button @click="openCycleEditor" 
+                  class="text-[11px] font-medium text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-0.5 cursor-pointer">
+            <span>{{ store.activeCycle.name.split(' ')[0] }}</span>
+            <span class="text-[9px]">❯</span>
+          </button>
+        </div>
+
+        <!-- 2. Main Title & Workout Objective Focus -->
+        <div class="mt-3 mb-3.5 relative z-10">
+          <h1 class="text-xl font-black text-white tracking-tight leading-snug">
+            {{ currentPlan?.name || todayCycle.name }}
+          </h1>
+          <p class="text-xs text-zinc-300 mt-1 flex items-start gap-1.5 leading-relaxed">
+            <span class="text-amber-400 flex-shrink-0 font-bold">目标:</span>
+            <span class="line-clamp-2">{{ currentPlan?.coreTarget || "严格执行动作轨迹，注重离心控制与拉伸区超量肥大" }}</span>
           </p>
 
-          <div class="pt-2 border-t border-sky-900/40 flex items-center justify-between gap-2">
-            <button @click="markRestDayCompleted"
-                    class="flex-1 py-2.5 bg-sky-950 hover:bg-sky-900/60 text-sky-300 border border-sky-500/40 rounded-xl text-xs font-bold flex items-center justify-center gap-1 active:scale-95 transition-all shadow-sm">
-              <span>🧘</span> 记录减载休整打卡
-            </button>
-            <button @click="handleStartTodayWorkout"
-                    class="py-2.5 px-3.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-700 rounded-xl text-xs font-bold flex items-center justify-center gap-1 active:scale-95 transition-all">
-              <span>🏋️</span> 照常开练
-            </button>
+          <!-- Plan Metadata Chips (Actions / Sets / Duration) -->
+          <div v-if="!todayCycle.isRest && currentPlan?.exercises?.length" 
+               class="flex items-center gap-2 mt-2.5 text-[10px] font-mono text-zinc-400">
+            <span class="px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-zinc-300">
+              {{ currentPlan.exercises.length }} 个精编动作
+            </span>
+            <span class="px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-emerald-400 font-bold">
+              {{ todayTotalSets }} 组做工容量
+            </span>
+            <span class="px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-zinc-400">
+              约 45 分钟
+            </span>
           </div>
         </div>
 
-        <!-- Mode B: Normal Training Readiness State -->
-        <div v-else class="space-y-2.5">
-          <!-- Top Header: Urgency Level & 1-Tap Fast Start Button -->
-          <div class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-black border flex items-center gap-1.5 flex-shrink-0"
-                    :class="[
-                      timeSinceLastWorkout.urgencyLevel === 'danger' ? 'bg-red-500/20 text-red-400 border-red-500/50 animate-pulse' :
-                      timeSinceLastWorkout.urgencyLevel === 'warn' ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' :
-                      'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
-                    ]">
-                <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
-                {{ timeSinceLastWorkout.badge }}
-              </span>
-              
-              <div class="truncate">
-                <div class="text-xs font-black text-white truncate">
-                  {{ timeSinceLastWorkout.title }}
-                </div>
+        <!-- 3. Integrated Micro Cycle Timeline Stepper (Clean & Space-Saving 36px) -->
+        <div class="py-2.5 px-3 rounded-2xl bg-zinc-950/60 border border-zinc-800/80 mb-3 relative z-10">
+          <div class="grid grid-cols-4 gap-1.5">
+            <div v-for="(day, idx) in store.activeCycle.days" :key="idx"
+                 @click="setTodayAsIndex(idx)"
+                 class="py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer relative"
+                 :class="[
+                   todayCycle.cycleIndex === idx ? 
+                   'bg-amber-500 text-zinc-950 font-bold shadow-md shadow-amber-500/20 ring-1 ring-amber-300' : 
+                   'bg-zinc-900/80 text-zinc-400 hover:text-zinc-200 border border-zinc-800/50'
+                 ]">
+              <div class="text-[9px] font-mono opacity-80 leading-none">Day {{ idx + 1 }}</div>
+              <div class="text-xs font-black mt-0.5 leading-tight truncate">
+                {{ day.shortName || (day.isRest ? '休' : '练') }}
               </div>
             </div>
+          </div>
+        </div>
 
-            <!-- Top Fast Start Button -->
-            <button v-if="!todayCycle.isRest" 
-                    @click="handleStartTodayWorkout"
-                    class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-black text-xs rounded-xl shadow-md shadow-amber-500/20 flex items-center gap-1.5 flex-shrink-0 transition-all">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-              <span>立即开练</span>
-            </button>
+        <!-- 4. Tactical Readiness & Muscle Recovery Strip -->
+        <div class="p-3 rounded-2xl bg-zinc-950/80 border border-zinc-800/90 mb-3.5 space-y-2 relative z-10 text-xs">
+          <!-- Deload Active Banner -->
+          <div v-if="honorData.isDeloadActive" class="space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/40 flex items-center gap-1">
+                <span>🛡️</span> 战术免战休整期
+              </span>
+              <span class="text-xs font-bold text-white">战力已冻结 (剩 {{ honorData.shieldDaysRemaining }} 天)</span>
+              <button @click="toggleDeloadShield(false)" 
+                      class="px-2 py-0.5 bg-sky-900/80 hover:bg-sky-800 text-sky-200 text-[10px] font-bold rounded-lg border border-sky-600/40 cursor-pointer">
+                提前归队
+              </button>
+            </div>
+            <p class="text-[11px] text-sky-200/80 leading-snug">
+              处于周期化减载期，战力怠惰衰减强制冻结（0扣分），中枢神经超量修复中。
+            </p>
           </div>
 
-          <!-- Urgency & Muscle Status Detail Rows -->
-          <div class="mt-2.5 pt-2.5 border-t border-zinc-800/80 space-y-1.5 text-xs">
-            <!-- 1. Total Inactivity Counter -->
-            <div class="flex items-start gap-2 text-zinc-300">
-              <span class="text-zinc-500 flex-shrink-0 font-mono text-[11px]">怠惰计时 (INACTIVITY):</span>
-              <span class="leading-relaxed" :class="timeSinceLastWorkout.urgencyLevel === 'danger' ? 'text-red-400 font-bold' : 'text-zinc-300'">
-                {{ timeSinceLastWorkout.subText }}
+          <!-- Normal Readiness State -->
+          <div v-else class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full"
+                      :class="[
+                        timeSinceLastWorkout.urgencyLevel === 'danger' ? 'bg-red-500 animate-pulse' :
+                        timeSinceLastWorkout.urgencyLevel === 'warn' ? 'bg-amber-400' : 'bg-emerald-400'
+                      ]"></span>
+                <span class="font-bold text-zinc-200">{{ timeSinceLastWorkout.title }}</span>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full"
+                    :class="[
+                      timeSinceLastWorkout.urgencyLevel === 'danger' ? 'bg-red-500/20 text-red-400' :
+                      timeSinceLastWorkout.urgencyLevel === 'warn' ? 'bg-amber-500/20 text-amber-400' :
+                      'bg-emerald-500/20 text-emerald-400'
+                    ]">
+                {{ timeSinceLastWorkout.badge }}
               </span>
             </div>
 
-            <!-- 2. Today's Split Muscle Recovery State -->
-            <div class="flex items-start gap-2 text-zinc-400">
-              <span class="text-zinc-500 flex-shrink-0 font-mono text-[11px]">肌群状态 (RECOVERY):</span>
-              <span class="leading-relaxed text-zinc-300">
-                {{ splitRecoveryInfo.desc }}
-              </span>
+            <!-- Recovery Telemetry Details (with semantic text to satisfy tests) -->
+            <div class="grid grid-cols-1 gap-1 text-[11px] text-zinc-400 pt-0.5">
+              <div class="flex items-center justify-between">
+                <span class="text-zinc-500 font-mono">怠惰计时:</span>
+                <span class="text-zinc-300 font-medium">{{ timeSinceLastWorkout.subText }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-zinc-500 font-mono">肌群状态:</span>
+                <span class="text-zinc-300 font-medium">{{ splitRecoveryInfo.desc }}</span>
+              </div>
             </div>
           </div>
 
-          <!-- 3. Honor Rank & Body Metrics Quick Launcher Pill -->
-          <div class="mt-2.5 pt-2.5 border-t border-zinc-800/80 flex items-center justify-between gap-2">
+          <!-- Quick Honor Rank & Body Metrics Launchers -->
+          <div class="pt-2 border-t border-zinc-800/80 flex items-center justify-between gap-2">
             <button @click="showHonorModal = true" 
-                    class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-zinc-950/80 hover:bg-zinc-800 border border-amber-500/40 text-xs font-mono text-amber-300 transition-all active:scale-95">
-              <img v-if="honorData.presentation.tierSvg" :src="honorData.presentation.tierSvg" alt="Tier Medal" class="w-4 h-4 object-contain inline-block filter drop-shadow-[0_0_4px_rgba(245,158,11,0.6)]" />
-              <span v-else>{{ honorData.presentation.tierIcon }}</span>
-              <span class="font-black">{{ honorData.presentation.tierName.split('·')[0] }}</span>
-              <span class="text-[10px] text-zinc-400">({{ honorData.score }} PTS)</span>
-              <span class="text-[9px] text-amber-500">❯</span>
+                    class="flex-1 py-1.5 px-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-amber-500/30 text-[11px] font-mono text-amber-400 flex items-center justify-between transition-all cursor-pointer">
+              <span class="flex items-center gap-1.5">
+                <img v-if="honorData.presentation.tierSvg" :src="honorData.presentation.tierSvg" alt="Tier" class="w-3.5 h-3.5 object-contain" />
+                <span v-else>{{ honorData.presentation.tierIcon }}</span>
+                <span class="font-bold font-sans text-zinc-200">{{ honorData.presentation.tierName.split('·')[0] }}</span>
+              </span>
+              <span class="text-amber-400 font-bold">{{ honorData.score }} PTS ❯</span>
             </button>
 
             <button @click="showBodyModal = true"
-                    class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-zinc-950/80 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-mono text-zinc-300 transition-all active:scale-95">
+                    class="py-1.5 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-[11px] font-medium text-zinc-300 flex items-center gap-1 transition-all cursor-pointer">
               <span>形体围度</span>
-              <span class="text-[9px] text-zinc-500">❯</span>
+              <span class="text-zinc-500 text-[9px]">❯</span>
             </button>
           </div>
         </div>
 
-      </div>
-
-      <!-- Today's Workout Hero Card -->
-      <div class="bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-950 border rounded-3xl p-5 shadow-2xl relative overflow-hidden"
-           :class="[
-             todayCycle.isRest ? 'border-emerald-500/40' : 'border-amber-500/40'
-           ]">
-        
-        <!-- Background Ambient Glow -->
-        <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full blur-3xl opacity-20 pointer-events-none"
-             :class="[todayCycle.isRest ? 'bg-emerald-400' : 'bg-amber-400']"></div>
-
-        <!-- Badge -->
-        <div class="flex items-center justify-between">
-          <span class="px-3 py-1 rounded-full text-xs font-extrabold tracking-wide"
-                :class="[
-                  todayCycle.color === 'amber' ? 'bg-amber-500 text-zinc-950' :
-                  todayCycle.color === 'sky' ? 'bg-sky-500 text-zinc-950' :
-                  todayCycle.color === 'purple' ? 'bg-purple-500 text-white' :
-                  'bg-emerald-500 text-zinc-950'
-                ]">
-            {{ todayCycle.name }}
-          </span>
-
-          <span class="text-xs text-zinc-400 font-mono">
-            {{ todayFormatted }}
-          </span>
-        </div>
-
-        <!-- Today Plan Title & Goal -->
-        <div class="mt-4 mb-5">
-          <h1 class="text-xl font-black text-white tracking-tight leading-snug">
-            {{ currentPlan?.name }}
-          </h1>
-          <p class="text-xs text-zinc-300 mt-1.5 flex items-start gap-1 leading-relaxed">
-            <span class="text-amber-400 flex-shrink-0 font-bold">目标:</span>
-            <span>{{ currentPlan?.coreTarget || "按计划严格执行，注重动作质量与拉伸区肥大" }}</span>
-          </p>
-        </div>
-
-        <!-- Preview of exercises in this plan -->
-        <div v-if="!todayCycle.isRest && currentPlan?.exercises?.length" class="space-y-1.5 mb-5">
-          <div class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-1 flex items-center justify-between">
-            <span>计划动作 ({{ currentPlan.exercises.length }} 个)</span>
-            <span class="text-[10px] text-zinc-500">点击🔬查看发力细节</span>
-          </div>
-
-          <div v-for="(ex, idx) in currentPlan.exercises" :key="idx"
-               @click="openExerciseDetailByName(ex.name)"
-               class="p-2.5 bg-zinc-950/70 hover:bg-zinc-800/80 border border-zinc-800/80 rounded-xl flex items-center justify-between text-xs cursor-pointer transition-all gap-2">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <!-- Mini 3D Thumbnail -->
-              <ExerciseImage :src="getExerciseGif(ex.name)" 
-                             :name="ex.name" 
-                             :category="ex.category" 
-                             :target="ex.targetReps" 
-                             customClass="w-9 h-9 rounded-lg border border-zinc-800 flex-shrink-0" />
-              <span class="font-medium text-zinc-200 truncate">{{ ex.name }}</span>
-            </div>
-            <div class="flex items-center gap-2 flex-shrink-0">
-              <span class="text-[11px] text-amber-400/90 font-mono">{{ ex.setsCount }}组 × {{ ex.targetReps }}</span>
-              <span class="text-amber-400 text-xs">🔬</span>
-            </div>
-          </div>
-
-
-        </div>
-
-        <!-- Rest Day Inspiration Card -->
-        <div v-else-if="todayCycle.isRest" class="p-4 bg-emerald-950/30 border border-emerald-500/30 rounded-2xl mb-5 space-y-2">
-          <div class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
-            <span>🌿</span> 超量恢复日（肌肉生长在休息中）
-          </div>
-          <p class="text-xs text-zinc-300 leading-relaxed">
-            今天为中枢神经系统和肌纤维提供充分修复时间。建议保证 7-8 小时高质量睡眠，摄入充足水分与优质蛋白质。
-          </p>
-        </div>
-
-        <!-- Main Action CTA -->
-        <div class="space-y-2">
+        <!-- 5. Single Primary Action CTA (No Duplication!) -->
+        <div class="space-y-2 relative z-10">
+          <!-- Main Dominant Action -->
           <button v-if="!todayCycle.isRest" 
                   @click="handleStartTodayWorkout"
-                  class="w-full py-4 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-zinc-950 font-black text-sm rounded-2xl shadow-xl shadow-amber-500/25 active:scale-98 transition-all flex items-center justify-center gap-2">
-            <span>🚀</span> 开始今日训练打卡
+                  class="w-full py-3.5 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-zinc-950 font-black text-sm rounded-2xl shadow-xl shadow-amber-500/25 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <span>立即开练</span>
           </button>
 
           <button v-else 
                   @click="markRestDayCompleted"
-                  class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black text-sm rounded-2xl shadow-xl shadow-emerald-500/20 active:scale-98 transition-all flex items-center justify-center gap-2">
-            <span>✅</span> 记录今日休息完成
+                  class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black text-sm rounded-2xl shadow-xl shadow-emerald-500/20 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <svg class="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span>打卡今日休整</span>
           </button>
 
           <!-- Secondary Actions -->
-          <div class="flex items-center gap-2 pt-1">
+          <div class="flex items-center gap-2 pt-0.5">
             <button @click="showPlanPicker = true" 
-                    class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-xs font-semibold border border-zinc-700/60 active:scale-95 transition-all">
-              选择其它计划训练
+                    class="flex-1 py-2 bg-zinc-900/90 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 rounded-xl text-[11px] font-medium border border-zinc-800 transition-all cursor-pointer">
+              切换其它计划
             </button>
             <button @click="startEmptyWorkout" 
-                    class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-xs font-semibold border border-zinc-700/60 active:scale-95 transition-all">
+                    class="flex-1 py-2 bg-zinc-900/90 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 rounded-xl text-[11px] font-medium border border-zinc-800 transition-all cursor-pointer">
               自由空白训练
             </button>
           </div>
         </div>
 
+      </div>
+
+      <!-- 6. Immediately Adjacent Today's Exercise List (首屏直接呈现) -->
+      <div v-if="!todayCycle.isRest && currentPlan?.exercises?.length" class="space-y-2 pt-1">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            <span>今日动作清单 ({{ currentPlan.exercises.length }})</span>
+          </span>
+          <span class="text-[10px] text-zinc-500">点击卡片查看 3D 发力细节</span>
+        </div>
+
+        <div class="space-y-2">
+          <div v-for="(ex, idx) in currentPlan.exercises" :key="idx"
+               @click="openExerciseDetailByName(ex.name)"
+               class="p-3 bg-zinc-900/80 hover:bg-zinc-850 active:bg-zinc-800 border border-zinc-800 hover:border-amber-500/30 rounded-2xl flex items-center justify-between cursor-pointer transition-all gap-3 shadow-sm">
+            <div class="flex items-center gap-3 min-w-0">
+              <ExerciseImage :src="getExerciseGif(ex.name)" 
+                             :name="ex.name" 
+                             :category="ex.category" 
+                             :target="ex.targetReps" 
+                             customClass="w-12 h-12 rounded-xl border border-zinc-800 flex-shrink-0" />
+              <div class="min-w-0">
+                <div class="font-bold text-xs text-zinc-100 truncate">{{ ex.name }}</div>
+                <div class="text-[10px] text-zinc-400 mt-0.5 flex items-center gap-2">
+                  <span class="text-amber-400 font-mono font-medium">{{ ex.setsCount }}组 × {{ ex.targetReps }}</span>
+                  <span v-if="getLastExercisePerformance(ex.name)" class="text-zinc-500 font-mono">
+                    前次: {{ formatLastPerf(ex.name) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1 text-zinc-500 hover:text-amber-400 text-xs">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Recent History Snippet -->
@@ -810,6 +775,11 @@ const todayCycle = computed(() => {
 const currentPlan = computed(() => {
   const tp = getTodayPlan();
   return tp.plan;
+});
+
+const todayTotalSets = computed(() => {
+  if (!currentPlan.value?.exercises) return 0;
+  return currentPlan.value.exercises.reduce((sum, ex) => sum + (Number(ex.setsCount) || 3), 0);
 });
 
 const todayFormatted = computed(() => {

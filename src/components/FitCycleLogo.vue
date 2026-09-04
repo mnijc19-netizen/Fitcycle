@@ -9,6 +9,11 @@
           <stop offset="100%" :stop-color="accentColorEnd" />
         </linearGradient>
 
+        <linearGradient id="fitcycle-grad-secondary" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" :stop-color="accentColorMid" />
+          <stop offset="100%" :stop-color="accentColorStart" />
+        </linearGradient>
+
         <linearGradient id="fitcycle-grad-dark" x1="0%" y1="100%" x2="100%" y2="0%">
           <stop offset="0%" stop-color="#18181b" />
           <stop offset="100%" stop-color="#27272a" />
@@ -19,33 +24,56 @@
         </filter>
       </defs>
 
-      <!-- Background Subtle Geometric Disc (Optional) -->
-      <circle v-if="withBackground" cx="50" cy="50" r="46" fill="url(#fitcycle-grad-dark)" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" />
+      <!-- Sculptural FitCycle Möbius Torque Ribbon (F + C Overload Loop) -->
+      <!-- Background Shield Plate (Optional) -->
+      <path v-if="withBackground"
+            d="M 50 6 L 88 26 L 88 74 L 50 94 L 12 74 L 12 26 Z" 
+            fill="url(#fitcycle-grad-dark)" 
+            stroke="rgba(255,255,255,0.08)" 
+            stroke-width="1.5" />
 
-      <!-- Kinetic FitCycle Dual-Loop Möbius / Interlocking Infinite Rings -->
-      <!-- Left Loop: "F" Dynamic Biomechanical Curve -->
+      <!-- Left Flow Ribbon: Athletic 'F' Kinetic Surge (Ascending Overload) -->
       <path 
-        d="M 28 32 C 28 22, 42 16, 56 22 C 68 28, 74 42, 66 58 L 48 84 C 44 89, 36 90, 31 86 C 26 82, 26 74, 30 69 L 46 48 C 50 42, 48 34, 40 32 C 34 31, 28 36, 28 44 L 28 52" 
-        stroke="url(#fitcycle-grad-primary)" 
-        stroke-width="7.5" 
-        stroke-linecap="round" 
-        stroke-linejoin="round"
-        filter="url(#fitcycle-glow)" 
+        d="M 22 72 
+           C 16 62, 16 38, 26 28 
+           C 36 18, 52 16, 68 18 
+           C 74 19, 78 24, 76 29 
+           C 74 34, 69 36, 62 36 
+           C 50 36, 38 40, 36 50 
+           C 35 55, 38 58, 44 58 
+           L 58 58 
+           C 63 58, 67 62, 66 67 
+           C 65 72, 60 76, 54 76 
+           L 38 76 
+           C 32 76, 26 80, 24 84 
+           C 22 88, 18 86, 17 82 
+           C 16 78, 18 74, 22 72 Z"
+        fill="url(#fitcycle-grad-primary)"
+        filter="url(#fitcycle-glow)"
       />
 
-      <!-- Right Loop: "C" Cycle Enclosure Curve -->
+      <!-- Right Flow Ribbon: Continuity 'C' Recovery Orbital (Hypertrophy Loop) -->
       <path 
-        d="M 72 68 C 72 78, 58 84, 44 78 C 32 72, 26 58, 34 42 L 52 16 C 56 11, 64 10, 69 14 C 74 18, 74 26, 70 31 L 54 52 C 50 58, 52 66, 60 68 C 66 69, 72 64, 72 56 L 72 48" 
-        stroke="url(#fitcycle-grad-primary)" 
-        stroke-width="7.5" 
-        stroke-linecap="round" 
-        stroke-linejoin="round"
-        opacity="0.85"
+        d="M 52 38 
+           C 60 38, 70 34, 78 40 
+           C 86 47, 88 62, 82 72 
+           C 76 82, 62 86, 48 86 
+           C 40 86, 36 82, 38 78 
+           C 40 74, 44 74, 50 74 
+           C 60 74, 70 70, 72 62 
+           C 74 54, 68 48, 58 48 
+           L 46 48 
+           C 41 48, 38 44, 39 39 
+           C 40 34, 44 32, 50 32 
+           L 52 38 Z"
+        fill="url(#fitcycle-grad-secondary)"
+        opacity="0.92"
       />
 
-      <!-- Precision Central Apex Kinetic Chevron (Progressive Overload Spark) -->
-      <circle cx="50" cy="50" r="4.5" :fill="accentColorStart" />
-      <circle cx="50" cy="50" r="2" fill="#ffffff" />
+      <!-- Central Kinetic Barbell Core / Overload Spark -->
+      <polygon points="50,38 59,50 50,62 41,50" fill="url(#fitcycle-grad-primary)" />
+      <polygon points="50,42 56,50 50,58 44,50" fill="#ffffff" opacity="0.95" />
+      <circle cx="50" cy="50" r="2.5" :fill="accentColorStart" />
     </svg>
   </div>
 </template>
