@@ -1,11 +1,11 @@
 <template>
-  <div :data-skin="store.settings.uiSkin" class="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-amber-500 selection:text-zinc-950 transition-colors duration-200">
+  <div :data-skin="store.settings.uiSkin" class="min-h-[100dvh] bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-amber-500 selection:text-zinc-950 transition-colors duration-200">
     <!-- Sticky Top Navbar -->
 
     <Navbar />
 
     <!-- Main Dynamic Content Views -->
-    <main class="flex-1 w-full max-w-md mx-auto relative px-3 pt-2">
+    <main class="flex-1 w-full max-w-md mx-auto relative pt-1">
       <TodayView v-show="store.activeTab === 'today'" />
       <CycleView v-show="store.activeTab === 'cycle'" />
       <CalendarView v-show="store.activeTab === 'calendar'" />

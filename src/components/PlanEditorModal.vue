@@ -3,10 +3,16 @@
     <div v-if="visible" 
          class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-xl p-0 sm:p-4 animate-in fade-in duration-200"
          style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
-      <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
+      <!-- Backdrop dismiss -->
+      <div class="absolute inset-0" @click="$emit('close')"></div>
+
+      <div class="relative z-10 bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
         
+        <!-- Top Ergonomic Grabber Pill -->
+        <div class="w-10 h-1 rounded-full bg-zinc-700/80 mx-auto mt-2 -mb-1 flex-shrink-0"></div>
+
         <!-- Header -->
-        <div class="p-4 border-b border-zinc-800 flex items-center justify-between">
+        <div class="p-4 border-b border-zinc-800 flex items-center justify-between flex-shrink-0">
           <div>
             <h3 class="text-base font-bold text-zinc-100 flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-amber-400"></span>
@@ -22,7 +28,8 @@
         </div>
 
       <!-- Body Content -->
-      <div class="overflow-y-auto flex-1 p-4 space-y-4">
+      <div class="overflow-y-auto flex-1 p-4 space-y-4 overscroll-contain"
+           style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
         
         <!-- Basic Info -->
         <div class="space-y-3">
@@ -137,9 +144,10 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, onUnmounted } from "vue";
 import { savePlan, uid } from "../store/fitnessStore.js";
 import ExercisePickerModal from "./ExercisePickerModal.vue";
+import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 
 const props = defineProps({
   visible: Boolean,
@@ -147,6 +155,15 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["close", "saved"]);
+
+watch(() => props.visible, (val) => {
+  if (val) lockBodyScroll();
+  else unlockBodyScroll();
+}, { immediate: true });
+
+onUnmounted(() => {
+  if (props.visible) unlockBodyScroll();
+});
 
 const showExercisePicker = ref(false);
 const editPlan = ref({

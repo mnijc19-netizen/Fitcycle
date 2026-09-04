@@ -246,7 +246,18 @@ const csExercisesIcon = "./themes/cs/icons/awp.svg";
 const csStatsIcon = "./themes/cs/icons/skillgroup18.svg";
 
 function switchTab(tabName) {
+  if (store.activeTab === tabName) {
+    // Repeated click on active tab -> iOS standard Natural Thumb Zone smooth scroll-to-top
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    if (store.settings.vibrationEnabled) triggerHaptic("medium");
+    return;
+  }
   store.activeTab = tabName;
+  if (typeof window !== "undefined") {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }
   if (store.settings.vibrationEnabled) triggerHaptic("light");
 }
 </script>

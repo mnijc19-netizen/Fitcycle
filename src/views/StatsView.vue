@@ -345,6 +345,9 @@
         
         <!-- Modal Container with Fixed Header and Scrollable Body -->
         <section class="relative w-full max-w-lg h-[min(88dvh,720px)] bg-zinc-950 border border-zinc-700 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in fade-in slide-in-from-bottom-6 duration-200">
+          <!-- Top Ergonomic Grabber Pill -->
+          <div class="w-10 h-1 rounded-full bg-zinc-700/80 mx-auto mt-2 -mb-1 flex-shrink-0 z-20"></div>
+
           <!-- Fixed Header -->
           <header class="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-900/95 flex-shrink-0">
             <div class="flex items-center gap-2">
@@ -510,12 +513,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch, onUnmounted } from "vue";
 import AISettingsPanel from "../components/AISettingsPanel.vue";
 import HonorShowcaseModal from "../components/HonorShowcaseModal.vue";
 import BodyMetricsModal from "../components/BodyMetricsModal.vue";
 import RulesCodexModal from "../components/RulesCodexModal.vue";
 import UserOnboardingModal from "../components/UserOnboardingModal.vue";
+import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import {
   aiSession,
   getActiveApiKey,
@@ -553,6 +557,16 @@ const vTaperRatio = computed(() => {
 });
 
 const showAISettingsModal = ref(false);
+
+watch(showAISettingsModal, (val) => {
+  if (val) lockBodyScroll();
+  else unlockBodyScroll();
+});
+
+onUnmounted(() => {
+  if (showAISettingsModal.value) unlockBodyScroll();
+});
+
 const activeAIProvider = computed(getActiveProvider);
 const activeAIModels = computed(getActiveModels);
 const aiConnected = computed(() => Boolean(getActiveApiKey() && activeAIModels.value.length));

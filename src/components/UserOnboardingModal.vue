@@ -241,8 +241,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch, onUnmounted } from "vue";
 import { store } from "../store/fitnessStore.js";
+import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 
 const props = defineProps({
   visible: {
@@ -252,6 +253,15 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["close"]);
+
+watch(() => props.visible, (val) => {
+  if (val) lockBodyScroll();
+  else unlockBodyScroll();
+}, { immediate: true });
+
+onUnmounted(() => {
+  if (props.visible) unlockBodyScroll();
+});
 
 const currentStep = ref(0);
 const carouselRef = ref(null);

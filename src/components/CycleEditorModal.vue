@@ -3,8 +3,14 @@
     <div v-if="visible" 
          class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-xl p-0 sm:p-4"
          style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
-      <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
+      <!-- Backdrop dismiss -->
+      <div class="absolute inset-0" @click="$emit('close')"></div>
+
+      <div class="relative z-10 bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
         
+        <!-- Top Ergonomic Grabber Pill -->
+        <div class="w-10 h-1 rounded-full bg-zinc-700/80 mx-auto mt-2 -mb-1 flex-shrink-0"></div>
+
         <!-- Header -->
         <div class="p-4 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/80 flex-shrink-0">
           <div class="flex items-center gap-2.5">
@@ -26,7 +32,8 @@
         </div>
 
       <!-- Body Content -->
-      <div class="overflow-y-auto flex-1 p-4 space-y-5">
+      <div class="overflow-y-auto flex-1 p-4 space-y-5 overscroll-contain"
+           style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
         
         <!-- Preset Quick Picks -->
         <div>
@@ -141,9 +148,10 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onUnmounted } from "vue";
 import { store, saveCustomCycle, setTodayAsCycleIndex, getCycleDayForDate, uid } from "../store/fitnessStore.js";
 import { PRESET_CYCLES } from "../data/defaultPlans.js";
+import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 
 const props = defineProps({
   visible: Boolean
@@ -155,8 +163,15 @@ const editCycle = ref(JSON.parse(JSON.stringify(store.activeCycle)));
 
 watch(() => props.visible, (val) => {
   if (val) {
+    lockBodyScroll();
     editCycle.value = JSON.parse(JSON.stringify(store.activeCycle));
+  } else {
+    unlockBodyScroll();
   }
+}, { immediate: true });
+
+onUnmounted(() => {
+  if (props.visible) unlockBodyScroll();
 });
 
 const currentCycleIndex = computed(() => {

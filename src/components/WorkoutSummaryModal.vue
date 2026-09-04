@@ -3,7 +3,11 @@
     <div v-if="visible" 
          class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200"
          style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
-      <div class="bg-zinc-900 border border-zinc-700/80 rounded-3xl p-5 max-w-sm w-full max-h-[90dvh] overflow-y-auto shadow-2xl text-center relative zoom-in-95 duration-200 scrollbar-none">
+      <!-- Backdrop dismiss -->
+      <div class="absolute inset-0" @click="$emit('close')"></div>
+
+      <div class="relative z-10 bg-zinc-900 border border-zinc-700/80 rounded-3xl p-5 max-w-sm w-full max-h-[90dvh] overflow-y-auto shadow-2xl text-center zoom-in-95 duration-200 scrollbar-none overscroll-contain"
+           style="-webkit-overflow-scrolling: touch;">
         
         <!-- Top Decorative Glow -->
         <div class="absolute -top-12 -left-12 w-32 h-32 bg-amber-500/20 rounded-full blur-2xl pointer-events-none"></div>
@@ -159,11 +163,12 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onUnmounted } from "vue";
 import confetti from "canvas-confetti";
 import { store, resumeWorkoutFromSummary } from "../store/fitnessStore.js";
 import { analyzeWorkoutSummary, buildDetailedWorkoutPrompt, buildInstantWorkoutCoachResponse } from "../ai/workoutAnalyzer.js";
 import { aiSession, clearConversation } from "../ai/aiSession.js";
+import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 
 const isTest = typeof process !== "undefined" && process.env?.NODE_ENV === "test";
 
@@ -180,7 +185,10 @@ const aiAnalysis = computed(() => {
 });
 
 function launchConfetti() {
+  if (isTest || typeof window === "undefined" || !window.document?.createElement) return;
   try {
+    const testCanvas = document.createElement("canvas");
+    if (!testCanvas.getContext || !testCanvas.getContext("2d")) return;
     confetti({
       particleCount: 80,
       spread: 70,
@@ -222,7 +230,14 @@ function openDeepAIReview() {
 
 watch(() => props.visible, (val) => {
   if (val) {
+    lockBodyScroll();
     launchConfetti();
+  } else {
+    unlockBodyScroll();
   }
+}, { immediate: true });
+
+onUnmounted(() => {
+  if (props.visible) unlockBodyScroll();
 });
 </script>

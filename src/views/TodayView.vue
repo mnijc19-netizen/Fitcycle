@@ -582,14 +582,20 @@
       <div v-if="showPlanPicker" 
            class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-xl p-0 sm:p-4 animate-in fade-in duration-200"
            style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
-        <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-md w-full p-4 space-y-3.5 animate-in slide-in-from-bottom duration-200 shadow-2xl">
+        <!-- Backdrop dismiss -->
+        <div class="absolute inset-0" @click="showPlanPicker = false"></div>
+
+        <div class="relative z-10 bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-md w-full p-4 space-y-3.5 animate-in slide-in-from-bottom duration-200 shadow-2xl">
+          <!-- Top ergonomic grabber pill -->
+          <div class="w-10 h-1 rounded-full bg-zinc-700/80 mx-auto -mt-1 mb-2 flex-shrink-0"></div>
+
           <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
             <h3 class="text-sm font-black text-zinc-100 flex items-center gap-1.5">
               <span>选择训练计划</span>
             </h3>
             <button @click="showPlanPicker = false" class="w-7 h-7 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer">✕</button>
           </div>
-          <div class="space-y-2 max-h-80 overflow-y-auto">
+          <div class="space-y-2 max-h-80 overflow-y-auto overscroll-contain no-scrollbar" style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
             <div v-for="p in store.plans" :key="p.id"
                  @click="startCustomPlan(p.id)"
                  class="p-3 bg-zinc-950/80 hover:bg-zinc-850 active:bg-zinc-800 border border-zinc-800/80 hover:border-amber-500/40 rounded-2xl cursor-pointer flex items-center justify-between transition-all gap-3 shadow-sm">
@@ -707,7 +713,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 import { 
   store, 
   getCycleDayForDate, 
@@ -736,6 +742,7 @@ import WorkoutSummaryModal from "../components/WorkoutSummaryModal.vue";
 import HonorShowcaseModal from "../components/HonorShowcaseModal.vue";
 import BodyMetricsModal from "../components/BodyMetricsModal.vue";
 import ExerciseImage from "../components/ExerciseImage.vue";
+import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 
 // State
 const showAddExerciseModal = ref(false);
@@ -751,13 +758,17 @@ const showAutoFinishModal = ref(false);
 const showHonorModal = ref(false);
 const showBodyModal = ref(false);
 
+const anyTodayModalOpen = computed(() => showPlanPicker.value || showAutoFinishModal.value);
+watch(anyTodayModalOpen, (isOpen) => {
+  if (isOpen) lockBodyScroll();
+  else unlockBodyScroll();
+});
+
 const honorData = computed(() => getFullHonorProfile());
 
 // Timer for elapsed workout time
 const nowTimestamp = ref(Date.now());
 let elapsedInterval = null;
-
-
 
 onMounted(() => {
   elapsedInterval = setInterval(() => {
@@ -767,6 +778,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   if (elapsedInterval) clearInterval(elapsedInterval);
+  if (anyTodayModalOpen.value) unlockBodyScroll();
 });
 
 const elapsedFormatted = computed(() => {

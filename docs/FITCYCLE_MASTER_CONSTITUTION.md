@@ -69,6 +69,12 @@ Fitcycle 采用严格单向依赖的 5 层洋葱架构，**严禁跨层反向污
                                           ├── 7.2 `src/ai/aiSession.js` (全局会话状态、多模态 Token 管理与流式调度)
                                           ├── 7.3 `src/components/AISettingsPanel.vue` (厂商选择、宫格模型卡片与 Key 验证)
                                           └── 7.4 `tests/ai-core.test.js` (断言多厂商鉴权与多模态识图兼容性)
+
+8. 移动端工学与滚动穿透 (Ergonomics)       ├── 8.1 `src/utils/scrollLock.js` (统一引用计数锁定与释放宿主滚动)
+                                          ├── 8.2 `src/style.css` (注入 .scrollbar-none, .overscroll-contain, overscroll-behavior-y)
+                                          ├── 8.3 `src/components/TabBar.vue` (实现双击/再次点击已激活 Tab 顺滑回顶)
+                                          ├── 8.4 各主要弹窗组件 (注入顶部 Grabber 抓手条、背景遮罩速退并挂接 scrollLock)
+                                          └── 8.5 `tests/ergonomics-and-scroll.test.js` (自动化人体工学与防穿透断言)
 ========================================================================================================================
 ```
 
@@ -81,6 +87,13 @@ Fitcycle 采用严格单向依赖的 5 层洋葱架构，**严禁跨层反向污
 ### 卷一：【UI/UX 与多皮肤插槽宪法】
 *   **公理 1.1**：任何皮肤仅能是纯数据字典，严禁在业务逻辑中包含 `if (skin === 'xxx')`。
 *   **公理 1.2**：所有主题色必须通过 CSS Variable 注入，移动端触控目标严禁小于 44×44px。
+*   **公理 1.3（拇指黄金热区与单手操控公理）**：
+    * 屏幕下部 35%~45% 属于拇指天然黄金区（Natural Thumb Zone）。所有主要操作（CTA 开始按钮、底栏 TabBar、抽屉抓手、保存确认）必须就近布置在拇指区。
+    * 底部 TabBar 必须支持“再次点击当前激活 Tab 即刻顺滑回顶（Tap-to-Top）”的 Apple 原生交互；切换 Tab 时瞬间瞬移回顶。
+    * 长列表长页面（如动作库）必须在屏幕右下方单手热区提供浮动回顶胶囊（Floating Back-to-Top Pill）。
+*   **公理 1.4（零游离滑块与滚动隔离防穿透公理）**：
+    * 所有模态弹窗（Bottom Sheet / Modal）打开时，必须统一通过 `src/utils/scrollLock.js` 引用计数锁住 `document.body` 滚动，严禁手势穿透到背景页面。
+    * 所有内部滚动容器必须配置 `.overscroll-contain` 隔离边界滚动；所有横向/纵向滑动条必须严格配置 `.no-scrollbar` / `.scrollbar-none`，杜绝系统浏览器滑块假弹而页面卡死不动的顽疾。
 
 ### 卷二：【训练分化、周期与动作库宪法】
 *   **公理 2.1**：推拉腿 (PPL) 为出厂黄金模板，支持 N 天自由滚动与周固定循环。

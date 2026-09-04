@@ -28,7 +28,7 @@
         </div>
 
       <!-- Category Filter Tabs (Horizontal Scrollable) -->
-      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 flex-shrink-0 scrollbar-none">
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 flex-shrink-0 scrollbar-none overscroll-x-contain touch-pan-x">
         <button v-for="tab in ruleCategories" :key="tab.id"
                 @click="activeCategory = tab.id"
                 class="px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5"
@@ -43,7 +43,8 @@
       </div>
 
       <!-- Tab Content Panel (Scrollable) -->
-      <div class="flex-1 overflow-y-auto space-y-3.5 pr-1 text-xs text-zinc-300 leading-relaxed font-sans">
+      <div class="flex-1 overflow-y-auto space-y-3.5 pr-1 text-xs text-zinc-300 leading-relaxed font-sans overscroll-contain"
+           style="-webkit-overflow-scrolling: touch;">
         
         <!-- 1. FPS 战力天梯与排位加分 -->
         <div v-if="activeCategory === 'ranking'" class="space-y-3">
@@ -250,16 +251,26 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch, onUnmounted } from "vue";
+import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 
-defineProps({
+const props = defineProps({
   visible: {
     type: Boolean,
     default: false
   }
 });
 
-defineEmits(["close"]);
+const emit = defineEmits(["close"]);
+
+watch(() => props.visible, (val) => {
+  if (val) lockBodyScroll();
+  else unlockBodyScroll();
+}, { immediate: true });
+
+onUnmounted(() => {
+  if (props.visible) unlockBodyScroll();
+});
 
 const activeCategory = ref("ranking");
 

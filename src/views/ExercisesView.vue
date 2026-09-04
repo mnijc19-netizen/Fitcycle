@@ -42,7 +42,7 @@
       </div>
 
       <!-- Categories Pills with Real-Time Counts -->
-      <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar">
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar overscroll-x-contain touch-pan-x">
         <button v-for="cat in categoryOptions" :key="cat.name"
                 @click="activeCategory = cat.name"
                 class="px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer flex items-center gap-1"
@@ -120,6 +120,25 @@
       </div>
     </div>
 
+    <!-- Floating Back-to-Top Pill Button (Natural Thumb Zone Ergonomics) -->
+    <Transition enter-active-class="transition duration-200 ease-out"
+                enter-from-class="opacity-0 translate-y-4 scale-90"
+                enter-to-class="opacity-100 translate-y-0 scale-100"
+                leave-active-class="transition duration-150 ease-in"
+                leave-from-class="opacity-100 translate-y-0 scale-100"
+                leave-to-class="opacity-0 translate-y-4 scale-90">
+      <button v-show="showBackToTop" 
+              @click="scrollToTop" 
+              type="button"
+              aria-label="返回顶部"
+              class="fixed bottom-20 right-4 z-20 flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-zinc-900/95 hover:bg-zinc-800 active:scale-95 text-amber-400 font-bold text-xs shadow-xl shadow-black/60 border border-amber-500/40 backdrop-blur-xl transition-all cursor-pointer">
+        <svg class="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+        </svg>
+        <span>回顶</span>
+      </button>
+    </Transition>
+
     <!-- Modals -->
     <ExerciseDetailModal 
       :visible="showDetailModal" 
@@ -132,7 +151,13 @@
       <div v-if="showCreateModal" 
            class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-xl p-0 sm:p-4 animate-in fade-in duration-200"
            style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
-        <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-md w-full p-4 space-y-3 animate-in slide-in-from-bottom duration-200 shadow-2xl">
+        <!-- Backdrop dismiss -->
+        <div class="absolute inset-0" @click="showCreateModal = false"></div>
+        
+        <div class="relative z-10 bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-md w-full p-4 space-y-3 animate-in slide-in-from-bottom duration-200 shadow-2xl">
+          <!-- Top ergonomic drag pill -->
+          <div class="w-10 h-1 rounded-full bg-zinc-700 mx-auto -mt-1 mb-2 flex-shrink-0"></div>
+
           <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
             <h3 class="text-sm font-black text-zinc-100">添加自定义动作</h3>
             <button @click="showCreateModal = false" class="w-7 h-7 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer">✕</button>
@@ -184,14 +209,46 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { store, uid } from "../store/fitnessStore.js";
 import ExerciseDetailModal from "../components/ExerciseDetailModal.vue";
 import ExerciseImage from "../components/ExerciseImage.vue";
+import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
+import { triggerHaptic } from "../utils/vibrate.js";
 
 const searchQuery = ref("");
 const activeCategory = ref("全部");
 const categories = ["全部", "胸部", "背部", "肩部", "手臂", "腿部", "核心", "其它"];
+
+const showBackToTop = ref(false);
+
+function handleScroll() {
+  if (typeof window !== "undefined") {
+    showBackToTop.value = window.scrollY > 350;
+  }
+}
+
+function scrollToTop() {
+  if (typeof window !== "undefined") {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  if (store.settings.vibrationEnabled) triggerHaptic("light");
+}
+
+onMounted(() => {
+  if (typeof window !== "undefined") {
+    window.addEventListener("scroll", handleScroll, { passive: true });
+  }
+});
+
+onUnmounted(() => {
+  if (typeof window !== "undefined") {
+    window.removeEventListener("scroll", handleScroll);
+  }
+  if (showCreateModal.value) {
+    unlockBodyScroll();
+  }
+});
 
 const categoryOptions = computed(() => {
   return categories.map(cat => {
@@ -214,6 +271,11 @@ const newEx = ref({
   scienceDetail: "",
   defaultSets: 3,
   defaultReps: "10-12"
+});
+
+watch(showCreateModal, (val) => {
+  if (val) lockBodyScroll();
+  else unlockBodyScroll();
 });
 
 const filteredExercises = computed(() => {

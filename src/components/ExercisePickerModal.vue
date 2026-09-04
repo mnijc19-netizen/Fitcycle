@@ -3,10 +3,16 @@
     <div v-if="visible" 
          class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-xl p-0 sm:p-4"
          style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
-      <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
+      <!-- Backdrop dismiss -->
+      <div class="absolute inset-0" @click="$emit('close')"></div>
+
+      <div class="relative z-10 bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
       
+      <!-- Top Ergonomic Grabber Pill for Bottom Sheet Gesture -->
+      <div class="w-10 h-1 rounded-full bg-zinc-700/80 mx-auto mt-2 -mb-1 flex-shrink-0"></div>
+
       <!-- Modal Header -->
-      <div class="p-4 border-b border-zinc-800 flex items-center justify-between">
+      <div class="p-4 border-b border-zinc-800 flex items-center justify-between flex-shrink-0">
         <div>
           <h3 class="text-base font-bold text-zinc-100">
             {{ title || "选择动作" }}
@@ -23,7 +29,7 @@
       </div>
 
       <!-- Search and Filter Tabs -->
-      <div class="p-3 border-b border-zinc-800/60 space-y-2">
+      <div class="p-3 border-b border-zinc-800/60 space-y-2 flex-shrink-0">
         <div class="relative">
           <input v-model="searchQuery" 
                  type="text" 
@@ -33,7 +39,7 @@
         </div>
 
         <!-- Muscle Categories -->
-        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar overscroll-x-contain touch-pan-x">
           <button v-for="cat in categories" :key="cat"
                   @click="activeCategory = cat"
                   class="px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all"
@@ -44,7 +50,8 @@
       </div>
 
       <!-- Exercise List -->
-      <div class="overflow-y-auto flex-1 p-3 space-y-2">
+      <div class="overflow-y-auto flex-1 p-3 space-y-2 overscroll-contain"
+           style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
         <div v-for="ex in filteredExercises" :key="ex.id"
              @click="selectExercise(ex)"
              class="p-2.5 bg-zinc-950/60 hover:bg-zinc-800/70 active:bg-zinc-800 border border-zinc-800/80 hover:border-amber-500/50 rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-3">
@@ -139,10 +146,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch, onUnmounted } from "vue";
 import { store, uid } from "../store/fitnessStore.js";
 import ExerciseImage from "./ExerciseImage.vue";
-
+import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 
 const props = defineProps({
   visible: Boolean,
@@ -151,6 +158,15 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["close", "select"]);
+
+watch(() => props.visible, (val) => {
+  if (val) lockBodyScroll();
+  else unlockBodyScroll();
+}, { immediate: true });
+
+onUnmounted(() => {
+  if (props.visible) unlockBodyScroll();
+});
 
 const searchQuery = ref("");
 const activeCategory = ref("全部");

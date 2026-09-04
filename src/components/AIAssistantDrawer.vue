@@ -11,6 +11,9 @@
     <section class="relative w-full max-w-md h-[min(760px,calc(100dvh-24px))] bg-zinc-950 border border-zinc-700 rounded-t-3xl shadow-2xl flex flex-col overflow-hidden"
              aria-label="Fitcycle AI 助手">
 
+      <!-- Top Ergonomic Grabber Pill for Bottom Sheet Gesture -->
+      <div class="w-10 h-1 rounded-full bg-zinc-700/80 mx-auto mt-2 -mb-1 flex-shrink-0 z-20"></div>
+
       <!-- CS2 Tactical Background Backdrop -->
       <div v-if="store.settings.uiSkin === 'cs'" 
            class="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-20">
@@ -261,7 +264,8 @@
 </template>
 
 <script setup>
-import { computed, nextTick, reactive, ref, watch } from "vue";
+import { computed, nextTick, reactive, ref, watch, onUnmounted } from "vue";
+import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import {
   AI_PROVIDERS,
   aiSession,
@@ -293,6 +297,15 @@ const messageList = ref(null);
 const inputError = ref("");
 const showQuickModelPicker = ref(false);
 let abortController = null;
+
+watch(() => aiSession.drawerOpen, (val) => {
+  if (val) lockBodyScroll();
+  else unlockBodyScroll();
+}, { immediate: true });
+
+onUnmounted(() => {
+  if (aiSession.drawerOpen) unlockBodyScroll();
+});
 
 const activeModels = computed(getActiveModels);
 const selectedModelId = computed({ get: getActiveModelId, set: (val) => setSelectedModel(val) });

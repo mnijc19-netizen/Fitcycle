@@ -10,6 +10,9 @@
     <!-- Modal Card / Bottom Sheet -->
     <div class="relative z-10 bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-md w-full h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
       
+      <!-- Top Ergonomic Grabber Pill for Bottom Sheet Gesture -->
+      <div class="w-10 h-1 rounded-full bg-zinc-700/80 mx-auto mt-2 -mb-1 flex-shrink-0"></div>
+
       <!-- Top Fixed Header Bar -->
       <div class="p-3.5 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between flex-shrink-0">
         <div class="flex items-center gap-2">
@@ -254,9 +257,10 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onUnmounted } from "vue";
 import { store, getExerciseDetails, addExerciseToActiveWorkout } from "../store/fitnessStore.js";
 import { getMuscleDiagramSvg } from "../utils/muscleDiagrams.js";
+import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 
 const props = defineProps({
   visible: Boolean,
@@ -264,6 +268,15 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["close", "selectSubstitute"]);
+
+watch(() => props.visible, (val) => {
+  if (val) lockBodyScroll();
+  else unlockBodyScroll();
+}, { immediate: true });
+
+onUnmounted(() => {
+  if (props.visible) unlockBodyScroll();
+});
 
 const activeTab = ref("tips");
 const gifError = ref(false);

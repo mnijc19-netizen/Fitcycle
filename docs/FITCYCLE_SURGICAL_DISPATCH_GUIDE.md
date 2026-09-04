@@ -57,6 +57,10 @@
 
 [OP-BACKUP]     数据备份、恢复与向下兼容迁移    ├── 1. `src/store/fitnessStore.js` (export/importJSON)   npm run test tests/compatibility.test.js
                 (如版本号迁移、防脏数据清洗)    └── 2. `src/views/StatsView.vue` (导入导出按钮与 Toast)
+
+[OP-ERGO]       移动端人体工学与零假弹滚动隔离  ├── 1. `src/utils/scrollLock.js` (引用计数锁)            npm run test tests/ergonomics-and-scroll.test.js
+                (单手黄金区、Tab回顶、零滑块假弹)├── 2. `src/style.css` (overscroll-contain, no-scrollbar)
+                                                └── 3. `src/components/TabBar.vue` (再次点击回顶)
 =====================================================================================================================================
 ```
 
@@ -130,5 +134,6 @@ c:\Users\17479\Desktop\健身计划小程序\
     ├── ai-core.test.js                   # 多厂商大模型鉴权与多模态识图断言
     ├── ai-drawer.test.js                 # AI 教练抽屉对话与上下文管理断言
     ├── cs-theme.test.js                  # 皮肤切换、DOM 属性与持久化断言
-    └── rest-and-ux-upgrades.test.js      # 休息计时器、边缘自适应、手滑撤回断言
+    ├── rest-and-ux-upgrades.test.js      # 休息计时器、边缘自适应、手滑撤回断言
+    └── ergonomics-and-scroll.test.js     # 移动端人体工学、滚动隔离与零假弹滑块断言
 ```
