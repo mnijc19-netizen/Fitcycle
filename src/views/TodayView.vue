@@ -577,25 +577,44 @@
     />
 
     <!-- 5. Choose Other Plan Modal -->
+    <!-- 5. Choose Other Plan Modal -->
     <Teleport to="body">
       <div v-if="showPlanPicker" 
            class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-xl p-0 sm:p-4 animate-in fade-in duration-200"
            style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
-        <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-md w-full p-4 space-y-3 animate-in slide-in-from-bottom duration-200 shadow-2xl">
+        <div class="bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-md w-full p-4 space-y-3.5 animate-in slide-in-from-bottom duration-200 shadow-2xl">
           <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
-            <h3 class="text-sm font-black text-zinc-100">选择计划开始训练</h3>
+            <h3 class="text-sm font-black text-zinc-100 flex items-center gap-1.5">
+              <span>选择训练计划</span>
+            </h3>
             <button @click="showPlanPicker = false" class="w-7 h-7 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer">✕</button>
           </div>
           <div class="space-y-2 max-h-80 overflow-y-auto">
             <div v-for="p in store.plans" :key="p.id"
                  @click="startCustomPlan(p.id)"
-                 class="p-3 bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 rounded-2xl cursor-pointer flex items-center justify-between transition-colors">
-              <div>
-                <div class="text-xs font-bold text-zinc-100">{{ p.name }}</div>
-                <div class="text-[11px] text-zinc-400 mt-0.5">{{ p.coreTarget }}</div>
+                 class="p-3 bg-zinc-950/80 hover:bg-zinc-850 active:bg-zinc-800 border border-zinc-800/80 hover:border-amber-500/40 rounded-2xl cursor-pointer flex items-center justify-between transition-all gap-3 shadow-sm">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                      :class="[
+                        p.color === 'amber' ? 'bg-amber-400 shadow-sm shadow-amber-400/50' :
+                        p.color === 'sky' ? 'bg-sky-400 shadow-sm shadow-sky-400/50' :
+                        p.color === 'purple' ? 'bg-purple-400 shadow-sm shadow-purple-400/50' :
+                        'bg-emerald-400 shadow-sm shadow-emerald-400/50'
+                      ]"></span>
+                <div class="min-w-0">
+                  <div class="text-xs font-bold text-zinc-100 truncate">{{ p.name }}</div>
+                  <div class="text-[11px] text-zinc-400 mt-0.5 line-clamp-1">{{ p.coreTarget }}</div>
+                </div>
               </div>
-              <button class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold rounded-xl text-xs transition-colors cursor-pointer">
-                开始
+              <button v-if="!p.isRest" 
+                      class="px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-zinc-950 font-black text-xs shadow-md shadow-amber-500/20 active:scale-95 transition-all flex items-center gap-1.5 flex-shrink-0 cursor-pointer">
+                <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <span>开练</span>
+              </button>
+              <button v-else 
+                      class="px-3 py-1.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black text-xs shadow-md shadow-emerald-500/20 active:scale-95 transition-all flex items-center gap-1.5 flex-shrink-0 cursor-pointer">
+                <svg class="w-3 h-3 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                <span>休整</span>
               </button>
             </div>
           </div>

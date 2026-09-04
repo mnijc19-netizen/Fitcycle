@@ -244,7 +244,7 @@
         <button @click="handleActionStart" 
                 class="w-full py-3.5 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-400 hover:from-amber-300 hover:to-amber-400 active:scale-98 text-zinc-950 font-black text-sm rounded-2xl shadow-xl shadow-amber-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer">
           <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-          <span>{{ store.activeWorkout ? '加入/替换至当前训练' : '立即开始训练打卡' }}</span>
+          <span>{{ store.activeWorkout ? '加入至当前训练' : '立即开练' }}</span>
         </button>
       </div>
 

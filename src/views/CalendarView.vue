@@ -139,8 +139,9 @@
 
         <button v-if="!selectedDateLogs.length && !selectedCycleDay.isRest" 
                 @click="startWorkoutForDate(selectedDateStr)"
-                class="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs rounded-xl shadow-sm transition-all cursor-pointer">
-          ➕ 补打卡
+                class="px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-zinc-950 font-black text-xs shadow-md shadow-amber-500/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+          <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <span>立即开练</span>
         </button>
       </div>
 

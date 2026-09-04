@@ -30,14 +30,14 @@
       <span class="text-amber-400 font-mono font-bold">{{ store.exercises.length }} 款全覆盖</span>
     </div>
 
-    <!-- Search & Filter Bar (Sticky with Backdrop Blur) -->
-    <div class="sticky top-14 z-30 bg-zinc-950/90 backdrop-blur-xl border border-zinc-800/80 rounded-2xl p-2.5 space-y-2 shadow-lg">
+    <!-- Search & Filter Bar (Natural Scroll, Zero Viewport Obstruction) -->
+    <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-3 space-y-2.5 shadow-md">
       <div class="relative">
-        <div class="absolute left-3 top-2.5 text-zinc-500 text-xs">🔍</div>
+        <div class="absolute left-3.5 top-2.5 text-zinc-500 text-xs">🔍</div>
         <input v-model="searchQuery" 
                type="text" 
                placeholder="搜索动作名称、英文、别名、目标肌群..." 
-               class="w-full bg-zinc-900 border border-zinc-700/80 rounded-xl pl-8 pr-8 py-2 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-amber-500 transition-colors" />
+               class="w-full bg-zinc-950 border border-zinc-700/80 rounded-xl pl-9 pr-8 py-2 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-amber-500 transition-colors" />
         <span v-if="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-2 text-xs text-zinc-400 hover:text-white cursor-pointer">✕</span>
       </div>
 
