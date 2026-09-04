@@ -58,9 +58,10 @@
 [OP-BACKUP]     数据备份、恢复与向下兼容迁移    ├── 1. `src/store/fitnessStore.js` (export/importJSON)   npm run test tests/compatibility.test.js
                 (如版本号迁移、防脏数据清洗)    └── 2. `src/views/StatsView.vue` (导入导出按钮与 Toast)
 
-[OP-ERGO]       移动端人体工学与零假弹滚动隔离  ├── 1. `src/utils/scrollLock.js` (引用计数锁)            npm run test tests/ergonomics-and-scroll.test.js
-                (单手黄金区、Tab回顶、零滑块假弹)├── 2. `src/style.css` (overscroll-contain, no-scrollbar)
-                                                └── 3. `src/components/TabBar.vue` (再次点击回顶)
+[OP-ERGO]       移动端人体工学与双模全机型适配  ├── 1. `src/utils/scrollUtils.js` (多容器三角回顶纯函数) npm run test tests/ergonomics-and-scroll.test.js
+                (单手热区、WebApp动效穿透、动态底栏)├── 2. `src/utils/scrollLock.js` (引用计数宿主锁)
+                                                ├── 3. `src/components/TabBar.vue` (通用双击回顶)
+                                                └── 4. `src/views/ExercisesView.vue` (动态 safe-area 浮动回顶)
 =====================================================================================================================================
 ```
 

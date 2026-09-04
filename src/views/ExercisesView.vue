@@ -131,7 +131,8 @@
               @click="scrollToTop" 
               type="button"
               aria-label="返回顶部"
-              class="fixed bottom-20 right-4 z-20 flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-zinc-900/95 hover:bg-zinc-800 active:scale-95 text-amber-400 font-bold text-xs shadow-xl shadow-black/60 border border-amber-500/40 backdrop-blur-xl transition-all cursor-pointer">
+              class="fixed right-4 z-20 flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-zinc-900/95 hover:bg-zinc-800 active:scale-95 text-amber-400 font-bold text-xs shadow-xl shadow-black/60 border border-amber-500/40 backdrop-blur-xl transition-all cursor-pointer select-none"
+              :style="{ bottom: 'calc(max(env(safe-area-inset-bottom, 0px), 8px) + 3.85rem)' }">
         <svg class="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
         </svg>
@@ -215,6 +216,7 @@ import ExerciseDetailModal from "../components/ExerciseDetailModal.vue";
 import ExerciseImage from "../components/ExerciseImage.vue";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import { triggerHaptic } from "../utils/vibrate.js";
+import { getUniversalScrollTop, universalScrollToTop } from "../utils/scrollUtils.js";
 
 const searchQuery = ref("");
 const activeCategory = ref("全部");
@@ -223,27 +225,25 @@ const categories = ["全部", "胸部", "背部", "肩部", "手臂", "腿部", 
 const showBackToTop = ref(false);
 
 function handleScroll() {
-  if (typeof window !== "undefined") {
-    showBackToTop.value = window.scrollY > 350;
-  }
+  showBackToTop.value = getUniversalScrollTop() > 280;
 }
 
 function scrollToTop() {
-  if (typeof window !== "undefined") {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+  universalScrollToTop(true);
   if (store.settings.vibrationEnabled) triggerHaptic("light");
 }
 
 onMounted(() => {
   if (typeof window !== "undefined") {
     window.addEventListener("scroll", handleScroll, { passive: true });
+    document.addEventListener("scroll", handleScroll, { passive: true });
   }
 });
 
 onUnmounted(() => {
   if (typeof window !== "undefined") {
     window.removeEventListener("scroll", handleScroll);
+    document.removeEventListener("scroll", handleScroll);
   }
   if (showCreateModal.value) {
     unlockBodyScroll();

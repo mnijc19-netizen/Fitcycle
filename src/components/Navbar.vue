@@ -1,7 +1,6 @@
 <template>
-  <div>
-    <!-- International Big-Tech Standard Sleek Sticky Navbar -->
-    <header class="sticky top-0 z-40 w-full select-none transition-all duration-300 backdrop-blur-2xl border-b"
+  <!-- International Big-Tech Standard Sleek Sticky Navbar -->
+  <header class="sticky top-0 z-40 w-full select-none transition-all duration-300 backdrop-blur-2xl border-b"
             :class="navbarThemeClasses"
             :style="{ paddingTop: 'max(calc(env(safe-area-inset-top, 0px) + 6px), 10px)' }">
       
@@ -94,7 +93,6 @@
 
     <!-- Cycle Editor Modal -->
     <CycleEditorModal :visible="showCycleModal" @close="showCycleModal = false" />
-  </div>
 </template>
 
 <script setup>

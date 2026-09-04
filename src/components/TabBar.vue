@@ -233,6 +233,7 @@
 <script setup>
 import { store } from "../store/fitnessStore.js";
 import { triggerHaptic } from "../utils/vibrate.js";
+import { universalScrollToTop } from "../utils/scrollUtils.js";
 
 const headhunterIcon = "./themes/chamber/icons/headhunter.png";
 const rendezvousIcon = "./themes/chamber/icons/rendezvous.png";
@@ -247,17 +248,13 @@ const csStatsIcon = "./themes/cs/icons/skillgroup18.svg";
 
 function switchTab(tabName) {
   if (store.activeTab === tabName) {
-    // Repeated click on active tab -> iOS standard Natural Thumb Zone smooth scroll-to-top
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    // Repeated click on active tab -> universal cross-engine smooth scroll-to-top
+    universalScrollToTop(true);
     if (store.settings.vibrationEnabled) triggerHaptic("medium");
     return;
   }
   store.activeTab = tabName;
-  if (typeof window !== "undefined") {
-    window.scrollTo({ top: 0, behavior: "instant" });
-  }
+  universalScrollToTop(false);
   if (store.settings.vibrationEnabled) triggerHaptic("light");
 }
 </script>

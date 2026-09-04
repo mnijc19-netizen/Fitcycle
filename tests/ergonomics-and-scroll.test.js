@@ -80,4 +80,31 @@ describe("Mobile Ergonomics & Scroll Lock Suite", () => {
     expect(cssContent).toContain("scrollbar-width: none");
     expect(cssContent).toContain(".overscroll-contain");
   });
+
+  it("Universal Scroll: getUniversalScrollTop detects scroll from multiple engines (window/html/body)", async () => {
+    const { getUniversalScrollTop, universalScrollToTop } = await import("../src/utils/scrollUtils.js");
+    
+    // Simulate documentElement.scrollTop
+    document.documentElement.scrollTop = 420;
+    expect(getUniversalScrollTop()).toBe(420);
+
+    // Test universal scroll to top
+    const windowScrollTo = vi.fn();
+    window.scrollTo = windowScrollTo;
+    universalScrollToTop(true);
+    expect(windowScrollTo).toHaveBeenCalledWith({ top: 0, behavior: "smooth" });
+  });
+
+  it("ExercisesView: back-to-top button has dynamic safe-area-inset-bottom styling to never get swallowed in WebApp", async () => {
+    const exPath = path.resolve(__dirname, "../src/views/ExercisesView.vue");
+    const exContent = fs.readFileSync(exPath, "utf-8");
+    expect(exContent).toContain("safe-area-inset-bottom");
+    expect(exContent).toContain("universalScrollToTop");
+
+    const { default: ExercisesView } = await import("../src/views/ExercisesView.vue");
+    const wrapper = mount(ExercisesView);
+    const button = wrapper.find('button[aria-label="返回顶部"]');
+    expect(button.exists()).toBe(true);
+    expect(button.classes()).toContain("select-none");
+  });
 });

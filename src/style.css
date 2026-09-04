@@ -101,6 +101,15 @@
     touch-action: manipulation;
     overflow-x: hidden;
     overscroll-behavior-y: none;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+
+  html::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
   }
 
   * {
@@ -114,10 +123,19 @@
     padding: 0;
     overflow-x: hidden;
     overscroll-behavior-y: none;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
     min-height: 100vh;
     min-height: 100dvh;
     -webkit-overflow-scrolling: touch;
     transition: background-color 200ms ease, color 200ms ease;
+  }
+
+  body::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
   }
 
   [data-skin="chamber"] body {
@@ -181,26 +199,38 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* Custom scrollbars */
-::-webkit-scrollbar {
+/* Custom scrollbars for inner scrollable containers */
+.custom-scrollbar::-webkit-scrollbar,
+.table-wrapper::-webkit-scrollbar,
+.scrollbar-thin::-webkit-scrollbar {
   width: 4px;
   height: 4px;
 }
-::-webkit-scrollbar-track {
+.custom-scrollbar::-webkit-scrollbar-track,
+.table-wrapper::-webkit-scrollbar-track,
+.scrollbar-thin::-webkit-scrollbar-track {
   background: transparent;
 }
-::-webkit-scrollbar-thumb {
+.custom-scrollbar::-webkit-scrollbar-thumb,
+.table-wrapper::-webkit-scrollbar-thumb,
+.scrollbar-thin::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover {
+.custom-scrollbar::-webkit-scrollbar-thumb:hover,
+.table-wrapper::-webkit-scrollbar-thumb:hover,
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 
-[data-skin="chamber"] ::-webkit-scrollbar-thumb {
+[data-skin="chamber"] .custom-scrollbar::-webkit-scrollbar-thumb,
+[data-skin="chamber"] .table-wrapper::-webkit-scrollbar-thumb,
+[data-skin="chamber"] .scrollbar-thin::-webkit-scrollbar-thumb {
   background: rgba(229, 195, 120, 0.25);
 }
-[data-skin="chamber"] ::-webkit-scrollbar-thumb:hover {
+[data-skin="chamber"] .custom-scrollbar::-webkit-scrollbar-thumb:hover,
+[data-skin="chamber"] .table-wrapper::-webkit-scrollbar-thumb:hover,
+[data-skin="chamber"] .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: rgba(229, 195, 120, 0.45);
 }
 

@@ -98,6 +98,12 @@ Fitcycle 采用严格单向依赖的 5 层洋葱架构，**严禁跨层反向污
     * 移动端虚拟键盘弹起时，模态抽屉与输入框必须严格监听并适配 `window.visualViewport` 高度，严禁因 WebKit 误判上滚导致顶部标题栏丢失或底部露馅背景穿透；
     * 输入聚焦时空状态卡片必须自适应优雅折叠为单行紧凑横滑胶囊，彻底杜绝 2x2 大卡片在键盘弹起时突兀挤压视口；
     * 底部输入栏内边距在键盘开启时动态收紧（消除 safe-area 虚高留白），实现与软键盘顶沿零缝隙丝滑贴合。
+*   **公理 1.6（浏览器与独立 WebApp 双模全场景自适应公理 Universal Standalone & WebApp Parity Axiom）**：
+    * **触控反馈与 `:active` 全域穿透**：移动端（尤其 iOS WebKit Standalone 模式）默认抑制 `:active` 伪类，必须在顶层容器注入 `touchstart` 激活，保证全机型、全运行方式下按压微缩、触觉反馈一致生效；
+    * **动态安全区与浮动交互吸附**：针对普通浏览器（0px safe-area）与独立 WebApp（通常 34px Home 条 safe-area）的动态突变，浮动操作胶囊必须基于 `calc(max(env(safe-area-inset-bottom, 0px), 8px) + [TabBarOffset])` 动态吸附，严禁硬编码固定 bottom 导致被底栏遮挡；
+    * **跨容器宿主滚动三角适配**：多端/PWA 容器滚动宿主可能在 `window`、`documentElement` 或 `body` 漂移。回顶与位移必须通过 `src/utils/scrollUtils.js` 三角取值与多宿主同步 `scrollTo`，确保 100% 顺滑回顶；
+    * **主导航粘性层级保护**：顶部 Navbar 必须为根级独立 `position: sticky top-0` 容器，严禁包裹在等高外层 div 中导致滚动逃逸，彻底保护手机系统状态栏（时间/电池）。
+
 
 ### 卷二：【训练分化、周期与动作库宪法】
 *   **公理 2.1**：推拉腿 (PPL) 为出厂黄金模板，支持 N 天自由滚动与周固定循环。

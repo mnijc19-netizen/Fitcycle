@@ -2,6 +2,7 @@ import { reactive, watch } from "vue";
 import { DEFAULT_EXERCISES, DEFAULT_PLANS, PRESET_CYCLES, SCIENCE_PRINCIPLES } from "../data/defaultPlans.js";
 import { playSetCompleteSound, playRestCompleteSound, playWorkoutDoneSound } from "../utils/audio.js";
 import { triggerHaptic } from "../utils/vibrate.js";
+import { universalScrollToTop } from "../utils/scrollUtils.js";
 import { requestNotificationPermission, sendRestCompleteNotification, updateDocumentTitleForTimer, setRestCompleteTitle, resetDocumentTitle } from "../utils/notification.js";
 import { DEFAULT_SETTINGS, sanitizeSettings, verifyPasscode, getPasscodeSkin, VALID_SKINS, applySkinToDOM } from "../utils/themeManager.js";
 import { calculateInactivityDecay, calculateSessionPointsEarned, getTierForScore, evaluateUnlockedBadges, calculateEquivalentTonnage, calculateShieldInventory } from "../engine/honorEngine.js";
@@ -368,6 +369,7 @@ export function startWorkout(planId, customDate = null) {
   };
 
   store.activeTab = "today";
+  universalScrollToTop(false);
   if (store.settings.vibrationEnabled) triggerHaptic("medium");
 }
 

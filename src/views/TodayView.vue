@@ -36,9 +36,19 @@
     </transition>
 
     <!-- ============================================== -->
-    <!-- MODE 1: ACTIVE WORKOUT IN PROGRESS (打卡记录模式) -->
+    <!-- WORKOUT MODE TRANSITION (开练动效与视图切换)     -->
     <!-- ============================================== -->
-    <div v-if="store.activeWorkout" class="space-y-4">
+    <Transition
+      enter-active-class="transition-all duration-300 cubic-bezier(0.16, 1, 0.3, 1)"
+      enter-from-class="opacity-0 translate-y-3 scale-[0.99]"
+      enter-to-class="opacity-100 translate-y-0 scale-100"
+      leave-active-class="transition-all duration-150 ease-in"
+      leave-from-class="opacity-100 scale-100"
+      leave-to-class="opacity-0 -translate-y-2 scale-[0.99]"
+      mode="out-in"
+    >
+      <!-- MODE 1: ACTIVE WORKOUT IN PROGRESS (打卡记录模式) -->
+      <div v-if="store.activeWorkout" key="live-workout-mode" class="space-y-4">
       
       <!-- Workout Live Header -->
       <div class="bg-zinc-900/90 border border-zinc-700/80 rounded-3xl p-4 shadow-xl">
@@ -284,7 +294,7 @@
     <!-- ============================================== -->
     <!-- MODE 2: UNIFIED TODAY COCKPIT (合一今日特训驾驶舱) -->
     <!-- ============================================== -->
-    <div v-else class="space-y-3.5">
+    <div v-else key="cockpit-mode" class="space-y-3.5">
       
       <!-- Apple Fitness Hero Card -->
       <div class="rounded-3xl border p-5 shadow-2xl relative overflow-hidden transition-all"
@@ -350,7 +360,7 @@
         <div class="space-y-2 relative z-10">
           <button v-if="!todayCycle.isRest" 
                   @click="handleStartTodayWorkout"
-                  class="w-full py-4 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-zinc-950 font-black text-sm rounded-2xl shadow-xl shadow-amber-500/25 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                  class="w-full py-4 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-zinc-950 font-black text-sm rounded-2xl shadow-xl shadow-amber-500/25 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer select-none">
             <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             <span>立即开练</span>
           </button>
@@ -541,8 +551,8 @@
           </div>
         </div>
       </div>
-
     </div>
+  </Transition>
 
     <!-- Modals -->
     <!-- 1. Exercise Picker for adding to active workout -->
@@ -743,6 +753,7 @@ import HonorShowcaseModal from "../components/HonorShowcaseModal.vue";
 import BodyMetricsModal from "../components/BodyMetricsModal.vue";
 import ExerciseImage from "../components/ExerciseImage.vue";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
+import { universalScrollToTop } from "../utils/scrollUtils.js";
 
 // State
 const showAddExerciseModal = ref(false);
@@ -966,12 +977,14 @@ function getExerciseGif(name) {
 function handleStartTodayWorkout() {
   if (currentPlan.value) {
     startWorkout(currentPlan.value.id);
+    universalScrollToTop(true);
   }
 }
 
 function startCustomPlan(planId) {
   showPlanPicker.value = false;
   startWorkout(planId);
+  universalScrollToTop(true);
 }
 
 function startEmptyWorkout() {
@@ -984,6 +997,7 @@ function startEmptyWorkout() {
     exercises: []
   };
   startWorkout(emptyPlan.id);
+  universalScrollToTop(true);
 }
 
 
