@@ -6,13 +6,38 @@
     <span class="animate-pulse text-sm leading-none">✦</span>
   </button>
 
-  <div v-if="aiSession.drawerOpen" class="fixed inset-0 z-50 flex items-end justify-center" data-testid="ai-drawer">
-    <button type="button" class="absolute inset-0 bg-black/65 backdrop-blur-sm" aria-label="关闭 AI 助手" @click="aiSession.drawerOpen = false"></button>
-    <section class="relative w-full max-w-md h-[min(760px,calc(100dvh-24px))] bg-zinc-950 border border-zinc-700 rounded-t-3xl shadow-2xl flex flex-col overflow-hidden"
-             aria-label="Fitcycle AI 助手">
+  <!-- Fullscreen Modal Overlay with Visual Viewport Adaptation -->
+  <Teleport to="body" :disabled="isTest">
+    <transition
+      enter-active-class="transition-opacity duration-300 ease-out"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition-opacity duration-200 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div v-if="aiSession.drawerOpen" 
+           class="fixed inset-x-0 z-50 flex flex-col justify-end items-center" 
+           data-testid="ai-drawer"
+           :style="containerDynamicStyle"
+           style="overscroll-behavior: none;">
+        
+        <!-- Backdrop with Light Dismiss -->
+        <button type="button" 
+                class="absolute inset-0 bg-black/75 backdrop-blur-sm" 
+                aria-label="关闭 AI 助手" 
+                @click="closeDrawer"></button>
 
-      <!-- Top Ergonomic Grabber Pill for Bottom Sheet Gesture -->
-      <div class="w-10 h-1 rounded-full bg-zinc-700/80 mx-auto mt-2 -mb-1 flex-shrink-0 z-20"></div>
+        <!-- Main Bottom Sheet Section with Native iOS Slide-Up Animation -->
+        <section class="relative w-full max-w-md bg-zinc-950 border border-zinc-700/80 shadow-2xl flex flex-col overflow-hidden z-10 transition-[height,border-radius] duration-200 ease-out animate-drawer-slide-up"
+                 :style="drawerDynamicStyle"
+                 aria-label="Fitcycle AI 助手">
+
+          <!-- Top Ergonomic Grabber Pill for Bottom Sheet Gesture -->
+          <div class="w-12 h-1.5 rounded-full bg-zinc-700/80 mx-auto mt-2 -mb-1 flex-shrink-0 z-20 cursor-pointer active:scale-95 transition-transform grabber-handle"
+               @click="closeDrawer"
+               @touchstart.passive="handleHeaderTouchStart"
+               @touchmove.passive="handleHeaderTouchMove"></div>
 
       <!-- CS2 Tactical Background Backdrop -->
       <div v-if="store.settings.uiSkin === 'cs'" 
@@ -97,29 +122,48 @@
            @scroll.passive="handleScroll"
            class="relative z-10 flex-1 overflow-y-auto overscroll-contain px-3 py-4 space-y-3" 
            data-testid="ai-messages">
-        <!-- Empty State with Quick Action Chips -->
-        <div v-if="!aiSession.conversation.length" class="h-full min-h-52 flex flex-col items-center justify-center text-center px-4 py-6 space-y-4">
-          <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl shadow-lg shadow-amber-500/10">🤖</div>
-          <div class="space-y-1">
-            <p class="text-sm font-bold text-zinc-100">我是你的 FitCycle 智能教练</p>
-            <p class="text-[11px] text-zinc-400 max-w-xs mx-auto leading-relaxed">
-              已接入你的训练计划、近期容量与动作库，随时为你提供科学复盘与指导。
-            </p>
+        <!-- Empty State with Adaptive Typing/Resting Layout -->
+        <div v-if="!aiSession.conversation.length" class="h-full flex flex-col justify-end px-2 py-1">
+          <!-- When Keyboard is Open: Sleek, compact single-line horizontal chips (avoids cluttered 2x2 cards above keyboard) -->
+          <div v-if="isKeyboardOpen" class="space-y-1.5 pb-2">
+            <div class="text-[10px] text-zinc-400 flex items-center gap-1 px-1 font-medium">
+              <span class="text-amber-400">✦</span> 快捷提问
+            </div>
+            <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none overscroll-contain">
+              <button v-for="(chip, idx) in defaultChips" :key="idx"
+                      type="button"
+                      @click="sendPrompt(chip.prompt)"
+                      class="flex-shrink-0 px-3 py-1.5 rounded-xl bg-zinc-900/95 hover:bg-zinc-800 border border-zinc-800 hover:border-amber-500/50 text-[11px] text-zinc-200 flex items-center gap-1.5 transition-all active:scale-95 shadow-sm">
+                <span>{{ chip.icon }}</span>
+                <span class="font-medium whitespace-nowrap">{{ chip.title }}</span>
+              </button>
+            </div>
           </div>
 
-          <!-- Quick Suggestion Cards Grid -->
-          <div class="grid grid-cols-2 gap-2 w-full pt-1 text-left">
-            <button v-for="(chip, idx) in defaultChips" :key="idx"
-                    type="button"
-                    @click="sendPrompt(chip.prompt)"
-                    class="p-2.5 rounded-2xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 hover:border-amber-500/40 text-left transition-all space-y-1 group">
-              <div class="text-amber-400 font-bold text-[11px] flex items-center gap-1 group-hover:text-amber-300">
-                <span>{{ chip.icon }}</span> {{ chip.title }}
-              </div>
-              <div class="text-[10px] text-zinc-400 line-clamp-2">
-                {{ chip.desc }}
-              </div>
-            </button>
+          <!-- When Keyboard is Closed: Full spacious coach introduction and 2x2 cards -->
+          <div v-else class="h-full min-h-52 flex flex-col items-center justify-center text-center px-4 py-6 space-y-4">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl shadow-lg shadow-amber-500/10">🤖</div>
+            <div class="space-y-1">
+              <p class="text-sm font-bold text-zinc-100">我是你的 FitCycle 智能教练</p>
+              <p class="text-[11px] text-zinc-400 max-w-xs mx-auto leading-relaxed">
+                已接入你的训练计划、近期容量与动作库，随时为你提供科学复盘与指导。
+              </p>
+            </div>
+
+            <!-- Quick Suggestion Cards Grid -->
+            <div class="grid grid-cols-2 gap-2 w-full pt-1 text-left">
+              <button v-for="(chip, idx) in defaultChips" :key="idx"
+                      type="button"
+                      @click="sendPrompt(chip.prompt)"
+                      class="p-2.5 rounded-2xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 hover:border-amber-500/40 text-left transition-all space-y-1 group">
+                <div class="text-amber-400 font-bold text-[11px] flex items-center gap-1 group-hover:text-amber-300">
+                  <span>{{ chip.icon }}</span> {{ chip.title }}
+                </div>
+                <div class="text-[10px] text-zinc-400 line-clamp-2">
+                  {{ chip.desc }}
+                </div>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -226,7 +270,7 @@
         </button>
       </transition>
 
-      <footer class="relative z-10 flex-shrink-0 border-t border-zinc-800 bg-zinc-900/95 px-3 pt-2.5" style="padding-bottom:max(env(safe-area-inset-bottom, 0px), 10px)">
+      <footer class="relative z-10 flex-shrink-0 border-t border-zinc-800 bg-zinc-900/95 px-3 pt-2.5 transition-[padding] duration-150" :style="{ paddingBottom: footerPaddingBottom }">
         <!-- Attached Images Thumbnail Strip -->
         <div v-if="attachments.length" class="flex gap-2 overflow-x-auto pb-2">
           <div v-for="(image, index) in attachments" :key="image.name + image.size" class="relative flex-shrink-0">
@@ -248,6 +292,8 @@
           </div>
           <textarea v-model="draft" rows="1" enterkeyhint="send" placeholder="询问训练，或让 AI 记录一组…"
                     class="flex-1 max-h-28 min-h-10 resize-none bg-zinc-950 border border-zinc-700 focus:border-amber-500/60 rounded-xl px-3 py-2.5 text-xs text-zinc-100 outline-none leading-relaxed transition-colors"
+                    @focus="handleInputFocus"
+                    @blur="handleInputBlur"
                     @keydown.enter.exact.prevent="send"></textarea>
           <button v-if="generating" type="button" class="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/40 text-red-400 flex items-center justify-center transition-colors active:scale-95" aria-label="停止生成" @click="stopGeneration">■</button>
           <button v-else type="button" class="w-10 h-10 rounded-xl bg-amber-500 disabled:bg-zinc-800 disabled:text-zinc-600 text-zinc-950 font-black text-sm flex items-center justify-center shadow-md active:scale-95 transition-all" :disabled="Boolean(sendDisabledReason)" aria-label="发送" @click="send">↑</button>
@@ -261,10 +307,12 @@
       </footer>
     </section>
   </div>
+</transition>
+</Teleport>
 </template>
 
 <script setup>
-import { computed, nextTick, reactive, ref, watch, onUnmounted } from "vue";
+import { computed, nextTick, reactive, ref, watch, onMounted, onUnmounted } from "vue";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import {
   AI_PROVIDERS,
@@ -284,6 +332,8 @@ import { getMessageBlockReason } from "../ai/modelCapabilities.js";
 import { store } from "../store/fitnessStore.js";
 import { renderMarkdown, cleanAIMessage, extractReasoningAndContent } from "../utils/aiService.js";
 
+const isTest = typeof process !== "undefined" && (process.env?.NODE_ENV === "test" || Boolean(process.env?.VITEST));
+
 const MAX_ATTACHMENTS = 3;
 const toolRuntime = createFitcycleToolRuntime();
 const draft = ref("");
@@ -298,12 +348,132 @@ const inputError = ref("");
 const showQuickModelPicker = ref(false);
 let abortController = null;
 
+const visualViewportHeight = ref(typeof window !== "undefined" && window.visualViewport ? window.visualViewport.height : 0);
+const visualViewportTop = ref(typeof window !== "undefined" && window.visualViewport ? window.visualViewport.offsetTop : 0);
+const isKeyboardOpen = ref(false);
+
+function updateVisualViewport() {
+  if (typeof window === "undefined" || !window.visualViewport) return;
+  visualViewportHeight.value = window.visualViewport.height;
+  visualViewportTop.value = window.visualViewport.offsetTop;
+
+  const diff = window.innerHeight - window.visualViewport.height;
+  isKeyboardOpen.value = diff > 140;
+
+  if (window.scrollY > 0) {
+    window.scrollTo(0, 0);
+  }
+}
+
+const containerDynamicStyle = computed(() => {
+  if (isTest || typeof window === "undefined" || !window.visualViewport) {
+    return {
+      top: "0px",
+      bottom: "0px",
+      left: "0px",
+      right: "0px"
+    };
+  }
+  return {
+    position: "fixed",
+    top: `${visualViewportTop.value}px`,
+    height: `${visualViewportHeight.value}px`,
+    left: "0px",
+    right: "0px"
+  };
+});
+
+const drawerDynamicStyle = computed(() => {
+  if (isTest) return {};
+
+  if (isKeyboardOpen.value) {
+    return {
+      height: "100%",
+      maxHeight: "100%",
+      borderTopLeftRadius: "1rem",
+      borderTopRightRadius: "1rem"
+    };
+  }
+
+  return {
+    height: "min(85dvh, 760px)",
+    maxHeight: "85dvh",
+    borderTopLeftRadius: "1.5rem",
+    borderTopRightRadius: "1.5rem"
+  };
+});
+
+const footerPaddingBottom = computed(() => {
+  if (isKeyboardOpen.value) {
+    return "8px";
+  }
+  return "max(env(safe-area-inset-bottom, 0px), 10px)";
+});
+
+function handleInputFocus() {
+  isKeyboardOpen.value = true;
+  if (typeof window !== "undefined") {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      updateVisualViewport();
+      scrollToBottom(true);
+    }, 60);
+  }
+}
+
+function handleInputBlur() {
+  setTimeout(() => {
+    isKeyboardOpen.value = false;
+    updateVisualViewport();
+  }, 120);
+}
+
+let touchStartY = 0;
+function handleHeaderTouchStart(e) {
+  if (e.touches && e.touches[0]) {
+    touchStartY = e.touches[0].clientY;
+  }
+}
+
+function handleHeaderTouchMove(e) {
+  if (e.touches && e.touches[0]) {
+    const deltaY = e.touches[0].clientY - touchStartY;
+    if (deltaY > 60) {
+      closeDrawer();
+    }
+  }
+}
+
+function closeDrawer() {
+  aiSession.drawerOpen = false;
+}
+
+onMounted(() => {
+  if (typeof window !== "undefined" && window.visualViewport) {
+    updateVisualViewport();
+    window.visualViewport.addEventListener("resize", updateVisualViewport);
+    window.visualViewport.addEventListener("scroll", updateVisualViewport);
+  }
+});
+
 watch(() => aiSession.drawerOpen, (val) => {
-  if (val) lockBodyScroll();
-  else unlockBodyScroll();
+  if (val) {
+    lockBodyScroll();
+    isKeyboardOpen.value = false;
+    nextTick(() => {
+      updateVisualViewport();
+    });
+  } else {
+    unlockBodyScroll();
+  }
 }, { immediate: true });
 
 onUnmounted(() => {
+  if (typeof window !== "undefined" && window.visualViewport) {
+    window.visualViewport.removeEventListener("resize", updateVisualViewport);
+    window.visualViewport.removeEventListener("scroll", updateVisualViewport);
+  }
   if (aiSession.drawerOpen) unlockBodyScroll();
 });
 
@@ -613,4 +783,21 @@ function goToSettings() {
   aiSession.drawerOpen = false;
 }
 </script>
+
+<style scoped>
+@keyframes drawerSlideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0.85;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-drawer-slide-up {
+  animation: drawerSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+</style>
 

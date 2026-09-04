@@ -166,6 +166,42 @@ describe("mobile AI drawer", () => {
     expect(wrapper.find('[data-testid="quick-model-picker-modal"]').exists()).toBe(false);
     wrapper.unmount();
   });
+
+  it("adapts empty state suggestions gracefully when typing/focusing input", async () => {
+    aiSession.drawerOpen = true;
+    const wrapper = mount(AIAssistantDrawer, { attachTo: document.body });
+
+    // When not typing/resting: shows coach title and full cards
+    expect(wrapper.text()).toContain("我是你的 FitCycle 智能教练");
+    expect(wrapper.text()).toContain("分析昨天训练表现");
+
+    // Focus input to simulate virtual keyboard opening
+    const textarea = wrapper.get("textarea");
+    await textarea.trigger("focus");
+    await nextTick();
+
+    // In typing mode: title collapses to compact quick prompt pills
+    expect(wrapper.text()).toContain("快捷提问");
+    expect(wrapper.text()).not.toContain("我是你的 FitCycle 智能教练");
+
+    // Blur input: returns to resting layout
+    await textarea.trigger("blur");
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    await nextTick();
+    expect(wrapper.text()).toContain("我是你的 FitCycle 智能教练");
+    wrapper.unmount();
+  });
+
+  it("allows closing drawer via top grabber handle tap or gesture", async () => {
+    aiSession.drawerOpen = true;
+    const wrapper = mount(AIAssistantDrawer, { attachTo: document.body });
+    expect(aiSession.drawerOpen).toBe(true);
+
+    const grabber = wrapper.get(".grabber-handle");
+    await grabber.trigger("click");
+    expect(aiSession.drawerOpen).toBe(false);
+    wrapper.unmount();
+  });
 });
 
 
