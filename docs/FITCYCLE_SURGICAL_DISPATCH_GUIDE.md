@@ -19,8 +19,8 @@
                 (Apple/Linear大厂级无衬线字标)   ├── 2. `src/components/Navbar.vue` (顶栏无遮挡排版)
                                                 └── 3. `public/favicon.svg` & `index.html` (品牌标识)
 
-[OP-EXERCISE]   动作库 1-to-1 纠偏与扩充 (63款)  ├── 1. `src/data/exercises*.js` (姿态纠偏/别名/动图)     npm test -- tests/fitcycle-exercises-and-brand.test.js
-                (彻底杜绝卧姿放坐姿/全向别名)   ├── 2. `src/store/fitnessStore.js` (63款权威动作库)      npm test -- tests/compatibility.test.js
+[OP-EXERCISE]   动作库 1-to-1 纠偏与扩充 (79款)  ├── 1. `src/data/exercises*.js` (姿态纠偏/别名/动图)     npm test -- tests/fitcycle-exercises-and-brand.test.js
+                (彻底杜绝卧姿放坐姿/全向别名)   ├── 2. `src/store/fitnessStore.js` (79款权威动作库)      npm test -- tests/compatibility.test.js
                                                 └── 3. `src/views/ExercisesView.vue` (别名与英文搜索)
 
 [OP-RANK]       调整段位分、天梯排位加减分      ├── 1. `src/engine/honorEngine.js` (FPS 积分与衰减公式)   npm run test tests/honor-system.test.js

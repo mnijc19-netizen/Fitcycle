@@ -4,73 +4,96 @@
     <!-- Top Header -->
     <div class="flex items-center justify-between">
       <div>
-        <h2 class="text-lg font-black text-white flex items-center gap-2">
-          <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l3 3m0 0l-3 3m3-3h8m0 0l-3-3m3 3l-3 3M4 6h16a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/>
-          </svg>
-          <span>动作库与 3D 轨迹</span>
+        <h2 class="text-xl font-black text-white flex items-center gap-2">
+          <span>动作库</span>
+          <span class="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 font-mono font-bold">
+            {{ store.exercises.length }}
+          </span>
         </h2>
         <p class="text-xs text-zinc-400 mt-0.5">
-          全套 3D 解剖动图、离心向心发力要点与平替矩阵
+          全套 3D 解剖动图、离心向心要点与平替矩阵
         </p>
       </div>
       <button @click="openCreateExercise" 
-              class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 text-xs font-black rounded-xl shadow-md shadow-amber-500/20 flex items-center gap-1.5 transition-all">
+              class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 text-xs font-black rounded-xl shadow-md shadow-amber-500/20 flex items-center gap-1.5 transition-all cursor-pointer">
         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
         <span>新建动作</span>
       </button>
     </div>
 
-    <!-- Search and Filter Bar -->
-    <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-3 space-y-2.5 shadow-lg">
+    <!-- Reassurance Banner (Comprehensive Library) -->
+    <div class="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-between text-xs">
+      <div class="flex items-center gap-2 text-zinc-300">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="font-medium">已全面收录 6 大黄金肌群黄金动作</span>
+      </div>
+      <span class="text-amber-400 font-mono font-bold">{{ store.exercises.length }} 款全覆盖</span>
+    </div>
+
+    <!-- Search & Filter Bar (Sticky with Backdrop Blur) -->
+    <div class="sticky top-14 z-30 bg-zinc-950/90 backdrop-blur-xl border border-zinc-800/80 rounded-2xl p-2.5 space-y-2 shadow-lg">
       <div class="relative">
+        <div class="absolute left-3 top-2.5 text-zinc-500 text-xs">🔍</div>
         <input v-model="searchQuery" 
                type="text" 
-               placeholder="搜索动作名称、目标肌群、标签..." 
-               class="w-full bg-zinc-950 border border-zinc-700/80 rounded-xl px-3.5 py-2 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-amber-500" />
-        <span v-if="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-2 text-xs text-zinc-400 cursor-pointer">✕</span>
+               placeholder="搜索动作名称、英文、别名、目标肌群..." 
+               class="w-full bg-zinc-900 border border-zinc-700/80 rounded-xl pl-8 pr-8 py-2 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-amber-500 transition-colors" />
+        <span v-if="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-2 text-xs text-zinc-400 hover:text-white cursor-pointer">✕</span>
       </div>
 
-      <!-- Categories Pills -->
-      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
-        <button v-for="cat in categories" :key="cat"
-                @click="activeCategory = cat"
-                class="px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all"
-                :class="[activeCategory === cat ? 'bg-amber-500 text-zinc-950 font-bold' : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700']">
-          {{ cat }}
+      <!-- Categories Pills with Real-Time Counts -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar">
+        <button v-for="cat in categoryOptions" :key="cat.name"
+                @click="activeCategory = cat.name"
+                class="px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer flex items-center gap-1"
+                :class="[
+                  activeCategory === cat.name ? 
+                  'bg-amber-500 text-zinc-950 font-bold shadow-sm shadow-amber-500/20' : 
+                  'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800/80'
+                ]">
+          <span>{{ cat.name }}</span>
+          <span class="text-[10px] opacity-80 font-mono">({{ cat.count }})</span>
         </button>
       </div>
     </div>
 
-    <!-- Exercises List with 3D Animated Thumbnails -->
-    <div class="space-y-2.5">
+    <!-- Search Query Result Counter -->
+    <div v-if="searchQuery.trim()" class="flex items-center justify-between px-1 text-xs text-zinc-400">
+      <span>搜索关键词: <span class="text-amber-400 font-bold">"{{ searchQuery }}"</span></span>
+      <span class="font-mono">找到 {{ filteredExercises.length }} 个动作</span>
+    </div>
+
+    <!-- Exercises Inset List -->
+    <div class="space-y-2">
       <div v-for="ex in filteredExercises" :key="ex.id"
            @click="openExerciseDetail(ex)"
-           class="p-3 bg-zinc-900/80 hover:bg-zinc-850 active:bg-zinc-800 border border-zinc-800 hover:border-amber-500/40 rounded-2xl cursor-pointer transition-all shadow-md flex items-center gap-3">
+           class="p-3 bg-zinc-900/80 hover:bg-zinc-850 active:bg-zinc-800 border border-zinc-800/90 hover:border-amber-500/40 rounded-2xl cursor-pointer transition-all shadow-sm flex items-center gap-3">
         
-        <!-- Left 3D Animated Thumbnail with Zero-Broken fallback -->
+        <!-- 3D Animated Thumbnail with Zero-Broken fallback -->
         <ExerciseImage :src="ex.gifUrl" 
                        :name="ex.name" 
                        :category="ex.category" 
                        :target="ex.target" 
-                       customClass="w-16 h-16 rounded-xl border border-zinc-800 flex-shrink-0" />
-
+                       customClass="w-14 h-14 rounded-xl border border-zinc-800 flex-shrink-0" />
 
         <!-- Center Details -->
         <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2">
-            <h3 class="font-bold text-sm text-zinc-100 truncate">{{ ex.name }}</h3>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-amber-400 border border-zinc-700/60 font-semibold flex-shrink-0">
+          <div class="flex items-center gap-1.5">
+            <h3 class="font-bold text-xs text-zinc-100 truncate">{{ ex.name }}</h3>
+            <span class="text-[9px] px-1.5 py-0.2 rounded bg-zinc-800 text-amber-400 border border-zinc-700/60 font-semibold flex-shrink-0">
               {{ ex.category }}
             </span>
           </div>
-          <div class="text-xs text-zinc-400 mt-0.5 truncate">
+          <div class="text-[11px] text-zinc-400 mt-0.5 truncate">
             🎯 <span class="text-zinc-300">{{ ex.target }}</span>
           </div>
 
-          <!-- Tags -->
-          <div v-if="ex.tags && ex.tags.length" class="flex flex-wrap gap-1 mt-1">
-            <span v-for="tag in ex.tags.slice(0, 2)" :key="tag" 
+          <!-- Tags & Substitutes -->
+          <div class="flex flex-wrap items-center gap-1 mt-1">
+            <span v-if="ex.englishName" class="text-[9px] font-mono px-1 py-0.2 rounded bg-zinc-950 text-zinc-500 border border-zinc-800 truncate max-w-[120px]">
+              {{ ex.englishName }}
+            </span>
+            <span v-for="tag in (ex.tags || []).slice(0, 1)" :key="tag" 
                   class="text-[9px] px-1.5 py-0.2 rounded bg-zinc-950 text-zinc-400 border border-zinc-800">
               #{{ tag }}
             </span>
@@ -89,8 +112,11 @@
 
       </div>
 
-      <div v-if="filteredExercises.length === 0" class="py-12 text-center text-zinc-500 text-xs">
-        没有找到相关动作，可点击右上角创建自定义动作
+      <div v-if="filteredExercises.length === 0" class="py-12 text-center text-zinc-500 text-xs space-y-2">
+        <div>未找到与关键词匹配的动作</div>
+        <button @click="openCreateExercise" class="text-amber-400 font-bold hover:underline">
+          立即添加自定义动作 ❯
+        </button>
       </div>
     </div>
 
@@ -163,10 +189,19 @@ import { store, uid } from "../store/fitnessStore.js";
 import ExerciseDetailModal from "../components/ExerciseDetailModal.vue";
 import ExerciseImage from "../components/ExerciseImage.vue";
 
-
 const searchQuery = ref("");
 const activeCategory = ref("全部");
 const categories = ["全部", "胸部", "背部", "肩部", "手臂", "腿部", "核心", "其它"];
+
+const categoryOptions = computed(() => {
+  return categories.map(cat => {
+    if (cat === "全部") {
+      return { name: cat, count: store.exercises.length };
+    }
+    const count = store.exercises.filter(e => e.category === cat).length;
+    return { name: cat, count };
+  });
+});
 
 const showDetailModal = ref(false);
 const selectedExercise = ref(null);
@@ -180,18 +215,6 @@ const newEx = ref({
   defaultSets: 3,
   defaultReps: "10-12"
 });
-
-function getCategoryEmoji(cat) {
-  switch (cat) {
-    case "胸部": return "🥋";
-    case "背部": return "🦅";
-    case "肩部": return "🛡️";
-    case "手臂": return "💪";
-    case "腿部": return "🦵";
-    case "核心": return "⚡";
-    default: return "🏋️";
-  }
-}
 
 const filteredExercises = computed(() => {
   return store.exercises.filter(ex => {

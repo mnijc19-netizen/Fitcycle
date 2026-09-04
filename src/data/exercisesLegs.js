@@ -200,5 +200,155 @@ export const LEG_EXERCISES = [
       { name: "器械腿屈伸", reason: "前侧孤立" },
       { name: "哈克深蹲", reason: "腿部复合" }
     ]
+  },
+  {
+    id: "ex-bulgarian-split-squat",
+    name: "保加利亚分腿蹲",
+    englishName: "Bulgarian Split Squat",
+    category: "腿部",
+    target: "股四头肌 / 臀大肌 (单腿稳定与深层做工)",
+    secondaryMuscles: ["内收肌群", "腘绳肌", "核心稳定"],
+    aliases: ["保加利亚深蹲", "分腿蹲", "后脚抬高蹲", "单腿深蹲", "保加利亚", "Bulgarian Split Squat"],
+    gifUrl: "./exercises/barbell-squat.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    scienceDetail: "公认的单腿王牌动作！后脚搭在卧推凳上，彻底消除下背腰椎代偿压力，深层孤立刺激前腿臀大肌与股四头肌，纠正左右肌力不平衡。",
+    tags: ["单腿之王", "臀腿双雕", "平衡与发力"],
+    tips: {
+      prep: "单脚前跨一步，后脚脚背平搭在平凳上，上身微前倾保持脊柱中立。",
+      execution: "前腿屈膝下沉，直到后膝接近触地，重心始终压在前脚脚后跟与中足之间。",
+      peak: "前腿大腿及臀部发力推起身体至站立，骨盆全程保持水平正对前方。",
+      negative: "控制下放3秒，充分拉伸前侧臀腿纤维。"
+    },
+    commonMistakes: ["前脚距离太近导致膝盖压力过大", "身体左右晃动核心未锁紧"],
+    substitutes: [
+      { name: "哑铃箭步蹲", reason: "动态单腿步进" },
+      { name: "哈克深蹲", reason: "双腿大重量" }
+    ]
+  },
+  {
+    id: "ex-seated-leg-curl-machine",
+    name: "坐姿器械腿弯举",
+    englishName: "Seated Leg Curl",
+    category: "腿部",
+    target: "腘绳肌群 (大腿后侧在屈髋下的顶峰收缩)",
+    secondaryMuscles: ["小腿腓肠肌", "臀大肌下沿"],
+    aliases: ["坐姿腿弯举", "坐姿弯腿", "器械腿弯举", "腘绳肌屈腿", "Seated Leg Curl"],
+    gifUrl: "./exercises/seated-leg-curl.gif",
+    defaultSets: 4,
+    defaultReps: "10-12",
+    scienceDetail: "现代运动科学研究证明：坐姿状态下髋关节处于屈曲位，腘绳肌在近端被预先拉伸，因此坐姿腿弯举的肌肥大效应显著优于俯卧腿弯举！",
+    tags: ["顶峰收缩", "腘绳超量肥大", "科学力学"],
+    tips: {
+      prep: "坐于器械座椅，背部紧贴靠垫，大腿压板紧紧压在膝盖上方，圆柱滚轴置于跟腱后方。",
+      execution: "后侧腘绳肌发力将滚轴向下后方卷曲至最大收缩幅度。",
+      peak: "在底端顶峰收缩停顿1.5秒，感受大腿后侧像抽筋一般的充血挤压。",
+      negative: "慢速控制还原，膝盖保持微屈不完全锁死。"
+    },
+    commonMistakes: ["借用臀部向前滑动离座借力", "下放速度太快未控制离心做工"],
+    substitutes: [
+      { name: "俯卧器械腿弯举 (Lying Leg Curl)", reason: "卧姿平替" },
+      { name: "罗马尼亚硬拉 (RDL)", reason: "拉伸区做工" }
+    ]
+  },
+  {
+    id: "ex-hip-abduction-machine",
+    name: "器械髋外展 / 坐姿外展",
+    englishName: "Seated Hip Abduction Machine",
+    category: "腿部",
+    target: "臀中肌 / 臀小肌 (侧臀饱满与骨盆稳定)",
+    secondaryMuscles: ["臀大肌上部纤维", "阔筋膜张肌"],
+    aliases: ["髋外展", "器械外展", "坐姿外展", "挡腿机", "练侧臀", "臀中肌", "Hip Abduction"],
+    gifUrl: "./exercises/hip-thrust.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    scienceDetail: "塑造饱满饱满腰臀比（V-Taper/沙漏比）的关键孤立动作。强化臀中肌不仅填补侧臀凹陷，还能防止深蹲时膝盖内扣（Knee Valgus）。",
+    tags: ["侧臀饱满", "骨盆稳定", "安全塑形"],
+    tips: {
+      prep: "坐稳于座椅上，膝盖外侧贴紧阻力垫板，背部贴紧或上身略微前倾以侧重臀中肌纤维。",
+      execution: "臀部两侧发力将双腿尽力向外推开至最大活动范围。",
+      peak: "在最宽处用力顶峰挤压2秒。",
+      negative: "缓慢控制还原，注意双腿在触碰前就要重新发力，保持全程张力。"
+    },
+    commonMistakes: ["惯性快速弹开", "仅用脚踝发力而忽略膝盖外推"],
+    substitutes: [
+      { name: "臀推 / 杠铃臀桥 (Hip Thrust)", reason: "臀大肌整体力量" },
+      { name: "罗马尼亚硬拉 (RDL)", reason: "后链复合" }
+    ]
+  },
+  {
+    id: "ex-hip-adduction-machine",
+    name: "器械髋内收 / 坐姿夹腿",
+    englishName: "Seated Hip Adduction Machine",
+    category: "腿部",
+    target: "大腿内收肌群 (大腿内侧致密度与深蹲支撑力)",
+    secondaryMuscles: ["耻骨肌", "股薄肌", "骨盆底肌"],
+    aliases: ["髋内收", "器械内收", "坐姿夹腿", "夹腿机", "练内侧", "大腿内收肌", "Hip Adduction"],
+    gifUrl: "./exercises/leg-extension.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    scienceDetail: "大腿内收肌群是仅次于股四头肌的第二大下肢肌群！强化内收肌不仅消除大腿内侧松弛，更是大重量深蹲出坑时最核心的内侧支撑来源。",
+    tags: ["大腿内侧", "深蹲支撑", "肌群致密"],
+    tips: {
+      prep: "双腿向两侧完全打开，膝盖内侧紧贴阻力垫板，双手抓住器械握把固定上身。",
+      execution: "大腿内侧肌肉发力，将双腿向中心匀速并拢夹紧。",
+      peak: "在中间闭合点强力收缩停留1-2秒。",
+      negative: "缓慢张开双腿至大腿内侧完全被拉长，但不要让配重片砸底撞击。"
+    },
+    commonMistakes: ["配重过大导致动作变形或拉伤内收肌", "快上快下没有离心控制"],
+    substitutes: [
+      { name: "哈克深蹲 / 倒蹬腿举", reason: "宽站距兼顾内收" },
+      { name: "杠铃深蹲 (高杠/低杠)", reason: "下肢整体基石" }
+    ]
+  },
+  {
+    id: "ex-dumbbell-lunge",
+    name: "哑铃箭步蹲 / 走动箭步蹲",
+    englishName: "Dumbbell Walking Lunge",
+    category: "腿部",
+    target: "股四头肌 / 臀大肌 (功能性动态运动链)",
+    secondaryMuscles: ["腘绳肌", "小腿", "核心抗旋稳定"],
+    aliases: ["箭步蹲", "哑铃箭步蹲", "走姿箭步蹲", "弓箭步", "步进深蹲", "Lunge"],
+    gifUrl: "./exercises/barbell-squat.gif",
+    defaultSets: 3,
+    defaultReps: "10-12步/侧",
+    scienceDetail: "极具运动表现力的动态下肢训练！相比固定位动作，走动箭步蹲需要全身核心与髋部稳定肌群参与动态抗失衡，心肺与做工消耗极高。",
+    tags: ["功能王牌", "动态爆发", "臀腿双雕"],
+    tips: {
+      prep: "双手各持一只哑铃自然下垂，挺胸收腹，向前迈出一大步。",
+      execution: "身体垂直下沉，前膝弯曲呈90度，后膝接近地面但不碰撞地面。",
+      peak: "前脚脚跟蹬地站起，同时顺势向前迈出下一步。",
+      negative: "下沉过程平稳，膝盖不要左右摇晃晃动。"
+    },
+    commonMistakes: ["前跨步幅太小导致膝盖过度向前挤压髌骨", "身体过度前趴弓背"],
+    substitutes: [
+      { name: "保加利亚分腿蹲", reason: "静止位单腿聚焦" },
+      { name: "哈克深蹲", reason: "器械大容量" }
+    ]
+  },
+  {
+    id: "ex-goblet-squat",
+    name: "高脚杯深蹲 (哑铃/壶铃)",
+    englishName: "Goblet Squat",
+    category: "腿部",
+    target: "股四头肌 / 髋关节下潜深度与灵活性",
+    secondaryMuscles: ["臀大肌", "核心肌群", "上背"],
+    aliases: ["高脚杯深蹲", "哑铃高脚杯", "壶铃深蹲", "前置深蹲", "Goblet Squat"],
+    gifUrl: "./exercises/hack-squat.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    scienceDetail: "被全美体能协会（NSCA）评为学习深蹲发力模式最优秀的动作。前置重物自然起到平衡作用，能强迫躯干保持直立，非常友好地释放髋关节活动度。",
+    tags: ["新手友好", "躯干直立", "灵活性强化"],
+    tips: {
+      prep: "双手捧住一只哑铃的一端靠近胸口，双脚略宽于肩，脚尖微朝外。",
+      execution: "手肘内收保持重物贴胸，屈髋屈膝垂直下蹲，手肘自然下落于双膝之间。",
+      peak: "下蹲至大腿低于平行线后，全脚掌蹬地推起，顶端收紧臀肌。",
+      negative: "平稳控制下放，保持核心紧绷背部挺直。"
+    },
+    commonMistakes: ["哑铃远离胸口导致上背过度疲劳弓背", "脚后跟离地重心向前倾倒"],
+    substitutes: [
+      { name: "杠铃深蹲 (高杠/低杠)", reason: "高阶大重量" },
+      { name: "器械腿屈伸", reason: "前侧孤立" }
+    ]
   }
 ];

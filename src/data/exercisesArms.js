@@ -299,5 +299,55 @@ export const ARM_EXERCISES = [
       { name: "哑铃锤式弯举", reason: "强化肱桡肌与上臂连接处" },
       { name: "正手引体向上", reason: "自重静态握力抗阻" }
     ]
+  },
+  {
+    id: "ex-skull-crusher",
+    name: "仰卧杠铃臂屈伸 (Skull Crusher)",
+    englishName: "Barbell Skull Crusher / French Press",
+    category: "手臂",
+    target: "肱三头肌长头 (手臂后侧最饱满围度来源)",
+    secondaryMuscles: ["肱三头肌内侧头", "前臂稳定性"],
+    aliases: ["碎头者", "仰卧臂屈伸", "杠铃臂屈伸", "法式臂屈伸", "Skull Crusher", "French Press"],
+    gifUrl: "./exercises/close-grip-bench-press.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    scienceDetail: "肱三头肌占大臂整体围度的60%以上，而长头是三头肌中体积最大的肌腹！仰卧臂屈伸能让长头在肩关节屈曲状态下承受极大张力，是打造饱满马蹄形手臂的黄金必练动作。",
+    tags: ["三头长头", "围度核心", "马蹄铁臂膀"],
+    tips: {
+      prep: "平躺在长凳上，双手窄握曲柄杠铃或直杠置于胸口上方，手臂垂直地面并略微向头顶倾斜10度以保持全程持续张力。",
+      execution: "大臂固定不动，仅通过屈肘将杠铃缓慢下放至额头或头顶上方发际线处。",
+      peak: "三头肌发力伸直手臂推起杠铃，在顶峰挤压收紧三头肌1秒。",
+      negative: "控制下放3秒，充分感受三头肌长头的拉伸感。"
+    },
+    commonMistakes: ["手肘向身体两侧过度外展张开造成肘关节刺痛", "大臂前后剧烈晃动变成胸肌推举"],
+    substitutes: [
+      { name: "站姿绳索三头下压 (Triceps Pushdown)", reason: "安全保护肘部" },
+      { name: "过头绳索臂屈伸", reason: "绳索长头持续张力" }
+    ]
+  },
+  {
+    id: "ex-cable-bicep-curl",
+    name: "绳索低位弯举",
+    englishName: "Low Cable Bicep Curl",
+    category: "手臂",
+    target: "肱二头肌 (短头/长头全程无盲区恒定张力)",
+    secondaryMuscles: ["肱肌", "前臂屈肌"],
+    aliases: ["绳索弯举", "龙门架弯举", "低位绳索弯举", "直杆绳索弯举", "Cable Curl"],
+    gifUrl: "./exercises/barbell-curl.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    scienceDetail: "传统自由哑铃或杠铃在顶峰手肘垂直时张力会骤降为零，而绳索低位弯举能提供对抗斜向下拉力的恒定阻力，实现二头肌从完全拉伸到极限收缩的全程做工无死角。",
+    tags: ["恒定张力", "泵感爆棚", "全程做工"],
+    tips: {
+      prep: "龙门架滑轮调至最底端，挂上直杠或波浪把，双手掌心向上握把，挺胸沉肩大臂贴紧身体两侧。",
+      execution: "二头肌发力屈肘向上弯举至胸前，大臂始终垂直地面不前送。",
+      peak: "在顶峰强烈挤压收缩肱二头肌2秒，感受血液高速灌注的饱满泵感。",
+      negative: "控制下放，在最低点充分拉直手臂。"
+    },
+    commonMistakes: ["手肘向前抬起借用肩膀前束", "靠向后甩腰的惯性拉起把手"],
+    substitutes: [
+      { name: "站姿杠铃弯举", reason: "自由重量大力量" },
+      { name: "上斜哑铃弯举", reason: "长头极限拉伸" }
+    ]
   }
 ];

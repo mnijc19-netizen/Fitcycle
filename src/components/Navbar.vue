@@ -39,35 +39,25 @@
           </div>
 
           <!-- Right: Ergonomic Utility Controls (Generous Touch Targets) -->
-          <div class="flex items-center gap-1.5 flex-shrink-0">
+          <div class="flex items-center gap-2 flex-shrink-0">
             
-            <!-- AI Coach Trigger Button -->
-            <button @click="aiSession.drawerOpen = true"
-                    type="button"
-                    title="打开 FitCycle AI 智能教练"
-                    class="h-7 px-3 rounded-full flex items-center gap-1 text-xs font-bold shadow-sm active:scale-95 transition-all border cursor-pointer"
-                    :class="aiButtonClasses">
-              <span class="text-[11px] animate-pulse">✦</span>
-              <span class="tracking-wide text-[11px]">AI 教练</span>
-            </button>
-
-            <!-- Workout in Progress OR Quick Cycle Switcher -->
+            <!-- Workout in Progress Status Indicator -->
             <button v-if="store.activeWorkout" 
                     @click="store.activeTab = 'today'"
                     type="button"
-                    class="h-7 px-2.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[11px] font-bold flex items-center gap-1 animate-pulse active:scale-95 cursor-pointer shadow-sm">
+                    class="h-8 px-3 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 animate-pulse active:scale-95 cursor-pointer shadow-sm">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
               <span>训练中</span>
             </button>
 
-            <button v-else 
-                    @click="showCycleModal = true"
+            <!-- Enlarged AI Coach Trigger Button (Prominent & Thumb-friendly) -->
+            <button @click="aiSession.drawerOpen = true"
                     type="button"
-                    title="切换推拉腿分化或排期模式"
-                    class="h-7 px-2.5 rounded-full text-[11px] font-medium flex items-center gap-1 active:scale-95 transition-all border cursor-pointer shadow-sm"
-                    :class="cycleButtonClasses">
-              <span>分化</span>
-              <span class="text-[9px] opacity-70">▾</span>
+                    title="打开 FitCycle AI 智能教练"
+                    class="h-8 px-3.5 rounded-full flex items-center gap-1.5 text-xs font-bold shadow-md active:scale-95 transition-all border cursor-pointer"
+                    :class="aiButtonClasses">
+              <span class="text-xs text-amber-400 animate-pulse">✦</span>
+              <span class="tracking-wide font-sans">AI 教练</span>
             </button>
           </div>
 

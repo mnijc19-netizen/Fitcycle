@@ -299,5 +299,80 @@ export const BACK_EXERCISES = [
       { name: "绳索侧平举", reason: "纯孤立三角肌中束" },
       { name: "杠铃耸肩", reason: "专注斜方肌" }
     ]
+  },
+  {
+    id: "ex-close-grip-lat-pulldown",
+    name: "窄握/对握高位下拉",
+    englishName: "Close Grip Lat Pulldown (V-Bar / Mag Grip)",
+    category: "背部",
+    target: "背阔肌下沿与厚度 (肘部前置深层拉伸)",
+    secondaryMuscles: ["肱二头肌", "肱肌", "大圆肌"],
+    aliases: ["窄握下拉", "对握下拉", "V把下拉", "马格把下拉", "Mag Grip", "Close Grip Pulldown"],
+    gifUrl: "./exercises/lat-pulldown.gif",
+    defaultSets: 4,
+    defaultReps: "10-12",
+    scienceDetail: "对握使手肘自然内收贴紧身体前侧，相比宽握更能顺应背阔肌肌纤维的斜向下走向，把力矩完全集中在背阔肌中下部，实现深层饱满度。",
+    tags: ["下背阔聚焦", "深度拉伸", "V字腰身"],
+    tips: {
+      prep: "换上V型对握把或窄距把手，大腿紧固在挡板下，脊柱挺拔微向后倾斜10-15°。",
+      execution: "手肘引领垂直向身体两侧正下方后拉，将把手拉至上胸或锁骨下方。",
+      peak: "在底部将大臂紧紧靠向肋骨，后背强烈收缩夹紧1.5秒。",
+      negative: "缓慢放回，手臂向上延伸至背阔肌完全被拉伸展开。"
+    },
+    commonMistakes: ["身体过度后仰变成平拉划船", "仅用手臂二头肌生拉"],
+    substitutes: [
+      { name: "对握/宽握高位下拉", reason: "上部背阔与大圆肌" },
+      { name: "坐姿绳索划船", reason: "水平增厚" }
+    ]
+  },
+  {
+    id: "ex-back-extension",
+    name: "山羊挺身 / 罗马椅挺身",
+    englishName: "Hyperextension / Back Extension",
+    category: "背部",
+    target: "下背竖脊肌 / 后侧链核心保护防线",
+    secondaryMuscles: ["臀大肌", "腘绳肌"],
+    aliases: ["山羊挺身", "罗马椅挺身", "竖脊肌挺身", "下背伸展", "Back Extension", "Hyperextension"],
+    gifUrl: "./exercises/rdl.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    scienceDetail: "强化脊柱中立与下背抗扭转力量的黄金安全动作。强壮的竖脊肌就像天然的腰带，彻底杜绝深蹲硬拉时腰部酸痛或代偿损伤。",
+    tags: ["腰椎守护", "竖脊肌防线", "后链核心"],
+    tips: {
+      prep: "卡在罗马椅上，挡板高度调至髂骨（髋关节屈曲轴线）稍下方，双脚蹬紧脚踏。",
+      execution: "双手抱胸或置于脑后，屈髋俯身下沉直至后侧肌群完全拉伸。",
+      peak: "后背与臀部发力挺起躯干至身体成一条直线，切勿过度反弓腰椎！",
+      negative: "匀速缓慢下落，感受竖脊肌全程承受离心做工张力。"
+    },
+    commonMistakes: ["顶端过度后仰反弓腰椎挤压椎间盘", "用头部甩动惯性代替背部做工"],
+    substitutes: [
+      { name: "罗马尼亚硬拉 (RDL)", reason: "大负荷硬拉变体" },
+      { name: "传统杠铃硬拉", reason: "全身后链复合" }
+    ]
+  },
+  {
+    id: "ex-sumo-deadlift",
+    name: "相扑硬拉",
+    englishName: "Sumo Deadlift",
+    category: "背部",
+    target: "下肢整体 / 臀大肌 / 内收肌与背部后链",
+    secondaryMuscles: ["竖脊肌", "斜方肌", "股四头肌", "前臂握力"],
+    aliases: ["相扑硬拉", "宽距硬拉", "Sumo Deadlift", "相扑拉"],
+    gifUrl: "./exercises/barbell-deadlift.gif",
+    defaultSets: 4,
+    defaultReps: "5-8",
+    scienceDetail: "宽站距极大缩短了杠铃从地面到锁定的垂直做工距离，躯干更加直立，腰椎剪切力显著小于传统硬拉，同时对大腿内收肌与臀部带来毁灭性刺激。",
+    tags: ["大力量复合", "直立躯干", "强劲臀腿"],
+    tips: {
+      prep: "超宽站距，双脚靠近杠铃片，脚尖外展45°。双手双臂垂直向下垂握杠铃于双腿内侧。",
+      execution: "挺胸下沉臀部，吸气腹压拉满，脚掌用力向外“撕裂地面”推地起杠。",
+      peak: "杠铃贴着小腿胫骨垂直上升，拉至顶端收紧臀部锁定髋关节。",
+      negative: "屈髋屈膝将杠铃垂直下放回地面，全程杠铃紧贴腿部。"
+    },
+    commonMistakes: ["起杠瞬间屁股先翘起导致腰部单独承受全部重量", "膝盖内扣没有朝脚尖打开"],
+    substitutes: [
+      { name: "传统杠铃硬拉", reason: "经典全身复合" },
+      { name: "罗马尼亚硬拉 (RDL)", reason: "腘绳肌超负荷" }
+    ]
   }
 ];

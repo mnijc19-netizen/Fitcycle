@@ -354,5 +354,55 @@ export const CHEST_EXERCISES = [
       { name: "直臂下压", reason: "绳索站姿版本" },
       { name: "上斜哑铃卧推", reason: "上胸厚度" }
     ]
+  },
+  {
+    id: "ex-smith-bench-press",
+    name: "史密斯平板卧推",
+    englishName: "Smith Machine Flat Bench Press",
+    category: "胸部",
+    target: "胸大肌中下束 (固定滑轨孤立推力)",
+    secondaryMuscles: ["肱三头肌", "三角肌前束"],
+    aliases: ["史密斯卧推", "史密斯推胸", "史密斯平板卧推", "Smith Bench Press", "史密斯平推"],
+    gifUrl: "./exercises/barbell-bench-press.gif",
+    defaultSets: 4,
+    defaultReps: "8-12",
+    scienceDetail: "利用垂直/微倾斜固定导轨，省去平衡杠铃的侧向抖动消耗，让运动员能安全冲击大重量并专注感受胸大肌离心张力，对单人独练极其友好安全。",
+    tags: ["安全冲击", "固定滑轨", "纯粹胸肌做工"],
+    tips: {
+      prep: "卧推凳置于史密斯机正下方，平躺使杠铃杆垂直对应乳头正上方，肩胛骨后缩下沉锁死。",
+      execution: "起杠转动手腕解锁，吸气控制杠铃缓慢下落至胸口微触或距胸1厘米。",
+      peak: "胸大肌主导将杠铃垂直推起，在最高点保持手肘微屈，顶峰收缩胸大肌。",
+      negative: "控制下落3秒，全程保持胸腔扩张背部贴凳。"
+    },
+    commonMistakes: ["推起时肩胛骨向前送出导致肩膀接管受力", "握距过窄腕关节受力过大"],
+    substitutes: [
+      { name: "平板杠铃卧推", reason: "自由力量三大项" },
+      { name: "固定器械推胸", reason: "器械收敛做工" }
+    ]
+  },
+  {
+    id: "ex-smith-incline-press",
+    name: "史密斯上斜卧推",
+    englishName: "Smith Machine Incline Bench Press",
+    category: "胸部",
+    target: "胸大肌上束 (锁骨段饱满度与铠甲胸廓)",
+    secondaryMuscles: ["三角肌前束", "肱三头肌"],
+    aliases: ["史密斯上斜推胸", "史密斯上推", "史密斯斜推", "上斜史密斯", "Smith Incline Press"],
+    gifUrl: "./exercises/incline-chest-press-machine.gif",
+    defaultSets: 4,
+    defaultReps: "8-12",
+    scienceDetail: "将长凳调整为30°黄金上斜角。史密斯的固定轨迹能精确将向心阻力传导至胸大肌锁骨段（上胸），是消除“上胸扁平凹陷”最可靠的高做工器械。",
+    tags: ["上胸饱满", "锁骨段增厚", "30度黄金角"],
+    tips: {
+      prep: "上斜凳调至30度，躺下使杠铃杆在下落时恰好对准锁骨下方2-3厘米处。",
+      execution: "解锁杠铃，控制匀速下放至上胸上方，感受上胸纤维像弓弦一样被充分拉开。",
+      peak: "呼气由上胸发力向上推起，注意肩胛骨始终保持收紧沉在靠垫上。",
+      negative: "缓慢下放3秒，抵抗重力平稳离心。"
+    },
+    commonMistakes: ["长凳角度超过45度变成三角肌前束推举", "杠铃下落位置过高压迫颈部"],
+    substitutes: [
+      { name: "上斜哑铃卧推", reason: "自由轨迹深拉伸" },
+      { name: "低位绳索上斜夹胸", reason: "顶峰内收夹胸" }
+    ]
   }
 ];

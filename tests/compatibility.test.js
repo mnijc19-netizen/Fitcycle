@@ -37,7 +37,7 @@ describe("production data compatibility", () => {
     expect(backup.settings).toHaveProperty("unlockedSkins");
     expect(backup).not.toHaveProperty("ai");
     expect(backup).not.toHaveProperty("apiKey");
-    expect(store.exercises).toHaveLength(63);
+    expect(store.exercises).toHaveLength(79);
   });
 
   it("imports a 1.0 backup and re-exports it as 1.1", () => {
