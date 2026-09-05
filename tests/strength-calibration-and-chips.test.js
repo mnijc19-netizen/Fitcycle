@@ -19,14 +19,17 @@ import UserOnboardingModal from "../src/components/UserOnboardingModal.vue";
 
 describe("Strength Level Calibration & Ergonomic Weight Adjustments", () => {
   beforeEach(() => {
+    document.body.innerHTML = "";
     store.workoutLogs = [];
     store.honorProfile = null;
     store.settings.strengthLevel = "intermediate";
     store.settings.hasConfiguredStrength = false;
+    store.settings.themeMode = "dark";
     if (store.activeWorkout) discardActiveWorkout();
   });
 
   afterEach(() => {
+    document.body.innerHTML = "";
     if (store.activeWorkout) discardActiveWorkout();
   });
 
@@ -127,17 +130,44 @@ describe("Strength Level Calibration & Ergonomic Weight Adjustments", () => {
     expect(html).toContain("统一全组");
   });
 
-  it("renders strength calibration modal and options properly", () => {
+  it("renders strength calibration modal with high contrast dark mode and pinned layout", () => {
+    store.settings.themeMode = "dark";
     const wrapper = mount(StrengthPlacementModal, {
-      props: { visible: true }
+      props: { visible: true },
+      attachTo: document.body
     });
-    const html = wrapper.html();
+    const html = document.body.innerHTML;
 
     expect(html).toContain("力量水平与初始重量定级");
     expect(html).toContain("新手入门");
     expect(html).toContain("进阶中坚");
     expect(html).toContain("资深老手");
     expect(html).toContain("自定义我常做的核心重量");
+
+    // Must strictly render dark-mode background and NEVER rogue light bg-slate-50 in dark mode
+    expect(html).toContain("bg-[#0C0F17]");
+    expect(html).toContain("bg-zinc-900");
+    expect(html).not.toContain("bg-slate-50");
+
+    // Modal footer must be pinned with primary action button
+    expect(html).toContain("确认并应用全计划起步重量");
+
+    wrapper.unmount();
+  });
+
+  it("renders strength calibration modal cleanly in light mode without dark mode overrides", () => {
+    store.settings.themeMode = "light";
+    const wrapper = mount(StrengthPlacementModal, {
+      props: { visible: true },
+      attachTo: document.body
+    });
+    const html = document.body.innerHTML;
+
+    expect(html).toContain("力量水平与初始重量定级");
+    expect(html).toContain("bg-white");
+    expect(html).toContain("bg-slate-50");
+
+    wrapper.unmount();
   });
 
   it("renders strength level entry point in StatsView", () => {

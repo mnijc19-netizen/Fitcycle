@@ -121,7 +121,10 @@
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <h3 class="font-bold text-sm text-zinc-100 truncate cursor-pointer hover:text-amber-400" @click="openExerciseDetail(ex)">{{ ex.name }}</h3>
                   <span v-if="!getLastExercisePerformance(ex.name)" 
-                        class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30">
+                        class="px-1.5 py-0.5 rounded text-[10px] font-bold border"
+                        :class="store.settings.themeMode === 'light' 
+                          ? 'bg-sky-50 text-sky-700 border-sky-200' 
+                          : 'bg-sky-500/15 text-sky-400 border-sky-500/30'">
                     🌱 首次训练
                   </span>
                 </div>

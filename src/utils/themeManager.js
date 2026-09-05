@@ -161,11 +161,13 @@ export function applyThemeToDOM(skin = "default", mode = "dark") {
     document.documentElement.setAttribute("data-skin", validSkin);
     document.documentElement.setAttribute("data-theme", validMode);
     document.documentElement.setAttribute("data-mode", validMode);
+    document.documentElement.classList.toggle("dark", validMode === "dark");
 
     if (document.body) {
       document.body.setAttribute("data-skin", validSkin);
       document.body.setAttribute("data-theme", validMode);
       document.body.setAttribute("data-mode", validMode);
+      document.body.classList.toggle("dark", validMode === "dark");
     }
 
     // Update browser theme-color for mobile status bar (iOS/Android)

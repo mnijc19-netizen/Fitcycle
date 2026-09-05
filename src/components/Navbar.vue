@@ -38,7 +38,8 @@
           <button v-if="store.activeWorkout" 
                   @click="store.activeTab = 'today'"
                   type="button"
-                  class="h-8 px-2.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 animate-pulse active:scale-95 cursor-pointer shadow-sm">
+                  class="h-8 px-2.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 animate-pulse active:scale-95 cursor-pointer shadow-sm"
+                  :class="store.settings.themeMode === 'light' ? 'text-emerald-700' : 'text-emerald-400'">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             <span class="text-[11px] font-sans">训练中</span>
           </button>
@@ -59,7 +60,8 @@
                   title="打开 FitCycle AI 智能教练"
                   class="h-8 px-3 rounded-full flex items-center gap-1.5 text-xs font-bold shadow-md active:scale-95 transition-all border cursor-pointer"
                   :class="aiButtonClasses">
-            <span class="text-xs text-amber-500 dark:text-amber-400 animate-pulse">✦</span>
+            <span class="text-xs animate-pulse"
+                  :class="store.settings.themeMode === 'light' ? 'text-amber-600' : 'text-amber-400'">✦</span>
             <span class="tracking-wide font-sans text-xs">AI 教练</span>
           </button>
         </div>
