@@ -617,6 +617,7 @@
     <UserOnboardingModal
       :visible="showOnboardingModal"
       @close="showOnboardingModal = false"
+      @open-strength="showOnboardingModal = false; showStrengthModal = true"
     />
 
     <!-- Strength Placement & Calibration Modal -->

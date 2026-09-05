@@ -29,6 +29,13 @@
     <UserOnboardingModal
       :visible="!store.settings.hasSeenOnboarding"
       @close="store.settings.hasSeenOnboarding = true"
+      @open-strength="handleOpenStrengthFromOnboarding"
+    />
+
+    <!-- Global Strength Placement Wizard (Triggerable from Onboarding) -->
+    <StrengthPlacementModal
+      :visible="showGlobalStrengthModal"
+      @close="showGlobalStrengthModal = false"
     />
 
     <!-- Full-Screen Cinematic Skin Game-Entry Splash Transition -->
@@ -40,12 +47,14 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { store } from "./store/fitnessStore.js";
 import Navbar from "./components/Navbar.vue";
 import TabBar from "./components/TabBar.vue";
 import RestTimerFloat from "./components/RestTimerFloat.vue";
 import AIAssistantDrawer from "./components/AIAssistantDrawer.vue";
 import UserOnboardingModal from "./components/UserOnboardingModal.vue";
+import StrengthPlacementModal from "./components/StrengthPlacementModal.vue";
 import SkinSplashTransition from "./components/SkinSplashTransition.vue";
 
 import TodayView from "./views/TodayView.vue";
@@ -53,5 +62,12 @@ import CycleView from "./views/CycleView.vue";
 import CalendarView from "./views/CalendarView.vue";
 import ExercisesView from "./views/ExercisesView.vue";
 import StatsView from "./views/StatsView.vue";
+
+const showGlobalStrengthModal = ref(false);
+
+function handleOpenStrengthFromOnboarding() {
+  store.settings.hasSeenOnboarding = true;
+  showGlobalStrengthModal.value = true;
+}
 </script>
 

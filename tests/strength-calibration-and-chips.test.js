@@ -1,4 +1,4 @@
-﻿import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { 
   store, 
@@ -15,6 +15,7 @@ import {
 import TodayView from "../src/views/TodayView.vue";
 import StatsView from "../src/views/StatsView.vue";
 import StrengthPlacementModal from "../src/components/StrengthPlacementModal.vue";
+import UserOnboardingModal from "../src/components/UserOnboardingModal.vue";
 
 describe("Strength Level Calibration & Ergonomic Weight Adjustments", () => {
   beforeEach(() => {
@@ -145,5 +146,36 @@ describe("Strength Level Calibration & Ergonomic Weight Adjustments", () => {
 
     expect(html).toContain("力量能力基准");
     expect(html).toContain("力量水平定级与初始重量");
+  });
+
+  it("renders ultra-sleek, non-intrusive welcome sheet in UserOnboardingModal without 5-slide clutter", async () => {
+    const wrapper = mount(UserOnboardingModal, {
+      props: { visible: true },
+      attachTo: document.body
+    });
+    const bodyHtml = document.body.innerHTML;
+
+    // Contains clean, welcoming branding
+    expect(bodyHtml).toContain("欢迎开启 FitCycle");
+    expect(bodyHtml).toContain("开启你的极简科学特训");
+    expect(bodyHtml).toContain("30秒力量定级 · 告别空杆重填");
+    expect(bodyHtml).toContain("推 / 拉 / 腿 黄金分化循环");
+    expect(bodyHtml).toContain("健身房防抖大按键 · 极速加片");
+    expect(bodyHtml).toContain("30秒选定力量水平并开练");
+    expect(bodyHtml).toContain("稍后定级，直接开启今日训练");
+
+    // Must NOT contain the old repelling 5-slide clutter
+    expect(bodyHtml).not.toContain("特训全景向导 · 1/5");
+    expect(bodyHtml).not.toContain("尚博勒法式高定金表");
+    expect(bodyHtml).not.toContain("CS2 战力天梯排位");
+
+    // Clicking primary button emits open-strength
+    const primaryBtn = document.body.querySelector("button.bg-gradient-to-r");
+    expect(primaryBtn).toBeTruthy();
+    primaryBtn.click();
+    expect(wrapper.emitted("open-strength")).toBeTruthy();
+    expect(store.settings.hasSeenOnboarding).toBe(true);
+
+    wrapper.unmount();
   });
 });
