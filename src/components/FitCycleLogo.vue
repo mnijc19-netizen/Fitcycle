@@ -2,33 +2,32 @@
   <div class="inline-flex items-center justify-center select-none" :class="containerClass" :style="customStyle">
     <svg :width="size" :height="size" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="overflow-visible">
       <defs>
-        <!-- Dynamic Theme Accent Gradients -->
-        <linearGradient id="fitcycle-grad-primary" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" :stop-color="accentColorStart" />
-          <stop offset="50%" :stop-color="accentColorMid" />
-          <stop offset="100%" :stop-color="accentColorEnd" />
+        <!-- Authoritative Brand Master Gradients with Unique Instance Scope -->
+        <linearGradient :id="`fitcycle-grad-primary-${instanceId}`" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f59e0b" />
+          <stop offset="50%" stop-color="#d97706" />
+          <stop offset="100%" stop-color="#b45309" />
         </linearGradient>
 
-        <linearGradient id="fitcycle-grad-secondary" x1="100%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" :stop-color="accentColorMid" />
-          <stop offset="100%" :stop-color="accentColorStart" />
+        <linearGradient :id="`fitcycle-grad-secondary-${instanceId}`" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#d97706" />
+          <stop offset="100%" stop-color="#f59e0b" />
         </linearGradient>
 
-        <linearGradient id="fitcycle-grad-dark" x1="0%" y1="100%" x2="100%" y2="0%">
+        <linearGradient :id="`fitcycle-grad-dark-${instanceId}`" x1="0%" y1="100%" x2="100%" y2="0%">
           <stop offset="0%" stop-color="#18181b" />
           <stop offset="100%" stop-color="#27272a" />
         </linearGradient>
 
-        <filter id="fitcycle-glow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="4" stdDeviation="6" :flood-color="glowColor" flood-opacity="0.45" />
+        <filter :id="`fitcycle-glow-${instanceId}`" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#f59e0b" flood-opacity="0.35" />
         </filter>
       </defs>
 
-      <!-- Sculptural FitCycle Möbius Torque Ribbon (F + C Overload Loop) -->
-      <!-- Background Shield Plate (Optional) -->
+      <!-- Optional Background Shield Plate -->
       <path v-if="withBackground"
             d="M 50 6 L 88 26 L 88 74 L 50 94 L 12 74 L 12 26 Z" 
-            fill="url(#fitcycle-grad-dark)" 
+            :fill="`url(#fitcycle-grad-dark-${instanceId})`" 
             stroke="rgba(255,255,255,0.08)" 
             stroke-width="1.5" />
 
@@ -48,8 +47,8 @@
            C 32 76, 26 80, 24 84 
            C 22 88, 18 86, 17 82 
            C 16 78, 18 74, 22 72 Z"
-        fill="url(#fitcycle-grad-primary)"
-        filter="url(#fitcycle-glow)"
+        :fill="`url(#fitcycle-grad-primary-${instanceId})`"
+        :filter="`url(#fitcycle-glow-${instanceId})`"
       />
 
       <!-- Right Flow Ribbon: Continuity 'C' Recovery Orbital (Hypertrophy Loop) -->
@@ -66,22 +65,19 @@
            C 41 48, 38 44, 39 39 
            C 40 34, 44 32, 50 32 
            L 52 38 Z"
-        fill="url(#fitcycle-grad-secondary)"
+        :fill="`url(#fitcycle-grad-secondary-${instanceId})`"
         opacity="0.92"
       />
 
       <!-- Central Kinetic Barbell Core / Overload Spark -->
-      <polygon points="50,38 59,50 50,62 41,50" fill="url(#fitcycle-grad-primary)" />
+      <polygon points="50,38 59,50 50,62 41,50" :fill="`url(#fitcycle-grad-primary-${instanceId})`" />
       <polygon points="50,42 56,50 50,58 44,50" fill="#ffffff" opacity="0.95" />
-      <circle cx="50" cy="50" r="2.5" :fill="accentColorStart" />
+      <circle cx="50" cy="50" r="2.5" fill="#f59e0b" />
     </svg>
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { store } from "../store/fitnessStore.js";
-
 const props = defineProps({
   size: {
     type: [Number, String],
@@ -101,32 +97,6 @@ const props = defineProps({
   }
 });
 
-// International Standard Adaptive Theme Accents
-const accentColorStart = computed(() => {
-  const skin = store.settings.uiSkin;
-  if (skin === "cs") return "#f97316"; // CS2 Tactical Vibrant Orange
-  if (skin === "chamber") return "#E5C378"; // Chamber 24K French Gold
-  return "#f59e0b"; // FitCycle Amber Gold
-});
-
-const accentColorMid = computed(() => {
-  const skin = store.settings.uiSkin;
-  if (skin === "cs") return "#ea580c";
-  if (skin === "chamber") return "#06B6D4"; // Radian Cyan Accent
-  return "#d97706";
-});
-
-const accentColorEnd = computed(() => {
-  const skin = store.settings.uiSkin;
-  if (skin === "cs") return "#c2410c";
-  if (skin === "chamber") return "#B38F46";
-  return "#b45309";
-});
-
-const glowColor = computed(() => {
-  const skin = store.settings.uiSkin;
-  if (skin === "cs") return "#f97316";
-  if (skin === "chamber") return "#E5C378";
-  return "#f59e0b";
-});
+// Generate unique scope ID to strictly prevent SVG gradient & filter ID collisions across multiple logo instances
+const instanceId = Math.random().toString(36).substring(2, 8);
 </script>

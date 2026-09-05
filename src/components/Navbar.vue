@@ -44,14 +44,27 @@
             <span class="text-[11px] font-sans">训练中</span>
           </button>
 
-          <!-- Light / Dark Mode Toggle (☀️ / 🌙) -->
+          <!-- Light / Dark Mode Toggle (Apple / Linear Grade Vector SVG) -->
           <button @click="handleToggleThemeMode"
                   type="button"
                   :title="store.settings.themeMode === 'light' ? '切换为深邃夜色' : '切换为白昼晨光'"
-                  class="h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold shadow-sm active:scale-95 transition-all border cursor-pointer"
+                  class="h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold shadow-xs active:scale-90 transition-all border cursor-pointer group select-none"
                   :class="themeModeButtonClasses">
-            <span v-if="store.settings.themeMode === 'light'" class="text-xs leading-none">🌙</span>
-            <span v-else class="text-xs leading-none">☀️</span>
+            <span class="sr-only">{{ store.settings.themeMode === 'light' ? '切换为深邃夜色' : '切换为白昼晨光' }}</span>
+            <span class="hidden" aria-hidden="true">{{ store.settings.themeMode === 'light' ? '🌙' : '☀️' }}</span>
+            <!-- Moon Vector (Light Mode active: prompt to switch to dark) -->
+            <svg v-if="store.settings.themeMode === 'light'" 
+                 class="w-3.5 h-3.5 text-slate-700 transition-transform duration-300 group-hover:-rotate-12" 
+                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+            <!-- Sun Vector (Dark Mode active: prompt to switch to light) -->
+            <svg v-else 
+                 class="w-3.5 h-3.5 text-amber-400 transition-transform duration-300 group-hover:rotate-45" 
+                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <circle cx="12" cy="12" r="4" stroke-width="2.2" />
+              <path stroke-linecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke-width="2.2" />
+            </svg>
           </button>
 
           <!-- AI Coach Trigger Button (Fully Visible & Ergonomic) -->
@@ -96,9 +109,9 @@ function handleToggleThemeMode() {
 const themeModeButtonClasses = computed(() => {
   const isLight = store.settings.themeMode === "light";
   if (isLight) {
-    return "bg-slate-200/80 hover:bg-slate-300 text-slate-800 border-slate-300 shadow-inner";
+    return "bg-slate-100 hover:bg-slate-200/90 text-slate-700 border-slate-200/90 shadow-sm";
   }
-  return "bg-zinc-900/90 hover:bg-zinc-800 text-amber-400 border-zinc-700/80 shadow-sm";
+  return "bg-zinc-850 hover:bg-zinc-800 text-amber-400 border-zinc-700/80 shadow-sm";
 });
 
 // CS2 Agents Switcher
@@ -155,11 +168,9 @@ const navbarThemeClasses = computed(() => {
 
 const logoFrameClasses = computed(() => {
   const isLight = store.settings.themeMode === "light";
-  const skin = store.settings.uiSkin;
-  if (skin === "cs") return isLight ? "bg-white border-orange-500/40 shadow-sm" : "bg-zinc-900 border-orange-500/40 shadow-orange-500/20";
-  if (skin === "chamber") return isLight ? "bg-white border-[#C5A059]/40 shadow-sm" : "bg-[#0a1122] border-[#E5C378]/40 shadow-[#E5C378]/20";
-  if (skin === "monochrome") return isLight ? "bg-white border-black/30 shadow-sm" : "bg-black border-white/40 shadow-sm";
-  return isLight ? "bg-white border-amber-500/30 shadow-sm" : "bg-zinc-900 border-amber-500/30 shadow-amber-500/10";
+  return isLight 
+    ? "bg-slate-100/90 border-slate-200/90 shadow-sm" 
+    : "bg-zinc-900/90 border-zinc-800 shadow-sm";
 });
 
 const aiButtonClasses = computed(() => {
