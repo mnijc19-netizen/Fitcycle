@@ -1,14 +1,15 @@
-﻿<template>
+<template>
   <Teleport to="body">
     <div v-if="visible" 
-         class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/65 backdrop-blur-md animate-in fade-in duration-200 select-none"
+         class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/65 backdrop-blur-md animate-in fade-in duration-200 select-none overflow-hidden touch-none"
          style="padding-top: max(env(safe-area-inset-top, 0px), 16px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);">
       
       <!-- Non-intrusive backdrop click to close -->
       <div class="absolute inset-0" @click="handleDismiss"></div>
 
       <!-- Sleek Apple-Style Glassmorphic Welcome Card -->
-      <div class="relative w-full max-w-[380px] rounded-[28px] p-5 sm:p-6 shadow-2xl backdrop-blur-2xl space-y-5 overflow-hidden animate-in zoom-in-95 duration-200 transition-all border"
+      <div class="relative w-full max-w-[380px] rounded-[28px] p-5 sm:p-6 shadow-2xl backdrop-blur-2xl space-y-5 overflow-hidden animate-in zoom-in-95 duration-200 transition-all border overflow-x-hidden"
+           style="touch-action: pan-y; max-width: min(380px, calc(100vw - 24px)); box-sizing: border-box;"
            :class="store.settings.themeMode === 'light' 
              ? 'bg-white/98 border-slate-200 text-slate-900 shadow-slate-300/40' 
              : 'bg-[#0C0F17]/98 border-zinc-800 text-white shadow-black/80'">

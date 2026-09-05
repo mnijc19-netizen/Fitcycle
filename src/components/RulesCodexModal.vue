@@ -1,13 +1,14 @@
 <template>
   <Teleport to="body">
     <div v-if="visible" 
-         class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200"
+         class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200 overflow-hidden touch-none select-none"
          style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
       <!-- Backdrop blur -->
       <div class="absolute inset-0" @click="$emit('close')"></div>
 
       <!-- Rules Codex Container -->
-      <div class="relative w-full max-w-lg bg-[var(--fc-modal-bg,#18181b)] border border-zinc-700/80 rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3.5 max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-200 text-zinc-100">
+      <div class="relative w-full max-w-lg bg-[var(--fc-modal-bg,#18181b)] border border-zinc-700/80 rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3.5 max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-200 text-zinc-100 overflow-x-hidden"
+           style="touch-action: pan-y; max-width: min(32rem, calc(100vw - 24px)); box-sizing: border-box;">
         
         <!-- Top Ergonomic Grabber -->
         <div class="w-10 h-1 rounded-full bg-zinc-700/80 mx-auto -mt-1 mb-1 flex-shrink-0"></div>

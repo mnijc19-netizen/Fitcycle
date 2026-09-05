@@ -1,12 +1,13 @@
 <template>
   <Teleport to="body">
     <div v-if="visible" 
-         class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-xl p-0 sm:p-4"
+         class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-xl p-0 sm:p-4 overflow-hidden touch-none select-none"
          style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
       <!-- Backdrop dismiss -->
       <div class="absolute inset-0" @click="$emit('close')"></div>
 
-      <div class="relative z-10 bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
+      <div class="relative z-10 bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden overflow-x-hidden animate-in slide-in-from-bottom duration-200"
+           style="touch-action: pan-y; max-width: min(32rem, 100vw); box-sizing: border-box;">
         
         <!-- Top Ergonomic Grabber Pill -->
         <div class="w-10 h-1 rounded-full bg-zinc-700/80 mx-auto mt-2 -mb-1 flex-shrink-0"></div>

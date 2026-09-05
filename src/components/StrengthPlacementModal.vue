@@ -1,12 +1,13 @@
 <template>
   <Teleport to="body">
     <div v-if="visible" 
-         class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200 select-none"
+         class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200 select-none overflow-hidden touch-none"
          style="padding-top: max(env(safe-area-inset-top, 0px), 16px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);"
          @click.self="$emit('close')">
       
       <!-- Modal Container: Fixed Max Height, Flex Col to ensure Header & Footer are always pinned and visible -->
-      <div class="relative w-full max-w-md max-h-[85vh] rounded-[28px] border shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 transition-all"
+      <div class="relative w-full max-w-md max-h-[85vh] rounded-[28px] border shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200 transition-all overflow-x-hidden"
+           style="touch-action: pan-y; max-width: min(448px, calc(100vw - 24px)); box-sizing: border-box;"
            :class="store.settings.themeMode === 'light'
              ? 'bg-white/98 border-slate-200 text-slate-900 shadow-slate-300/50'
              : 'bg-[#0C0F17]/98 border-zinc-800 text-white shadow-black/80'">

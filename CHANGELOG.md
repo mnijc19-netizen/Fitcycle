@@ -4,6 +4,35 @@
 
 ---
 
+## 🚀 [v1.7.9] - 2026-09-06 (彻底根除移动端弹窗横向漂移与手势滑动侧漏，建立视口溢出与手势防护工业级 QA 自动化测试矩阵)
+### 🛡️ 移动端横向越界与手势侧漏物理根除 (`WorkoutSummaryModal.vue`, `style.css` & All Modals)
+- **物理根因深度定性与清障**：
+  - 用户在真机 (iOS WebApp) 触发训练打卡结算弹窗时，手指斜向滑动滚动复盘内容，导致整个卡片横向向左移出屏幕，右侧露出巨大黑底断层；
+  - **根因 1**：弹性滚动容器缺少 `overflow-x-hidden` 剪裁，子元素文本与未截断长徽章撑破 360px 宽度；
+  - **根因 2**：高斯模糊装饰光晕（`-top-12 -left-12` 负坐标）未被局部容器遮罩包裹，撑大了 WebKit 的整体滚动视口计算包围盒 (Scroll Bounding Box)；
+  - **根因 3**：缺少 CSS `touch-action: pan-y` 约束，WebKit 默认将斜向手势识别为允许双向移动并触发水平橡皮筋弹性拖拽；
+- **全方位物理加固措施**：
+  - **全局视口物理锁 (`style.css`)**：在 `html` 与 `body` 强制生效 `overflow-x: hidden; overflow-x: clip; overscroll-behavior-x: none;`；
+  - **弹窗遮罩手势封锁 (`WorkoutSummaryModal.vue`)**：外层遮罩注入 `overflow-hidden touch-none select-none`，杜绝任何穿透与背景联动；
+  - **卡片容器双向安全围栏**：主卡片统一挂载 `overflow-y-auto overflow-x-hidden`、`touch-action: pan-y !important;`、`box-sizing: border-box;` 以及 `max-width: min(384px, calc(100vw - 24px));`，绝对锁定在屏幕中心；
+  - **光晕边界封印**：所有负边距绝对定位发光球体严密包裹在 `<div class="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">` 容器内，物理隔离其对排版流的尺寸影响；
+  - **文本与长标签流式断行**：AI 复盘徽章精简文案并增加 `min-w-0 flex-shrink-0`，全篇长文本追加 `break-words`；
+  - **全量弹窗体系平移同款防护**：将上述手势防护标准平移注入 `StrengthPlacementModal`, `UserOnboardingModal`, `RulesCodexModal`, `HonorShowcaseModal`, `ExerciseDetailModal`, `ExercisePickerModal`, `BodyMetricsModal`, `CycleEditorModal`, `PlanEditorModal`。
+
+### 🔍 质检体系升级：解决 JSDOM 无 CSS 布局引擎的测试盲区 (`tests/mobile-viewport-overflow-audit.test.js`)
+- **直面质检痛点根因**：
+  - 此前 103 项 Vitest 测试全部通过，但 JSDOM 运行在 Node.js 环境中，**缺乏真实的 CSS 布局排版与像素渲染引擎**（`scrollWidth`、`offsetWidth` 等恒为 0，不计算视口越界，也不解析手势拖拽），导致纯文本/DOM 存在性测试无法拦截真机特有的 CSS/WebKit 物理溢出；
+- **建立自动化移动端视口溢出与手势防护审计套件**：
+  - 新增 `tests/mobile-viewport-overflow-audit.test.js`，通过组件挂载及 Teleport DOM 逆向静态分析，强制自动化审计：
+    1. 弹窗外层遮罩是否 100% 具备 `overflow-hidden` 与 `touch-none`；
+    2. 弹窗滚动容器是否 100% 具备 `overflow-x-hidden` 与 `touch-action: pan-y`；
+    3. 负坐标高斯光晕是否 100% 密封在 `overflow-hidden` 遮罩内；
+    4. 动态文本是否 100% 具备 `break-words` 与 `min-w-0` 截断防护；
+  - 修复 `HonorShowcaseModal.vue` 中 `store` 导入缺失的隐蔽引用警告。
+- **全量 10 大测试套件 108 项测试 100% PASS**，Vite 生产构建 0 错误。
+
+---
+
 ## 🚀 [v1.7.8] - 2026-09-06 (彻底终结加减预设筹码栏与笨重大黑方块，上线 Apple/Hevy 级极简流线型高工效训练组记录矩阵)
 ### 🎨 终结杂乱工具栏，回归纯净卡片流 (`TodayView.vue`)
 - **彻底根除生硬割裂的全局加减片筹码栏 (`加减片: -5 +2.5 +5 +10 +20`)**：
