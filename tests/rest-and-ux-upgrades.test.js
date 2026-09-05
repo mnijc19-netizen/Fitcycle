@@ -1,6 +1,20 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { store, startRestTimer, stopRestTimer, toggleSetCompletion, startWorkout, finishWorkout, discardActiveWorkout, resumeWorkoutFromSummary } from "../src/store/fitnessStore.js";
+import { 
+  store, 
+  startRestTimer, 
+  stopRestTimer, 
+  toggleSetCompletion, 
+  startWorkout, 
+  finishWorkout, 
+  discardActiveWorkout, 
+  resumeWorkoutFromSummary,
+  addSetToExercise,
+  syncSetDataToSubsequentSets,
+  addExerciseToActiveWorkout,
+  addExerciseToPlan
+} from "../src/store/fitnessStore.js";
+import { DEFAULT_PLANS, SPLIT_RECOMMENDED_ADDONS } from "../src/data/defaultPlans.js";
 import { analyzeWorkoutSummary } from "../src/ai/workoutAnalyzer.js";
 import StatsView from "../src/views/StatsView.vue";
 import TodayView from "../src/views/TodayView.vue";
@@ -150,5 +164,118 @@ describe("Rest Presets, Carousel, Auto-Finish & AI Analysis Upgrades", () => {
     expect(html).toContain("战术免战休整期");
     expect(html).toContain("战力已冻结");
     expect(html).toContain("提前归队");
+  });
+
+  it("streamlines default plans to 3 golden core exercises with 3 sets each for beginner safety", () => {
+    const pushPlan = DEFAULT_PLANS.find(p => p.id === "plan-push");
+    const pullPlan = DEFAULT_PLANS.find(p => p.id === "plan-pull");
+    const legsPlan = DEFAULT_PLANS.find(p => p.id === "plan-legs");
+
+    expect(pushPlan.exercises.length).toBe(3);
+    expect(pullPlan.exercises.length).toBe(3);
+    expect(legsPlan.exercises.length).toBe(3);
+
+    // Each exercise defaults to 3 sets
+    pushPlan.exercises.forEach(e => expect(e.setsCount).toBe(3));
+    pullPlan.exercises.forEach(e => expect(e.setsCount).toBe(3));
+    legsPlan.exercises.forEach(e => expect(e.setsCount).toBe(3));
+
+    // Total beginner session volume is exactly 9 sets
+    const pushTotalSets = pushPlan.exercises.reduce((sum, e) => sum + e.setsCount, 0);
+    expect(pushTotalSets).toBe(9);
+  });
+
+  it("provides split-specific beginner recommended add-ons pool (SPLIT_RECOMMENDED_ADDONS)", () => {
+    expect(SPLIT_RECOMMENDED_ADDONS["plan-push"]).toBeDefined();
+    expect(SPLIT_RECOMMENDED_ADDONS["plan-push"].length).toBeGreaterThanOrEqual(2);
+    expect(SPLIT_RECOMMENDED_ADDONS["plan-pull"]).toBeDefined();
+    expect(SPLIT_RECOMMENDED_ADDONS["plan-legs"]).toBeDefined();
+
+    // Check specific golden exercise names
+    const pushNames = SPLIT_RECOMMENDED_ADDONS["plan-push"].map(e => e.name);
+    expect(pushNames).toContain("坐姿哑铃推肩");
+    expect(pushNames).toContain("过头绳索臂屈伸");
+  });
+
+  it("synchronizes set weights intelligently to subsequent uncompleted sets (Smart Cascade)", () => {
+    startWorkout("plan-push");
+    expect(store.activeWorkout).not.toBeNull();
+    const firstEx = store.activeWorkout.exercises[0];
+    expect(firstEx.sets.length).toBe(3);
+
+    // Initial weight of all 3 sets
+    expect(firstEx.sets[0].weight).toBe(20);
+    expect(firstEx.sets[1].weight).toBe(20);
+    expect(firstEx.sets[2].weight).toBe(20);
+
+    // User updates set 1 weight to 25kg and triggers sync
+    firstEx.sets[0].weight = 25;
+    const syncedCount = syncSetDataToSubsequentSets(0, 0, false);
+    expect(syncedCount).toBe(2);
+
+    // Subsequent uncompleted sets 1 and 2 now have 25kg
+    expect(firstEx.sets[1].weight).toBe(25);
+    expect(firstEx.sets[2].weight).toBe(25);
+
+    // If set 1 is completed, subsequent sync does not overwrite completed sets
+    firstEx.sets[1].completed = true;
+    firstEx.sets[0].weight = 30;
+    const secondSyncCount = syncSetDataToSubsequentSets(0, 0, false);
+    expect(secondSyncCount).toBe(1); // only set 2 was synced
+    expect(firstEx.sets[1].weight).toBe(25); // untouched because completed
+    expect(firstEx.sets[2].weight).toBe(30);
+  });
+
+  it("inherits previous set weight and reps when adding a new set", () => {
+    startWorkout("plan-push");
+    const firstEx = store.activeWorkout.exercises[0];
+    firstEx.sets[2].weight = 27.5;
+    firstEx.sets[2].reps = 12;
+
+    addSetToExercise(0);
+    expect(firstEx.sets.length).toBe(4);
+    const newSet = firstEx.sets[3];
+    expect(newSet.setNum).toBe(4);
+    expect(newSet.weight).toBe(27.5);
+    expect(newSet.reps).toBe(12);
+    expect(newSet.completed).toBe(false);
+  });
+
+  it("adds exercise with 3 sets directly to active workout or plan", () => {
+    startWorkout("plan-push");
+    const initialExCount = store.activeWorkout.exercises.length;
+
+    const addonEx = {
+      id: "ex-seated-dumbbell-shoulder-press",
+      name: "坐姿哑铃推肩",
+      defaultSets: 3,
+      defaultWeight: 20
+    };
+
+    addExerciseToActiveWorkout(addonEx);
+    expect(store.activeWorkout.exercises.length).toBe(initialExCount + 1);
+    const added = store.activeWorkout.exercises[store.activeWorkout.exercises.length - 1];
+    expect(added.name).toBe("坐姿哑铃推肩");
+    expect(added.sets.length).toBe(3);
+    expect(added.sets[0].weight).toBe(20);
+
+    // Also test adding to plan
+    const success = addExerciseToPlan("plan-pull", {
+      exerciseId: "ex-face-pull",
+      name: "绳索面拉 (Face Pull)",
+      defaultSets: 3,
+      defaultWeight: 15
+    });
+    expect(success).toBe(true);
+    const pullPlan = store.plans.find(p => p.id === "plan-pull");
+    expect(pullPlan.exercises.some(e => e.name.includes("面拉"))).toBe(true);
+  });
+
+  it("renders beginner quick-add recommendation chips in TodayView", () => {
+    if (store.activeWorkout) discardActiveWorkout();
+    const wrapper = mount(TodayView);
+    const html = wrapper.html();
+    expect(html).toContain("新手简易加动作");
+    expect(html).toContain("科学配比 · 3组");
   });
 });

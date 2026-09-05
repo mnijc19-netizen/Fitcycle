@@ -1,5 +1,5 @@
 import { reactive, watch } from "vue";
-import { DEFAULT_EXERCISES, DEFAULT_PLANS, PRESET_CYCLES, SCIENCE_PRINCIPLES } from "../data/defaultPlans.js";
+import { DEFAULT_EXERCISES, DEFAULT_PLANS, PRESET_CYCLES, SCIENCE_PRINCIPLES, SPLIT_RECOMMENDED_ADDONS } from "../data/defaultPlans.js";
 import { playSetCompleteSound, playRestCompleteSound, playWorkoutDoneSound } from "../utils/audio.js";
 import { triggerHaptic } from "../utils/vibrate.js";
 import { universalScrollToTop } from "../utils/scrollUtils.js";
@@ -58,6 +58,22 @@ function loadSavedState() {
           return eClean === defClean || (eClean.length >= 4 && (defClean.includes(eClean) || eClean.includes(defClean)));
         }));
         parsed.exercises = [...mergedExercises, ...customOnly];
+      }
+
+      // Migrate legacy bloated plans (Push 5/Pull 6/Legs 4) to streamlined golden 3-exercise plans
+      if (parsed.plans) {
+        parsed.plans = parsed.plans.map(p => {
+          const defPlan = DEFAULT_PLANS.find(dp => dp.id === p.id);
+          if (defPlan) {
+            const isLegacyPush = p.id === "plan-push" && p.exercises?.length > 3;
+            const isLegacyPull = p.id === "plan-pull" && p.exercises?.length > 3;
+            const isLegacyLegs = p.id === "plan-legs" && p.exercises?.length > 3;
+            if (isLegacyPush || isLegacyPull || isLegacyLegs) {
+              return JSON.parse(JSON.stringify(defPlan));
+            }
+          }
+          return p;
+        });
       }
 
       // Deep sanitize settings for backward compatibility & theme system
@@ -418,18 +434,58 @@ export function removeSetFromExercise(exerciseIndex, setIndex) {
   if (store.settings.vibrationEnabled) triggerHaptic("light");
 }
 
+/**
+ * 智能联动同步组重量与次数：将指定组的重量（及可选次数）同步至该动作后续所有未完成组
+ * @param {number} exerciseIndex 
+ * @param {number} sourceSetIndex 
+ * @param {boolean} syncReps 是否同时同步次数（默认 false）
+ * @returns {number} 被同步的后续组数量
+ */
+export function syncSetDataToSubsequentSets(exerciseIndex, sourceSetIndex, syncReps = false) {
+  if (!store.activeWorkout) return 0;
+  const ex = store.activeWorkout.exercises[exerciseIndex];
+  if (!ex || !ex.sets || !ex.sets[sourceSetIndex]) return 0;
+
+  const sourceSet = ex.sets[sourceSetIndex];
+  const targetWeight = Number(sourceSet.weight) || 0;
+  const targetReps = Number(sourceSet.reps) || 0;
+  let syncedCount = 0;
+
+  for (let i = sourceSetIndex + 1; i < ex.sets.length; i++) {
+    const nextSet = ex.sets[i];
+    if (!nextSet.completed) {
+      nextSet.weight = targetWeight;
+      if (syncReps) {
+        nextSet.reps = targetReps;
+      }
+      syncedCount++;
+    }
+  }
+
+  if (syncedCount > 0 && store.settings.vibrationEnabled) {
+    triggerHaptic("light");
+  }
+  return syncedCount;
+}
+
 export function addExerciseToActiveWorkout(exerciseItem) {
   if (!store.activeWorkout) return;
-  const lastPerf = getLastExercisePerformance(exerciseItem.name);
+  const exDetails = getExerciseDetails(exerciseItem.id || exerciseItem.exerciseId || exerciseItem.name);
+  const fullItem = exDetails ? { ...exDetails, ...exerciseItem } : exerciseItem;
+  const lastPerf = getLastExercisePerformance(fullItem.name);
   const sets = [];
-  const defaultSetsCount = exerciseItem.defaultSets || 3;
+  const defaultSetsCount = fullItem.defaultSets || 3;
 
   for (let i = 0; i < defaultSetsCount; i++) {
-    let w = 20;
+    let w = fullItem.defaultWeight || 20;
     let r = 10;
     if (lastPerf && lastPerf.sets[i]) {
       w = lastPerf.sets[i].weight;
       r = lastPerf.sets[i].reps;
+    } else if (lastPerf && lastPerf.sets.length > 0) {
+      const lastSet = lastPerf.sets[lastPerf.sets.length - 1];
+      w = lastSet.weight;
+      r = lastSet.reps;
     }
     sets.push({
       id: uid("set"),
@@ -443,16 +499,41 @@ export function addExerciseToActiveWorkout(exerciseItem) {
 
   store.activeWorkout.exercises.push({
     id: uid("ex"),
-    exerciseId: exerciseItem.id,
-    name: exerciseItem.name,
-    targetReps: `${exerciseItem.defaultReps || "10-12"}次`,
-    scienceDetail: exerciseItem.scienceDetail || "",
-    category: exerciseItem.category || "其它",
-    tags: exerciseItem.tags || [],
+    exerciseId: fullItem.id || fullItem.exerciseId || `custom-${Date.now()}`,
+    name: fullItem.name,
+    targetReps: fullItem.targetReps || `${fullItem.defaultReps || "10-12"}次`,
+    scienceDetail: fullItem.scienceDetail || "",
+    category: fullItem.category || "其它",
+    tags: fullItem.tags || [],
     sets,
     collapsed: false
   });
   if (store.settings.vibrationEnabled) triggerHaptic("medium");
+}
+
+export function addExerciseToPlan(planId, exerciseItem) {
+  const plan = store.plans.find(p => p.id === planId);
+  if (!plan) return false;
+  if (!plan.exercises) plan.exercises = [];
+  
+  const exDetails = getExerciseDetails(exerciseItem.id || exerciseItem.exerciseId || exerciseItem.name);
+  const fullItem = exDetails ? { ...exDetails, ...exerciseItem } : exerciseItem;
+
+  // Prevent duplicate if already exists
+  if (plan.exercises.some(e => e.exerciseId === (fullItem.id || fullItem.exerciseId) || e.name === fullItem.name)) {
+    return false;
+  }
+
+  plan.exercises.push({
+    exerciseId: fullItem.id || fullItem.exerciseId,
+    name: fullItem.name,
+    setsCount: fullItem.defaultSets || 3,
+    targetReps: fullItem.targetReps || `${fullItem.defaultReps || "10-12"}次`,
+    defaultWeight: fullItem.defaultWeight || 20
+  });
+
+  if (store.settings.vibrationEnabled) triggerHaptic("medium");
+  return true;
 }
 
 export function replaceExerciseInActiveWorkout(exerciseIndex, newExerciseItem) {

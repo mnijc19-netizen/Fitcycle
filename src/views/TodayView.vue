@@ -173,41 +173,53 @@
                   </span>
                   <button v-if="ex.sets.length > 1 && !s.completed" 
                           @click="removeSet(exIdx, sIdx)" 
+                          title="删除此组"
                           class="text-zinc-500 hover:text-red-500 text-xs font-bold cursor-pointer">
                     -
                   </button>
+                  <button v-if="sIdx < ex.sets.length - 1 && !s.completed" 
+                          @click="handleSyncSubsequent(exIdx, sIdx)"
+                          title="一键将该重量同步至后续未完成组"
+                          class="text-[10px] text-amber-500/80 hover:text-amber-400 font-black cursor-pointer px-0.5"
+                          :class="store.settings.themeMode === 'light' ? 'text-amber-700 hover:text-amber-800' : ''">
+                    ⬇️
+                  </button>
                 </div>
 
-                <!-- Weight Input + Quick Adjust -->
+                <!-- Weight Input + Quick Adjust with Smart Cascade -->
                 <div class="col-span-4 flex items-center border rounded-lg overflow-hidden relative"
                      :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border-slate-300' : 'bg-zinc-900 border-zinc-700/70'">
-                  <button @click="s.weight = Math.max(0, (Number(s.weight) || 0) - 2.5)" 
+                  <button @click="adjustSetWeight(exIdx, sIdx, -2.5)" 
                           class="px-1.5 py-1 text-xs font-bold active:scale-95 transition-colors cursor-pointer"
                           :class="store.settings.themeMode === 'light' ? 'bg-slate-200 hover:bg-slate-300 text-slate-800' : 'bg-zinc-800/50 text-zinc-400 hover:text-white'">
                     -
                   </button>
-                  <input v-model.number="s.weight" type="number" step="0.5"
+                  <input v-model.number="s.weight" 
+                         @input="onWeightChange(exIdx, sIdx)"
+                         type="number" step="0.5"
                          class="w-full bg-transparent text-center text-xs font-mono font-bold focus:outline-none"
                          :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'" />
-                  <button @click="s.weight = (Number(s.weight) || 0) + 2.5" 
+                  <button @click="adjustSetWeight(exIdx, sIdx, 2.5)" 
                           class="px-1.5 py-1 text-xs font-bold active:scale-95 transition-colors cursor-pointer"
                           :class="store.settings.themeMode === 'light' ? 'bg-slate-200 hover:bg-slate-300 text-slate-800' : 'bg-zinc-800/50 text-zinc-400 hover:text-white'">
                     +
                   </button>
                 </div>
 
-                <!-- Reps Input + Quick Adjust -->
+                <!-- Reps Input + Quick Adjust with Smart Cascade -->
                 <div class="col-span-4 flex items-center border rounded-lg overflow-hidden"
                      :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border-slate-300' : 'bg-zinc-900 border-zinc-700/70'">
-                  <button @click="s.reps = Math.max(0, (Number(s.reps) || 0) - 1)" 
+                  <button @click="adjustSetReps(exIdx, sIdx, -1)" 
                           class="px-1.5 py-1 text-xs font-bold active:scale-95 transition-colors cursor-pointer"
                           :class="store.settings.themeMode === 'light' ? 'bg-slate-200 hover:bg-slate-300 text-slate-800' : 'bg-zinc-800/50 text-zinc-400 hover:text-white'">
                     -
                   </button>
-                  <input v-model.number="s.reps" type="number" 
+                  <input v-model.number="s.reps" 
+                         @input="onRepsChange(exIdx, sIdx)"
+                         type="number" 
                          class="w-full bg-transparent text-center text-xs font-mono font-bold focus:outline-none"
                          :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'" />
-                  <button @click="s.reps = (Number(s.reps) || 0) + 1" 
+                  <button @click="adjustSetReps(exIdx, sIdx, 1)" 
                           class="px-1.5 py-1 text-xs font-bold active:scale-95 transition-colors cursor-pointer"
                           :class="store.settings.themeMode === 'light' ? 'bg-slate-200 hover:bg-slate-300 text-slate-800' : 'bg-zinc-800/50 text-zinc-400 hover:text-white'">
                     +
@@ -278,6 +290,36 @@
             </button>
           </div>
 
+        </div>
+      </div>
+
+      <!-- Quick Recommended Add-ons for Active Workout (新手简易加动作) -->
+      <div v-if="activeWorkoutRecommendedAddons.length > 0" class="p-3 bg-zinc-900/90 border border-zinc-800/90 rounded-2xl space-y-2">
+        <div class="flex items-center justify-between px-0.5">
+          <span class="text-xs font-bold flex items-center gap-1.5"
+                :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-bold' : 'text-zinc-200'">
+            <span class="text-amber-400">💡</span>
+            <span>新手简易加练 (点击一秒加入)</span>
+          </span>
+          <span class="text-[10px] text-zinc-500 font-mono">科学配比 · 3组</span>
+        </div>
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar touch-pan-x">
+          <button v-for="addon in activeWorkoutRecommendedAddons" :key="addon.exerciseId"
+                  @click="quickAddRecommendedExercise(addon)"
+                  class="px-3 py-2 rounded-xl border flex items-center gap-2 text-xs font-bold flex-shrink-0 transition-all active:scale-95 cursor-pointer"
+                  :class="store.settings.themeMode === 'light'
+                    ? 'bg-white hover:bg-amber-50 border-amber-600/30 text-slate-800 hover:text-amber-800 shadow-xs'
+                    : 'bg-zinc-950/90 hover:bg-zinc-800 border-zinc-800 hover:border-amber-500/50 text-zinc-200 hover:text-amber-400'">
+            <ExerciseImage :src="getExerciseGif(addon.name)" 
+                           :name="addon.name" 
+                           :category="addon.category" 
+                           customClass="w-6 h-6 rounded-lg border border-zinc-700/60" />
+            <div class="text-left">
+              <div class="leading-tight truncate max-w-[110px]">{{ addon.name }}</div>
+              <div class="text-[9px] font-normal text-amber-500/90 font-mono">{{ addon.tag || addon.targetReps }}</div>
+            </div>
+            <span class="text-amber-500 font-bold text-sm ml-0.5">+</span>
+          </button>
         </div>
       </div>
 
@@ -535,6 +577,36 @@
         </div>
       </div>
 
+      <!-- Beginner Quick-Add Golden Addons for Today's Plan (新手简易加动作) -->
+      <div v-if="!todayCycle.isRest && todayRecommendedAddons.length > 0" class="space-y-2 pt-1">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5"
+                :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-bold' : 'text-zinc-400'">
+            <span class="text-amber-400">💡</span>
+            <span>新手简易加动作 (点击一秒加入今日计划)</span>
+          </span>
+          <span class="text-[10px] text-zinc-500 font-mono">科学配比 · 3组</span>
+        </div>
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar touch-pan-x">
+          <button v-for="addon in todayRecommendedAddons" :key="addon.exerciseId"
+                  @click="quickAddAddonToPlan(addon)"
+                  class="px-3.5 py-2.5 rounded-2xl border flex items-center gap-2.5 text-xs font-bold flex-shrink-0 transition-all active:scale-95 cursor-pointer"
+                  :class="store.settings.themeMode === 'light'
+                    ? 'bg-white hover:bg-amber-50 border-amber-600/30 text-slate-800 hover:text-amber-800 shadow-xs'
+                    : 'bg-zinc-900/90 hover:bg-zinc-800 border-zinc-800 hover:border-amber-500/50 text-zinc-200 hover:text-amber-400'">
+            <ExerciseImage :src="getExerciseGif(addon.name)" 
+                           :name="addon.name" 
+                           :category="addon.category" 
+                           customClass="w-8 h-8 rounded-xl border border-zinc-800" />
+            <div class="text-left">
+              <div class="leading-tight">{{ addon.name }}</div>
+              <div class="text-[10px] font-normal text-amber-500/90 font-mono mt-0.5">{{ addon.tag || addon.targetReps }}</div>
+            </div>
+            <span class="text-amber-500 font-black text-base ml-1">+</span>
+          </button>
+        </div>
+      </div>
+
       <!-- Recent History Minimalist Inset List -->
       <div v-if="recentLogs.length" class="space-y-2 pt-1">
         <div class="flex items-center justify-between px-1">
@@ -761,8 +833,11 @@ import {
   getExerciseDetails,
   getFullHonorProfile,
   toggleDeloadShield,
+  syncSetDataToSubsequentSets,
+  addExerciseToPlan,
   uid
 } from "../store/fitnessStore.js";
+import { SPLIT_RECOMMENDED_ADDONS } from "../data/defaultPlans.js";
 import ExercisePickerModal from "../components/ExercisePickerModal.vue";
 import ExerciseDetailModal from "../components/ExerciseDetailModal.vue";
 import CycleEditorModal from "../components/CycleEditorModal.vue";
@@ -866,6 +941,21 @@ const currentPlan = computed(() => {
 const todayTotalSets = computed(() => {
   if (!currentPlan.value?.exercises) return 0;
   return currentPlan.value.exercises.reduce((sum, ex) => sum + (Number(ex.setsCount) || 3), 0);
+});
+
+const todayRecommendedAddons = computed(() => {
+  const planId = currentPlan.value?.id || "plan-push";
+  const list = SPLIT_RECOMMENDED_ADDONS[planId] || SPLIT_RECOMMENDED_ADDONS["default"] || [];
+  const existingNames = new Set((currentPlan.value?.exercises || []).map(e => e.name));
+  return list.filter(addon => !existingNames.has(addon.name));
+});
+
+const activeWorkoutRecommendedAddons = computed(() => {
+  if (!store.activeWorkout) return [];
+  const planId = store.activeWorkout.planId || "plan-push";
+  const list = SPLIT_RECOMMENDED_ADDONS[planId] || SPLIT_RECOMMENDED_ADDONS["default"] || [];
+  const existingNames = new Set((store.activeWorkout.exercises || []).map(e => e.name));
+  return list.filter(addon => !existingNames.has(addon.name));
 });
 
 const todayFormatted = computed(() => {
@@ -1184,6 +1274,89 @@ function toggleSet(exIdx, sIdx) {
       }
     }, 600);
   }
+}
+
+function adjustSetWeight(exIdx, sIdx, delta) {
+  const ex = store.activeWorkout?.exercises?.[exIdx];
+  if (!ex || !ex.sets?.[sIdx]) return;
+  const currentSet = ex.sets[sIdx];
+  const oldVal = Number(currentSet.weight) || 0;
+  const newVal = Math.max(0, Number((oldVal + delta).toFixed(1)));
+  currentSet.weight = newVal;
+
+  // 智能级联联动：后续未完成组若为同重或初始值，自动跟随联动
+  for (let i = sIdx + 1; i < ex.sets.length; i++) {
+    const nextSet = ex.sets[i];
+    if (!nextSet.completed && (Number(nextSet.weight) === oldVal || Number(nextSet.weight) === 0)) {
+      nextSet.weight = newVal;
+    }
+  }
+}
+
+function onWeightChange(exIdx, sIdx) {
+  const ex = store.activeWorkout?.exercises?.[exIdx];
+  if (!ex || !ex.sets?.[sIdx]) return;
+  const currentSet = ex.sets[sIdx];
+  const newVal = Number(currentSet.weight) || 0;
+  // 修改第1组时，自动联动下填后续未完成组
+  if (sIdx === 0) {
+    for (let i = 1; i < ex.sets.length; i++) {
+      if (!ex.sets[i].completed) {
+        ex.sets[i].weight = newVal;
+      }
+    }
+  }
+}
+
+function adjustSetReps(exIdx, sIdx, delta) {
+  const ex = store.activeWorkout?.exercises?.[exIdx];
+  if (!ex || !ex.sets?.[sIdx]) return;
+  const currentSet = ex.sets[sIdx];
+  const oldVal = Number(currentSet.reps) || 0;
+  const newVal = Math.max(0, oldVal + delta);
+  currentSet.reps = newVal;
+
+  for (let i = sIdx + 1; i < ex.sets.length; i++) {
+    const nextSet = ex.sets[i];
+    if (!nextSet.completed && (Number(nextSet.reps) === oldVal || Number(nextSet.reps) === 0)) {
+      nextSet.reps = newVal;
+    }
+  }
+}
+
+function onRepsChange(exIdx, sIdx) {
+  const ex = store.activeWorkout?.exercises?.[exIdx];
+  if (!ex || !ex.sets?.[sIdx]) return;
+  const currentSet = ex.sets[sIdx];
+  const newVal = Number(currentSet.reps) || 0;
+  if (sIdx === 0) {
+    for (let i = 1; i < ex.sets.length; i++) {
+      if (!ex.sets[i].completed) {
+        ex.sets[i].reps = newVal;
+      }
+    }
+  }
+}
+
+function handleSyncSubsequent(exIdx, sIdx) {
+  const count = syncSetDataToSubsequentSets(exIdx, sIdx, false);
+  if (count > 0) {
+    const w = store.activeWorkout?.exercises?.[exIdx]?.sets?.[sIdx]?.weight || 0;
+    showOverloadCelebration(`⚡ 已同步至后续 ${count} 组`, `重量统一设为 ${w} kg`, false);
+  }
+}
+
+function quickAddAddonToPlan(addon) {
+  if (!currentPlan.value) return;
+  const success = addExerciseToPlan(currentPlan.value.id, addon);
+  if (success) {
+    showOverloadCelebration(`已添加【${addon.name}】`, "已将动作加入今日计划 (3组)", false);
+  }
+}
+
+function quickAddRecommendedExercise(addon) {
+  addExerciseToActiveWorkout(addon);
+  showOverloadCelebration(`已添加【${addon.name}】`, "已加入本次特训并生成 3 组做工", false);
 }
 
 function addSet(exIdx) {

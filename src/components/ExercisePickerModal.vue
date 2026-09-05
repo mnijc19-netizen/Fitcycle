@@ -122,7 +122,7 @@
           <div>
             <label class="text-xs text-zinc-400 font-medium">所属肌群</label>
             <div class="grid grid-cols-4 gap-1.5 mt-1">
-              <button v-for="c in categories.filter(x => x !== '全部')" :key="c"
+              <button v-for="c in categories.filter(x => x !== '全部' && x !== '⭐新手黄金')" :key="c"
                       type="button"
                       @click="newEx.category = c"
                       class="py-1.5 text-xs rounded-lg border text-center"
@@ -178,8 +178,23 @@ onUnmounted(() => {
 });
 
 const searchQuery = ref("");
-const activeCategory = ref("全部");
-const categories = ["全部", "胸部", "背部", "肩部", "腿部", "手臂", "核心", "有氧", "其它"];
+const activeCategory = ref("⭐新手黄金");
+const categories = ["⭐新手黄金", "全部", "胸部", "背部", "肩部", "腿部", "手臂", "核心", "有氧", "其它"];
+
+const NOVICE_GOLDEN_IDS = new Set([
+  "ex-incline-db-bench",
+  "ex-machine-chest-press",
+  "ex-lat-pulldown",
+  "ex-seated-cable-row",
+  "ex-cable-lateral-raise",
+  "ex-seated-dumbbell-shoulder-press",
+  "ex-hack-squat",
+  "ex-rdl",
+  "ex-seated-leg-curl",
+  "ex-overhead-cable-ext",
+  "ex-face-pull",
+  "ex-hanging-leg-raise"
+]);
 
 const showAddCustom = ref(false);
 const newEx = ref({
@@ -193,7 +208,15 @@ const newEx = ref({
 
 const filteredExercises = computed(() => {
   return store.exercises.filter(ex => {
-    const matchCat = activeCategory.value === "全部" || ex.category === activeCategory.value;
+    let matchCat = false;
+    if (activeCategory.value === "⭐新手黄金") {
+      matchCat = NOVICE_GOLDEN_IDS.has(ex.id) || (ex.tags && (ex.tags.includes("核心动作") || ex.tags.includes("拉伸区肥大")));
+    } else if (activeCategory.value === "全部") {
+      matchCat = true;
+    } else {
+      matchCat = ex.category === activeCategory.value;
+    }
+
     const q = searchQuery.value.trim().toLowerCase();
     if (!q) return matchCat;
     const matchQuery = ex.name.toLowerCase().includes(q) || 

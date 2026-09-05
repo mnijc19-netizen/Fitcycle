@@ -27,11 +27,9 @@ export const DEFAULT_PLANS = [
     coreTarget: "轰炸上胸、极限拓宽肩峰、围度化手臂",
     isRest: false,
     exercises: [
-      { exerciseId: "ex-incline-db-bench", name: "上斜哑铃卧推", setsCount: 4, targetReps: "8-10次", defaultWeight: 20 },
+      { exerciseId: "ex-incline-db-bench", name: "上斜哑铃卧推", setsCount: 3, targetReps: "8-10次", defaultWeight: 20 },
       { exerciseId: "ex-machine-chest-press", name: "固定器械推胸", setsCount: 3, targetReps: "10-12次", defaultWeight: 45 },
-      { exerciseId: "ex-cable-lateral-raise", name: "绳索侧平举", setsCount: 4, targetReps: "12-15次", defaultWeight: 7.5 },
-      { exerciseId: "ex-seated-dumbbell-shoulder-press", name: "坐姿哑铃推肩", setsCount: 3, targetReps: "10-12次", defaultWeight: 20 },
-      { exerciseId: "ex-overhead-cable-ext", name: "过头绳索臂屈伸", setsCount: 3, targetReps: "12-15次", defaultWeight: 15 }
+      { exerciseId: "ex-cable-lateral-raise", name: "绳索侧平举", setsCount: 3, targetReps: "12-15次", defaultWeight: 7.5 }
     ]
   },
   {
@@ -43,12 +41,9 @@ export const DEFAULT_PLANS = [
     coreTarget: "拉宽背阔肌（正面显宽）、增厚上背（背面显壮）、打造麒麟臂",
     isRest: false,
     exercises: [
-      { exerciseId: "ex-lat-pulldown", name: "对握/宽握高位下拉", setsCount: 4, targetReps: "10-12次", defaultWeight: 45 },
-      { exerciseId: "ex-chest-supported-row", name: "胸垫胸前划船 (T-Bar)", setsCount: 3, targetReps: "8-10次", defaultWeight: 40 },
+      { exerciseId: "ex-lat-pulldown", name: "对握/宽握高位下拉", setsCount: 3, targetReps: "10-12次", defaultWeight: 45 },
       { exerciseId: "ex-seated-cable-row", name: "坐姿绳索划船", setsCount: 3, targetReps: "10-12次", defaultWeight: 40 },
-      { exerciseId: "ex-face-pull", name: "绳索面拉 (Face Pull)", setsCount: 4, targetReps: "15次", defaultWeight: 15 },
-      { exerciseId: "ex-incline-db-curl", name: "上斜哑铃弯举", setsCount: 3, targetReps: "10-12次", defaultWeight: 10 },
-      { exerciseId: "ex-hammer-curl", name: "哑铃锤式弯举", setsCount: 3, targetReps: "12次", defaultWeight: 12 }
+      { exerciseId: "ex-incline-db-curl", name: "上斜哑铃弯举", setsCount: 3, targetReps: "10-12次", defaultWeight: 10 }
     ]
   },
   {
@@ -60,10 +55,9 @@ export const DEFAULT_PLANS = [
     coreTarget: "不求练成健美巨兽的粗腿，但求练出协调、拉长、充满运动感的核心底盘",
     isRest: false,
     exercises: [
-      { exerciseId: "ex-hack-squat", name: "哈克深蹲 / 倒蹬腿举", setsCount: 4, targetReps: "8-12次", defaultWeight: 60 },
+      { exerciseId: "ex-hack-squat", name: "哈克深蹲 / 倒蹬腿举", setsCount: 3, targetReps: "8-12次", defaultWeight: 60 },
       { exerciseId: "ex-rdl", name: "罗马尼亚硬拉 (RDL)", setsCount: 3, targetReps: "10-12次", defaultWeight: 50 },
-      { exerciseId: "ex-seated-leg-curl", name: "俯卧器械腿弯举", setsCount: 3, targetReps: "12-15次", defaultWeight: 35 },
-      { exerciseId: "ex-calf-raise", name: "站姿/坐姿提踵", setsCount: 3, targetReps: "15-20次", defaultWeight: 40 }
+      { exerciseId: "ex-seated-leg-curl", name: "俯卧器械腿弯举 (Lying Leg Curl)", setsCount: 3, targetReps: "12-15次", defaultWeight: 35 }
     ]
   },
   {
@@ -77,6 +71,30 @@ export const DEFAULT_PLANS = [
     exercises: []
   }
 ];
+
+// 新手极简加动作推荐池（针对不同分化，提供 2~3 个低门槛黄金动作一键加入）
+export const SPLIT_RECOMMENDED_ADDONS = {
+  "plan-push": [
+    { exerciseId: "ex-seated-dumbbell-shoulder-press", name: "坐姿哑铃推肩", targetReps: "10-12次", defaultWeight: 20, defaultSets: 3, category: "肩部", tag: "复合增肌" },
+    { exerciseId: "ex-overhead-cable-ext", name: "过头绳索臂屈伸", targetReps: "12-15次", defaultWeight: 15, defaultSets: 3, category: "手臂", tag: "三头长头" },
+    { exerciseId: "ex-pec-deck-fly", name: "蝴蝶机夹胸 (Pec Deck)", targetReps: "12-15次", defaultWeight: 35, defaultSets: 3, category: "胸部", tag: "孤立泵感" }
+  ],
+  "plan-pull": [
+    { exerciseId: "ex-face-pull", name: "绳索面拉 (Face Pull)", targetReps: "12-15次", defaultWeight: 15, defaultSets: 3, category: "背部", tag: "后束防圆肩" },
+    { exerciseId: "ex-hammer-curl", name: "哑铃锤式弯举", targetReps: "10-12次", defaultWeight: 12, defaultSets: 3, category: "手臂", tag: "手臂厚度" },
+    { exerciseId: "ex-chest-supported-row", name: "胸垫胸前划船 (T-Bar)", targetReps: "8-10次", defaultWeight: 40, defaultSets: 3, category: "背部", tag: "上背增厚" }
+  ],
+  "plan-legs": [
+    { exerciseId: "ex-calf-raise", name: "站姿/坐姿提踵", targetReps: "15-20次", defaultWeight: 40, defaultSets: 3, category: "腿部", tag: "小腿脚踝" },
+    { exerciseId: "ex-leg-extension", name: "器械腿屈伸 (踢腿机)", targetReps: "12-15次", defaultWeight: 40, defaultSets: 3, category: "腿部", tag: "股四头雕刻" },
+    { exerciseId: "ex-cable-glute-kickback", name: "绳索臀部后踢 (Glute Kickback)", targetReps: "12-15次", defaultWeight: 15, defaultSets: 3, category: "腿部", tag: "臀部激活" }
+  ],
+  "default": [
+    { exerciseId: "ex-hanging-leg-raise", name: "悬垂举腿 / 仰卧举腿", targetReps: "15-20次", defaultWeight: 0, defaultSets: 3, category: "核心", tag: "核心雕刻" },
+    { exerciseId: "ex-cable-lateral-raise", name: "绳索侧平举", targetReps: "12-15次", defaultWeight: 7.5, defaultSets: 3, category: "肩部", tag: "肩峰雕刻" },
+    { exerciseId: "ex-seated-dumbbell-shoulder-press", name: "坐姿哑铃推肩", targetReps: "10-12次", defaultWeight: 20, defaultSets: 3, category: "肩部", tag: "肩部力量" }
+  ]
+};
 
 export const PRESET_CYCLES = [
   {
