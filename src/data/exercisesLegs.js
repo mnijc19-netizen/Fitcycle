@@ -350,5 +350,180 @@ export const LEG_EXERCISES = [
       { name: "杠铃深蹲 (高杠/低杠)", reason: "高阶大重量" },
       { name: "器械腿屈伸", reason: "前侧孤立" }
     ]
+  },
+  {
+    id: "ex-smith-squat",
+    name: "史密斯深蹲",
+    englishName: "Smith Machine Squat",
+    category: "腿部",
+    target: "股四头肌极度做工 / 卸除躯干平衡负担",
+    secondaryMuscles: ["臀大肌", "大腿内收肌", "腘绳肌"],
+    aliases: ["史密斯机深蹲", "固定深蹲", "史密斯蹲", "Smith Squat"],
+    gifUrl: "./exercises/barbell-squat.gif",
+    defaultSets: 4,
+    defaultReps: "8-12",
+    scienceDetail: "纯肌肥大训练的王牌武器。由于史密斯机的刚性垂直滑轨完全代劳了前后晃动的平衡控制，训练者可以将双脚向前迈出半步，彻底将脊柱剪切力降至最低，膝关节最大化屈曲，将高机械张力 100% 毫无保留地压榨在股四头肌上。",
+    tags: ["大腿前侧拉丝", "安全力竭", "纯肌肥大", "护腰神技"],
+    tips: {
+      prep: "双脚置于杠铃正下方或略向前半步，杠铃架在斜方肌上束；转动腕部开锁，挺胸收腹下沉肩胛。",
+      execution: "控制速度屈膝屈髋垂直下蹲，重心始终落在全脚掌与足跟之间，下蹲至大腿至少平行地面。",
+      peak: "全脚掌用力推地爆发起立，顶峰不锁死膝盖，维持股四头肌连续张力。",
+      negative: "慢速 3 秒下蹲，感受大腿前侧肌纤维在受控下的强烈拉伸撕裂。",
+      breathing: "下蹲时吸气充满腹压，蹲起过半程时强力呼气。"
+    },
+    commonMistakes: [
+      "双脚放得过前变成了靠墙蹲，导致髋关节和膝关节受力异常",
+      "起立顶端过度顶髋超伸腰椎",
+      "膝盖内扣（Knee Valgus）"
+    ],
+    substitutes: [
+      { name: "哈克深蹲 / 倒蹬腿举", reason: "同等下肢高负荷器械替代" },
+      { name: "杠铃深蹲 (高杠/低杠)", reason: "自由重量核心综合力量" }
+    ]
+  },
+  {
+    id: "ex-cable-glute-kickback",
+    name: "绳索后踢 / 驴踢",
+    englishName: "Cable Glute Kickback",
+    category: "腿部",
+    target: "臀大肌上部与外侧 / 饱满翘臀雕刻",
+    secondaryMuscles: ["腘绳肌上段", "核心稳定肌群"],
+    aliases: ["绳索后踢", "龙门架后踢", "驴踢", "后踢腿", "Glute Kickback"],
+    gifUrl: "./exercises/romanian-deadlift.gif",
+    defaultSets: 4,
+    defaultReps: "12-15",
+    scienceDetail: "极度孤立臀大肌的终极塑形动作。在龙门架低位滑轮将脚踝套绑定，向后上方伸髋（Hip Extension），能避开股四头肌的粗腿代偿，精准给臀大肌最顶端的肌纤维施加恒定对抗张力，打造蜜桃臀与臀腿分界线。",
+    tags: ["臀肌孤立", "不粗大腿", "翘臀上沿", "臀腿分离"],
+    tips: {
+      prep: "滑轮调至最低，将脚踝套绑在一侧脚踝上；双手扶住龙门立柱，支撑腿微屈，骨盆完全朝正前方保持水平。",
+      execution: "保持腰椎绝对锁定不超伸反弓，纯依靠臀大肌发力将负重腿向后上方弧线踢出。",
+      peak: "踢至顶端（腿与躯干大致成一条直线），死死收缩挤压臀大肌 2 秒，感受刀刻般的灼烧感。",
+      negative: "慢速 3 秒放回，在触地前保持绳索紧绷，维持臀部离心做工。",
+      breathing: "向后踢起时呼气，前移回放时吸气。"
+    },
+    commonMistakes: [
+      "每次后踢都疯狂反弓下背骨盆前倾借力，导致腰椎代偿酸痛",
+      "利用膝盖屈伸弹跳惯性甩腿，丧失伸髋本质"
+    ],
+    substitutes: [
+      { name: "臀推 / 杠铃臀桥 (Hip Thrust)", reason: "大重量双侧臀部爆发力" },
+      { name: "器械髋外展 / 坐姿外展", reason: "侧臀与臀中肌强化" }
+    ]
+  },
+  {
+    id: "ex-glute-hyperextension",
+    name: "45度罗马椅挺身 (臀部侧重)",
+    englishName: "45° Glute-Focused Back Extension",
+    category: "腿部",
+    target: "臀大肌与腘绳肌上段 (纯伸髋做工)",
+    secondaryMuscles: ["腘绳肌", "大腿内收肌群", "下背竖脊肌"],
+    aliases: ["圆背挺身", "罗马椅练臀", "臀部山羊挺身", "Round-Back Extension"],
+    gifUrl: "./exercises/rdl.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    scienceDetail: "现代运动力学对传统山羊挺身的高阶改良。通过故意“含胸弓背”（Thoracic Flexion）锁定脊柱，彻底废掉竖脊肌的屈伸伸展功能，强迫整个身体起伏由臀大肌作为唯一的主动伸髋原动机（Prime Mover），肌电图显示臀大肌募集率提升 40% 以上。",
+    tags: ["翘臀黑科技", "下背零压力", "纯伸髋孤立"],
+    tips: {
+      prep: "罗马椅挡板高度调低至大腿上部髋折痕下方约 5cm，双脚外展 45°；双手抱胸或抱轻杠铃片，上背主动弓起（猫背状）。",
+      execution: "保持上背持续弓背锁定，在髋关节处折叠下沉；接着纯靠臀部用力向前顶紧挡板把躯干拉起。",
+      peak: "顶端躯干不需要反弓挺直，只需伸展到臀大肌完全收缩即停，紧缩 1.5 秒。",
+      negative: "匀速缓慢顺滑下落，感受臀大肌在底部的深度拉伸。",
+      breathing: "顶峰顶紧时呼气，屈髋下落时吸气。"
+    },
+    commonMistakes: [
+      "起身后腰椎过度反弓直立，变回了传统的竖脊肌挺身",
+      "挡板调得过高阻碍了正常的屈髋折叠"
+    ],
+    substitutes: [
+      { name: "罗马尼亚硬拉 (RDL)", reason: "自由重量大行程伸髋" },
+      { name: "臀推 / 杠铃臀桥 (Hip Thrust)", reason: "仰卧位最大峰值收缩" }
+    ]
+  },
+  {
+    id: "ex-single-leg-extension",
+    name: "单腿器械腿屈伸",
+    englishName: "Single-Leg Leg Extension",
+    category: "腿部",
+    target: "单侧股四头肌 / 股内侧肌与左右肌力纠偏",
+    secondaryMuscles: ["股直肌", "股外侧肌"],
+    aliases: ["单腿踢腿", "单侧腿屈伸", "单脚腿屈伸", "Single Leg Extension"],
+    gifUrl: "./exercises/leg-extension.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    scienceDetail: "消除左右腿围度差距与膝关节稳定性差的黄金单侧动作。单腿操作能防止强侧腿在双腿训练时不知不觉代偿 20%-30% 的力矩，极大强化股内侧肌斜头（VMO），为膝盖骨髌骨提供完美的滑动轨迹支撑。",
+    tags: ["单侧纠偏", "护膝强化", "股四内侧", "拉丝泵感"],
+    tips: {
+      prep: "背部紧靠座椅靠背，滚轴卡在单侧脚踝正上方，双手死死握紧侧面把手将臀部按在座椅上。",
+      execution: "纯单腿股四头肌发力，将小腿向上踢起展开，保持脚尖自然绷直向前。",
+      peak: "在膝关节完全伸直（不暴力超伸锁死）的顶峰，停留并主动挤压大腿前侧 2 秒。",
+      negative: "极度缓慢控制 3-4 秒缓慢下落，感受股直肌被拉长承受持续离心撕扯。",
+      breathing: "踢起用力时呼气，慢放离心时吸气。"
+    },
+    commonMistakes: [
+      "臀部脱离座椅弹起借力",
+      "下落速度过快，配重片剧烈砸响撞击"
+    ],
+    substitutes: [
+      { name: "器械腿屈伸 (踢腿机)", reason: "双腿常规高负荷" },
+      { name: "保加利亚分腿蹲", reason: "自重与哑铃单腿蹲复合" }
+    ]
+  },
+  {
+    id: "ex-single-leg-db-rdl",
+    name: "单腿哑铃罗马尼亚硬拉",
+    englishName: "Single-Leg Dumbbell RDL",
+    category: "腿部",
+    target: "单侧腘绳肌 / 臀中肌与单腿平衡防线",
+    secondaryMuscles: ["臀大肌", "小腿深层稳定肌", "核心抗扭转"],
+    aliases: ["单腿硬拉", "单脚RDL", "哑铃单腿硬拉", "Single Leg RDL"],
+    gifUrl: "./exercises/romanian-deadlift.gif",
+    defaultSets: 3,
+    defaultReps: "8-10",
+    scienceDetail: "功能性与肌肥大的完美交汇。单腿支撑并屈髋俯身，对侧腿向后延展，强迫臀中肌与足底本体感觉全力开火以维持骨盆水平不倾斜，对后侧链拉伸感极度强烈，直接提升跑步和跳跃爆发力。",
+    tags: ["单腿平衡", "腘绳深层撕裂", "臀中肌防线", "功能性"],
+    tips: {
+      prep: "单脚支撑微屈膝，对侧手持单只哑铃垂直下垂，核心收紧挺胸。",
+      execution: "支撑腿膝盖角度固定，以髋部为轴心向后顶髋俯身，非支撑腿保持伸直向正后方抬起平衡。",
+      peak: "俯身至躯干接近与地面平行，感受单侧大腿后侧腘绳肌像拉满的弓弦般紧绷，短暂停留。",
+      negative: "脚掌抓地，臀肌与腘绳肌向后拉动身体站直还原，顶端收臀。",
+      breathing: "俯身下探吸气，站起还原呼气。"
+    },
+    commonMistakes: [
+      "骨盆向非支撑侧严重侧翻旋开，未保持双侧髂骨朝向地面",
+      "下背弓起驼背导致腰椎扭转受力"
+    ],
+    substitutes: [
+      { name: "哑铃罗马尼亚硬拉", reason: "双侧经典大重量硬拉" },
+      { name: "保加利亚分腿蹲", reason: "高强度单腿蹲复合" }
+    ]
+  },
+  {
+    id: "ex-seated-calf-raise",
+    name: "坐姿提踵",
+    englishName: "Seated Calf Raise",
+    category: "腿部",
+    target: "小腿比目鱼肌 (拓宽小腿侧方与后方视觉宽度)",
+    secondaryMuscles: ["腓肠肌下沿", "足底屈肌"],
+    aliases: ["坐姿提踵", "器械坐姿提踵", "屈膝提踵", "Seated Calf Raise"],
+    gifUrl: "./exercises/calf-raise.gif",
+    defaultSets: 4,
+    defaultReps: "15-20",
+    scienceDetail: "解剖学上与站姿提踵绝对互补。腓肠肌跨越膝关节与踝关节，在屈膝 90° 坐姿时处于主动不足（Active Insufficiency）状态；此时所有的提踵阻力被 100% 转移给只跨越踝关节的深层【比目鱼肌】，能让小腿看起来更粗壮致密。",
+    tags: ["比目鱼肌孤立", "小腿围度", "抗跟腱伤病", "解剖互补"],
+    tips: {
+      prep: "坐在提踵机上，前脚掌踩在踏板边缘，挡板压在大腿下端膝盖后方；双手握住手柄开锁。",
+      execution: "脚后跟向下方最大限度沉下，感受跟腱与比目鱼肌被深长拉伸；随后前脚掌蹬地将脚后跟全力提至最高点。",
+      peak: "在最高峰顶峰停顿 2 秒，将比目鱼肌彻底榨干挤紧。",
+      negative: "缓慢 3 秒受控下落至最底部，不弹震跳跃借力。",
+      breathing: "向上提踵时呼气，受控下沉时吸气。"
+    },
+    commonMistakes: [
+      "利用机器回弹的弹性上下高频抖动，根本没有肌肉主动做工",
+      "下沉幅度过浅，未进入深层拉伸位"
+    ],
+    substitutes: [
+      { name: "站姿/坐姿提踵", reason: "站姿侧重浅层腓肠肌" },
+      { name: "倒蹬机腿举提踵", reason: "大负荷腿举机提踵替代" }
+    ]
   }
 ];

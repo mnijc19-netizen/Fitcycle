@@ -349,5 +349,121 @@ export const ARM_EXERCISES = [
       { name: "站姿杠铃弯举", reason: "自由重量大力量" },
       { name: "上斜哑铃弯举", reason: "长头极限拉伸" }
     ]
+  },
+  {
+    id: "ex-bayesian-curl",
+    name: "贝叶斯弯举 (绳索后置弯举)",
+    englishName: "Bayesian Cable Curl",
+    category: "手臂",
+    target: "肱二头肌长头 (肩伸展位终极拉伸肥大)",
+    secondaryMuscles: ["肱肌", "前臂屈肌群"],
+    aliases: ["贝叶斯弯举", "绳索后置弯举", "长头拉伸弯举", "后引弯举", "Bayesian Curl"],
+    gifUrl: "./exercises/incline-db-curl.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    scienceDetail: "现代运动科学推崇的二头肌长头拉伸位肥大（Stretch-Mediated Hypertrophy）王牌动作！背对龙门架低位滑轮站立，手臂被自然牵引至身体后方（肩关节过伸位），在长头处于极度拉伸的初始状态下启动向心收缩，不仅肌电募集峰值极高，且离心拉伸感无可替代。",
+    tags: ["拉伸区肥大", "二头长头", "恒定张力", "肌峰高耸"],
+    tips: {
+      prep: "背对龙门架单手持低位单把把手，向前迈出一大步呈弓步，手臂自然被向后下方拉伸延展，大臂保持在躯干后侧。",
+      execution: "大臂角度保持稳定在体后，屈肘将把手向前上方弯举，并在顶端微微外旋手腕。",
+      peak: "在顶端强烈收缩二头肌长头1.5秒，体会二头肌缩短顶峰的灼热感。",
+      negative: "极度缓慢控制3秒让绳索将手臂拉回身体后方，在最低点充分拉直手臂体会最深处的肌纤维撕扯。",
+      breathing: "向前弯举时呼气，向后延展还原时吸气。"
+    },
+    commonMistakes: [
+      "身体剧烈前后晃动借力",
+      "弯举时大臂向前甩动越过身体侧面，失去了肩伸展位的拉伸优势"
+    ],
+    substitutes: [
+      { name: "上斜哑铃弯举", reason: "自由哑铃长头拉伸" },
+      { name: "绳索低位弯举", reason: "双臂常规绳索做工" }
+    ]
+  },
+  {
+    id: "ex-spider-curl",
+    name: "蜘蛛弯举 (俯卧斜板弯举)",
+    englishName: "Spider Curl",
+    category: "手臂",
+    target: "肱二头肌短头与肌峰 (绝对零借力孤立)",
+    secondaryMuscles: ["肱肌", "前臂肌群"],
+    aliases: ["蜘蛛弯举", "俯卧弯举", "斜板蜘蛛弯举", "Spider Curl", "俯卧斜板弯举"],
+    gifUrl: "./exercises/preacher-curl.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    scienceDetail: "严防身体借力的二头肌顶峰孤立神器！俯卧在45°上斜凳上，双臂垂直悬挂于前方（肩关节屈曲位），彻底剥离了腰背甩动和肩部前束代偿。在向心收缩终点，阻力方向与二头肌最大力矩完美重合，是打造饱满手臂内侧和立体肌峰的标杆动作。",
+    tags: ["绝对防代偿", "二头短头", "顶峰充血"],
+    tips: {
+      prep: "胸腹部贴在45°上斜长凳靠背上，双脚脚尖蹬地支撑，双手正握曲柄杠铃或哑铃自然垂直下垂悬空。",
+      execution: "大臂保持垂直地面不动，纯靠二头肌收缩向上弯举杠铃至下巴正前方。",
+      peak: "在顶峰最高点强烈挤压二头肌峰2秒，体会极度酸胀坚硬感。",
+      negative: "匀速控制3秒缓慢下放，直到手臂完全自然垂直下垂舒展。",
+      breathing: "弯起向上时用力呼气，匀速下放时吸气。"
+    },
+    commonMistakes: [
+      "大臂向后拉扯变成俯身划船",
+      "下放过快未控制离心节奏"
+    ],
+    substitutes: [
+      { name: "牧师凳斜托弯举 (Preacher Curl)", reason: "托板防借力短头孤立" },
+      { name: "集中弯举 (Concentration Curl)", reason: "单臂肌峰收缩" }
+    ]
+  },
+  {
+    id: "ex-french-press",
+    name: "坐姿法式推举 (曲柄杠铃颈后臂屈伸)",
+    englishName: "Seated EZ-Bar French Press",
+    category: "手臂",
+    target: "肱三头肌长头 (高负荷垂直深度拉伸)",
+    secondaryMuscles: ["肱三头肌外侧头", "前臂握力群", "肩袖稳定群"],
+    aliases: ["法式推举", "坐姿颈后臂屈伸", "EZ杠颈后臂屈伸", "曲柄法式推举", "French Press", "Seated French Press"],
+    gifUrl: "./exercises/close-grip-bench-press.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    scienceDetail: "经典健美王牌长头轰炸动作！坐姿下大臂垂直指向天花板，肱三头肌长头（跨越肩关节与肘关节的双关节肌）处于最极限的被动牵拉状态。在此力学姿态下施加重负荷，能给予长头最深刻的机械张力，是消除手臂后侧松弛、打造粗壮马蹄铁上延轮廓的必练动作。",
+    tags: ["长头终极拉伸", "马蹄铁轮廓", "经典健美推举"],
+    tips: {
+      prep: "端坐于垂直或微斜短背靠椅上，双手窄握曲柄杠铃（EZ杠）内侧弯折处，将杠铃笔直推举至头顶上方，大臂紧贴耳朵两侧。",
+      execution: "大臂垂直固定不前后晃动，仅屈曲手肘将杠铃缓慢下落至后颈部或脑后深处。",
+      peak: "三头肌发力伸直手臂推起杠铃回到头顶，在顶峰挤压长头1秒，手肘微屈不锁死。",
+      negative: "缓慢吸气下放3秒，充分体会长头深层被拉伸张紧的撕裂感。",
+      breathing: "推举至头顶时呼气，后颈下放离心时深吸气。"
+    },
+    commonMistakes: [
+      "手肘向外剧烈过度张开造成肘部鹰嘴滑囊受压",
+      "下放时腰部严重向前塌腰借力导致腰椎反弓"
+    ],
+    substitutes: [
+      { name: "过头绳索臂屈伸", reason: "绳索柔顺关节友好" },
+      { name: "仰卧杠铃臂屈伸 (Skull Crusher)", reason: "仰卧位长头轰炸" }
+    ]
+  },
+  {
+    id: "ex-reverse-curl",
+    name: "正握杠铃反向弯举",
+    englishName: "Barbell Reverse Curl",
+    category: "手臂",
+    target: "肱桡肌与肱肌 (连接大臂与小臂的立体护甲)",
+    secondaryMuscles: ["前臂伸肌群", "肱二头肌外侧"],
+    aliases: ["反向弯举", "正握弯举", "正握杠铃弯举", "练小臂外侧", "肱桡肌弯举", "Reverse Curl"],
+    gifUrl: "./exercises/barbell-curl.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    scienceDetail: "打造粗壮前臂与拓宽上臂侧维度的力学神技！当前臂旋前（正握掌心向下）时，肱二头肌因力学优势受阻而处于机械劣势，负荷被强迫转移至小臂最大肌群——肱桡肌（Brachioradialis）以及深层的肱肌。不仅大幅强化抓握耐力，更能让小臂与大臂交界处饱满隆起，彻底告别纤细前臂。",
+    tags: ["前臂粗壮", "肱桡肌爆破", "握力护甲"],
+    tips: {
+      prep: "站姿挺胸沉肩，双手掌心向下（正握）抓握曲柄杠铃或直杠，握距与肩同宽，杠铃垂于大腿前。",
+      execution: "大臂紧贴身体两侧，收缩前臂上外侧肌群与肱肌，平稳将杠铃向上弯举至胸前。",
+      peak: "在顶端手腕保持平直坚挺不软塌，顶峰收缩挤压肱桡肌1.5秒。",
+      negative: "控制下放节奏3秒，抵抗杠铃下坠重力缓慢下落至手臂伸展。",
+      breathing: "向上弯举时呼气，慢速下放时吸气。"
+    },
+    commonMistakes: [
+      "手腕严重弯曲软塌导致腕关节韧带受力过度",
+      "身体向后晃动甩腰借力"
+    ],
+    substitutes: [
+      { name: "哑铃锤式弯举", reason: "中立握法强化肱肌与肱桡肌" },
+      { name: "坐姿腕弯举 / 前臂屈伸", reason: "强化前臂屈肌内侧" }
+    ]
   }
 ];

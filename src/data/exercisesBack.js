@@ -374,5 +374,123 @@ export const BACK_EXERCISES = [
       { name: "传统杠铃硬拉", reason: "经典全身复合" },
       { name: "罗马尼亚硬拉 (RDL)", reason: "腘绳肌超负荷" }
     ]
+  },
+  {
+    id: "ex-straight-arm-pulldown-cable",
+    name: "绳索直臂下压",
+    englishName: "Straight-Arm Cable Lat Pulldown",
+    category: "背部",
+    target: "背阔肌下沿与外侧 / 大圆肌",
+    secondaryMuscles: ["大圆肌", "肱三头肌长头", "后三角肌", "腹直肌"],
+    aliases: ["直臂下压", "绳索直臂下拉", "龙门架直臂下压", "Straight-Arm Pulldown", "Cable Pullover"],
+    gifUrl: "./exercises/straight-arm-pulldown.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    scienceDetail: "背部唯一的纯单关节孤立动作。完全避开了肱二头肌在常规划船或下拉时的屈肘代偿，将肩关节伸展（Shoulder Extension）做工 100% 集中于背阔肌下沿与大圆肌，是打造倒三角轮廓的雕刻利器。",
+    tags: ["单关节孤立", "避开二头借力", "背阔下沿", "泵感之王"],
+    tips: {
+      prep: "龙门架调至高位，双手握住直杆或绳索两端，后退半步，屈髋微俯身约30°，手臂伸直微屈肘固定夹角。",
+      execution: "保持手肘微屈角度绝对锁死，背阔肌全力收缩带动双臂沿圆弧轨迹向下压至大腿前侧。",
+      peak: "在压到大腿前侧最底端时，主动挺胸并向后下方用力挤压背阔肌，顶峰停顿1.5秒。",
+      negative: "慢速控制3秒缓慢回放至头部前方上方，感受背阔肌在顶端的深度拉伸。",
+      breathing: "下压发力时呼气吐气，回放拉伸时吸气扩张胸廓。"
+    },
+    commonMistakes: [
+      "手肘关节随意屈伸，变成了三头肌下压",
+      "依靠身体上下摆动或下压时向下冲跳借力",
+      "回放幅度过大导致肩胛骨完全失控脱节"
+    ],
+    substitutes: [
+      { name: "对握/宽握高位下拉", reason: "大重量垂直拉力基础" },
+      { name: "仰卧哑铃上拉 (背阔肌侧重 / Pullover)", reason: "自由重量拉伸位替代" }
+    ]
+  },
+  {
+    id: "ex-single-arm-cable-row",
+    name: "单臂绳索划船",
+    englishName: "Single-Arm Cable Row",
+    category: "背部",
+    target: "背阔肌单侧深度收缩 / 下束与腰线",
+    secondaryMuscles: ["大圆肌", "斜方肌中下束", "肱二头肌", "核心抗旋转"],
+    aliases: ["单臂划船", "单手绳索划船", "龙门架单臂划船", "Single Arm Row"],
+    gifUrl: "./exercises/seated-cable-row.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    scienceDetail: "现代生物力学极力推崇的背阔肌下束对齐动作。单侧动作能让躯干在终点微微侧屈（Lateral Flexion），使得背阔肌纤维能够缩短到生理极限，实现双侧器械难以达到的超强肌电收缩。",
+    tags: ["单侧强化", "对齐肌纤维", "背阔下束", "核心稳定"],
+    tips: {
+      prep: "坐在划船机或单膝跪地，单手握住 D 字把手，挺胸沉肩，躯干对齐滑轮拉力线。",
+      execution: "肘部贴紧身体侧面向后下方拉动，意念集中在“用手肘去撞击髂骨（髋部）”。",
+      peak: "拉至顶端手肘略微超过身体中线，躯干微转微侧屈，深度挤压单侧背阔肌2秒。",
+      negative: "缓慢控制放回，在最前段允许肩胛骨向前滑移，充分拉长单侧背阔肌。",
+      breathing: "向后拉肘时呼气，向前送回拉长时吸气。"
+    },
+    commonMistakes: [
+      "过度后仰或猛烈转体借力",
+      "手肘向外岔开导致受力转移至后三角肌与上斜方",
+      "回放时肩胛骨未前引，损失一半离心拉伸行程"
+    ],
+    substitutes: [
+      { name: "单臂哑铃划船", reason: "自由重量经典单侧" },
+      { name: "坐姿绳索划船", reason: "双臂大重量稳定划船" }
+    ]
+  },
+  {
+    id: "ex-single-arm-lat-pulldown",
+    name: "单臂高位下拉",
+    englishName: "Single-Arm Lat Pulldown",
+    category: "背部",
+    target: "背阔肌单侧孤立 / 改善左右肌力不平衡",
+    secondaryMuscles: ["大圆肌", "肱二头肌", "肱肌"],
+    aliases: ["单臂下拉", "单手高位下拉", "Single Arm Pulldown"],
+    gifUrl: "./exercises/lat-pulldown.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    scienceDetail: "针对多数人由于惯用手不同导致的背部不对称。单臂自由旋转握把允许前臂从旋前（正握）自然过渡到旋后（反握），顺应背阔肌解剖肌纤维力线，减少肩峰挤压。",
+    tags: ["肌力平衡", "轨迹自由", "背部宽度"],
+    tips: {
+      prep: "调节压腿板固定双腿，单手握住高位 D 字把手，对侧手扶住座椅保持骨盆稳定。",
+      execution: "沉肩先动，顺应滑轮方向手肘垂直向身体侧后方下拉，将把手拉至锁骨外侧高度。",
+      peak: "底部手肘用力下压靠向肋骨侧面，停顿保持挤压1-2秒。",
+      negative: "3秒匀速受控上升，直到手臂完全伸直、背阔肌被充分拉长。",
+      breathing: "下拉时用力呼气，匀速上升时吸气。"
+    },
+    commonMistakes: [
+      "身体向受力侧大幅度倾倒借力",
+      "完全靠二头肌死拉，手肘没有主动向下引"
+    ],
+    substitutes: [
+      { name: "对握/宽握高位下拉", reason: "双侧经典复合下拉" },
+      { name: "正手引体向上", reason: "自重绝对力量拉力" }
+    ]
+  },
+  {
+    id: "ex-inverted-row",
+    name: "斜身引体 / 澳式引体",
+    englishName: "Inverted Row / Australian Pull-Up",
+    category: "背部",
+    target: "背部整体 / 菱形肌 / 引体向上最佳过渡",
+    secondaryMuscles: ["背阔肌", "斜方肌中下束", "三角肌后束", "肱二头肌", "核心"],
+    aliases: ["澳式引体", "斜身引体", "史密斯反向划船", "Inverted Row", "Australian Row"],
+    gifUrl: "./exercises/inverted-row.gif",
+    defaultSets: 3,
+    defaultReps: "8-12",
+    scienceDetail: "自重训练黄金动作。对于体重较大或无法完成标准引体向上的训练者，斜身引体通过调整身体与地面的倾角，能极其安全地建立上背神经募集，强化肩胛骨后缩控制能力。",
+    tags: ["自重黄金", "引体退阶", "上背增厚", "关节友好"],
+    tips: {
+      prep: "在史密斯机或单杠下方调整杠铃高度至腰髋位置，双手略宽于肩握杠，身体悬垂于杠下，脚跟着地身体呈一条刚性直线。",
+      execution: "核心收紧收臀，肩胛骨后缩发力，将胸部拉向杠铃，直至胸口轻触杠身。",
+      peak: "在顶峰胸碰杠处停顿1秒，用力向中间挤压两侧肩胛骨。",
+      negative: "匀速控制身体缓慢下沉回到初始悬垂位，手臂伸展但不松懈肩胛。",
+      breathing: "拉起时呼气，下落时吸气。"
+    },
+    commonMistakes: [
+      "核心松散塌腰，导致腹部先碰杠而非胸部",
+      "屈颈伸头用下巴去够杠铃，颈椎过度代偿"
+    ],
+    substitutes: [
+      { name: "辅助引体", reason: "器械配重减重引体" },
+      { name: "胸垫胸前划船 (T-Bar)", reason: "器械上背厚度雕刻" }
+    ]
   }
 ];

@@ -170,7 +170,7 @@ onUnmounted(() => {
 
 const searchQuery = ref("");
 const activeCategory = ref("全部");
-const categories = ["全部", "胸部", "背部", "肩部", "腿部", "手臂", "核心", "其它"];
+const categories = ["全部", "胸部", "背部", "肩部", "腿部", "手臂", "核心", "有氧", "其它"];
 
 const showAddCustom = ref(false);
 const newEx = ref({

@@ -404,5 +404,94 @@ export const CHEST_EXERCISES = [
       { name: "上斜哑铃卧推", reason: "自由轨迹深拉伸" },
       { name: "低位绳索上斜夹胸", reason: "顶峰内收夹胸" }
     ]
+  },
+  {
+    id: "ex-landmine-press",
+    name: "地雷管推胸",
+    englishName: "Landmine Chest Press",
+    category: "胸部",
+    target: "胸大肌上束与内侧缘 (肩关节友好弧线推力)",
+    secondaryMuscles: ["三角肌前束", "肱三头肌", "核心稳定群"],
+    aliases: ["地雷管推举", "地雷管胸推", "地雷架推胸", "角推", "单臂地雷管推胸", "双臂地雷管推胸", "Landmine Press"],
+    gifUrl: "./exercises/incline-chest-press-machine.gif",
+    defaultSets: 4,
+    defaultReps: "10-12",
+    scienceDetail: "对肩袖极度友好的斜向自由弧线推举！由于杠铃一端固定在地雷管基座上，推举轨迹呈现向内向上聚拢的天然弧线，不仅完美契合胸大肌锁骨段纤维方向，且不会像传统自由杠铃那样在底部强行拉扯肩峰滑囊，是肩伤康复期与塑造上胸内侧深缝的利器。",
+    tags: ["肩关节友好", "上胸内侧", "天然收敛轨迹"],
+    tips: {
+      prep: "双膝跪地或站立，双手十指交叉托住地雷管杠铃杆顶端（或单手握持），杠铃贴紧上胸正前方，挺胸收腹核心锁死。",
+      execution: "沿45度斜向自然圆弧将杠铃向前上方推起，在推起过程中注意力集中在双侧胸大肌由外向内的主动夹紧感。",
+      peak: "推至顶峰时手臂微屈不锁肘，双掌用力向内对挤，强烈挤压上胸内侧中缝1.5秒。",
+      negative: "吸气缓慢下放，手肘自然下沉贴近躯干，控制回放到锁骨正前方保持持续肌张力。",
+      breathing: "前上方发力推出时呼气，平稳下放吸气。"
+    },
+    commonMistakes: [
+      "身体剧烈向后仰借腰力反弓推起",
+      "顶峰没有向内挤压意识，变成单纯手臂推举",
+      "手肘外展过宽破坏地雷管自然的内收力线"
+    ],
+    substitutes: [
+      { name: "上斜哑铃卧推", reason: "自由大重量上胸轰炸" },
+      { name: "低位绳索上斜夹胸", reason: "恒定张力向内汇聚" }
+    ]
+  },
+  {
+    id: "ex-incline-barbell-bench-press",
+    name: "上斜杠铃卧推",
+    englishName: "Incline Barbell Bench Press",
+    category: "胸部",
+    target: "胸大肌上束 (锁骨头大负荷骨架充盈)",
+    secondaryMuscles: ["三角肌前束", "肱三头肌"],
+    aliases: ["上斜杠铃推胸", "上斜推胸", "斜板杠铃卧推", "Incline Bench Press", "上斜杠卧"],
+    gifUrl: "./exercises/barbell-bench-press.gif",
+    defaultSets: 4,
+    defaultReps: "6-8",
+    scienceDetail: "上胸整体力量与围度的绝对基石！相比哑铃，杠铃允许承受更高的绝对神经负荷（Mechanical Tension）。将上斜凳锁定在30°角，能将最大负荷直接聚焦于锁骨头，是撕裂并增厚上胸纤维最有效的大复合动作。",
+    tags: ["大重量突破", "上胸基石", "力量与围度"],
+    tips: {
+      prep: "仰卧在30°上斜凳上，双脚全脚掌踩实地面，肩胛骨后缩下沉嵌入靠背，握距略宽于肩。",
+      execution: "出杠后平稳下放，杠铃轨迹呈微弧线降至锁骨正下方约2指宽的上胸最高点。",
+      peak: "胸肌上部主动发力将杠铃笔直推起至手臂微屈，顶峰收紧上胸。",
+      negative: "离心阶段控制下落2-3秒，保持胸腔饱满充气，避免用胸骨暴力弹跳弹起杠铃。",
+      breathing: "下放时深吸气胸腔挺起，推过黏着点后用力吐气。"
+    },
+    commonMistakes: [
+      "凳子倾斜角度过大（>45°）导致重量全部转移至前束和斜方肌",
+      "下落点过低偏向胃部或过高顶撞颈部",
+      "杠铃下砸胸骨借力弹起导致肋软骨受损"
+    ],
+    substitutes: [
+      { name: "上斜哑铃卧推", reason: "更深拉伸与手腕自由角度" },
+      { name: "史密斯上斜卧推", reason: "固定滑轨力竭保护" }
+    ]
+  },
+  {
+    id: "ex-decline-chest-press",
+    name: "下斜器械推胸",
+    englishName: "Decline Machine Chest Press",
+    category: "胸部",
+    target: "胸大肌下束 (胸肌下缘清晰轮廓/铠甲底边)",
+    secondaryMuscles: ["肱三头肌", "三角肌前束"],
+    aliases: ["下斜推胸", "器械下斜推胸", "坐姿下斜推胸", "胸肌下沿", "胸肌下沿推举", "Decline Chest Press"],
+    gifUrl: "./exercises/machine-chest-press.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    scienceDetail: "雕刻胸大肌下沿黄金下轮廓！器械提供斜向下的固定推力轨迹，精准契合胸肌腹侧纤维（下束）的走向。相比自由杠铃下斜卧推，固定器械完全排除了脑充血与起放杠倒翻的危险，可极限安全轰炸至力竭。",
+    tags: ["胸肌下沿", "下胸轮廓", "安全孤立"],
+    tips: {
+      prep: "调整坐垫高度，使握把位于胸部中下沿水平线，臀部和背部紧贴座椅，挺胸下沉肩膀。",
+      execution: "沿器械导轨斜向下前方推起把手，意念全神贯注于胸大肌下缘的缩短收拢。",
+      peak: "推至顶峰时手臂不要完全锁死手肘，强烈挤压下胸底边1秒。",
+      negative: "慢速平稳离心3秒还原本位，感受下胸下缘纤维被温和拉展。",
+      breathing: "推起发力时呼气，匀速退让还原时吸气。"
+    },
+    commonMistakes: [
+      "肩胛骨未锁紧，推起时含胸耸肩导致前束代偿",
+      "座椅调节过低导致手肘被架起变成中胸推"
+    ],
+    substitutes: [
+      { name: "双杠臂屈伸 (胸部前倾)", reason: "自重打造下胸下沿" },
+      { name: "龙门架高位绳索夹胸", reason: "恒定张力下胸雕刻" }
+    ]
   }
 ];

@@ -200,5 +200,92 @@ export const CORE_EXERCISES = [
       { name: "俄罗斯转体", reason: "动态旋转强化" },
       { name: "标准平板支撑", reason: "正向抗伸展" }
     ]
+  },
+  {
+    id: "ex-pallof-press",
+    name: "帕洛夫推举 (绳索抗旋转)",
+    englishName: "Pallof Press",
+    category: "核心",
+    target: "腹横肌与腹内外斜肌 (黄金抗旋转稳定性/深蹲硬拉钢筋躯干)",
+    secondaryMuscles: ["臀中肌", "肩袖稳定群", "多裂肌"],
+    aliases: ["帕洛夫推", "抗旋转推举", "绳索抗旋转", "Pallof Press", "核心抗扭"],
+    gifUrl: "./exercises/plank.gif",
+    defaultSets: 3,
+    defaultReps: "10-12次/侧",
+    scienceDetail: "物理治疗与顶级竞技体育公认的抗旋转金标准！核心的本质功能首先是『抗移动』（抗屈曲、抗侧屈、抗旋转）以传递力量并保护脊椎。帕洛夫推举通过侧向拉力制造持续旋转力矩，迫使深层腹横肌与内外斜肌以等长收缩进行对抗，是根除下背疼痛、大幅提升大重量深蹲稳定性的定海神针。",
+    tags: ["抗旋转", "金标准", "深层核心", "脊柱护甲"],
+    tips: {
+      prep: "站立垂直于龙门架侧方，滑轮调至胸部高度，双脚与肩同宽微屈膝，双手合握D型单把抱于胸前正中。",
+      execution: "核心如铁桶般收紧，双手沿胸口水平笔直向前推起，将手臂伸直。",
+      peak: "在手臂完全伸直的最长力臂端点，死死抵抗侧向旋转拉力，保持躯干正对前方完全静止2秒。",
+      negative: "缓慢控制手部原路收回至胸前，过程中躯干绝不允许发生一丝旋转扭动。",
+      breathing: "向前推出抵抗时紧绷核心短促呼气，收回时吸气。"
+    },
+    commonMistakes: [
+      "身体向滑轮方向扭转发生躯干旋转（抗旋转失败）",
+      "骨盆发生倾斜，双脚未扎实踩地借力"
+    ],
+    substitutes: [
+      { name: "俄罗斯转体", reason: "动态旋转做工" },
+      { name: "侧平板支撑 (Side Plank)", reason: "侧向抗侧屈支撑" }
+    ]
+  },
+  {
+    id: "ex-bird-dog",
+    name: "鸟狗式 (对角线伸展)",
+    englishName: "Bird Dog",
+    category: "核心",
+    target: "多裂肌与竖脊肌深层 (麦吉尔大三元/下背康复与脊柱微稳)",
+    secondaryMuscles: ["臀大肌", "三角肌后束", "腹横肌"],
+    aliases: ["鸟狗", "对角伸展", "四足对角伸展", "麦吉尔鸟狗", "Bird Dog"],
+    gifUrl: "./exercises/deadbug.gif",
+    defaultSets: 3,
+    defaultReps: "10-12次/侧",
+    scienceDetail: "世界脊柱权威斯图尔特·麦吉尔（Stuart McGill）教授的核心大三元王牌！在四足支撑姿态下进行对角线上肢与下肢的对向伸展，能以几乎为零的椎间盘轴向压力（近乎零剪切力），激活腰椎深层微小稳定肌（多裂肌 Multifidus）和臀大肌，是久坐腰酸与大重量训练后脊椎自愈的终极动作。",
+    tags: ["麦吉尔三元", "零腰椎压力", "脊柱微稳", "下背康复"],
+    tips: {
+      prep: "四足跪姿于垫上，双手置于双肩正下方，双膝位于双髋正下方，脊柱维持天然生理中立弧度，不塌腰不拱背。",
+      execution: "核心深层腹横肌收紧，对角线的一侧手臂与另一侧大腿同时平稳向前后两个方向伸展拉长。",
+      peak: "伸展至手臂、躯干、后腿呈水平一条线，臀部用力收缩夹紧，顶端静止保持2秒，避免骨盆侧倾翻转。",
+      negative: "极度缓慢平稳收回至原位或肘膝轻触，换对角线另一侧重复。",
+      breathing: "向外伸展时平稳呼气，收回触碰时吸气。"
+    },
+    commonMistakes: [
+      "抬腿过高导致腰椎过度反弓塌腰",
+      "骨盆向单侧大幅倾斜失衡"
+    ],
+    substitutes: [
+      { name: "死虫子 (Deadbug)", reason: "仰卧位抗伸展与深层腹横肌" },
+      { name: "标准平板支撑", reason: "静态俯卧抗伸展" }
+    ]
+  },
+  {
+    id: "ex-windshield-wipers",
+    name: "悬垂雨刷摆腿",
+    englishName: "Hanging Windshield Wipers",
+    category: "核心",
+    target: "腹内外斜肌与腹直肌下部 (高阶体操旋转控制/刀刻鲨鱼线)",
+    secondaryMuscles: ["前臂握力", "背阔肌", "髂腰肌"],
+    aliases: ["雨刷器", "悬垂雨刷", "雨刷摆腿", "单杠雨刷", "Windshield Wipers"],
+    gifUrl: "./exercises/hanging-leg-raise.gif",
+    defaultSets: 3,
+    defaultReps: "8-10次/侧",
+    scienceDetail: "街健与体操体系中的高阶腹部终极考核！双腿垂直举起呈“L”或倒立“V”字，如雨刷般在空中做扇形横向摆动。这种结合了极强悬垂抗伸展与大范围额状面旋转的动作，能赋予腹内外斜肌和前锯肌（鲨鱼线）最强烈的撕裂感与神经募集。",
+    tags: ["高阶街健", "立体鲨鱼线", "侧腹撕裂", "高阶核心"],
+    tips: {
+      prep: "双手双手正握单杠悬垂，沉肩锁死背阔肌，先通过骨盆后倾将双腿伸直高高举起至与躯干成90度（进阶可垂直指天）。",
+      execution: "双腿并拢伸直，受控向左侧下方缓慢旋转摆动至约45度，感受右侧腹部被极度拉伸扯紧。",
+      peak: "依靠侧腹与下腹的强大向心力量，将双腿沿弧线拉回正中，再顺势向右侧平稳摆动。",
+      negative: "全程双腿摆动如机械指针般精确匀速，严禁靠甩荡惯性摆动。",
+      breathing: "双腿回中时用力吐气，下落侧摆离心时深吸气。"
+    },
+    commonMistakes: [
+      "身体剧烈前后晃动借用秋千惯性",
+      "手腕松脱或沉肩失败导致背阔肌脱力摇晃"
+    ],
+    substitutes: [
+      { name: "悬垂举腿 / 仰卧举腿", reason: "常规悬垂下腹基础" },
+      { name: "空中自行车卷腹 (Bicycle Crunch)", reason: "仰卧安全对角旋转" }
+    ]
   }
 ];

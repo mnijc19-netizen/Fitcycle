@@ -1,4 +1,4 @@
-﻿// 3D 肌肉解剖动态与高亮图谱生成器 (100% 本地渲染，无需外网，永不出现问号破图)
+// 3D 肌肉解剖动态与高亮图谱生成器 (100% 本地渲染，无需外网，永不出现问号破图)
 export function getMuscleDiagramSvg(category = "胸部", target = "") {
   // 根据部位和目标肌群返回精美的 3D 人体解剖高亮矢量图
   let highlightColor = "#f59e0b"; // 琥珀金 / 亮橙
@@ -13,9 +13,15 @@ export function getMuscleDiagramSvg(category = "胸部", target = "") {
   } else if (category === "手臂") {
     activeMuscleGroup = target.includes("二头") || target.includes("肱肌") ? "biceps" : "triceps";
   } else if (category === "腿部") {
-    activeMuscleGroup = target.includes("后侧") || target.includes("腘绳") || target.includes("硬拉") || target.includes("弯举") ? "hamstrings" : (target.includes("提踵") || target.includes("小腿") ? "calves" : "quads");
+    activeMuscleGroup = target.includes("后侧") || target.includes("腘绳") || target.includes("硬拉") || target.includes("弯举") 
+      ? "hamstrings" 
+      : (target.includes("提踵") || target.includes("小腿") 
+        ? "calves" 
+        : (target.includes("臀") ? "glutes" : "quads"));
   } else if (category === "核心") {
     activeMuscleGroup = "abs";
+  } else if (category === "有氧") {
+    activeMuscleGroup = "cardio";
   }
 
   // 返回对应肌肉高亮的 3D 风格 SVG (带柔和发光与解剖轮廓)
@@ -160,6 +166,57 @@ function generateDiagramSvg(type, targetText) {
           <rect x="106" y="70" width="24" height="60" rx="10" fill="url(#${glowId})" filter="url(#shadow-leg)" stroke="#fff" stroke-width="1"/>
           <!-- 小腿与脚踝 -->
           <path d="M82 135 L80 185 M118 135 L120 185" stroke="${bodyBase}" stroke-width="7" stroke-linecap="round"/>
+        </g>
+      </svg>`;
+
+    case "glutes":
+      return `
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+        <defs>
+          <linearGradient id="${glowId}" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f43f5e" />
+            <stop offset="100%" stop-color="#be123c" />
+          </linearGradient>
+          <filter id="shadow-glute" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#be123c" flood-opacity="0.6"/>
+          </filter>
+        </defs>
+        <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <!-- 上身背部与腰椎 -->
+          <circle cx="100" cy="25" r="12" fill="${bodyDark}" stroke="${bodyBase}" stroke-width="2"/>
+          <path d="M80 45 L120 45 L112 80 L88 80 Z" fill="${bodyDark}" stroke="${bodyBase}" stroke-width="2"/>
+          <line x1="100" y1="45" x2="100" y2="80" stroke="#71717a" stroke-width="2" stroke-dasharray="3,3"/>
+          <!-- 臀大肌与臀中肌 (桃形高亮发光) -->
+          <ellipse cx="85" cy="102" rx="18" ry="22" fill="url(#${glowId})" filter="url(#shadow-glute)" stroke="#fff" stroke-width="1"/>
+          <ellipse cx="115" cy="102" rx="18" ry="22" fill="url(#${glowId})" filter="url(#shadow-glute)" stroke="#fff" stroke-width="1"/>
+          <!-- 大腿后侧下肢 -->
+          <path d="M80 126 L76 185 M120 126 L124 185" stroke="${bodyBase}" stroke-width="7" stroke-linecap="round"/>
+        </g>
+      </svg>`;
+
+    case "cardio":
+      return `
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+        <defs>
+          <linearGradient id="${glowId}" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#06b6d4" />
+            <stop offset="100%" stop-color="#10b981" />
+          </linearGradient>
+          <filter id="shadow-cardio" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#06b6d4" flood-opacity="0.7"/>
+          </filter>
+        </defs>
+        <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <!-- 人体动态剪影 -->
+          <circle cx="100" cy="28" r="12" fill="${bodyDark}" stroke="#06b6d4" stroke-width="2"/>
+          <!-- 躯干动力环 -->
+          <path d="M78 50 L122 50 L115 110 L85 110 Z" fill="${bodyDark}" stroke="${bodyBase}" stroke-width="2"/>
+          <!-- 心肺核心活力光团 (心率高能脉冲) -->
+          <circle cx="100" cy="72" r="18" fill="url(#${glowId})" filter="url(#shadow-cardio)" stroke="#fff" stroke-width="1.5"/>
+          <path d="M88 72 L94 72 L97 64 L101 80 L105 68 L108 72 L112 72" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- 动能流动线条 -->
+          <path d="M68 62 L48 95 M132 62 L152 95" stroke="#06b6d4" stroke-width="4" stroke-linecap="round"/>
+          <path d="M88 112 L78 175 M112 112 L122 175" stroke="#10b981" stroke-width="5" stroke-linecap="round"/>
         </g>
       </svg>`;
 

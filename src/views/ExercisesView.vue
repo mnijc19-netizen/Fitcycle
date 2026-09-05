@@ -25,7 +25,7 @@
     <div class="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-between text-xs">
       <div class="flex items-center gap-2 text-zinc-300">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span class="font-medium">已全面收录 6 大黄金肌群黄金动作</span>
+        <span class="font-medium">已全面收录 7 大黄金肌群与体能动作</span>
       </div>
       <span class="text-amber-400 font-mono font-bold">{{ store.exercises.length }} 款全覆盖</span>
     </div>
@@ -220,7 +220,7 @@ import { getUniversalScrollTop, universalScrollToTop } from "../utils/scrollUtil
 
 const searchQuery = ref("");
 const activeCategory = ref("全部");
-const categories = ["全部", "胸部", "背部", "肩部", "手臂", "腿部", "核心", "其它"];
+const categories = ["全部", "胸部", "背部", "肩部", "手臂", "腿部", "核心", "有氧", "其它"];
 
 const showBackToTop = ref(false);
 

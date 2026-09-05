@@ -299,5 +299,122 @@ export const SHOULDER_EXERCISES = [
       { name: "反向蝴蝶机飞鸟", reason: "器械固定支撑更防借力" },
       { name: "绳索面拉", reason: "结合肩袖外旋" }
     ]
+  },
+  {
+    id: "ex-single-arm-cable-lateral-raise",
+    name: "单臂绳索侧平举",
+    englishName: "Single-Arm Cable Lateral Raise",
+    category: "肩部",
+    target: "三角肌中束 (斜身/底端峰值张力)",
+    secondaryMuscles: ["斜方肌上束", "冈上肌"],
+    aliases: ["单臂绳索飞鸟", "斜身侧平举", "单手绳索侧平举", "Lean-Away Cable Lateral Raise"],
+    gifUrl: "./exercises/cable-lateral-raise.gif",
+    defaultSets: 4,
+    defaultReps: "12-15",
+    scienceDetail: "现代健美公认的最佳肩宽雕刻动作。哑铃侧平举在底部拉伸位（0°-30°）几乎没有力矩，而绳索在低位并配合身体微斜（Lean-Away 15°）时，能让三角肌中束在最脆弱也最敏感的拉伸初段就承受最大阻力峰值，极大促进肌肥大。",
+    tags: ["肩宽神技", "拉伸位峰值阻力", "孤立中束", "恒定张力"],
+    tips: {
+      prep: "滑轮调至手腕下垂高度或膝盖高度，单手握 D 字把手，对侧手抓住龙门立柱，身体向外侧倾斜约 15°。",
+      execution: "手肘微屈锁死，将把手沿肩胛骨平面（前倾约 15°-30°）向斜侧上方画弧线扬起，严禁耸肩。",
+      peak: "抬至大臂与肩齐平高度，顶峰挤压三角肌中束 1.5 秒。",
+      negative: "慢速 3 秒下放，在回到底部前保持绳索不触碰配重片，维持张力不松弛。",
+      breathing: "侧向扬起时呼气，匀速下放离心时吸气。"
+    },
+    commonMistakes: [
+      "身体剧烈前后晃动借力甩起把手",
+      "手腕高于手肘，导致小臂受力代偿",
+      "耸起上斜方肌借力"
+    ],
+    substitutes: [
+      { name: "绳索侧平举", reason: "双侧经典绳索侧平举" },
+      { name: "站姿哑铃侧平举", reason: "随时随地自由重量替代" }
+    ]
+  },
+  {
+    id: "ex-rotator-cuff-ext-rotation",
+    name: "肩袖外旋 / 哑铃与绳索外旋",
+    englishName: "Rotator Cuff External Rotation",
+    category: "肩部",
+    target: "冈下肌 / 小圆肌 (肩袖稳固与抗伤病)",
+    secondaryMuscles: ["三角肌后束", "肩胛骨稳定肌群"],
+    aliases: ["肩袖外旋", "冈下肌外旋", "绳索外旋", "哑铃侧卧外旋", "Rotator Cuff"],
+    gifUrl: "./exercises/face-pull.gif",
+    defaultSets: 3,
+    defaultReps: "15-20",
+    scienceDetail: "推胸与推肩前的必备防伤神技。现代人由于久坐含胸，肩内旋肌群（胸大肌、背阔肌）严重强于外旋肌群（冈下肌、小圆肌），导致肱骨头向前上方移位并引发肩峰撞击综合征。通过轻重量高次数外旋激活肩袖，能有效把肱骨头稳稳下拉锁定在关节盂内。",
+    tags: ["肩峰保护", "消除肩痛", "抗伤病", "热身必备"],
+    tips: {
+      prep: "滑轮调至肘部高度，上臂紧贴躯干侧面（可夹卷毛巾），肘屈 90°，前臂横在腹部前方。",
+      execution: "大臂像转轴般牢牢固定在身体侧面，纯靠后肩肩袖发力，将前臂向外侧旋转拉开。",
+      peak: "外旋到身体斜外侧约 45°-60°（不耸肩不挺腰的极限），顶峰静止 2 秒。",
+      negative: "极轻重量、极慢节奏控制前臂回转至腹前。",
+      breathing: "外旋用力时呼气，内收回位时吸气。"
+    },
+    commonMistakes: [
+      "贪大重量导致手肘离开躯干飘起，变成三角肌和二头借力",
+      "通过腰部旋转或后仰身体制造假性活动度"
+    ],
+    substitutes: [
+      { name: "绳索面拉 (Face Pull)", reason: "结合三角肌后束复合外旋" },
+      { name: "古巴推举 / 招财猫式", reason: "高阶肩袖旋转推举" }
+    ]
+  },
+  {
+    id: "ex-cuban-press",
+    name: "古巴推举 / 招财猫式",
+    englishName: "Cuban Press / Rotator Cuff Complex",
+    category: "肩部",
+    target: "三角肌后束 / 肩袖复合稳定肌群",
+    secondaryMuscles: ["冈下肌", "小圆肌", "三角肌中束", "斜方肌中下束"],
+    aliases: ["古巴推举", "招财猫推举", "古巴划船", "Cuban Press"],
+    gifUrl: "./exercises/arnold-press.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    scienceDetail: "集直立划船、肩外旋、过头推举于一体的肩关节全向稳定性测试。能全面打通肩胛胸壁关节与盂肱关节的神经协调通路，是力量举运动员与投掷运动员保持肩关节长寿的秘密武器。",
+    tags: ["肩部稳定性", "神经募集", "全方位强化", "防伤长寿"],
+    tips: {
+      prep: "站姿持轻量哑铃或空杠，双脚开立与肩同宽，核心收紧挺胸沉肩。",
+      execution: "分三段连贯进行：1. 先提肘至大臂与肩齐平；2. 以肘为轴向上外旋前臂至垂直立起（招财猫姿态）；3. 向上顺畅推举过头。",
+      peak: "在头顶完全伸展时稍作停顿，随后原路三段式受控倒退回放。",
+      negative: "下放回外旋位 -> 内旋回水平位 -> 还原至大腿前，全程保持张力与手肘轴心稳定。",
+      breathing: "上提外旋推起呼气，倒退回放吸气。"
+    },
+    commonMistakes: [
+      "使用过大重量导致外旋时手肘下坠代偿",
+      "耸肩严重，颈部肌肉僵硬发力"
+    ],
+    substitutes: [
+      { name: "绳索面拉 (Face Pull)", reason: "更容易掌握的后束外旋动作" },
+      { name: "肩袖外旋 / 哑铃与绳索外旋", reason: "纯孤立外旋" }
+    ]
+  },
+  {
+    id: "ex-cable-rear-delt-fly",
+    name: "俯身绳索反向飞鸟",
+    englishName: "Bent-Over Cable Rear Delt Fly",
+    category: "肩部",
+    target: "三角肌后束 (全程恒定对抗张力)",
+    secondaryMuscles: ["斜方肌中下束", "小圆肌", "冈下肌"],
+    aliases: ["绳索反向飞鸟", "龙门架十字交叉后束", "Cable Rear Delt Fly"],
+    gifUrl: "./exercises/bent-over-rear-delt-fly.gif",
+    defaultSets: 4,
+    defaultReps: "12-15",
+    scienceDetail: "后肩3D球形维度的终极收尾。相比哑铃在底部没有张力，双手在龙门架交叉拉动时，阻力线几乎始终与后束肌纤维方向完全平行垂直，带来全行程无死角的深层撕裂感。",
+    tags: ["3D球形肩", "全程恒定张力", "无死角刺激"],
+    tips: {
+      prep: "在双滑轮龙门架交叉握住钢线（右手握左滑轮，左手握右滑轮），不用把手直接抓球形锁头，屈髋俯身约 45°。",
+      execution: "手肘微屈锁死，双手同时向身体斜后两侧展开画大圆弧，意念集中用后肩把手臂推向两侧后方。",
+      peak: "在双臂展开至大臂与后背水平时，顶峰死死挤压后束 1.5 秒。",
+      negative: "控制 3 秒缓慢交叉合拢回放，感受后束在底端的离心拉伸。",
+      breathing: "向两侧展翅时呼气，慢速回拢时吸气。"
+    },
+    commonMistakes: [
+      "手肘大幅度弯曲变成了窄距划船",
+      "身体大幅度上下晃动颠簸借力"
+    ],
+    substitutes: [
+      { name: "反向蝴蝶机飞鸟 (Reverse Fly)", reason: "器械胸垫固定防借力" },
+      { name: "俯身哑铃飞鸟", reason: "经典自由重量哑铃版" }
+    ]
   }
 ];

@@ -4,6 +4,28 @@
 
 ---
 
+## 🚀 [v1.7.0] - 2026-09-05 (FitCycle 动作库扩充至黄金规模 109 款与全域有氧体能体系实装)
+### 🏋️ 动作库扩充至黄金黄金规模 (79 ➔ 109 款全科学覆盖)
+- **胸部 (+3 ➔ 共 19 款)**：追加 `ex-landmine-press` (地雷管推胸 / 肩关节友好弧线推力)、`ex-incline-barbell-bench-press` (上斜杠铃卧推 / 锁骨头大负荷基石)、`ex-decline-chest-press` (下斜器械推胸 / 雕刻胸肌下沿黄金轮廓)；
+- **背部 (+4 ➔ 共 19 款)**：追加 `ex-straight-arm-pulldown-cable` (绳索直臂下压 / 孤立背阔肌下延)、`ex-single-arm-cable-row` (单臂绳索划船 / 单侧非对称拉力深度做工)、`ex-single-arm-lat-pulldown` (单臂高位下拉 / 顺应肌纤维走向极致下压收拢)、`ex-inverted-row` (斜身引体/澳式引体 / 自重水平拉力黄金筑基)；
+- **肩部 (+4 ➔ 共 16 款)**：追加 `ex-single-arm-cable-lateral-raise` (单臂绳索侧平举 / 中束拉伸位恒定张力)、`ex-rotator-cuff-ext-rotation` (肩袖外旋 / 冈下肌小圆肌肩关节装甲)、`ex-cuban-press` (古巴推举 / 投掷与推举深层稳定神技)、`ex-cable-rear-delt-fly` (俯身绳索反向飞鸟 / 后束全程交叉恒定阻力)；
+- **手臂 (+4 ➔ 共 18 款)**：追加 `ex-bayesian-curl` (贝叶斯弯举 / 绳索后置肩伸展位拉伸区肥大)、`ex-spider-curl` (蜘蛛弯举 / 俯卧斜板零借力孤立短头与肌峰)、`ex-french-press` (坐姿法式推举 / EZ曲柄杠铃头顶极限牵拉三头长头)、`ex-reverse-curl` (正握杠铃反向弯举 / 打造粗壮前臂与肱桡肌立体护甲)；
+- **臀腿 (+6 ➔ 共 20 款)**：追加 `ex-smith-squat` (史密斯深蹲 / 躯干垂直大腿股四集中做工)、`ex-cable-glute-kickback` (绳索后踢 / 孤立轰炸臀大肌上部与上臀翘度)、`ex-glute-hyperextension` (45度罗马椅挺身·臀部侧重 / 含胸弓背纯伸髋黑科技)、`ex-single-leg-extension` (单腿器械腿屈伸 / 股内侧肌斜头纠偏与护膝强化)、`ex-single-leg-db-rdl` (单腿哑铃罗马尼亚硬拉 / 腘绳肌与单侧平衡防线)、`ex-seated-calf-raise` (坐姿提踵 / 屈膝孤立比目鱼肌增厚小腿宽度)；
+- **核心 (+3 ➔ 共 11 款)**：追加 `ex-pallof-press` (帕洛夫推举 / 物理治疗黄金抗旋转力线)、`ex-bird-dog` (鸟狗式 / 麦吉尔核心大三元零椎间盘压力)、`ex-windshield-wipers` (悬垂雨刷摆腿 / 高阶体操额状面旋转控制与鲨鱼线雕刻)；
+- **全新有氧体能模块 (NEW 6 款)**：新增 `ex-cardio-treadmill` (跑步机坡度走/慢跑 / 二区心率黄金燃脂)、`ex-cardio-rower` (风阻划船机 / 85%骨骼肌动员全身协同)、`ex-cardio-stairmaster` (楼梯机/爬楼机 / 垂直重力做工心肺引擎)、`ex-cardio-spin-bike` (动感单车/室内骑行 / 零关节冲击平滑有氧)、`ex-cardio-jump-rope` (跳绳训练 / 踝关节刚度与高频敏捷弹力)、`ex-cardio-battle-ropes` (战绳训练 / 上肢糖酵解爆发耐力排毒)。
+
+### 🔬 科学力学与视觉画板全景升级
+- **100% 具备全套力学档案**：每个新动作均具备精准中英双语与丰富别名索引、主次目标肌群、5 步完整力学细节（prep, execution, peak, negative, breathing）、真实常见错误避坑指南与精确对齐的平替动作链；
+- **本地化矢量图谱升级 (`muscleDiagrams.js`)**：在 3D 本地肌肉解剖画板中追加 `glutes`（臀大肌/臀中肌专属桃形发光）与 `cardio`（心肺活力脉冲环与全身动力流线）原生高亮 SVG，100% 避免断网与外链破图；
+- **视图层全通道适配**：`ExercisesView.vue` 与 `ExercisePickerModal.vue` 筛选 Tab 新增“有氧”分类与动态数量统计。
+
+### 🧪 全量自动化验证与构建
+- Vitest 8 套测试套件、78 项断言 100% PASS；
+- M1 极限多维矩阵压测（137 项断言）100% PASS；
+- 生产打包 `npm run build` 0 Error。
+
+---
+
 ## 🚀 [v1.6.0] - 2026-09-05 (全域色彩能见度极致重塑与下滑强制回顶Bug彻底根治)
 ### 🐛 页面下滑强制回顶 Bug 物理根除 (Visual Viewport Scroll Guard)
 - **根因根除**：解除 `AIAssistantDrawer.vue` 在 `onMounted` 注册的常驻全局 `visualViewport.scroll` 监听；
