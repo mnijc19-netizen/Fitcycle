@@ -116,18 +116,37 @@ describe("Strength Level Calibration & Ergonomic Weight Adjustments", () => {
     expect(ex.sets[2].reps).toBe(8);
   });
 
-  it("renders quick plate chips and sync all button in TodayView during active workout", async () => {
+  it("renders streamlined, elegant set logging table in TodayView without awkward global chips bar", async () => {
     startWorkout("plan-push");
     const wrapper = mount(TodayView);
     const html = wrapper.html();
 
-    expect(html).toContain("加减片:");
-    expect(html).toContain("+2.5");
-    expect(html).toContain("+5");
-    expect(html).toContain("+10");
-    expect(html).toContain("+20");
-    expect(html).toContain("-5");
-    expect(html).toContain("统一全组");
+    // Awkward global plate chips and bulky toolbars must be completely removed
+    expect(html).not.toContain("加减片:");
+    expect(html).not.toContain("统一全组");
+
+    // Clean, readable table headers
+    expect(html).toContain("组号");
+    expect(html).toContain("重量 (kg)");
+    expect(html).toContain("次数");
+    expect(html).toContain("完成");
+
+    // Streamlined micro-steppers embedded in numeric pills
+    expect(html).toContain("title=\"-2.5kg\"");
+    expect(html).toContain("title=\"+2.5kg\"");
+    expect(html).toContain("title=\"-1次\"");
+    expect(html).toContain("title=\"+1次\"");
+
+    // Test interactive adjustments
+    const weightPlusBtn = wrapper.find('button[title="+2.5kg"]');
+    const initialWeight = store.activeWorkout.exercises[0].sets[0].weight;
+    await weightPlusBtn.trigger("click");
+    expect(store.activeWorkout.exercises[0].sets[0].weight).toBe(initialWeight + 2.5);
+
+    const repsPlusBtn = wrapper.find('button[title="+1次"]');
+    const initialReps = store.activeWorkout.exercises[0].sets[0].reps;
+    await repsPlusBtn.trigger("click");
+    expect(store.activeWorkout.exercises[0].sets[0].reps).toBe(initialReps + 1);
   });
 
   it("renders strength calibration modal with high contrast dark mode and pinned layout", () => {

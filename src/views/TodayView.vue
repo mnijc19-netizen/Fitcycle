@@ -163,39 +163,11 @@
             <span class="text-amber-400 font-bold mr-1">发力要点:</span>{{ ex.scienceDetail }}
           </div>
 
-          <!-- Quick Plate Adjustment & Batch Sync Bar (极速加减片与统一全组) -->
-          <div class="px-3 py-2 border-b flex items-center justify-between gap-1 overflow-x-auto no-scrollbar select-none"
-               :class="store.settings.themeMode === 'light' ? 'bg-slate-100/70 border-slate-200' : 'bg-zinc-950/40 border-zinc-800/60'">
-            <div class="flex items-center gap-1 flex-shrink-0">
-              <span class="text-[10px] font-bold mr-0.5"
-                    :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">加减片:</span>
-              <button v-for="chip in [-5, 2.5, 5, 10, 20]" :key="chip"
-                      @click="handleQuickChip(exIdx, chip)"
-                      :title="chip > 0 ? `为本动作所有未完成组增加 ${chip}kg` : `为本动作所有未完成组减少 ${Math.abs(chip)}kg`"
-                      class="px-2 py-1 rounded-lg text-[11px] font-mono font-black border transition-all active:scale-90 cursor-pointer"
-                      :class="chip > 0 
-                        ? (store.settings.themeMode === 'light' ? 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-300 shadow-2xs' : 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border-amber-500/30')
-                        : (store.settings.themeMode === 'light' ? 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-400 border-zinc-700')">
-                {{ chip > 0 ? `+${chip}` : chip }}
-              </button>
-            </div>
-            
-            <button @click="handleSyncFirstSet(exIdx)"
-                    title="将第1组重量与次数快速统一到后续全部未完成组"
-                    class="px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 border transition-all active:scale-95 cursor-pointer flex-shrink-0"
-                    :class="store.settings.themeMode === 'light'
-                      ? 'bg-sky-50 hover:bg-sky-100 text-sky-800 border-sky-300 shadow-2xs'
-                      : 'bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 border-sky-500/40'">
-              <span>⚡</span>
-              <span>统一全组</span>
-            </button>
-          </div>
-
-          <!-- Sets Table -->
+          <!-- Sets Table (Clean, Apple/Hevy-Grade Ergonomic Layout) -->
           <div class="p-3 space-y-2">
             <!-- Table Header -->
-            <div class="grid grid-cols-12 gap-1 text-[11px] font-bold px-1 text-center"
-                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-500'">
+            <div class="grid grid-cols-12 gap-1.5 text-[11px] font-bold px-2 py-0.5 text-center select-none"
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">
               <span class="col-span-2 text-left">组号</span>
               <span class="col-span-4">重量 (kg)</span>
               <span class="col-span-4">次数</span>
@@ -204,80 +176,91 @@
 
             <!-- Set Rows -->
             <div v-for="(s, sIdx) in ex.sets" :key="s.id || sIdx" class="space-y-1">
-              <div class="grid grid-cols-12 gap-1.5 items-center p-2 rounded-2xl transition-all relative overflow-hidden"
+              <div class="grid grid-cols-12 gap-1.5 items-center px-2 py-1.5 rounded-xl transition-all relative overflow-hidden"
                    :class="[
                      s.completed 
-                       ? 'bg-emerald-950/30 border border-emerald-500/40 shadow-sm shadow-emerald-500/10' 
-                       : (getSetOverloadDelta(ex.name, s, sIdx)?.isPr ? 'bg-amber-950/20 border border-amber-500/40' : 'bg-zinc-950/70 border border-zinc-800/60')
+                       ? (store.settings.themeMode === 'light' ? 'bg-emerald-50 border border-emerald-300/80 shadow-xs' : 'bg-emerald-950/25 border border-emerald-500/30 shadow-xs shadow-emerald-500/10')
+                       : (store.settings.themeMode === 'light' ? 'bg-slate-50/80 border border-slate-200/80' : 'bg-zinc-900/50 border border-zinc-800/60')
                    ]">
                 
-                <!-- Set index & Delete -->
-                <div class="col-span-2 flex items-center justify-between pr-0.5">
-                  <span class="w-7 h-7 rounded-xl text-xs font-mono font-bold flex items-center justify-center transition-colors"
-                        :class="s.completed ? 'bg-emerald-500/20 text-emerald-300 font-black' : (store.settings.themeMode === 'light' ? 'bg-slate-200 text-slate-800 font-bold' : 'bg-zinc-800 text-zinc-300')">
+                <!-- Set Index & Delete Button -->
+                <div class="col-span-2 flex items-center gap-1">
+                  <span class="w-6 h-6 rounded-lg text-xs font-mono font-bold flex items-center justify-center transition-colors flex-shrink-0"
+                        :class="s.completed 
+                          ? (store.settings.themeMode === 'light' ? 'bg-emerald-200 text-emerald-900' : 'bg-emerald-500/20 text-emerald-300')
+                          : (store.settings.themeMode === 'light' ? 'bg-slate-200 text-slate-700' : 'bg-zinc-800 text-zinc-300')">
                     {{ sIdx + 1 }}
                   </span>
                   <button v-if="ex.sets.length > 1 && !s.completed" 
                           @click="removeSet(exIdx, sIdx)" 
                           title="删除此组"
-                          class="w-6 h-6 rounded-lg flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-500/15 text-xs font-bold cursor-pointer transition-all active:scale-90">
+                          class="w-5 h-5 rounded flex items-center justify-center text-[11px] text-zinc-400 hover:text-red-500 hover:bg-red-500/10 active:scale-90 transition-all cursor-pointer">
                     ✕
                   </button>
                 </div>
 
-                <!-- Weight Input + Ergonomic Stepper with Smart Cascade -->
-                <div class="col-span-4 h-10 flex items-center border rounded-xl overflow-hidden relative shadow-2xs"
-                     :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-300' : 'bg-zinc-900 border-zinc-700/80'">
+                <!-- Sleek Streamlined Weight Pill with Integrated Micro-Steppers -->
+                <div class="col-span-4 h-8.5 rounded-xl border flex items-center overflow-hidden transition-colors"
+                     :class="store.settings.themeMode === 'light' 
+                       ? 'bg-white border-slate-200 shadow-2xs focus-within:border-amber-500' 
+                       : 'bg-zinc-950/90 border-zinc-800/90 shadow-inner focus-within:border-amber-500/80'">
                   <button @click="adjustSetWeight(exIdx, sIdx, -2.5)" 
                           type="button"
-                          class="w-9 h-full flex items-center justify-center text-base font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
-                          :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800' : 'bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white'">
+                          title="-2.5kg"
+                          class="w-6 h-full flex items-center justify-center text-xs font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-400 hover:text-white'">
                     −
                   </button>
                   <input v-model.number="s.weight" 
                          @input="onWeightChange(exIdx, sIdx)"
                          @focus="$event.target.select()"
                          type="number" step="0.5" inputmode="decimal"
-                         class="w-full h-full bg-transparent text-center text-sm font-mono font-black focus:outline-none focus:bg-amber-500/10 transition-colors"
+                         class="w-full h-full bg-transparent text-center text-xs sm:text-sm font-mono font-black focus:outline-none transition-colors"
                          :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'" />
                   <button @click="adjustSetWeight(exIdx, sIdx, 2.5)" 
                           type="button"
-                          class="w-9 h-full flex items-center justify-center text-base font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
-                          :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800' : 'bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white'">
+                          title="+2.5kg"
+                          class="w-6 h-full flex items-center justify-center text-xs font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-400 hover:text-white'">
                     +
                   </button>
                 </div>
 
-                <!-- Reps Input + Ergonomic Stepper with Smart Cascade -->
-                <div class="col-span-4 h-10 flex items-center border rounded-xl overflow-hidden relative shadow-2xs"
-                     :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-300' : 'bg-zinc-900 border-zinc-700/80'">
+                <!-- Sleek Streamlined Reps Pill with Integrated Micro-Steppers -->
+                <div class="col-span-4 h-8.5 rounded-xl border flex items-center overflow-hidden transition-colors"
+                     :class="store.settings.themeMode === 'light' 
+                       ? 'bg-white border-slate-200 shadow-2xs focus-within:border-amber-500' 
+                       : 'bg-zinc-950/90 border-zinc-800/90 shadow-inner focus-within:border-amber-500/80'">
                   <button @click="adjustSetReps(exIdx, sIdx, -1)" 
                           type="button"
-                          class="w-9 h-full flex items-center justify-center text-base font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
-                          :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800' : 'bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white'">
+                          title="-1次"
+                          class="w-6 h-full flex items-center justify-center text-xs font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-400 hover:text-white'">
                     −
                   </button>
                   <input v-model.number="s.reps" 
                          @input="onRepsChange(exIdx, sIdx)"
                          @focus="$event.target.select()"
                          type="number" step="1" inputmode="numeric"
-                         class="w-full h-full bg-transparent text-center text-sm font-mono font-black focus:outline-none focus:bg-amber-500/10 transition-colors"
+                         class="w-full h-full bg-transparent text-center text-xs sm:text-sm font-mono font-black focus:outline-none transition-colors"
                          :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'" />
                   <button @click="adjustSetReps(exIdx, sIdx, 1)" 
                           type="button"
-                          class="w-9 h-full flex items-center justify-center text-base font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
-                          :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800' : 'bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white'">
+                          title="+1次"
+                          class="w-6 h-full flex items-center justify-center text-xs font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-400 hover:text-white'">
                     +
                   </button>
                 </div>
 
-                <!-- Complete Checkbox Button -->
+                <!-- Sleek Checkbox Completion Button -->
                 <div class="col-span-2 flex justify-center">
                   <button @click="toggleSet(exIdx, sIdx)"
-                          class="w-9 h-9 rounded-xl flex items-center justify-center transition-all active:scale-90 relative cursor-pointer"
+                          class="w-8 h-8 rounded-xl flex items-center justify-center transition-all active:scale-90 relative cursor-pointer"
                           :class="[
-                            s.completed ? 'bg-emerald-500 text-zinc-950 shadow-md shadow-emerald-500/30' : 
-                            (store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-500 border border-slate-300' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-400 border border-zinc-700')
+                            s.completed 
+                              ? 'bg-emerald-500 text-zinc-950 shadow-md shadow-emerald-500/30' 
+                              : (store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-400 border border-slate-300/80' : 'bg-zinc-800/80 hover:bg-zinc-700 text-zinc-500 border border-zinc-700/80')
                           ]">
                     <svg class="w-4 h-4 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
@@ -1335,26 +1318,6 @@ function toggleSet(exIdx, sIdx) {
   }
 }
 
-function handleQuickChip(exIdx, delta) {
-  const ex = store.activeWorkout?.exercises?.[exIdx];
-  if (!ex || !ex.sets) return;
-  adjustExerciseAllSetsWeight(exIdx, delta);
-  const updatedW = ex.sets[0]?.weight;
-  showOverloadCelebration(
-    delta > 0 ? `➕ 杠铃加片 +${delta}kg` : `➖ 杠铃减片 ${delta}kg`,
-    `未完成组已同步调整至 ${updatedW}kg`,
-    false
-  );
-}
-
-function handleSyncFirstSet(exIdx) {
-  const ex = store.activeWorkout?.exercises?.[exIdx];
-  if (!ex || !ex.sets || ex.sets.length === 0) return;
-  const count = syncFirstSetToAllSets(exIdx);
-  const firstW = ex.sets[0].weight;
-  const firstR = ex.sets[0].reps;
-  showOverloadCelebration(`⚡ 统一全组规格`, `后续 ${count} 组已统一设为 ${firstW}kg × ${firstR}次`, false);
-}
 
 function adjustSetWeight(exIdx, sIdx, delta) {
   const ex = store.activeWorkout?.exercises?.[exIdx];
