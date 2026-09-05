@@ -14,6 +14,30 @@ export const FITCYCLE_SYSTEM_PROMPT = `你是 Fitcycle 内的专业私人健身�
 7. 不提供删除、重置、备份导入或清空数据能力。
 8. 训练建议应科学保守，疼痛、损伤或医疗问题应建议咨询专业人士。`;
 
+export function buildSystemPrompt(userProfile = null) {
+  let prompt = FITCYCLE_SYSTEM_PROMPT;
+  if (userProfile) {
+    const height = userProfile.userHeight || 175;
+    const weight = userProfile.userWeight || 70;
+    const bmi = (weight / Math.pow(height / 100, 2)).toFixed(1);
+    const goalMap = {
+      hypertrophy: "肌肥大增肌",
+      fat_loss: "高效减脂塑形",
+      strength: "纯力量突破"
+    };
+    const levelMap = {
+      beginner: "新手筑基",
+      intermediate: "中阶进阶",
+      advanced: "高阶健力",
+      custom: "自定义水平"
+    };
+    prompt += `\n\n当前学员生理档案数据：\n- 身高: ${height}cm, 体重: ${weight}kg (BMI: ${bmi})\n- 训练阶段: ${levelMap[userProfile.strengthLevel] || userProfile.strengthLevel || '中阶'}, 核心目标: ${goalMap[userProfile.trainingGoal] || userProfile.trainingGoal || '增肌'}\n请基于该学员生理特征给出精准、个性化的力线、重量与组间间歇指导。`;
+  }
+  return prompt;
+}
+
+export { openAICoachWithContext } from "./aiSession.js";
+
 function toolResultMessage(toolCall, result) {
   return {
     role: "tool",
@@ -58,7 +82,7 @@ export async function runAssistantLoop(options) {
       provider,
       apiKey,
       model,
-      messages: [{ role: "system", content: FITCYCLE_SYSTEM_PROMPT }, ...history],
+      messages: [{ role: "system", content: options.systemPrompt || buildSystemPrompt(options.userProfile) }, ...history],
       tools: capabilities.tools ? FITCYCLE_TOOL_DEFINITIONS : [],
       signal,
       onToken,

@@ -53,6 +53,76 @@
         </div>
       </div>
 
+      <!-- Dopamine Total Tonnage Physical Metaphor -->
+      <div class="bg-gradient-to-r from-amber-500/10 via-zinc-800/60 to-amber-500/10 border border-amber-500/30 rounded-2xl p-3 my-3 text-left relative z-10 flex items-center gap-3 shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl flex-shrink-0">
+          {{ tonnageMetaphor.icon }}
+        </div>
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-xs font-black text-amber-400 font-mono">{{ tonnageMetaphor.formattedTonnage }}</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">物理做工换算</span>
+          </div>
+          <p class="text-[11px] text-zinc-300 font-medium mt-0.5 leading-snug break-words">
+            {{ tonnageMetaphor.description }}
+          </p>
+        </div>
+      </div>
+
+      <!-- 0~72h Supercompensation Recovery Timer Countdown -->
+      <div class="bg-emerald-950/30 border border-emerald-500/30 rounded-2xl p-3 my-3 text-left relative z-10 space-y-1.5 shadow-sm">
+        <div class="flex items-center justify-between gap-1">
+          <span class="text-xs font-black text-emerald-400 flex items-center gap-1">
+            <span class="animate-pulse">⚡</span> 生理超量重组黄金时钟已启动 (00:00 / 72:00)
+          </span>
+          <span class="text-[10px] px-1.5 py-0.5 rounded font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex-shrink-0">
+            72h免责
+          </span>
+        </div>
+        <p class="text-[11px] text-emerald-200/90 leading-snug break-words">
+          受宪法免责保护，0~72h 绝不扣分，肌纤维正在超量增生
+        </p>
+        <div class="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden mt-1">
+          <div class="bg-emerald-400 h-full rounded-full transition-all duration-500"
+               :style="{ width: `${supercompStatus.progressPercent}%` }"></div>
+        </div>
+      </div>
+
+      <!-- Tier Progression Shimmer Bar & Celebratory Badge -->
+      <div class="bg-zinc-950/70 border border-zinc-700/60 rounded-2xl p-3 my-3 text-left relative z-10 space-y-2 shadow-sm">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <span class="text-xs font-black text-zinc-200 truncate">战力天梯进阶</span>
+            <span v-if="tierAdvancement.hasLeveledUp" 
+                  class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-zinc-950 shadow-md animate-bounce flex-shrink-0">
+              🎉 段位晋级！
+            </span>
+          </div>
+          <span class="text-xs font-mono font-bold text-amber-400 flex-shrink-0">
+            +{{ tierAdvancement.pointsGained }} PTS
+          </span>
+        </div>
+
+        <!-- Shimmer progress bar -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-400">
+            <span>{{ tierAdvancement.currentTier.name }}</span>
+            <span>{{ tierAdvancement.progressPercent }}%</span>
+          </div>
+          <div class="w-full bg-zinc-800 h-2 rounded-full overflow-hidden relative">
+            <div class="bg-gradient-to-r from-amber-500 via-amber-300 to-amber-500 h-full rounded-full transition-all duration-700 relative overflow-hidden"
+                 :style="{ width: `${Math.max(5, tierAdvancement.progressPercent)}%` }">
+              <div class="absolute inset-0 bg-white/30 animate-pulse"></div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-[10px] font-mono text-zinc-500 pt-0.5">
+            <span>本阶积分: {{ tierAdvancement.currentPointsInTier }} PTS</span>
+            <span v-if="tierAdvancement.pointsNeededForNextTier > 0">距下一阶: {{ tierAdvancement.pointsNeededForNextTier }} PTS</span>
+            <span v-else class="text-amber-400 font-bold">已达巅峰天梯</span>
+          </div>
+        </div>
+      </div>
+
       <!-- ============================================== -->
       <!-- FAST AI WORKOUT ANALYSIS & RECOVERY CARD -->
       <!-- ============================================== -->
@@ -174,6 +244,11 @@ import { store, resumeWorkoutFromSummary } from "../store/fitnessStore.js";
 import { analyzeWorkoutSummary, buildDetailedWorkoutPrompt, buildInstantWorkoutCoachResponse } from "../ai/workoutAnalyzer.js";
 import { aiSession, clearConversation } from "../ai/aiSession.js";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
+import {
+  calculateTonnageMetaphor,
+  calculateSupercompensationStatus,
+  calculateTierAdvancement
+} from "../engine/dopamineFeedbackEngine.js";
 
 const isTest = typeof process !== "undefined" && process.env?.NODE_ENV === "test";
 
@@ -183,6 +258,20 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["close"]);
+
+const tonnageMetaphor = computed(() => {
+  return calculateTonnageMetaphor(props.summary?.totalVolume || 0);
+});
+
+const supercompStatus = computed(() => {
+  return calculateSupercompensationStatus(Date.now(), Date.now());
+});
+
+const tierAdvancement = computed(() => {
+  const sessionPoints = props.summary?.honorPointsEarned?.finalSessionPoints || 0;
+  const currentTotalPoints = store.userProfile?.honorPoints || (300 + sessionPoints);
+  return calculateTierAdvancement(currentTotalPoints, sessionPoints);
+});
 
 const aiAnalysis = computed(() => {
   if (!props.summary) return null;

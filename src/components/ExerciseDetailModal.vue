@@ -80,6 +80,10 @@
                   :class="store.settings.themeMode === 'light' ? 'bg-amber-500/15 border-amber-500/30 text-amber-800' : 'bg-amber-500/20 border-amber-500/40 text-amber-300'">
               <span>🎯 主目标:</span> {{ exercise?.target }}
             </span>
+            <span class="px-2.5 py-1 rounded-xl text-xs font-bold flex items-center gap-1 border"
+                  :class="store.settings.themeMode === 'light' ? 'bg-sky-100 text-sky-800 border-sky-300' : 'bg-sky-950/80 text-sky-400 border-sky-500/40'">
+              <span>📐 平面:</span> {{ movementPlaneInfo.name }}
+            </span>
             <span v-for="sec in exercise?.secondaryMuscles || []" :key="sec"
                   class="px-2 py-1 rounded-xl text-xs border font-semibold"
                   :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-800 border-slate-300' : 'bg-zinc-800 text-zinc-300 border-zinc-700'">
@@ -178,6 +182,25 @@
             </div>
           </div>
 
+          <!-- Force Vector Alignment Cue (力线避坑指南: 肌纤维走向与阻力方向同轴) -->
+          <div class="p-3.5 rounded-2xl space-y-1.5 border"
+               :class="store.settings.themeMode === 'light' ? 'bg-amber-50/90 border-amber-300/80 shadow-xs' : 'bg-amber-500/10 border-amber-500/30'">
+            <div class="font-bold flex items-center justify-between"
+                 :class="store.settings.themeMode === 'light' ? 'text-amber-900 font-black' : 'text-amber-300'">
+              <span class="flex items-center gap-1.5">
+                <span>🎯</span> 力线避坑指南 (肌纤维走向与阻力方向同轴)
+              </span>
+              <span class="text-[10px] font-mono opacity-80 font-bold px-1.5 py-0.2 rounded"
+                    :class="store.settings.themeMode === 'light' ? 'bg-amber-200/80 text-amber-950' : 'bg-amber-500/20 text-amber-300'">
+                {{ movementPlaneInfo.action }}
+              </span>
+            </div>
+            <p class="leading-relaxed font-medium text-xs"
+               :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-200'">
+              {{ forceVectorCue }}
+            </p>
+          </div>
+
           <!-- Common Mistakes -->
           <div v-if="exercise?.commonMistakes && exercise.commonMistakes.length" 
                class="p-3.5 rounded-2xl space-y-1.5 border"
@@ -192,6 +215,53 @@
                 {{ mistake }}
               </li>
             </ul>
+          </div>
+
+          <!-- Compensation Checklist (常见代偿警示排查表) -->
+          <div class="p-3.5 rounded-2xl space-y-2 border"
+               :class="store.settings.themeMode === 'light' ? 'bg-rose-50/80 border-rose-300/80 shadow-xs' : 'bg-rose-950/20 border-rose-500/30'">
+            <div class="font-bold flex items-center justify-between"
+                 :class="store.settings.themeMode === 'light' ? 'text-rose-900 font-black' : 'text-rose-300'">
+              <span class="flex items-center gap-1.5">
+                <span>🛡️</span> 常见代偿警示排查表 (Compensation Checklist)
+              </span>
+              <span class="text-[10px] font-mono opacity-80">防伤保护</span>
+            </div>
+            <ul class="space-y-1 text-xs"
+                :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">
+              <li v-for="(comp, cIdx) in compensationList" :key="cIdx" class="leading-relaxed flex items-start gap-1.5">
+                <span class="text-rose-500 font-bold">•</span>
+                <span>{{ comp }}</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Direct 1-Click AI Coach Query Pills -->
+          <div class="p-3.5 rounded-2xl space-y-2 border"
+               :class="store.settings.themeMode === 'light' ? 'bg-gradient-to-br from-indigo-50/90 to-purple-50/90 border-indigo-200 shadow-xs' : 'bg-gradient-to-br from-zinc-950 via-indigo-950/30 to-zinc-900 border-indigo-500/30'">
+            <div class="flex items-center justify-between">
+              <div class="font-bold text-xs flex items-center gap-1.5"
+                   :class="store.settings.themeMode === 'light' ? 'text-indigo-950 font-black' : 'text-indigo-300'">
+                <span>🤖</span> 随身 AI 运动生物力学教练
+              </div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                    :class="store.settings.themeMode === 'light' ? 'bg-indigo-100 text-indigo-800 border border-indigo-200' : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'">
+                1-Click 直达答疑
+              </span>
+            </div>
+            <p class="text-[11px]" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+              点击快速向 AI 教练追问当前动作要领与生理调控：
+            </p>
+            <div class="flex flex-wrap gap-1.5 pt-0.5">
+              <button v-for="pill in aiQueryPills" :key="pill"
+                      @click="handleAskAICoach(pill)"
+                      class="px-2.5 py-1.5 rounded-xl text-xs font-semibold active:scale-95 transition-all cursor-pointer border flex items-center gap-1"
+                      :class="store.settings.themeMode === 'light' 
+                        ? 'bg-white hover:bg-indigo-50 text-indigo-950 border-indigo-300/80 shadow-xs' 
+                        : 'bg-zinc-900 hover:bg-indigo-900/40 text-indigo-200 border-indigo-500/30'">
+                <span>💬</span> {{ pill }}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -306,6 +376,7 @@ import { ref, computed, watch, onUnmounted, nextTick } from "vue";
 import { store, getExerciseDetails, addExerciseToActiveWorkout } from "../store/fitnessStore.js";
 import { getMuscleDiagramSvg } from "../utils/muscleDiagrams.js";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
+import { openAICoachWithContext } from "../ai/aiSession.js";
 
 const props = defineProps({
   visible: Boolean,
@@ -366,6 +437,146 @@ const exerciseHistory = computed(() => {
   }
   return history.slice(0, 5);
 });
+
+// 3D Biomechanics & Movement Plane Analysis
+const movementPlaneInfo = computed(() => {
+  const ex = props.exercise;
+  if (!ex) return { name: "矢状面 (Sagittal)", badge: "矢状面", action: "前后屈伸主导" };
+  const cat = ex.category || "";
+  const name = ex.name || "";
+  const target = ex.target || "";
+
+  if (name.includes("夹胸") || name.includes("飞鸟") || name.includes("转体") || name.includes("蝴蝶") || target.includes("内收")) {
+    return {
+      name: "水平面 (Transverse Plane)",
+      badge: "水平面 (Transverse)",
+      action: "水平屈伸与内收"
+    };
+  }
+  if (name.includes("侧平举") || name.includes("引体") || name.includes("下拉") || name.includes("外展") || name.includes("侧屈") || name.includes("推举") || target.includes("中束") || target.includes("背阔肌")) {
+    return {
+      name: "冠状面 (Coronal / Frontal Plane)",
+      badge: "冠状面 (Coronal)",
+      action: "冠状面外展与内收"
+    };
+  }
+  return {
+    name: "矢状面 (Sagittal Plane)",
+    badge: "矢状面 (Sagittal)",
+    action: "矢状面屈伸对齐"
+  };
+});
+
+// Force Vector Alignment Cue
+const forceVectorCue = computed(() => {
+  const ex = props.exercise;
+  if (!ex) return "肌纤维走向与阻力方向同轴，避免关节脱离力线受剪切力。";
+  const cat = ex.category || "";
+  const name = ex.name || "";
+
+  if (cat === "胸部" || name.includes("推胸") || name.includes("卧推")) {
+    return "【胸大肌力线同轴】前臂在全行程垂直于负重阻力垂线；推起时肘部与躯干呈 60°~75° 夹角，顺应胸肋束肌纤维排列走向，避免耸肩致使三角肌前束过度代偿。";
+  }
+  if (cat === "背部" || name.includes("拉背") || name.includes("划船") || name.includes("下拉")) {
+    return "【背阔肌肌纤维力线】下拉时阻力线与大臂内收轨迹保持同轴；划船时手肘贴近躯干朝骨盆方向带动，离心过程保持肌张力拉伸，避免上斜方肌过早耸肩主导。";
+  }
+  if (cat === "肩部" || name.includes("侧平举") || name.includes("推肩")) {
+    return "【肩胛冈力线对齐】侧平举时手臂沿肩胛骨平面（Scaption Plane，前斜 30°）抬起；顶峰时肘部微屈与肩平齐，避免手腕内旋引起肩峰下间隙撞击。";
+  }
+  if (cat === "腿部" || name.includes("深蹲") || name.includes("腿举") || name.includes("硬拉")) {
+    return "【下肢动能链力线】负重重心垂线始终投射于足弓中点（Mid-foot）；膝关节屈伸轨迹与第 2~3 脚趾严格同轴，保持足底三点抓地，严防膝内扣与骨盆眨眼。";
+  }
+  if (cat === "手臂" || name.includes("弯举") || name.includes("臂屈伸")) {
+    return "【肱二/三头肌力线孤立】大臂固定为力矩支点；手腕保持微扣中立，避免屈腕肌群抢走发力，向心阶段专注于目标肌群极限顶峰收缩。";
+  }
+  if (cat === "核心") {
+    return "【核心抗伸展力线】盆底肌与腹横肌保持充气内收，骨盆处于微后倾中立位，避免腰椎过度超伸代偿。";
+  }
+  return "【生物力线同轴】负重阻力线与主动肌肌纤维收缩轨迹同轴对齐，全行程保持恒定肌张力。";
+});
+
+// Compensation Checklist
+const compensationList = computed(() => {
+  const ex = props.exercise;
+  if (!ex) return ["耸肩代偿", "腰椎超伸", "手腕过度背屈", "惯性晃动"];
+  const cat = ex.category || "";
+
+  if (cat === "胸部") {
+    return [
+      "耸肩代偿 (斜方肌上束过度上提，胸大肌受力逃逸)",
+      "手腕过度背屈折腕 (压迫正中神经并造成腕关节软骨剪切磨损)",
+      "腰椎过度起桥超伸 (核心失稳导致下背竖脊肌异常受压)",
+      "肘关节过度外展 (>90° 易引发肩袖肌腱与肩峰撞击)"
+    ];
+  }
+  if (cat === "背部") {
+    return [
+      "耸肩代偿 (拉动前未先沉肩锁死，斜方肌上束借力)",
+      "躯干过度后仰甩动 (惯性借力导致背阔肌离心张力骤降)",
+      "过度扣腕用二头肌拉 (小臂充血酸胀但背阔肌零泵感)",
+      "离心泄力过快 (放弃了增肌黄金离心超负荷刺激)"
+    ];
+  }
+  if (cat === "肩部") {
+    return [
+      "斜方肌过度代偿耸肩 (颈部缩短紧绷，丢失三角肌孤立刺激)",
+      "推举时腰椎超伸拱腰 (胸椎伸展不足导致腰部代偿借力)",
+      "手腕内旋大拇指朝下 (导致冈上肌肌腱在肩峰下狭窄滑囊受卡压)",
+      "手肘落于身体躯干后方 (造成肩关节囊前侧韧带被过度牵拉)"
+    ];
+  }
+  if (cat === "腿部") {
+    return [
+      "膝内扣 (膝外翻代偿，增加前交叉韧带与半月板剪切力)",
+      "骨盆过度后倾 / 屁股眨眼 (Butt Wink 导致腰椎瞬间失稳)",
+      "脚跟离地重心前冲 (过度依赖髌韧带承受异常负荷)",
+      "躯干过度折叠弯腰 (下背竖脊肌过度代偿股四头肌做工)"
+    ];
+  }
+  if (cat === "手臂") {
+    return [
+      "大臂前后大幅甩动借力 (三角肌前束代偿肱二头肌弯举)",
+      "手腕过度屈曲扣腕 (前臂内侧屈肌群过度抢力疲劳)",
+      "耸肩下压借体重压 (斜方肌与胸小肌代偿肱三头肌伸肘)",
+      "手肘过度向外翻张开 (肘关节副韧带承受异常扭转应力)"
+    ];
+  }
+  return [
+    "耸肩代偿：颈肩肌群紧张抢力",
+    "腰椎与骨盆代偿失稳",
+    "手腕未保持中立位",
+    "末端动作惯性甩动借力"
+  ];
+});
+
+// Direct 1-Click AI Coach Query Pills
+const aiQueryPills = computed(() => {
+  const pills = [
+    "斜板角度多大最好？",
+    "推胸手腕疼怎么调？",
+    "怎样最大化孤立刺激？"
+  ];
+  const cat = props.exercise?.category;
+  if (cat === "腿部") {
+    pills[1] = "深蹲膝内扣怎么纠正？";
+  } else if (cat === "背部") {
+    pills[1] = "高位下拉找不到背部发力？";
+  } else if (cat === "肩部") {
+    pills[1] = "做侧平举脖子酸怎么调整？";
+  } else if (cat === "手臂") {
+    pills[1] = "弯举时手腕酸痛怎么解决？";
+  }
+  return pills;
+});
+
+function handleAskAICoach(prompt) {
+  openAICoachWithContext({
+    prompt,
+    autoRun: true,
+    exercise: props.exercise
+  });
+  emit("close");
+}
 
 function handleSelectSubstitute(subName) {
   const match = getExerciseDetails(subName) || { name: subName, category: props.exercise?.category || "训练", target: props.exercise?.target || "" };

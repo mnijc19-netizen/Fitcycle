@@ -1,5 +1,5 @@
 <template>
-  <div class="pb-32 px-4 pt-2 max-w-md mx-auto space-y-4">
+  <div class="pb-32 px-3 sm:px-4 pt-2 max-w-md mx-auto space-y-4">
 
     <!-- Top Header (Clean Apple Minimalist) -->
     <div class="flex items-center justify-between pt-1">
@@ -105,10 +105,10 @@
       </div>
 
       <div v-if="recentVolumeStats.length" class="pt-2">
-        <div class="flex items-end justify-between gap-2 h-28 px-1">
+        <div class="flex items-end justify-between gap-1 sm:gap-2 h-28 px-0.5 sm:px-1">
           <div v-for="(item, idx) in recentVolumeStats" :key="idx"
-               class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
-            <span class="text-[9px] font-mono text-zinc-400">{{ item.volume > 0 ? `${Math.round(item.volume / 1000)}k` : '0' }}</span>
+               class="flex-1 min-w-0 flex flex-col items-center gap-1 sm:gap-1.5 h-full justify-end">
+            <span class="text-[9px] sm:text-[10px] font-mono text-zinc-400 truncate w-full text-center">{{ item.volume > 0 ? `${Math.round(item.volume / 1000)}k` : '0' }}</span>
             <div class="w-full rounded-full overflow-hidden flex items-end p-0.5" 
                  :class="store.settings.themeMode === 'light' ? 'bg-slate-100' : 'bg-zinc-800/50'"
                  style="height: 72px">
@@ -116,7 +116,7 @@
                    :style="{ height: `${Math.max(12, item.percent)}%` }">
               </div>
             </div>
-            <span class="text-[9px] text-zinc-500 font-mono truncate w-full text-center">{{ item.shortDate }}</span>
+            <span class="text-[9px] sm:text-[10px] text-zinc-500 font-mono truncate w-full text-center">{{ item.shortDate }}</span>
           </div>
         </div>
       </div>
@@ -148,14 +148,14 @@
                     ]" 
                     :key="item.sec"
                     @click="store.settings.defaultRestSeconds = item.sec"
-                    class="py-1.5 rounded-lg text-center transition-all flex flex-col items-center justify-center cursor-pointer"
+                    class="py-1.5 min-w-0 rounded-lg text-center transition-all flex flex-col items-center justify-center cursor-pointer"
                     :class="[
                       store.settings.defaultRestSeconds === item.sec 
                         ? 'bg-amber-500 text-zinc-950 font-black shadow-sm' 
                         : (store.settings.themeMode === 'light' ? 'bg-white hover:bg-slate-50 text-slate-800 font-bold border border-slate-200/90 shadow-xs' : 'text-zinc-400 hover:text-zinc-200')
                     ]">
               <span class="text-xs font-mono font-bold leading-none">{{ item.sec }}s</span>
-              <span class="text-[9px] leading-none mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'opacity-85'">{{ item.label }}</span>
+              <span class="text-[9px] leading-none mt-0.5 truncate w-full px-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'opacity-85'">{{ item.label }}</span>
             </button>
           </div>
         </div>

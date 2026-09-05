@@ -1,4 +1,5 @@
 import { reactive } from "vue";
+import { store } from "../store/fitnessStore.js";
 
 export const AI_PROVIDERS = [
   { id: "deepseek", name: "DeepSeek", keyLabel: "DeepSeek API Key", portal: "https://platform.deepseek.com", tag: "高性价比 · 深度思考" },
@@ -369,4 +370,83 @@ export function clearAIConnection() {
   clearConversation();
   aiSession.clearRevision += 1;
 }
+
+/**
+ * 1-click invocation of AI coach with user physiological profile and current exercise context.
+ * 
+ * @param {Object} options - { prompt: string, autoRun?: boolean, exercise?: Object, userProfile?: Object }
+ * @returns {{ success: boolean, fullPromptText: string, conversationId: string }}
+ */
+export function openAICoachWithContext(options = {}) {
+  const opts = options || {};
+  const { prompt = "", autoRun = true, exercise = null, userProfile = null } = opts;
+
+  let profile = userProfile;
+  if (!profile && typeof store !== "undefined" && store?.settings) {
+    profile = store.settings;
+  }
+
+  let fullPromptText = "";
+  const metaSections = [];
+
+  if (profile) {
+    const height = profile.userHeight || 175;
+    const weight = profile.userWeight || 70;
+    const bmi = (weight / Math.pow(height / 100, 2)).toFixed(1);
+    const goalMap = {
+      hypertrophy: "肌肥大增肌",
+      fat_loss: "高效减脂塑形",
+      strength: "纯力量突破"
+    };
+    const levelMap = {
+      beginner: "新手筑基",
+      intermediate: "中阶进阶",
+      advanced: "高阶健力",
+      custom: "自定义水平"
+    };
+    metaSections.push(`【学员生理档案】身高: ${height}cm, 体重: ${weight}kg (BMI: ${bmi}) | 训练阶段: ${levelMap[profile.strengthLevel] || profile.strengthLevel || '中阶'} | 目标: ${goalMap[profile.trainingGoal] || profile.trainingGoal || '增肌'}`);
+  }
+
+  if (exercise) {
+    let exStr = `【当前咨询动作】${exercise.name}`;
+    if (exercise.englishName) exStr += ` (${exercise.englishName})`;
+    if (exercise.category) exStr += ` | 部位: ${exercise.category}`;
+    if (exercise.target) exStr += ` | 目标肌群: ${exercise.target}`;
+    metaSections.push(exStr);
+    if (exercise.scienceDetail) {
+      metaSections.push(`【动作力学背景】${exercise.scienceDetail}`);
+    }
+  }
+
+  const userQuestion = prompt || (exercise ? `请为我详细讲解【${exercise.name}】的标准力线走向、呼吸配合与避免代偿的关键要点。` : "请指导我的健身训练。");
+
+  if (metaSections.length > 0) {
+    fullPromptText = `${metaSections.join("\n")}\n\n【学员提问】\n${userQuestion}`;
+  } else {
+    fullPromptText = userQuestion;
+  }
+
+  aiSession.apiMessages.push({
+    role: "user",
+    content: fullPromptText
+  });
+
+  const displayBubbleText = prompt || (exercise ? `请指导【${exercise.name}】动作要领` : "请指导我的健身训练");
+
+  aiSession.conversation.push({
+    id: `user_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+    role: "user",
+    text: displayBubbleText
+  });
+
+  aiSession.pendingAutoRun = Boolean(autoRun);
+  aiSession.drawerOpen = true;
+
+  return {
+    success: true,
+    fullPromptText,
+    conversationId: aiSession.conversation[aiSession.conversation.length - 1]?.id
+  };
+}
+
 

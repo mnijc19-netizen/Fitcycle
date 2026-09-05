@@ -8,6 +8,7 @@ import { DEFAULT_SETTINGS, sanitizeSettings, verifyPasscode, getPasscodeSkin, VA
 import { calculateInactivityDecay, calculateSessionPointsEarned, getTierForScore, evaluateUnlockedBadges, calculateEquivalentTonnage, calculateShieldInventory } from "../engine/honorEngine.js";
 import { getSkinHonorPresentation } from "../engine/skinHonorSchemas.js";
 import { calculateAdaptiveWeights, getInitialHonorScore } from "../engine/bodyProfileEngine.js";
+import { getExerciseHistoricalPrefill } from "../engine/exerciseMemoryEngine.js";
 
 const STORAGE_KEY = "fitcycle_app_data_v1";
 
@@ -81,6 +82,7 @@ function loadSavedState() {
       parsed.settings = sanitizeSettings(parsed.settings);
       if (!parsed.bodyMetrics) parsed.bodyMetrics = JSON.parse(JSON.stringify(defaultInitialState.bodyMetrics));
       if (!parsed.honorProfile) parsed.honorProfile = JSON.parse(JSON.stringify(defaultInitialState.honorProfile));
+      if (!parsed.pinnedExerciseIds || !Array.isArray(parsed.pinnedExerciseIds)) parsed.pinnedExerciseIds = [];
 
       return parsed;
     }
@@ -98,6 +100,7 @@ const defaultInitialState = {
   activeTab: "today", // 'today' | 'cycle' | 'calendar' | 'exercises' | 'stats'
   plans: JSON.parse(JSON.stringify(DEFAULT_PLANS)),
   exercises: JSON.parse(JSON.stringify(DEFAULT_EXERCISES)),
+  pinnedExerciseIds: [],
   activeCycle: JSON.parse(JSON.stringify(PRESET_CYCLES[0])),
   anchorDate: todayStr, // Starting anchor date for cycle Day 0
   cycleMode: "cycle", // 'cycle' (推拉腿休自动轮转) | 'weekly' (固定周一到周日)
@@ -156,6 +159,7 @@ watch(
   () => ({
     plans: store.plans,
     exercises: store.exercises,
+    pinnedExerciseIds: store.pinnedExerciseIds,
     activeCycle: store.activeCycle,
     anchorDate: store.anchorDate,
     cycleMode: store.cycleMode,
@@ -470,36 +474,27 @@ export function syncSetDataToSubsequentSets(exerciseIndex, sourceSetIndex, syncR
 }
 
 export function addExerciseToActiveWorkout(exerciseItem) {
-  if (!store.activeWorkout) return;
+  if (!store.activeWorkout || !exerciseItem || typeof exerciseItem !== "object") return;
   const exDetails = getExerciseDetails(exerciseItem.id || exerciseItem.exerciseId || exerciseItem.name);
   const fullItem = exDetails ? { ...exDetails, ...exerciseItem } : exerciseItem;
-  const lastPerf = getLastExercisePerformance(fullItem.name);
-  const sets = [];
-  const defaultSetsCount = fullItem.defaultSets || 3;
   const levelKey = store.settings.strengthLevel || "intermediate";
   const levelConfig = STRENGTH_LEVEL_CONFIGS[levelKey];
   const configuredWeight = levelConfig?.weights?.[fullItem.name];
 
-  for (let i = 0; i < defaultSetsCount; i++) {
-    let w = configuredWeight !== undefined ? configuredWeight : (fullItem.defaultWeight || 20);
-    let r = 10;
-    if (lastPerf && lastPerf.sets[i]) {
-      w = lastPerf.sets[i].weight;
-      r = lastPerf.sets[i].reps;
-    } else if (lastPerf && lastPerf.sets.length > 0) {
-      const lastSet = lastPerf.sets[lastPerf.sets.length - 1];
-      w = lastSet.weight;
-      r = lastSet.reps;
-    }
-    sets.push({
-      id: uid("set"),
-      setNum: i + 1,
-      weight: w,
-      reps: r,
-      completed: false,
-      isWarmup: false
-    });
-  }
+  const prefill = getExerciseHistoricalPrefill(fullItem.id || fullItem.exerciseId || fullItem.name, store.workoutLogs, {
+    defaultSets: fullItem.defaultSets || 3,
+    defaultWeight: configuredWeight !== undefined ? configuredWeight : (fullItem.defaultWeight || 20),
+    defaultReps: fullItem.defaultReps || "10-12"
+  });
+
+  const sets = prefill.sets.map((s, idx) => ({
+    id: uid("set"),
+    setNum: idx + 1,
+    weight: configuredWeight !== undefined && prefill.source === "default" ? configuredWeight : s.weight,
+    reps: s.reps,
+    completed: false,
+    isWarmup: false
+  }));
 
   store.activeWorkout.exercises.push({
     id: uid("ex"),
@@ -528,12 +523,21 @@ export function addExerciseToPlan(planId, exerciseItem) {
     return false;
   }
 
+  const prefill = getExerciseHistoricalPrefill(fullItem.id || fullItem.exerciseId || fullItem.name, store.workoutLogs, {
+    defaultSets: fullItem.defaultSets || 3,
+    defaultWeight: fullItem.defaultWeight || 20,
+    defaultReps: fullItem.defaultReps || "10-12"
+  });
+
+  const preferredWeight = prefill.sets.length > 0 ? prefill.sets[0].weight : (fullItem.defaultWeight || 20);
+  const preferredSetsCount = prefill.source === "history" ? prefill.sets.length : (fullItem.defaultSets || 3);
+
   plan.exercises.push({
     exerciseId: fullItem.id || fullItem.exerciseId,
     name: fullItem.name,
-    setsCount: fullItem.defaultSets || 3,
+    setsCount: preferredSetsCount,
     targetReps: fullItem.targetReps || `${fullItem.defaultReps || "10-12"}次`,
-    defaultWeight: fullItem.defaultWeight || 20
+    defaultWeight: preferredWeight
   });
 
   if (store.settings.vibrationEnabled) triggerHaptic("medium");
@@ -587,6 +591,42 @@ export function removeExerciseFromActiveWorkout(exerciseIndex) {
   if (!store.activeWorkout) return;
   store.activeWorkout.exercises.splice(exerciseIndex, 1);
   if (store.settings.vibrationEnabled) triggerHaptic("light");
+}
+
+export function togglePinExercise(exerciseId) {
+  if (!exerciseId) return;
+  if (!Array.isArray(store.pinnedExerciseIds)) {
+    store.pinnedExerciseIds = [];
+  }
+  const index = store.pinnedExerciseIds.indexOf(exerciseId);
+  if (index > -1) {
+    store.pinnedExerciseIds.splice(index, 1);
+  } else {
+    store.pinnedExerciseIds.push(exerciseId);
+  }
+  if (store.settings.vibrationEnabled) triggerHaptic("light");
+}
+
+export function moveActiveWorkoutExercise(fromIndex, toIndex) {
+  if (typeof fromIndex !== 'number' || typeof toIndex !== 'number' || isNaN(fromIndex) || isNaN(toIndex)) return;
+  if (!store.activeWorkout || !Array.isArray(store.activeWorkout.exercises)) return;
+  const exercises = store.activeWorkout.exercises;
+  if (fromIndex < 0 || fromIndex >= exercises.length || toIndex < 0 || toIndex >= exercises.length || fromIndex === toIndex) {
+    return;
+  }
+  const [moved] = exercises.splice(fromIndex, 1);
+  exercises.splice(toIndex, 0, moved);
+  if (store.settings.vibrationEnabled) triggerHaptic("light");
+}
+
+export function pinActiveWorkoutExercise(index) {
+  if (typeof index !== 'number' || isNaN(index)) return;
+  if (!store.activeWorkout || !Array.isArray(store.activeWorkout.exercises)) return;
+  const exercises = store.activeWorkout.exercises;
+  if (index <= 0 || index >= exercises.length) return;
+  const [moved] = exercises.splice(index, 1);
+  exercises.unshift(moved);
+  if (store.settings.vibrationEnabled) triggerHaptic("medium");
 }
 
 export function finishWorkout() {

@@ -64,10 +64,10 @@
       </div>
 
       <!-- Segmented Train Track -->
-      <div class="grid grid-cols-4 gap-1.5 pt-1">
+      <div class="flex flex-wrap gap-1.5 pt-1">
         <button v-for="(day, idx) in store.activeCycle.days" :key="day.id || idx"
                 @click="selectedPreviewDayIdx = idx"
-                class="p-2 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-between gap-1 relative"
+                class="flex-1 min-w-[65px] p-2 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-between gap-1 relative"
                 :class="[
                   selectedPreviewDayIdx === idx ? 
                   'bg-zinc-800 border-amber-500/80 shadow-md ring-1 ring-amber-400/40' : 

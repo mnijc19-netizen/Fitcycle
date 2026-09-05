@@ -27,7 +27,7 @@
                  :class="overloadCelebration.isPr ? 'text-amber-300 drop-shadow-[0_0_6px_rgba(245,158,11,0.8)]' : 'text-emerald-300'">
               {{ overloadCelebration.text }}
             </div>
-            <div class="text-[10px] text-zinc-300 font-mono mt-0.5 truncate">
+            <div class="text-[11px] text-zinc-300 font-mono mt-0.5 truncate">
               {{ overloadCelebration.subText }}
             </div>
           </div>
@@ -67,12 +67,12 @@
           <div class="flex items-center gap-2">
             <button @click="showStrengthPlacementModal = true"
                     title="点击随时重测或切换力量水平（自适应开局组重）"
-                    class="px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 border transition-all active:scale-95 cursor-pointer shadow-2xs"
+                    class="px-2 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-1 border transition-all active:scale-95 cursor-pointer shadow-2xs"
                     :class="store.settings.themeMode === 'light'
                       ? 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300'
                       : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/30'">
               <span>⚡ {{ currentStrengthConfig.name }}</span>
-              <span class="text-[8px] opacity-70">▾</span>
+              <span class="text-[10px] opacity-70">▾</span>
             </button>
             <div class="flex items-center gap-1 font-mono text-sm font-bold text-zinc-300">
               <span>⏱️ {{ elapsedFormatted }}</span>
@@ -121,7 +121,7 @@
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <h3 class="font-bold text-sm text-zinc-100 truncate cursor-pointer hover:text-amber-400" @click="openExerciseDetail(ex)">{{ ex.name }}</h3>
                   <span v-if="!getLastExercisePerformance(ex.name)" 
-                        class="px-1.5 py-0.5 rounded text-[10px] font-bold border"
+                        class="px-1.5 py-0.5 rounded text-[11px] font-bold border"
                         :class="store.settings.themeMode === 'light' 
                           ? 'bg-sky-50 text-sky-700 border-sky-200' 
                           : 'bg-sky-500/15 text-sky-400 border-sky-500/30'">
@@ -138,8 +138,25 @@
             </div>
 
 
-            <!-- Action buttons: Guide, Swap, Delete -->
+            <!-- Action buttons: Pin, Reorder, Guide, Swap, Machine Finder, Delete -->
             <div class="flex items-center gap-1 flex-shrink-0">
+              <button @click="pinActiveWorkoutExercise(exIdx)" 
+                      title="置顶动作"
+                      class="p-1.5 bg-zinc-800 hover:bg-amber-500/20 text-zinc-400 hover:text-amber-400 rounded-lg text-xs font-bold transition-all active:scale-95 cursor-pointer">
+                📌
+              </button>
+              <button v-if="exIdx > 0" 
+                      @click="moveActiveWorkoutExercise(exIdx, exIdx - 1)" 
+                      title="上移"
+                      class="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-zinc-200 rounded-lg text-xs font-bold transition-all active:scale-95 cursor-pointer">
+                ↑
+              </button>
+              <button v-if="exIdx < store.activeWorkout.exercises.length - 1" 
+                      @click="moveActiveWorkoutExercise(exIdx, exIdx + 1)" 
+                      title="下移"
+                      class="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-zinc-200 rounded-lg text-xs font-bold transition-all active:scale-95 cursor-pointer">
+                ↓
+              </button>
               <button @click="openExerciseDetail(ex)" 
                       title="查看动作要领与演示"
                       class="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-amber-400 rounded-lg text-xs font-bold transition-all active:scale-95 cursor-pointer">
@@ -149,6 +166,11 @@
                       title="替换动作"
                       class="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg text-xs transition-all active:scale-95 cursor-pointer">
                 🔄
+              </button>
+              <button @click="openMachineFinder(exIdx)" 
+                      title="器械拍照/语音识别替换"
+                      class="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-amber-400 rounded-lg text-xs font-bold transition-all active:scale-95 cursor-pointer">
+                📸
               </button>
               <button @click="removeExercise(exIdx)" 
                       title="移除动作"
@@ -164,9 +186,9 @@
           </div>
 
           <!-- Sets Table (Clean, Apple/Hevy-Grade Ergonomic Layout) -->
-          <div class="p-3 space-y-2">
+          <div class="p-2 sm:p-3 space-y-1.5 sm:space-y-2">
             <!-- Table Header -->
-            <div class="grid grid-cols-12 gap-1.5 text-[11px] font-bold px-2 py-0.5 text-center select-none"
+            <div class="grid grid-cols-12 gap-1 sm:gap-1.5 text-[11px] font-bold px-1.5 sm:px-2 py-0.5 text-center select-none"
                  :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">
               <span class="col-span-2 text-left">组号</span>
               <span class="col-span-4">重量 (kg)</span>
@@ -176,7 +198,7 @@
 
             <!-- Set Rows -->
             <div v-for="(s, sIdx) in ex.sets" :key="s.id || sIdx" class="space-y-1">
-              <div class="grid grid-cols-12 gap-1.5 items-center px-2 py-1.5 rounded-xl transition-all relative overflow-hidden"
+              <div class="grid grid-cols-12 gap-1 sm:gap-1.5 items-center px-1.5 sm:px-2 py-1.5 rounded-xl transition-all relative overflow-hidden"
                    :class="[
                      s.completed 
                        ? (store.settings.themeMode === 'light' ? 'bg-emerald-50 border border-emerald-300/80 shadow-xs' : 'bg-emerald-950/25 border border-emerald-500/30 shadow-xs shadow-emerald-500/10')
@@ -184,8 +206,8 @@
                    ]">
                 
                 <!-- Set Index & Delete Button -->
-                <div class="col-span-2 flex items-center gap-1">
-                  <span class="w-6 h-6 rounded-lg text-xs font-mono font-bold flex items-center justify-center transition-colors flex-shrink-0"
+                <div class="col-span-2 flex items-center gap-1 min-w-0">
+                  <span class="w-5 sm:w-6 h-5 sm:h-6 rounded-lg text-xs font-mono font-bold flex items-center justify-center transition-colors flex-shrink-0"
                         :class="s.completed 
                           ? (store.settings.themeMode === 'light' ? 'bg-emerald-200 text-emerald-900' : 'bg-emerald-500/20 text-emerald-300')
                           : (store.settings.themeMode === 'light' ? 'bg-slate-200 text-slate-700' : 'bg-zinc-800 text-zinc-300')">
@@ -194,7 +216,7 @@
                   <button v-if="ex.sets.length > 1 && !s.completed" 
                           @click="removeSet(exIdx, sIdx)" 
                           title="删除此组"
-                          class="w-5 h-5 rounded flex items-center justify-center text-[11px] text-zinc-400 hover:text-red-500 hover:bg-red-500/10 active:scale-90 transition-all cursor-pointer">
+                          class="w-4 h-4 rounded flex items-center justify-center text-[10px] text-zinc-400 hover:text-red-500 hover:bg-red-500/10 active:scale-90 transition-all cursor-pointer flex-shrink-0">
                     ✕
                   </button>
                 </div>
@@ -207,7 +229,7 @@
                   <button @click="adjustSetWeight(exIdx, sIdx, -2.5)" 
                           type="button"
                           title="-2.5kg"
-                          class="w-6 h-full flex items-center justify-center text-xs font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          class="w-5.5 sm:w-6 h-full flex items-center justify-center text-xs font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
                           :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-400 hover:text-white'">
                     −
                   </button>
@@ -215,12 +237,12 @@
                          @input="onWeightChange(exIdx, sIdx)"
                          @focus="$event.target.select()"
                          type="number" step="0.5" inputmode="decimal"
-                         class="w-full h-full bg-transparent text-center text-xs sm:text-sm font-mono font-black focus:outline-none transition-colors"
+                         class="min-w-[36px] w-full h-full bg-transparent text-center text-xs sm:text-sm font-mono font-black focus:outline-none transition-colors"
                          :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'" />
                   <button @click="adjustSetWeight(exIdx, sIdx, 2.5)" 
                           type="button"
                           title="+2.5kg"
-                          class="w-6 h-full flex items-center justify-center text-xs font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          class="w-5.5 sm:w-6 h-full flex items-center justify-center text-xs font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
                           :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-400 hover:text-white'">
                     +
                   </button>
@@ -234,7 +256,7 @@
                   <button @click="adjustSetReps(exIdx, sIdx, -1)" 
                           type="button"
                           title="-1次"
-                          class="w-6 h-full flex items-center justify-center text-xs font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          class="w-5.5 sm:w-6 h-full flex items-center justify-center text-xs font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
                           :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-400 hover:text-white'">
                     −
                   </button>
@@ -242,12 +264,12 @@
                          @input="onRepsChange(exIdx, sIdx)"
                          @focus="$event.target.select()"
                          type="number" step="1" inputmode="numeric"
-                         class="w-full h-full bg-transparent text-center text-xs sm:text-sm font-mono font-black focus:outline-none transition-colors"
+                         class="min-w-[36px] w-full h-full bg-transparent text-center text-xs sm:text-sm font-mono font-black focus:outline-none transition-colors"
                          :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'" />
                   <button @click="adjustSetReps(exIdx, sIdx, 1)" 
                           type="button"
                           title="+1次"
-                          class="w-6 h-full flex items-center justify-center text-xs font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          class="w-5.5 sm:w-6 h-full flex items-center justify-center text-xs font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
                           :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-400 hover:text-white'">
                     +
                   </button>
@@ -256,7 +278,7 @@
                 <!-- Sleek Checkbox Completion Button -->
                 <div class="col-span-2 flex justify-center">
                   <button @click="toggleSet(exIdx, sIdx)"
-                          class="w-8 h-8 rounded-xl flex items-center justify-center transition-all active:scale-90 relative cursor-pointer"
+                          class="w-7.5 sm:w-8 h-7.5 sm:h-8 rounded-xl flex items-center justify-center transition-all active:scale-90 relative cursor-pointer"
                           :class="[
                             s.completed 
                               ? 'bg-emerald-500 text-zinc-950 shadow-md shadow-emerald-500/30' 
@@ -272,7 +294,7 @@
 
               <!-- Micro Overload Dopamine Delta Badge Bar -->
               <div v-if="getSetOverloadDelta(ex.name, s, sIdx)" 
-                   class="flex items-center justify-between px-2.5 text-[9px] font-mono leading-none pb-0.5 animate-in fade-in slide-in-from-top-1 duration-200">
+                   class="flex items-center justify-between px-2.5 text-[11px] font-mono leading-none pb-0.5 animate-in fade-in slide-in-from-top-1 duration-200">
                 <span :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'text-zinc-500'">{{ getSetOverloadDelta(ex.name, s, sIdx).prevText }}</span>
                 
                 <!-- Weight PR Badge -->
@@ -310,7 +332,7 @@
             <span class="text-amber-400">💡</span>
             <span>新手简易加练 (点击一秒加入)</span>
           </span>
-          <span class="text-[10px] text-zinc-500 font-mono">科学配比 · 3组</span>
+          <span class="text-[11px] text-zinc-500 font-mono">科学配比 · 3组</span>
         </div>
         <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar touch-pan-x">
           <button v-for="addon in activeWorkoutRecommendedAddons" :key="addon.exerciseId"
@@ -325,19 +347,26 @@
                            customClass="w-6 h-6 rounded-lg border border-zinc-700/60" />
             <div class="text-left">
               <div class="leading-tight truncate max-w-[110px]">{{ addon.name }}</div>
-              <div class="text-[9px] font-normal text-amber-500/90 font-mono">{{ addon.tag || addon.targetReps }}</div>
+              <div class="text-[11px] font-normal text-amber-500/90 font-mono">{{ addon.tag || addon.targetReps }}</div>
             </div>
             <span class="text-amber-500 font-bold text-sm ml-0.5">+</span>
           </button>
         </div>
       </div>
 
-      <!-- Add Extra Exercise to Workout -->
-      <button @click="showAddExerciseModal = true" 
-              class="w-full py-3.5 border rounded-2xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm active:scale-98 cursor-pointer"
-              :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-900 border-slate-300' : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border-zinc-700/80'">
-        <span>➕</span> 临时添加新动作到本次训练
-      </button>
+      <!-- Add Extra Exercise & Machine Finder Quick Entry -->
+      <div class="grid grid-cols-2 gap-2">
+        <button @click="showAddExerciseModal = true" 
+                class="py-3 px-2 border rounded-2xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-98 cursor-pointer"
+                :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-900 border-slate-300' : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border-zinc-700/80'">
+          <span>➕</span> 临时添加动作
+        </button>
+        <button @click="openMachineFinder(-1)" 
+                class="py-3 px-2 border rounded-2xl text-xs font-black flex items-center justify-center gap-1.5 shadow-sm active:scale-98 cursor-pointer border-amber-500/40"
+                :class="store.settings.themeMode === 'light' ? 'bg-amber-50 hover:bg-amber-100 text-amber-950 border-amber-300' : 'bg-zinc-900 hover:bg-zinc-850 text-amber-400 border-zinc-700/80'">
+          <span>📸</span> 拍照/语音识器械
+        </button>
+      </div>
 
       <!-- Bottom Sticky Finish / Discard Bar -->
       <div class="sticky bottom-20 z-20 backdrop-blur-md p-2 rounded-2xl border flex items-center gap-2"
@@ -393,7 +422,7 @@
                   class="text-xs font-medium transition-colors flex items-center gap-1 cursor-pointer"
                   :class="store.settings.themeMode === 'light' ? 'text-amber-700 hover:text-amber-800' : 'text-amber-400 hover:text-amber-300'">
             <span>{{ store.activeCycle.name.split(' ')[0] }}</span>
-            <span class="text-[10px]">❯</span>
+            <span class="text-[11px]">❯</span>
           </button>
         </div>
 
@@ -412,12 +441,12 @@
             <span class="text-zinc-600">·</span>
             <button @click="showStrengthPlacementModal = true"
                     title="点击随时重测或切换力量水平"
-                    class="px-2 py-0.5 rounded-full text-[10px] font-bold font-sans flex items-center gap-1 border transition-all active:scale-95 cursor-pointer shadow-2xs"
+                    class="px-2 py-0.5 rounded-full text-[11px] font-bold font-sans flex items-center gap-1 border transition-all active:scale-95 cursor-pointer shadow-2xs"
                     :class="store.settings.themeMode === 'light'
                       ? 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300'
                       : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/30'">
               <span>⚡ 力量: {{ currentStrengthConfig.name }}</span>
-              <span class="text-[8px] opacity-70">▾</span>
+              <span class="text-[10px] opacity-70">▾</span>
             </button>
           </div>
           <div v-else class="text-xs mt-1" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
@@ -443,13 +472,17 @@
             <span>打卡今日休整</span>
           </button>
 
-          <div class="flex items-center justify-center gap-4 pt-1 text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-bold' : 'text-zinc-400'">
+          <div class="flex items-center justify-center gap-3 pt-1 text-xs flex-wrap" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-bold' : 'text-zinc-400'">
             <button @click="showPlanPicker = true" class="hover:text-amber-600 transition-colors cursor-pointer">
               切换计划
             </button>
             <span :class="store.settings.themeMode === 'light' ? 'text-slate-400' : 'text-zinc-700'">|</span>
             <button @click="startEmptyWorkout" class="hover:text-amber-600 transition-colors cursor-pointer">
               自由空白训练
+            </button>
+            <span :class="store.settings.themeMode === 'light' ? 'text-slate-400' : 'text-zinc-700'">|</span>
+            <button @click="openMachineFinder(-1)" class="hover:text-amber-600 transition-colors cursor-pointer flex items-center gap-1 text-amber-500 font-bold">
+              <span>📸</span> 器械识别
             </button>
           </div>
         </div>
@@ -468,7 +501,7 @@
             <h4 class="text-xs font-black">
               设定力量水平（新手/中坚/老手）
             </h4>
-            <p class="text-[10px] mt-0.5 leading-snug" :class="store.settings.themeMode === 'light' ? 'text-amber-900/80' : 'text-zinc-400'">
+            <p class="text-[11px] mt-0.5 leading-snug" :class="store.settings.themeMode === 'light' ? 'text-amber-900/80' : 'text-zinc-400'">
               自适应推拉腿起步组重，老铁无需从空杆逐组重填
             </p>
           </div>
@@ -485,12 +518,12 @@
         <!-- Deload Shield Active Banner -->
         <div v-if="honorData.isDeloadActive" class="space-y-1.5">
           <div class="flex items-center justify-between gap-2">
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/40 flex items-center gap-1">
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/40 flex items-center gap-1">
               <span>🛡️</span> 战术免战休整期
             </span>
             <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">战力已冻结 (剩 {{ honorData.shieldDaysRemaining }} 天)</span>
             <button @click="toggleDeloadShield(false)" 
-                    class="px-2 py-0.5 bg-sky-900/80 hover:bg-sky-800 text-sky-200 text-[10px] font-bold rounded-lg border border-sky-600/40 cursor-pointer">
+                    class="px-2 py-0.5 bg-sky-900/80 hover:bg-sky-800 text-sky-200 text-[11px] font-bold rounded-lg border border-sky-600/40 cursor-pointer">
               提前归队
             </button>
           </div>
@@ -510,7 +543,7 @@
                     ]"></span>
               <span class="font-bold text-xs tracking-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">{{ timeSinceLastWorkout.title }}</span>
             </div>
-            <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border"
+            <span class="text-[11px] font-mono font-bold px-2 py-0.5 rounded-full border"
                   :class="[
                     timeSinceLastWorkout.urgencyLevel === 'danger' ? 'bg-red-500/15 border-red-500/30 text-red-400' :
                     timeSinceLastWorkout.urgencyLevel === 'warn' ? 'bg-amber-500/15 border-amber-500/30 text-amber-400' :
@@ -526,13 +559,13 @@
             <div class="p-2.5 rounded-xl border flex flex-col justify-between gap-1 transition-all"
                  :class="store.settings.themeMode === 'light' ? 'bg-slate-100/90 border-slate-200/90 shadow-xs' : 'bg-zinc-950/70 border-zinc-800/80'">
               <div class="flex items-center justify-between">
-                <span class="text-[10px] font-mono font-medium" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">怠惰计时</span>
-                <span class="text-[9px] font-mono px-1 rounded" :class="store.settings.themeMode === 'light' ? 'bg-slate-200/80 text-slate-700' : 'bg-zinc-900 text-zinc-400'">时钟</span>
+                <span class="text-[11px] font-mono font-medium" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">怠惰计时</span>
+                <span class="text-[11px] font-mono px-1 rounded" :class="store.settings.themeMode === 'light' ? 'bg-slate-200/80 text-slate-700' : 'bg-zinc-900 text-zinc-400'">时钟</span>
               </div>
               <div class="text-sm font-black font-mono tracking-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">
                 {{ timeSinceLastWorkout.timeStr || '刚刚' }}
               </div>
-              <div class="text-[10px] font-medium leading-none"
+              <div class="text-[11px] font-medium leading-none"
                    :class="[
                      timeSinceLastWorkout.urgencyLevel === 'danger' ? 'text-red-400' :
                      timeSinceLastWorkout.urgencyLevel === 'warn' ? 'text-amber-400' :
@@ -546,13 +579,13 @@
             <div class="p-2.5 rounded-xl border flex flex-col justify-between gap-1 transition-all"
                  :class="store.settings.themeMode === 'light' ? 'bg-slate-100/90 border-slate-200/90 shadow-xs' : 'bg-zinc-950/70 border-zinc-800/80'">
               <div class="flex items-center justify-between">
-                <span class="text-[10px] font-mono font-medium" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">肌群状态</span>
-                <span class="text-[9px] font-mono px-1 rounded" :class="store.settings.themeMode === 'light' ? 'bg-slate-200/80 text-slate-700' : 'bg-zinc-900 text-zinc-400'">恢复</span>
+                <span class="text-[11px] font-mono font-medium" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">肌群状态</span>
+                <span class="text-[11px] font-mono px-1 rounded" :class="store.settings.themeMode === 'light' ? 'bg-slate-200/80 text-slate-700' : 'bg-zinc-900 text-zinc-400'">恢复</span>
               </div>
               <div class="text-sm font-black font-mono tracking-tight text-amber-500">
                 {{ splitRecoveryInfo.status }}
               </div>
-              <div class="text-[10px] font-medium leading-none" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+              <div class="text-[11px] font-medium leading-none" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
                 {{ splitRecoveryInfo.timeLabel }}
               </div>
             </div>
@@ -592,28 +625,68 @@
                     ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800 font-bold shadow-xs'
                     : 'bg-zinc-950 hover:bg-zinc-800 border-zinc-800 text-zinc-300'">
             <span>形体围度</span>
-            <span class="text-[9px]" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'text-zinc-500'">❯</span>
+            <span class="text-[11px]" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'text-zinc-500'">❯</span>
           </button>
         </div>
       </div>
 
-      <!-- Modern Segmented Cycle Stepper (32px Slim) -->
+      <!-- Modern Segmented Cycle Stepper (Dynamic Flex Container) -->
       <div class="p-1 rounded-2xl border transition-colors"
            :class="store.settings.themeMode === 'light' ? 'bg-slate-200/70 border-slate-300/80 shadow-xs' : 'bg-zinc-900/90 border-zinc-800'">
-        <div class="grid grid-cols-4 gap-1">
+        <div class="flex flex-wrap gap-1">
           <button v-for="(day, idx) in store.activeCycle.days" :key="idx"
                   @click="setTodayAsIndex(idx)"
-                  class="py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer"
+                  class="flex-1 min-w-[62px] py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer"
                   :class="[
                     todayCycle.cycleIndex === idx ? 
                     'bg-amber-500 text-zinc-950 font-black shadow-sm' : 
                     (store.settings.themeMode === 'light' ? 'bg-slate-100/90 hover:bg-slate-200 text-slate-800 border border-slate-300/80 font-bold shadow-xs' : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60')
                   ]">
-            <div class="text-[9px] font-mono leading-none" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'opacity-80'">Day {{ idx + 1 }}</div>
+            <div class="text-[11px] font-mono leading-none" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'opacity-80'">Day {{ idx + 1 }}</div>
             <div class="text-xs font-black mt-0.5 leading-tight truncate">
               {{ day.shortName || (day.isRest ? '休' : '练') }}
             </div>
           </button>
+        </div>
+      </div>
+
+      <!-- 0~72h Rest-Day Recovery Card Celebrating Physiological Nourishment (0 decay penalty) -->
+      <div v-if="todayCycle.isRest" 
+           class="p-4 rounded-3xl border text-xs space-y-3 shadow-lg transition-all"
+           :class="store.settings.themeMode === 'light' ? 'bg-emerald-50/80 border-emerald-300 text-emerald-950' : 'bg-gradient-to-br from-emerald-950/40 via-zinc-900 to-zinc-950 border-emerald-500/40 text-emerald-100'">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm font-black flex-shrink-0">
+              ⚡
+            </div>
+            <div>
+              <div class="text-xs font-black" :class="store.settings.themeMode === 'light' ? 'text-emerald-950 font-black' : 'text-emerald-300'">
+                生理超量恢复黄金滋养期
+              </div>
+              <div class="text-[11px] font-mono text-emerald-500">
+                0~72h 宪法免责保护 · 0 怠惰扣分
+              </div>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+            {{ todayRestSupercomp.stage }}
+          </span>
+        </div>
+
+        <p class="text-xs leading-relaxed break-words" :class="store.settings.themeMode === 'light' ? 'text-emerald-900 font-medium' : 'text-zinc-300'">
+          {{ todayRestSupercomp.advice }}
+        </p>
+
+        <!-- Supercompensation Progress bar -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-[11px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-emerald-800' : 'text-emerald-400/80'">
+            <span>{{ todayRestSupercomp.timerText }}</span>
+            <span>{{ todayRestSupercomp.progressPercent }}%</span>
+          </div>
+          <div class="w-full bg-zinc-800/80 h-2 rounded-full overflow-hidden">
+            <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500"
+                 :style="{ width: `${todayRestSupercomp.progressPercent}%` }"></div>
+          </div>
         </div>
       </div>
 
@@ -625,7 +698,7 @@
             <span class="w-1.5 h-1.5 rounded-full" :class="store.settings.themeMode === 'light' ? 'bg-amber-600' : 'bg-amber-400'"></span>
             <span>今日动作清单 ({{ currentPlan.exercises.length }})</span>
           </span>
-          <span class="text-[10px]" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-500'">点击查看 3D 轨迹</span>
+          <span class="text-[11px]" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-500'">点击查看 3D 轨迹</span>
         </div>
 
         <div class="bg-zinc-900/80 border border-zinc-800 rounded-3xl overflow-hidden divide-y divide-zinc-800/70 shadow-lg">
@@ -642,7 +715,7 @@
                 <div class="font-bold text-xs truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</div>
                 <div class="text-[11px] mt-0.5 flex items-center gap-2" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-400'">
                   <span class="font-mono font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">{{ ex.setsCount }}组 × {{ ex.targetReps }}</span>
-                  <span v-if="getLastExercisePerformance(ex.name)" class="font-mono text-[10px]" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-500'">
+                  <span v-if="getLastExercisePerformance(ex.name)" class="font-mono text-[11px]" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-500'">
                     前次: {{ formatLastPerf(ex.name) }}
                   </span>
                 </div>
@@ -666,7 +739,7 @@
             <span class="text-amber-400">💡</span>
             <span>新手简易加动作 (点击一秒加入今日计划)</span>
           </span>
-          <span class="text-[10px] text-zinc-500 font-mono">科学配比 · 3组</span>
+          <span class="text-[11px] text-zinc-500 font-mono">科学配比 · 3组</span>
         </div>
         <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar touch-pan-x">
           <button v-for="addon in todayRecommendedAddons" :key="addon.exerciseId"
@@ -681,7 +754,7 @@
                            customClass="w-8 h-8 rounded-xl border border-zinc-800" />
             <div class="text-left">
               <div class="leading-tight">{{ addon.name }}</div>
-              <div class="text-[10px] font-normal text-amber-500/90 font-mono mt-0.5">{{ addon.tag || addon.targetReps }}</div>
+              <div class="text-[11px] font-normal text-amber-500/90 font-mono mt-0.5">{{ addon.tag || addon.targetReps }}</div>
             </div>
             <span class="text-amber-500 font-black text-base ml-1">+</span>
           </button>
@@ -710,7 +783,7 @@
               </span>
               <div>
                 <div class="text-xs font-bold text-zinc-200">{{ log.planName }}</div>
-                <div class="text-[10px] text-zinc-400 font-mono mt-0.5">
+                <div class="text-[11px] text-zinc-400 font-mono mt-0.5">
                   {{ log.date }} · {{ Math.round((log.durationSeconds || 60) / 60) }}分钟 · {{ log.totalSets }}组
                 </div>
               </div>
@@ -725,6 +798,15 @@
   </Transition>
 
     <!-- Modals -->
+    <!-- Gym Machine Multimodal Finder Modal -->
+    <GymMachineFinderModal
+      :visible="showMachineFinder"
+      :replace-index="machineFinderReplaceIndex"
+      @close="showMachineFinder = false"
+      @select="handleMachineFinderSelect"
+      @view-detail="openExerciseDetail"
+    />
+
     <!-- 1. Exercise Picker for adding to active workout -->
     <ExercisePickerModal 
       :visible="showAddExerciseModal" 
@@ -921,6 +1003,8 @@ import {
   addExerciseToActiveWorkout, 
   replaceExerciseInActiveWorkout, 
   removeExerciseFromActiveWorkout,
+  moveActiveWorkoutExercise,
+  pinActiveWorkoutExercise,
   setTodayAsCycleIndex,
   shiftCycleDays,
   getLastExercisePerformance,
@@ -935,8 +1019,10 @@ import {
   STRENGTH_LEVEL_CONFIGS,
   uid
 } from "../store/fitnessStore.js";
+import { calculateSupercompensationStatus } from "../engine/dopamineFeedbackEngine.js";
 import { SPLIT_RECOMMENDED_ADDONS } from "../data/defaultPlans.js";
 import ExercisePickerModal from "../components/ExercisePickerModal.vue";
+import GymMachineFinderModal from "../components/GymMachineFinderModal.vue";
 import ExerciseDetailModal from "../components/ExerciseDetailModal.vue";
 import CycleEditorModal from "../components/CycleEditorModal.vue";
 import WorkoutSummaryModal from "../components/WorkoutSummaryModal.vue";
@@ -953,6 +1039,8 @@ import { triggerHaptic } from "../utils/vibrate.js";
 const showAddExerciseModal = ref(false);
 const showSwapModal = ref(false);
 const swapTargetIdx = ref(null);
+const showMachineFinder = ref(false);
+const machineFinderReplaceIndex = ref(-1);
 const showExerciseDetailModal = ref(false);
 const selectedExerciseDetail = ref(null);
 const showCycleEditorModal = ref(false);
@@ -1039,6 +1127,11 @@ const elapsedFormatted = computed(() => {
 
 const todayCycle = computed(() => {
   return getCycleDayForDate();
+});
+
+const todayRestSupercomp = computed(() => {
+  const lastTimestamp = store.workoutLogs?.[0]?.completedAt || store.workoutLogs?.[0]?.date || Date.now();
+  return calculateSupercompensationStatus(lastTimestamp);
 });
 
 const currentPlan = computed(() => {
@@ -1496,6 +1589,25 @@ function handleSwapExerciseSelected(newEx) {
 
 function handleAddExerciseSelected(newEx) {
   addExerciseToActiveWorkout(newEx);
+}
+
+function openMachineFinder(replaceIdx = -1) {
+  machineFinderReplaceIndex.value = replaceIdx;
+  showMachineFinder.value = true;
+}
+
+function handleMachineFinderSelect(exercise) {
+  if (machineFinderReplaceIndex.value >= 0 && store.activeWorkout) {
+    replaceExerciseInActiveWorkout(machineFinderReplaceIndex.value, exercise);
+    machineFinderReplaceIndex.value = -1;
+  } else if (store.activeWorkout) {
+    addExerciseToActiveWorkout(exercise);
+  } else {
+    const plan = getTodayPlan();
+    if (plan) {
+      addExerciseToPlan(plan.id, exercise);
+    }
+  }
 }
 
 function openExerciseDetail(ex) {

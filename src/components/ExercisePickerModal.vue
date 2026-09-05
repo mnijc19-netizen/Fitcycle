@@ -31,6 +31,20 @@
 
       <!-- Search and Filter Tabs -->
       <div class="p-3 border-b border-zinc-800/60 space-y-2 flex-shrink-0">
+        <!-- Prominent Multimodal Machine Finder Trigger Button -->
+        <button @click="showMachineFinder = true"
+                class="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500/15 via-amber-500/25 to-amber-500/15 hover:from-amber-500/25 hover:to-amber-500/35 border border-amber-500/40 text-xs font-black flex items-center justify-between transition-all active:scale-98 cursor-pointer shadow-xs"
+                :class="store.settings.themeMode === 'light' ? 'text-amber-950' : 'text-amber-300'">
+          <span class="flex items-center gap-2">
+            <span class="text-sm">📸</span>
+            <span>拍照 / 语音秒找未知器械</span>
+          </span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500 text-zinc-950 flex items-center gap-1 shadow-sm">
+            <span>智能识别</span>
+            <span>→</span>
+          </span>
+        </button>
+
         <div class="relative">
           <input v-model="searchQuery" 
                  type="text" 
@@ -58,45 +72,157 @@
       <!-- Exercise List -->
       <div class="overflow-y-auto flex-1 p-3 space-y-2 overscroll-contain"
            style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
-        <div v-for="ex in filteredExercises" :key="ex.id"
-             @click="selectExercise(ex)"
-             class="p-2.5 rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-3"
-             :class="store.settings.themeMode === 'light' ? 'bg-slate-50 hover:bg-slate-100 border border-slate-200 shadow-xs' : 'bg-zinc-950/60 hover:bg-zinc-800/70 active:bg-zinc-800 border border-zinc-800/80 hover:border-amber-500/50'">
-          
-          <!-- 3D Thumbnail with Zero-Broken fallback -->
-          <ExerciseImage :src="ex.gifUrl" 
-                         :name="ex.name" 
-                         :category="ex.category" 
-                         :target="ex.target" 
-                         customClass="w-12 h-12 rounded-xl border border-zinc-800 flex-shrink-0" />
 
-
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-sm truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</span>
-              <span class="text-[10px] px-1.5 py-0.5 rounded border flex-shrink-0"
-                    :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-zinc-800 text-amber-400 border-zinc-700/50'">
-                {{ ex.category }}
-              </span>
+        <!-- 1. Behavioral Memory Pool Grouping (When activeCategory === '⭐常用偏好' and not searching) -->
+        <div v-if="activeCategory === '⭐常用偏好' && !searchQuery.trim()" class="space-y-4">
+          <!-- Pinned Exercises -->
+          <div v-if="memoryPool.pinned && memoryPool.pinned.length > 0" class="space-y-1.5">
+            <div class="flex items-center gap-1.5 text-xs font-bold"
+                 :class="store.settings.themeMode === 'light' ? 'text-amber-900' : 'text-amber-400'">
+              <span>📌</span>
+              <span>置顶动作 (Pinned)</span>
+              <span class="text-[10px] font-mono opacity-80">({{ memoryPool.pinned.length }})</span>
             </div>
-            <div class="text-xs mt-0.5 flex items-center gap-1 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
-              <span :class="store.settings.themeMode === 'light' ? 'text-slate-500 font-bold' : 'text-zinc-500'">目标:</span>
-              <span class="truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">{{ ex.target }}</span>
-            </div>
-            <div v-if="ex.substitutes?.length" class="text-[9px] mt-0.5 font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400/90'">
-              含 {{ ex.substitutes.length }} 个平替推荐
+            <div class="space-y-1.5">
+              <div v-for="ex in memoryPool.pinned" :key="'pin-' + ex.id"
+                   @click="selectExercise(ex)"
+                   class="p-2.5 rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-3 border"
+                   :class="store.settings.themeMode === 'light' ? 'bg-amber-50/70 hover:bg-amber-100 border-amber-300 shadow-xs' : 'bg-zinc-950/80 hover:bg-zinc-850 border-amber-500/40'">
+                <ExerciseImage :src="ex.gifUrl" :name="ex.name" :category="ex.category" :target="ex.target" customClass="w-12 h-12 rounded-xl border border-zinc-800 flex-shrink-0" />
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-sm truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded border flex-shrink-0"
+                          :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-zinc-800 text-amber-400 border-zinc-700/50'">{{ ex.category }}</span>
+                  </div>
+                  <div class="text-xs mt-0.5 flex items-center gap-1 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+                    <span :class="store.settings.themeMode === 'light' ? 'text-slate-500 font-bold' : 'text-zinc-500'">目标:</span>
+                    <span class="truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">{{ ex.target }}</span>
+                  </div>
+                </div>
+                <button class="px-3 py-1.5 text-xs rounded-xl border font-bold flex-shrink-0"
+                        :class="store.settings.themeMode === 'light' ? 'bg-amber-500 text-zinc-950 border-amber-500' : 'bg-amber-500 text-zinc-950 border-amber-500'">选择</button>
+              </div>
             </div>
           </div>
 
-          <button class="px-3 py-1.5 text-xs rounded-xl border transition-colors flex-shrink-0 cursor-pointer"
-                  :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 hover:bg-amber-500 text-amber-800 hover:text-zinc-950 border-amber-500/50 font-black' : 'bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-zinc-950 font-bold border-amber-500/30'">
-            选择
-          </button>
+          <!-- Frequent Exercises -->
+          <div v-if="memoryPool.frequent && memoryPool.frequent.length > 0" class="space-y-1.5">
+            <div class="flex items-center gap-1.5 text-xs font-bold"
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
+              <span>🔥</span>
+              <span>高频常练 (Frequent)</span>
+              <span class="text-[10px] font-mono opacity-80">({{ memoryPool.frequent.length }})</span>
+            </div>
+            <div class="space-y-1.5">
+              <div v-for="ex in memoryPool.frequent" :key="'freq-' + ex.id"
+                   @click="selectExercise(ex)"
+                   class="p-2.5 rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-3 border"
+                   :class="store.settings.themeMode === 'light' ? 'bg-slate-50 hover:bg-slate-100 border-slate-200 shadow-xs' : 'bg-zinc-950/60 hover:bg-zinc-800/70 border-zinc-800/80'">
+                <ExerciseImage :src="ex.gifUrl" :name="ex.name" :category="ex.category" :target="ex.target" customClass="w-12 h-12 rounded-xl border border-zinc-800 flex-shrink-0" />
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-sm truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded border flex-shrink-0"
+                          :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-zinc-800 text-amber-400 border-zinc-700/50'">{{ ex.category }}</span>
+                  </div>
+                  <div class="text-xs mt-0.5 flex items-center gap-1 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+                    <span :class="store.settings.themeMode === 'light' ? 'text-slate-500 font-bold' : 'text-zinc-500'">目标:</span>
+                    <span class="truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">{{ ex.target }}</span>
+                  </div>
+                </div>
+                <button class="px-3 py-1.5 text-xs rounded-xl border transition-colors flex-shrink-0"
+                        :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 hover:bg-amber-500 text-amber-800 hover:text-zinc-950 border-amber-500/50 font-black' : 'bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-zinc-950 font-bold border-amber-500/30'">选择</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Exercises -->
+          <div v-if="memoryPool.recent && memoryPool.recent.length > 0" class="space-y-1.5">
+            <div class="flex items-center gap-1.5 text-xs font-bold"
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
+              <span>⏱️</span>
+              <span>最近练过 (Recent)</span>
+              <span class="text-[10px] font-mono opacity-80">({{ memoryPool.recent.length }})</span>
+            </div>
+            <div class="space-y-1.5">
+              <div v-for="ex in memoryPool.recent" :key="'rec-' + ex.id"
+                   @click="selectExercise(ex)"
+                   class="p-2.5 rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-3 border"
+                   :class="store.settings.themeMode === 'light' ? 'bg-slate-50 hover:bg-slate-100 border-slate-200 shadow-xs' : 'bg-zinc-950/60 hover:bg-zinc-800/70 border-zinc-800/80'">
+                <ExerciseImage :src="ex.gifUrl" :name="ex.name" :category="ex.category" :target="ex.target" customClass="w-12 h-12 rounded-xl border border-zinc-800 flex-shrink-0" />
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-sm truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded border flex-shrink-0"
+                          :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-zinc-800 text-amber-400 border-zinc-700/50'">{{ ex.category }}</span>
+                  </div>
+                  <div class="text-xs mt-0.5 flex items-center gap-1 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+                    <span :class="store.settings.themeMode === 'light' ? 'text-slate-500 font-bold' : 'text-zinc-500'">目标:</span>
+                    <span class="truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">{{ ex.target }}</span>
+                  </div>
+                </div>
+                <button class="px-3 py-1.5 text-xs rounded-xl border transition-colors flex-shrink-0"
+                        :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 hover:bg-amber-500 text-amber-800 hover:text-zinc-950 border-amber-500/50 font-black' : 'bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-zinc-950 font-bold border-amber-500/30'">选择</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty Memory Pool Notice -->
+          <div v-if="(!memoryPool.pinned || memoryPool.pinned.length === 0) && (!memoryPool.frequent || memoryPool.frequent.length === 0) && (!memoryPool.recent || memoryPool.recent.length === 0)"
+               class="p-6 text-center space-y-2 border border-dashed rounded-2xl"
+               :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300 text-slate-600' : 'bg-zinc-950/60 border-zinc-800 text-zinc-400'">
+            <div class="text-2xl">⭐</div>
+            <div class="font-bold text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-200'">
+              尚无训练历史偏好
+            </div>
+            <p class="text-[11px] leading-relaxed max-w-xs mx-auto">
+              完成日常训练打卡或置顶动作后，系统将在此优先为您推荐；您也可以点击上方【⭐新手黄金】或【全部】直接挑选。
+            </p>
+          </div>
         </div>
 
-        <div v-if="filteredExercises.length === 0" class="py-8 text-center text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-500'">
-          没有找到匹配的动作，你可以直接创建自定义动作 👇
-        </div>
+        <!-- 2. Standard Category / Search Results List -->
+        <template v-else>
+          <div v-for="ex in filteredExercises" :key="ex.id"
+               @click="selectExercise(ex)"
+               class="p-2.5 rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-3"
+               :class="store.settings.themeMode === 'light' ? 'bg-slate-50 hover:bg-slate-100 border border-slate-200 shadow-xs' : 'bg-zinc-950/60 hover:bg-zinc-800/70 active:bg-zinc-800 border border-zinc-800/80 hover:border-amber-500/50'">
+            
+            <!-- 3D Thumbnail with Zero-Broken fallback -->
+            <ExerciseImage :src="ex.gifUrl" 
+                           :name="ex.name" 
+                           :category="ex.category" 
+                           :target="ex.target" 
+                           customClass="w-12 h-12 rounded-xl border border-zinc-800 flex-shrink-0" />
+
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-sm truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded border flex-shrink-0"
+                      :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-zinc-800 text-amber-400 border-zinc-700/50'">
+                  {{ ex.category }}
+                </span>
+              </div>
+              <div class="text-xs mt-0.5 flex items-center gap-1 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+                <span :class="store.settings.themeMode === 'light' ? 'text-slate-500 font-bold' : 'text-zinc-500'">目标:</span>
+                <span class="truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">{{ ex.target }}</span>
+              </div>
+              <div v-if="ex.substitutes?.length" class="text-[9px] mt-0.5 font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400/90'">
+                含 {{ ex.substitutes.length }} 个平替推荐
+              </div>
+            </div>
+
+            <button class="px-3 py-1.5 text-xs rounded-xl border transition-colors flex-shrink-0 cursor-pointer"
+                    :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 hover:bg-amber-500 text-amber-800 hover:text-zinc-950 border-amber-500/50 font-black' : 'bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-zinc-950 font-bold border-amber-500/30'">
+              选择
+            </button>
+          </div>
+
+          <div v-if="filteredExercises.length === 0" class="py-8 text-center text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-500'">
+            没有找到匹配的动作，你可以直接创建自定义动作 👇
+          </div>
+        </template>
       </div>
 
       <!-- Footer: Quick Add Custom Exercise -->
@@ -123,7 +249,7 @@
           <div>
             <label class="text-xs text-zinc-400 font-medium">所属肌群</label>
             <div class="grid grid-cols-4 gap-1.5 mt-1">
-              <button v-for="c in categories.filter(x => x !== '全部' && x !== '⭐新手黄金')" :key="c"
+              <button v-for="c in categories.filter(x => x !== '全部' && x !== '⭐新手黄金' && x !== '⭐常用偏好')" :key="c"
                       type="button"
                       @click="newEx.category = c"
                       class="py-1.5 text-xs rounded-lg border text-center"
@@ -152,6 +278,13 @@
 
       </div>
     </div>
+
+    <!-- Gym Machine Multimodal Finder Sub-modal -->
+    <GymMachineFinderModal 
+      :visible="showMachineFinder" 
+      @close="showMachineFinder = false" 
+      @select="handleMachineFinderSelect" 
+    />
   </Teleport>
 </template>
 
@@ -159,6 +292,8 @@
 import { ref, computed, watch, onUnmounted } from "vue";
 import { store, uid } from "../store/fitnessStore.js";
 import ExerciseImage from "./ExerciseImage.vue";
+import GymMachineFinderModal from "./GymMachineFinderModal.vue";
+import { getExerciseMemoryPool } from "../engine/exerciseMemoryEngine.js";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 
 const props = defineProps({
@@ -178,9 +313,14 @@ onUnmounted(() => {
   if (props.visible) unlockBodyScroll();
 });
 
+const showMachineFinder = ref(false);
 const searchQuery = ref("");
-const activeCategory = ref("⭐新手黄金");
-const categories = ["⭐新手黄金", "全部", "胸部", "背部", "肩部", "腿部", "手臂", "核心", "有氧", "其它"];
+const activeCategory = ref("⭐常用偏好");
+const categories = ["⭐常用偏好", "⭐新手黄金", "全部", "胸部", "背部", "肩部", "腿部", "手臂", "核心", "有氧", "其它"];
+
+const memoryPool = computed(() => {
+  return getExerciseMemoryPool(store.workoutLogs, store.pinnedExerciseIds, store.exercises);
+});
 
 const NOVICE_GOLDEN_IDS = new Set([
   "ex-incline-db-bench",
@@ -210,10 +350,10 @@ const newEx = ref({
 const filteredExercises = computed(() => {
   return store.exercises.filter(ex => {
     let matchCat = false;
-    if (activeCategory.value === "⭐新手黄金") {
-      matchCat = NOVICE_GOLDEN_IDS.has(ex.id) || (ex.tags && (ex.tags.includes("核心动作") || ex.tags.includes("拉伸区肥大")));
-    } else if (activeCategory.value === "全部") {
+    if (activeCategory.value === "⭐常用偏好" || activeCategory.value === "全部") {
       matchCat = true;
+    } else if (activeCategory.value === "⭐新手黄金") {
+      matchCat = NOVICE_GOLDEN_IDS.has(ex.id) || (ex.tags && (ex.tags.includes("核心动作") || ex.tags.includes("拉伸区肥大")));
     } else {
       matchCat = ex.category === activeCategory.value;
     }
@@ -230,6 +370,12 @@ const filteredExercises = computed(() => {
 });
 
 function selectExercise(ex) {
+  emit("select", ex);
+  emit("close");
+}
+
+function handleMachineFinderSelect(ex) {
+  showMachineFinder.value = false;
   emit("select", ex);
   emit("close");
 }

@@ -13,7 +13,7 @@
         <span>$16,000</span>
       </div>
 
-      <div class="max-w-lg mx-auto px-3.5 pb-2.5 flex items-center justify-between gap-2">
+      <div class="max-w-lg mx-auto px-2.5 sm:px-3.5 pb-2.5 flex items-center justify-between gap-1.5 sm:gap-2">
         
         <!-- Left: FitCycle Brandmark -->
         <div class="flex items-center gap-2 cursor-pointer active:scale-95 transition-transform flex-shrink-0" 
@@ -32,16 +32,16 @@
         </div>
 
         <!-- Right: Ergonomic Utility Controls & Telemetry -->
-        <div class="flex items-center gap-2 flex-shrink-0">
+        <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
           
           <!-- Workout in Progress Status Indicator -->
           <button v-if="store.activeWorkout" 
                   @click="store.activeTab = 'today'"
                   type="button"
-                  class="h-8 px-2.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 animate-pulse active:scale-95 cursor-pointer shadow-sm"
+                  class="navbar-workout-capsule h-8 px-2 sm:px-2.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-sm flex-shrink-0"
                   :class="store.settings.themeMode === 'light' ? 'text-emerald-700' : 'text-emerald-400'">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span class="text-[11px] font-sans">训练中</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
+            <span class="navbar-workout-text hidden xs:inline text-[11px] font-sans">训练中</span>
           </button>
 
           <!-- Light / Dark Mode Toggle (Apple / Linear Grade Vector SVG) -->

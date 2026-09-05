@@ -60,10 +60,10 @@
       </div>
 
       <!-- Calendar Days Grid -->
-      <div class="grid grid-cols-7 gap-1.5">
+      <div class="grid grid-cols-7 gap-1 sm:gap-1.5">
         <div v-for="(cell, idx) in calendarCells" :key="idx"
              @click="cell.dateStr && selectDate(cell.dateStr)"
-             class="aspect-square rounded-2xl flex flex-col items-center justify-between p-1 transition-all cursor-pointer relative select-none"
+             class="aspect-square rounded-xl sm:rounded-2xl flex flex-col items-center justify-between p-0.5 sm:p-1 transition-all cursor-pointer relative select-none"
              :class="[
                !cell.dateStr ? 'opacity-0 pointer-events-none' : '',
                selectedDateStr === cell.dateStr 
@@ -73,7 +73,7 @@
              ]">
           
           <!-- Day number -->
-          <span class="text-[11px] font-mono leading-none"
+          <span class="text-[10px] sm:text-[11px] font-mono leading-none"
                 :class="[
                   cell.isToday 
                     ? (store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400 font-bold') 
@@ -86,7 +86,7 @@
           <div class="w-full flex items-center justify-center my-auto">
             <!-- If logged -->
             <span v-if="cell.hasLog" 
-                  class="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black shadow-sm"
+                  class="w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center text-[8px] sm:text-[9px] font-black shadow-sm"
                   :class="[
                     cell.logColor === 'amber' ? 'bg-amber-500 text-zinc-950 shadow-amber-500/20' :
                     cell.logColor === 'sky' ? 'bg-sky-500 text-zinc-950 shadow-sky-500/20' :

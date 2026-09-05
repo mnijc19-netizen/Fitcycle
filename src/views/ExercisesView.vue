@@ -33,14 +33,39 @@
 
     <!-- Search & Filter Bar (Natural Scroll, Zero Viewport Obstruction) -->
     <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-3 space-y-2.5 shadow-md">
-      <div class="relative">
-        <div class="absolute left-3.5 top-2.5 text-zinc-500 text-xs">🔍</div>
-        <input v-model="searchQuery" 
-               type="text" 
-               placeholder="搜索动作名称、英文、别名、目标肌群..." 
-               class="w-full rounded-xl pl-9 pr-8 py-2 text-xs transition-colors focus:outline-none focus:border-amber-500"
-               :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border border-slate-300 text-slate-900 placeholder-slate-400' : 'bg-zinc-950 border border-zinc-700/80 text-zinc-100 placeholder-zinc-500'" />
-        <span v-if="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-2 text-xs text-zinc-400 hover:text-white cursor-pointer">✕</span>
+      <!-- Multimodal Gym Machine Finder Quick Entry -->
+      <button @click="showMachineFinder = true"
+              class="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500/15 via-amber-500/25 to-amber-500/15 hover:from-amber-500/25 hover:to-amber-500/35 border border-amber-500/40 text-xs font-black flex items-center justify-between transition-all active:scale-98 cursor-pointer shadow-xs"
+              :class="store.settings.themeMode === 'light' ? 'text-amber-950' : 'text-amber-300'">
+        <span class="flex items-center gap-2">
+          <span class="text-sm">📸</span>
+          <span>拍照 / 语音智能识器械</span>
+        </span>
+        <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500 text-zinc-950 flex items-center gap-1 shadow-sm">
+          <span>秒识 109 动作</span>
+          <span>→</span>
+        </span>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <div class="relative flex-1">
+          <div class="absolute left-3.5 top-2.5 text-zinc-500 text-xs">🔍</div>
+          <input v-model="searchQuery" 
+                 type="text" 
+                 placeholder="搜索动作名称、英文、别名、目标肌群..." 
+                 class="w-full rounded-xl pl-9 pr-8 py-2 text-xs transition-colors focus:outline-none focus:border-amber-500"
+                 :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border border-slate-300 text-slate-900 placeholder-slate-400' : 'bg-zinc-950 border border-zinc-700/80 text-zinc-100 placeholder-zinc-500'" />
+          <span v-if="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-2 text-xs text-zinc-400 hover:text-white cursor-pointer">✕</span>
+        </div>
+
+        <!-- Inline Camera/Voice trigger button next to search bar -->
+        <button @click="showMachineFinder = true" 
+                title="拍照/语音智能识器械"
+                class="px-2.5 py-2 rounded-xl text-xs font-black border transition-all active:scale-95 cursor-pointer flex items-center gap-1 flex-shrink-0"
+                :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300' : 'bg-zinc-950 hover:bg-zinc-800 text-amber-400 border-zinc-700/80'">
+          <span>📸</span>
+          <span class="hidden sm:inline">识器械</span>
+        </button>
       </div>
 
       <!-- Categories Pills with Real-Time Counts -->
@@ -154,6 +179,14 @@
       @close="showDetailModal = false" 
     />
 
+    <!-- Gym Machine Multimodal Finder Modal -->
+    <GymMachineFinderModal
+      :visible="showMachineFinder"
+      @close="showMachineFinder = false"
+      @select="handleMachineFinderSelect"
+      @viewDetail="handleMachineFinderDetail"
+    />
+
     <!-- Quick Create Modal -->
     <Teleport to="body">
       <div v-if="showCreateModal" 
@@ -220,11 +253,13 @@
 import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { store, uid } from "../store/fitnessStore.js";
 import ExerciseDetailModal from "../components/ExerciseDetailModal.vue";
+import GymMachineFinderModal from "../components/GymMachineFinderModal.vue";
 import ExerciseImage from "../components/ExerciseImage.vue";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import { triggerHaptic } from "../utils/vibrate.js";
 import { getUniversalScrollTop, universalScrollToTop } from "../utils/scrollUtils.js";
 
+const showMachineFinder = ref(false);
 const searchQuery = ref("");
 const activeCategory = ref("全部");
 const categories = ["全部", "胸部", "背部", "肩部", "手臂", "腿部", "核心", "有氧", "其它"];
@@ -302,6 +337,16 @@ const filteredExercises = computed(() => {
 function openExerciseDetail(ex) {
   selectedExercise.value = ex;
   showDetailModal.value = true;
+}
+
+function handleMachineFinderSelect(exercise) {
+  showMachineFinder.value = false;
+  openExerciseDetail(exercise);
+}
+
+function handleMachineFinderDetail(exercise) {
+  showMachineFinder.value = false;
+  openExerciseDetail(exercise);
 }
 
 function openCreateExercise() {
