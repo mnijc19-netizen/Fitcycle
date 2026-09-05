@@ -465,10 +465,10 @@
             ⚡
           </div>
           <div class="min-w-0">
-            <h4 class="text-xs font-black truncate">
+            <h4 class="text-xs font-black">
               设定力量水平（新手/中坚/老手）
             </h4>
-            <p class="text-[10px] mt-0.5 truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-900/80' : 'text-zinc-400'">
+            <p class="text-[10px] mt-0.5 leading-snug" :class="store.settings.themeMode === 'light' ? 'text-amber-900/80' : 'text-zinc-400'">
               自适应推拉腿起步组重，老铁无需从空杆逐组重填
             </p>
           </div>
@@ -480,7 +480,8 @@
       </div>
 
       <!-- Tactical Readiness & Recovery Card -->
-      <div class="p-3.5 rounded-2xl bg-zinc-900/90 border border-zinc-800 text-xs space-y-2 shadow-md">
+      <div class="p-3.5 rounded-2xl border text-xs space-y-2 shadow-md transition-colors"
+           :class="store.settings.themeMode === 'light' ? 'bg-white/95 border-slate-200/90 shadow-sm' : 'bg-zinc-900/90 border-zinc-800'">
         <!-- Deload Shield Active Banner -->
         <div v-if="honorData.isDeloadActive" class="space-y-1.5">
           <div class="flex items-center justify-between gap-2">
@@ -499,40 +500,79 @@
         </div>
 
         <!-- Normal Readiness State -->
-        <div v-else class="space-y-1.5">
+        <div v-else class="space-y-2">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-1.5">
-              <span class="w-1.5 h-1.5 rounded-full"
+              <span class="w-2 h-2 rounded-full"
                     :class="[
                       timeSinceLastWorkout.urgencyLevel === 'danger' ? 'bg-red-500 animate-pulse' :
                       timeSinceLastWorkout.urgencyLevel === 'warn' ? 'bg-amber-400' : 'bg-emerald-400'
                     ]"></span>
-              <span class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">{{ timeSinceLastWorkout.title }}</span>
+              <span class="font-bold text-xs tracking-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">{{ timeSinceLastWorkout.title }}</span>
             </div>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full"
+            <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border"
                   :class="[
-                    timeSinceLastWorkout.urgencyLevel === 'danger' ? 'bg-red-500/20 text-red-400' :
-                    timeSinceLastWorkout.urgencyLevel === 'warn' ? 'bg-amber-500/20 text-amber-400' :
-                    'bg-emerald-500/20 text-emerald-400'
+                    timeSinceLastWorkout.urgencyLevel === 'danger' ? 'bg-red-500/15 border-red-500/30 text-red-400' :
+                    timeSinceLastWorkout.urgencyLevel === 'warn' ? 'bg-amber-500/15 border-amber-500/30 text-amber-400' :
+                    'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
                   ]">
               {{ timeSinceLastWorkout.badge }}
             </span>
           </div>
 
-          <div class="grid grid-cols-2 gap-2 text-[11px] pt-1">
-            <div class="p-2 rounded-xl bg-zinc-950/70 border border-zinc-800/80">
-              <div class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-700 font-bold' : 'text-zinc-500'">怠惰计时</div>
-              <div class="font-medium truncate mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-bold' : 'text-zinc-200'">{{ timeSinceLastWorkout.subText }}</div>
+          <!-- Dual Telemetry Pods (Ergonomic, High-Glanceability, Zero-Truncation) -->
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <!-- Pod 1: 怠惰计时 / 训练间隔 -->
+            <div class="p-2.5 rounded-xl border flex flex-col justify-between gap-1 transition-all"
+                 :class="store.settings.themeMode === 'light' ? 'bg-slate-100/90 border-slate-200/90 shadow-xs' : 'bg-zinc-950/70 border-zinc-800/80'">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono font-medium" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">怠惰计时</span>
+                <span class="text-[9px] font-mono px-1 rounded" :class="store.settings.themeMode === 'light' ? 'bg-slate-200/80 text-slate-700' : 'bg-zinc-900 text-zinc-400'">时钟</span>
+              </div>
+              <div class="text-sm font-black font-mono tracking-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">
+                {{ timeSinceLastWorkout.timeStr || '刚刚' }}
+              </div>
+              <div class="text-[10px] font-medium leading-none"
+                   :class="[
+                     timeSinceLastWorkout.urgencyLevel === 'danger' ? 'text-red-400' :
+                     timeSinceLastWorkout.urgencyLevel === 'warn' ? 'text-amber-400' :
+                     (store.settings.themeMode === 'light' ? 'text-emerald-700' : 'text-emerald-400')
+                   ]">
+                {{ timeSinceLastWorkout.statusLabel }}
+              </div>
             </div>
-            <div class="p-2 rounded-xl bg-zinc-950/70 border border-zinc-800/80">
-              <div class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-700 font-bold' : 'text-zinc-500'">肌群状态</div>
-              <div class="font-medium truncate mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-bold' : 'text-zinc-200'">{{ splitRecoveryInfo.desc }}</div>
+
+            <!-- Pod 2: 肌群状态 / 专项恢复 -->
+            <div class="p-2.5 rounded-xl border flex flex-col justify-between gap-1 transition-all"
+                 :class="store.settings.themeMode === 'light' ? 'bg-slate-100/90 border-slate-200/90 shadow-xs' : 'bg-zinc-950/70 border-zinc-800/80'">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono font-medium" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">肌群状态</span>
+                <span class="text-[9px] font-mono px-1 rounded" :class="store.settings.themeMode === 'light' ? 'bg-slate-200/80 text-slate-700' : 'bg-zinc-900 text-zinc-400'">恢复</span>
+              </div>
+              <div class="text-sm font-black font-mono tracking-tight text-amber-500">
+                {{ splitRecoveryInfo.status }}
+              </div>
+              <div class="text-[10px] font-medium leading-none" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+                {{ splitRecoveryInfo.timeLabel }}
+              </div>
             </div>
+          </div>
+
+          <!-- Full Scientific Telemetry Insight (Breathable, 100% Un-truncated) -->
+          <div class="p-2 rounded-xl border flex items-start gap-1.5 text-[11px] leading-relaxed transition-all"
+               :class="store.settings.themeMode === 'light'
+                 ? 'bg-amber-50/70 border-amber-200/80 text-amber-950' 
+                 : 'bg-zinc-950/40 border-zinc-800/60 text-zinc-300'">
+            <span class="text-amber-500 font-black text-xs leading-tight flex-shrink-0">✦</span>
+            <p class="font-normal break-words leading-tight flex-1">
+              {{ timeSinceLastWorkout.insight }}
+            </p>
           </div>
         </div>
 
         <!-- Honor Rank & Body Metrics Launchers -->
-        <div class="pt-1.5 border-t border-zinc-800/80 flex items-center justify-between gap-2">
+        <div class="pt-1.5 border-t flex items-center justify-between gap-2"
+             :class="store.settings.themeMode === 'light' ? 'border-slate-200/80' : 'border-zinc-800/80'">
           <button @click="showHonorModal = true" 
                   class="flex-1 py-1.5 px-2.5 rounded-xl border text-[11px] font-mono flex items-center justify-between transition-all cursor-pointer"
                   :class="store.settings.themeMode === 'light'
@@ -558,7 +598,8 @@
       </div>
 
       <!-- Modern Segmented Cycle Stepper (32px Slim) -->
-      <div class="p-1 rounded-2xl bg-zinc-900/90 border border-zinc-800">
+      <div class="p-1 rounded-2xl border transition-colors"
+           :class="store.settings.themeMode === 'light' ? 'bg-slate-200/70 border-slate-300/80 shadow-xs' : 'bg-zinc-900/90 border-zinc-800'">
         <div class="grid grid-cols-4 gap-1">
           <button v-for="(day, idx) in store.activeCycle.days" :key="idx"
                   @click="setTodayAsIndex(idx)"
@@ -1038,6 +1079,9 @@ const timeSinceLastWorkout = computed(() => {
       badge: "新兵报到",
       title: "首训档案待激活",
       urgencyLevel: "fresh",
+      timeStr: "首训待开",
+      statusLabel: "0~72h 安全期",
+      insight: "尚未记录过训练，完成首场特训打卡即可激活战力排位与超量恢复时钟！",
       subText: "尚未记录过训练，立即开启你的第一场特训打卡！"
     };
   }
@@ -1065,7 +1109,9 @@ const timeSinceLastWorkout = computed(() => {
       badge: "⚡ 刚刚练完",
       title: "超量恢复中",
       urgencyLevel: "fresh",
-      timeStr,
+      timeStr: `${timeStr}`,
+      statusLabel: "超量合成 · 0扣分",
+      insight: `距上次打卡已过 ${timeStr}。肌原纤维与神经中枢正在超量合成重组中，请保证充沛睡眠与蛋白质摄入。`,
       subText: `距上次训练已过 ${timeStr} · 肌原纤维超量合成中`
     };
   } else if (diffHours < 48) {
@@ -1074,7 +1120,9 @@ const timeSinceLastWorkout = computed(() => {
       badge: "🔥 黄金战备",
       title: "精力已满血",
       urgencyLevel: "ready",
-      timeStr,
+      timeStr: `${timeStr}`,
+      statusLabel: "满血蓄势 · 适宜重载",
+      insight: `距上次打卡已过 ${timeStr}。中枢神经疲劳已完全代谢，肌糖原重装充沛，正处于巅峰突破窗口！`,
       subText: `距上次训练已过 ${timeStr} · 神经与肌糖原已充沛，适宜重装开练！`
     };
   } else if (diffHours < 72) {
@@ -1083,16 +1131,20 @@ const timeSinceLastWorkout = computed(() => {
       badge: "⚠️ 催练警报",
       title: "神经募集下降中",
       urgencyLevel: "warn",
-      timeStr,
+      timeStr: `${timeStr}`,
+      statusLabel: "72h临界 · 建议开练",
+      insight: `你已经 ${timeStr} 没练了！运动神经募集感正在衰减，建议今日内开练以保持渐进做工节律。`,
       subText: `你已经 ${timeStr} 没练了！募集感正在衰减，建议立即归队！`
     };
   } else {
     return {
       hasHistory: true,
       badge: "🚨 严重怠惰",
-      title: "枪膛已冷 · 速速开练",
+      title: "战力衰减中",
       urgencyLevel: "danger",
-      timeStr,
+      timeStr: `${timeStr}`,
+      statusLabel: "怠惰扣分 · 速速开练",
+      insight: `已严重怠惰超 72 小时！战力分按天递减扣除中，立即开练可触发反弹保护，挽回荣誉！`,
       subText: `你已经 ${timeStr} 没练了！肌肉正在消退，枪膛已冷，速速开练！`
     };
   }
@@ -1105,8 +1157,10 @@ const splitRecoveryInfo = computed(() => {
   
   if (cycle?.isRest) {
     return {
-      status: "休息与超量恢复",
-      desc: "今日为预设休息日 · 中枢神经与大肌群正在修复，可记录休息打卡"
+      status: "预设休息日",
+      timeLabel: "中枢超量修复",
+      desc: "今日为预设休息日 · 中枢神经与大肌群正在修复，可记录休息打卡",
+      insight: "今日为预设休息日，给神经中枢和深层筋膜充分的超量恢复时间，避免过度训练疲劳累积。"
     };
   }
 
@@ -1120,7 +1174,9 @@ const splitRecoveryInfo = computed(() => {
   if (!matchLog) {
     return {
       status: "首度开练",
-      desc: `暂无上次【${shortName}】历史记录 · 立即开练建立首训力量基准！`
+      timeLabel: `【${shortName}】建立基准`,
+      desc: `暂无上次【${shortName}】历史记录 · 立即开练建立首训力量基准！`,
+      insight: `暂无上次【${shortName}】训练记录，今天开练将为你录入首笔动作做工基准，开启渐进过载轨迹。`
     };
   }
 
@@ -1128,20 +1184,30 @@ const splitRecoveryInfo = computed(() => {
   const diffMs = Math.max(0, nowTimestamp.value - logTime);
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
   const diffDays = Math.floor(diffHours / 24);
-  const remHours = diffHours % 24;
   
-  const timeLabel = diffDays > 0 ? `${diffDays}天前` : `${diffHours}小时前`;
+  let timeLabel = "";
+  if (diffDays > 0) {
+    timeLabel = `${diffDays}天前`;
+  } else if (diffHours > 0) {
+    timeLabel = `${diffHours}小时前`;
+  } else {
+    timeLabel = "刚刚练完";
+  }
   const recoveryPercent = Math.min(100, Math.round((diffHours / 48) * 100));
 
   if (recoveryPercent >= 100) {
     return {
-      status: "100% 满血复活",
-      desc: `上次【${shortName}】是 ${timeLabel} · 靶向肌群已 100% 超量重组完成，蓄势待发！`
+      status: "100% 满血",
+      timeLabel: `上次【${shortName}】${timeLabel}`,
+      desc: `上次【${shortName}】是 ${timeLabel} · 靶向肌群已 100% 超量重组完成，蓄势待发！`,
+      insight: `上次【${shortName}】是 ${timeLabel}，靶向肌纤维已彻底重组完毕，状态绝佳，适宜冲击过载或加重！`
     };
   } else {
     return {
-      status: `恢复度 ${recoveryPercent}%`,
-      desc: `上次【${shortName}】是 ${timeLabel} · 恢复度 ${recoveryPercent}% (深层纤维修复中)`
+      status: `恢复 ${recoveryPercent}%`,
+      timeLabel: `上次【${shortName}】${timeLabel}`,
+      desc: `上次【${shortName}】是 ${timeLabel} · 恢复度 ${recoveryPercent}% (深层纤维修复中)`,
+      insight: `上次【${shortName}】是 ${timeLabel}，靶向肌群恢复进度约 ${recoveryPercent}%，建议合理热身并注意动作幅度。`
     };
   }
 });

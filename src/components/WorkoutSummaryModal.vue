@@ -25,7 +25,7 @@
       <h3 class="text-lg font-black text-zinc-100 tracking-tight relative z-10">
         训练打卡完成！
       </h3>
-      <p class="text-xs text-amber-400 font-medium mt-0.5 relative z-10 truncate">
+      <p class="text-xs text-amber-400 font-medium mt-0.5 relative z-10 px-2 break-words leading-tight">
         {{ summary?.planName || "今日训练" }}
       </p>
 
