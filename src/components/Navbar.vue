@@ -28,39 +28,18 @@
                   :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">
               FitCycle
             </span>
-            <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-md border leading-none tracking-wider uppercase"
-                  :class="badgeThemeClasses">
-              {{ themeBadgeText }}
-            </span>
           </div>
         </div>
 
         <!-- Right: Ergonomic Utility Controls & Telemetry -->
-        <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+        <div class="flex items-center gap-2 flex-shrink-0">
           
-          <!-- Interactive PTS Rank Capsule (Clickable -> Opens Honor Showcase) -->
-          <button @click="showHonorModal = true"
-                  type="button"
-                  title="查看我的战力天梯与排位"
-                  class="h-8 px-2.5 rounded-full border text-xs font-mono font-bold flex items-center gap-1 active:scale-95 transition-all cursor-pointer shadow-sm"
-                  :class="ptsPillClasses">
-            <span v-if="honorData.isDeloadActive" class="flex items-center gap-1 text-sky-400">
-              <span>🛡️</span>
-              <span class="text-[10px] font-sans">减载中</span>
-            </span>
-            <span v-else class="flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full" :class="store.settings.themeMode === 'light' ? 'bg-amber-600' : 'bg-amber-400 animate-pulse'"></span>
-              <span>{{ honorData.score }}</span>
-              <span class="text-[9px] opacity-70 font-sans">PTS</span>
-            </span>
-          </button>
-
           <!-- Workout in Progress Status Indicator -->
           <button v-if="store.activeWorkout" 
                   @click="store.activeTab = 'today'"
                   type="button"
-                  class="h-8 px-2.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 animate-pulse active:scale-95 cursor-pointer shadow-sm">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                  class="h-8 px-2.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 animate-pulse active:scale-95 cursor-pointer shadow-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             <span class="text-[11px] font-sans">训练中</span>
           </button>
 
@@ -74,13 +53,13 @@
             <span v-else class="text-xs leading-none">☀️</span>
           </button>
 
-          <!-- AI Coach Trigger Button (Prominent & Thumb-friendly) -->
+          <!-- AI Coach Trigger Button (Fully Visible & Ergonomic) -->
           <button @click="aiSession.drawerOpen = true"
                   type="button"
                   title="打开 FitCycle AI 智能教练"
-                  class="h-8 px-2.5 sm:px-3 rounded-full flex items-center gap-1 text-xs font-bold shadow-md active:scale-95 transition-all border cursor-pointer"
+                  class="h-8 px-3 rounded-full flex items-center gap-1.5 text-xs font-bold shadow-md active:scale-95 transition-all border cursor-pointer"
                   :class="aiButtonClasses">
-            <span class="text-xs text-amber-400 animate-pulse">✦</span>
+            <span class="text-xs text-amber-500 dark:text-amber-400 animate-pulse">✦</span>
             <span class="tracking-wide font-sans text-xs">AI 教练</span>
           </button>
         </div>
@@ -96,7 +75,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { store, getCycleDayForDate, getFullHonorProfile, toggleThemeMode } from "../store/fitnessStore.js";
+import { store, getCycleDayForDate, toggleThemeMode } from "../store/fitnessStore.js";
 import { aiSession } from "../ai/aiSession.js";
 import CycleEditorModal from "./CycleEditorModal.vue";
 import HonorShowcaseModal from "./HonorShowcaseModal.vue";
@@ -104,7 +83,6 @@ import RulesCodexModal from "./RulesCodexModal.vue";
 import FitCycleLogo from "./FitCycleLogo.vue";
 import { triggerHaptic } from "../utils/vibrate.js";
 
-const honorData = computed(() => getFullHonorProfile());
 const showCycleModal = ref(false);
 const showHonorModal = ref(false);
 const showRulesModal = ref(false);
@@ -112,29 +90,6 @@ const showRulesModal = ref(false);
 function handleToggleThemeMode() {
   toggleThemeMode();
 }
-
-const ptsPillClasses = computed(() => {
-  const isLight = store.settings.themeMode === "light";
-  const skin = store.settings.uiSkin;
-  if (skin === "cs") {
-    return isLight 
-      ? "bg-orange-500/10 hover:bg-orange-500/20 text-[#E04E00] border-orange-500/30" 
-      : "bg-orange-950/40 hover:bg-orange-900/50 text-orange-400 border-orange-500/30";
-  }
-  if (skin === "chamber") {
-    return isLight 
-      ? "bg-[#C5A059]/10 hover:bg-[#C5A059]/20 text-[#967232] border-[#C5A059]/30" 
-      : "bg-[#E5C378]/10 hover:bg-[#E5C378]/20 text-[#E5C378] border-[#E5C378]/30";
-  }
-  if (skin === "monochrome") {
-    return isLight 
-      ? "bg-neutral-100 hover:bg-neutral-200 text-neutral-900 border-neutral-300" 
-      : "bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border-neutral-700";
-  }
-  return isLight 
-    ? "bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 border-amber-500/30" 
-    : "bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border-amber-500/30";
-});
 
 const themeModeButtonClasses = computed(() => {
   const isLight = store.settings.themeMode === "light";
@@ -203,32 +158,6 @@ const logoFrameClasses = computed(() => {
   if (skin === "chamber") return isLight ? "bg-white border-[#C5A059]/40 shadow-sm" : "bg-[#0a1122] border-[#E5C378]/40 shadow-[#E5C378]/20";
   if (skin === "monochrome") return isLight ? "bg-white border-black/30 shadow-sm" : "bg-black border-white/40 shadow-sm";
   return isLight ? "bg-white border-amber-500/30 shadow-sm" : "bg-zinc-900 border-amber-500/30 shadow-amber-500/10";
-});
-
-const themeBadgeText = computed(() => {
-  const skin = store.settings.uiSkin;
-  if (skin === "cs") return "TACTICAL";
-  if (skin === "chamber") return "HAUTE";
-  if (skin === "monochrome") return "MONO";
-  return "PRO";
-});
-
-const badgeThemeClasses = computed(() => {
-  const isLight = store.settings.themeMode === "light";
-  const skin = store.settings.uiSkin;
-  if (skin === "cs") return isLight ? "bg-orange-500/15 border-orange-500/40 text-[#E04E00]" : "bg-orange-500/15 border-orange-500/40 text-orange-400";
-  if (skin === "chamber") return isLight ? "bg-[#C5A059]/15 border-[#C5A059]/40 text-[#967232]" : "bg-[#E5C378]/15 border-[#E5C378]/40 text-[#E5C378]";
-  if (skin === "monochrome") return isLight ? "bg-neutral-200 border-neutral-400 text-neutral-900" : "bg-neutral-800 border-neutral-600 text-neutral-200";
-  return isLight ? "bg-amber-500/15 border-amber-500/40 text-amber-700" : "bg-amber-500/15 border-amber-500/30 text-amber-400";
-});
-
-const cycleHighlightClass = computed(() => {
-  const isLight = store.settings.themeMode === "light";
-  const skin = store.settings.uiSkin;
-  if (skin === "cs") return isLight ? "text-[#E04E00]" : "text-orange-400";
-  if (skin === "chamber") return isLight ? "text-[#967232]" : "text-[#E5C378]";
-  if (skin === "monochrome") return isLight ? "text-black" : "text-white";
-  return isLight ? "text-amber-700" : "text-amber-400";
 });
 
 const aiButtonClasses = computed(() => {

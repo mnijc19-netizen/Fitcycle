@@ -22,16 +22,8 @@
         
         <!-- Icon Container -->
         <div class="relative w-6 h-6 flex items-center justify-center">
-          <!-- Chamber Skill Icon -->
-          <img v-if="store.settings.uiSkin === 'chamber'" 
-               :src="headhunterIcon" 
-               alt="Headhunter"
-               class="w-6 h-6 object-contain transition-all"
-               :style="store.settings.themeMode === 'light' ? (store.activeTab === 'today' ? 'filter: brightness(0.45) contrast(1.5) drop-shadow(0 1px 3px rgba(0,0,0,0.2));' : 'filter: brightness(0.3) contrast(1.3) opacity(0.85);') : ''"
-               :class="[store.activeTab === 'today' ? 'brightness-110 drop-shadow-[0_0_8px_rgba(229,195,120,0.8)] scale-110' : 'opacity-80 grayscale-[15%]']" />
-          
           <!-- CS2 Official AK-47 UI Icon (Mask-rendered for 100% Light & Dark Contrast) -->
-          <template v-else-if="store.settings.uiSkin === 'cs'">
+          <template v-if="store.settings.uiSkin === 'cs'">
             <div class="w-6 h-6 transition-all"
                  :class="[
                    store.activeTab === 'today'
@@ -56,8 +48,8 @@
             <img :src="csHomeIcon" class="hidden" alt="AK-47" aria-hidden="true" />
           </template>
 
-          <!-- Default SVG Icon -->
-          <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <!-- Crisp Universal SVG Icon -->
+          <svg v-else class="w-5 h-5 transition-transform" :class="store.activeTab === 'today' ? 'scale-110' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
 
@@ -80,15 +72,8 @@
               :class="getTabItemClasses('cycle')">
         
         <div class="relative w-6 h-6 flex items-center justify-center">
-          <img v-if="store.settings.uiSkin === 'chamber'" 
-               :src="rendezvousIcon" 
-               alt="Rendezvous"
-               class="w-6 h-6 object-contain transition-all"
-               :style="store.settings.themeMode === 'light' ? (store.activeTab === 'cycle' ? 'filter: brightness(0.45) contrast(1.5) drop-shadow(0 1px 3px rgba(0,0,0,0.2));' : 'filter: brightness(0.3) contrast(1.3) opacity(0.85);') : ''"
-               :class="[store.activeTab === 'cycle' ? 'brightness-110 drop-shadow-[0_0_8px_rgba(229,195,120,0.8)] scale-110' : 'opacity-80 grayscale-[15%]']" />
-
           <!-- CS2 Official C4 Explosive UI Icon (Mask-rendered) -->
-          <template v-else-if="store.settings.uiSkin === 'cs'">
+          <template v-if="store.settings.uiSkin === 'cs'">
             <div class="w-6 h-6 transition-all"
                  :class="[
                    store.activeTab === 'cycle'
@@ -113,7 +98,7 @@
             <img :src="csCycleIcon" class="hidden" alt="C4 Bomb" aria-hidden="true" />
           </template>
 
-          <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg v-else class="w-5 h-5 transition-transform" :class="store.activeTab === 'cycle' ? 'scale-110' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
         </div>
@@ -132,15 +117,8 @@
               :class="getTabItemClasses('calendar')">
         
         <div class="relative w-6 h-6 flex items-center justify-center">
-          <img v-if="store.settings.uiSkin === 'chamber'" 
-               :src="trademarkIcon" 
-               alt="Trademark"
-               class="w-6 h-6 object-contain transition-all"
-               :style="store.settings.themeMode === 'light' ? (store.activeTab === 'calendar' ? 'filter: brightness(0.45) contrast(1.5) drop-shadow(0 1px 3px rgba(0,0,0,0.2));' : 'filter: brightness(0.3) contrast(1.3) opacity(0.85);') : ''"
-               :class="[store.activeTab === 'calendar' ? 'brightness-110 drop-shadow-[0_0_8px_rgba(229,195,120,0.8)] scale-110' : 'opacity-80 grayscale-[15%]']" />
-
           <!-- CS2 Official Defuser UI Icon (Mask-rendered) -->
-          <template v-else-if="store.settings.uiSkin === 'cs'">
+          <template v-if="store.settings.uiSkin === 'cs'">
             <div class="w-6 h-6 transition-all"
                  :class="[
                    store.activeTab === 'calendar'
@@ -165,7 +143,7 @@
             <img :src="csCalendarIcon" class="hidden" alt="Defuser" aria-hidden="true" />
           </template>
 
-          <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg v-else class="w-5 h-5 transition-transform" :class="store.activeTab === 'calendar' ? 'scale-110' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
         </div>
@@ -184,16 +162,8 @@
               :class="getTabItemClasses('exercises')">
         
         <div class="relative w-6 h-6 flex items-center justify-center">
-          <!-- Chamber Skill Tour De Force -->
-          <img v-if="store.settings.uiSkin === 'chamber'" 
-               :src="tourDeForceIcon" 
-               alt="Tour De Force"
-               class="w-6 h-6 object-contain transition-all"
-               :style="store.settings.themeMode === 'light' ? (store.activeTab === 'exercises' ? 'filter: brightness(0.45) contrast(1.5) drop-shadow(0 1px 3px rgba(0,0,0,0.2));' : 'filter: brightness(0.3) contrast(1.3) opacity(0.85);') : ''"
-               :class="[store.activeTab === 'exercises' ? 'brightness-110 drop-shadow-[0_0_8px_rgba(229,195,120,0.8)] scale-110' : 'opacity-80 grayscale-[15%]']" />
-
           <!-- CS2 Official AWP Sniper UI Icon (Mask-rendered) -->
-          <template v-else-if="store.settings.uiSkin === 'cs'">
+          <template v-if="store.settings.uiSkin === 'cs'">
             <div class="w-6 h-6 transition-all"
                  :class="[
                    store.activeTab === 'exercises'
@@ -218,7 +188,7 @@
             <img :src="csExercisesIcon" class="hidden" alt="AWP Sniper" aria-hidden="true" />
           </template>
 
-          <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg v-else class="w-5 h-5 transition-transform" :class="store.activeTab === 'exercises' ? 'scale-110' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
           </svg>
         </div>
@@ -237,25 +207,8 @@
               :class="getTabItemClasses('stats')">
         
         <div class="relative w-6 h-6 flex items-center justify-center">
-          <!-- Chamber Skin Inlined Tactical Card Profile SVG -->
-          <svg v-if="store.settings.uiSkin === 'chamber'" 
-               class="w-5 h-5 object-contain transition-all"
-               :class="[store.activeTab === 'stats' ? (store.settings.themeMode === 'light' ? 'text-[#854D0E] drop-shadow-[0_1px_3px_rgba(133,77,14,0.3)] scale-110' : 'text-inherit drop-shadow-[0_0_8px_rgba(246,224,158,0.9)] scale-110') : 'text-inherit opacity-85']"
-               viewBox="0 0 512 512" fill="none">
-            <path d="M80 120 C80 106.745 90.745 96 104 96 H360 L432 168 V392 C432 405.255 421.255 416 408 416 H104 C90.745 416 80 405.255 80 392 V120 Z" stroke="currentColor" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-            <path d="M360 96 V168 H432" stroke="currentColor" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M256 180 L320 256 L256 332 L192 256 Z" stroke="currentColor" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.35" />
-            <circle cx="256" cy="256" r="18" fill="currentColor" />
-            <line x1="256" y1="136" x2="256" y2="166" stroke="currentColor" stroke-width="26" stroke-linecap="round" />
-            <line x1="256" y1="346" x2="256" y2="376" stroke="currentColor" stroke-width="26" stroke-linecap="round" />
-            <line x1="144" y1="256" x2="174" y2="256" stroke="currentColor" stroke-width="26" stroke-linecap="round" />
-            <line x1="338" y1="256" x2="368" y2="256" stroke="currentColor" stroke-width="26" stroke-linecap="round" />
-            <line x1="120" y1="368" x2="200" y2="368" stroke="currentColor" stroke-width="22" stroke-linecap="round" opacity="0.9" />
-            <line x1="120" y1="148" x2="180" y2="148" stroke="currentColor" stroke-width="22" stroke-linecap="round" opacity="0.9" />
-          </svg>
-
           <!-- CS2 Official Global Elite Rank Badge Icon -->
-          <img v-else-if="store.settings.uiSkin === 'cs'" 
+          <img v-if="store.settings.uiSkin === 'cs'" 
                :src="csStatsIcon" 
                alt="Global Elite" 
                class="w-6 h-6 object-contain transition-all"
@@ -269,7 +222,7 @@
                        : 'opacity-75 grayscale-[30%]')
                ]" />
 
-          <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg v-else class="w-5 h-5 transition-transform" :class="store.activeTab === 'stats' ? 'scale-110' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
         </div>
@@ -289,11 +242,6 @@ import { computed } from "vue";
 import { store } from "../store/fitnessStore.js";
 import { triggerHaptic } from "../utils/vibrate.js";
 import { universalScrollToTop } from "../utils/scrollUtils.js";
-
-const headhunterIcon = "./themes/chamber/icons/headhunter.png";
-const rendezvousIcon = "./themes/chamber/icons/rendezvous.png";
-const trademarkIcon = "./themes/chamber/icons/trademark.png";
-const tourDeForceIcon = "./themes/chamber/icons/tour-de-force.png";
 
 const csHomeIcon = "./themes/cs/icons/ak47.svg";
 const csCycleIcon = "./themes/cs/icons/c4.svg";

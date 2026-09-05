@@ -111,4 +111,58 @@ describe("Mobile Ergonomics & Scroll Lock Suite", () => {
     expect(button.exists()).toBe(true);
     expect(button.classes()).toContain("select-none");
   });
+
+  it("Navbar: presents clean FitCycle brandmark without HAUTE/PRO badges or PTS score clutter", async () => {
+    const { default: Navbar } = await import("../src/components/Navbar.vue");
+    store.settings.uiSkin = "chamber";
+    const wrapper = mount(Navbar);
+    const text = wrapper.text();
+    
+    // Must contain brand and AI Coach
+    expect(text).toContain("FitCycle");
+    expect(text).toContain("AI 教练");
+
+    // Must NOT contain cryptic HAUTE / PRO / TACTICAL badges or PTS pill in navbar
+    expect(text).not.toContain("HAUTE");
+    expect(text).not.toContain("TACTICAL");
+    expect(text).not.toContain("850 PTS");
+    expect(text).not.toContain("PTS");
+  });
+
+  it("TabBar: renders clean sharp SVGs for Chamber without alien weapon/trap PNGs", async () => {
+    store.settings.uiSkin = "chamber";
+    const wrapper = mount(TabBar);
+    const html = wrapper.html();
+
+    expect(html).not.toContain("headhunter.png");
+    expect(html).not.toContain("rendezvous.png");
+    expect(html).not.toContain("trademark.png");
+    expect(html).not.toContain("tour-de-force.png");
+    expect(html).toContain("今日");
+    expect(html).toContain("周期");
+    expect(html).toContain("日历");
+    expect(html).toContain("动作");
+    expect(html).toContain("统计设置");
+  });
+
+  it("TodayView: eliminates set-row spamming of initial baseline and removes raw minus/arrow characters", async () => {
+    const { default: TodayView } = await import("../src/views/TodayView.vue");
+    const { startWorkout, discardActiveWorkout } = await import("../src/store/fitnessStore.js");
+    
+    startWorkout("plan-push");
+    const wrapper = mount(TodayView);
+    const html = wrapper.html();
+
+    // Must NOT repeat "首训档案：记录初始能力" or "首训建档中" under set rows
+    expect(html).not.toContain("首训档案：记录初始能力");
+    expect(html).not.toContain("首训建档中");
+
+    // Must NOT contain raw "1 - ⬇️" pattern
+    expect(html).not.toContain("⬇️");
+    // Action button should use book instead of microscope
+    expect(html).toContain("📖");
+    expect(html).not.toContain("🔬");
+
+    discardActiveWorkout();
+  });
 });

@@ -1,5 +1,5 @@
 <template>
-  <div class="pb-32 px-4 pt-2 max-w-md mx-auto space-y-4 relative">
+  <div class="pb-44 px-4 pt-2 max-w-md mx-auto space-y-4 relative">
 
     <!-- Floating Dopamine Overload / PR Toast Overlay -->
     <transition
@@ -107,8 +107,12 @@
 
 
               <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-1.5">
+                <div class="flex items-center gap-1.5 flex-wrap">
                   <h3 class="font-bold text-sm text-zinc-100 truncate cursor-pointer hover:text-amber-400" @click="openExerciseDetail(ex)">{{ ex.name }}</h3>
+                  <span v-if="!getLastExercisePerformance(ex.name)" 
+                        class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30">
+                    🌱 首次训练
+                  </span>
                 </div>
                 <div class="text-[11px] text-zinc-400 mt-0.5 flex items-center gap-2">
                   <span class="text-amber-400/90 font-medium">建议: {{ ex.targetReps }}</span>
@@ -120,21 +124,21 @@
             </div>
 
 
-            <!-- Action buttons: Science Tips, Swap, Delete -->
-            <div class="flex items-center gap-1">
+            <!-- Action buttons: Guide, Swap, Delete -->
+            <div class="flex items-center gap-1 flex-shrink-0">
               <button @click="openExerciseDetail(ex)" 
-                      title="科学细节"
-                      class="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-amber-400 rounded-lg text-xs font-bold">
-                🔬
+                      title="查看动作要领与演示"
+                      class="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-amber-400 rounded-lg text-xs font-bold transition-all active:scale-95 cursor-pointer">
+                📖
               </button>
               <button @click="openSwapModal(exIdx)" 
                       title="替换动作"
-                      class="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg text-xs">
+                      class="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg text-xs transition-all active:scale-95 cursor-pointer">
                 🔄
               </button>
               <button @click="removeExercise(exIdx)" 
                       title="移除动作"
-                      class="p-1.5 bg-zinc-800 hover:bg-red-500/20 hover:text-red-400 text-zinc-400 rounded-lg text-xs">
+                      class="p-1.5 bg-zinc-800 hover:bg-red-500/20 hover:text-red-400 text-zinc-400 rounded-lg text-xs transition-all active:scale-95 cursor-pointer">
                 ✕
               </button>
             </div>
@@ -166,7 +170,7 @@
                    ]">
                 
                 <!-- Set index -->
-                <div class="col-span-2 flex items-center gap-1">
+                <div class="col-span-2 flex items-center justify-between pr-1">
                   <span class="w-6 h-6 rounded-lg text-xs font-mono font-bold flex items-center justify-center transition-colors"
                         :class="s.completed ? 'bg-emerald-500/20 text-emerald-300 font-black' : (store.settings.themeMode === 'light' ? 'bg-slate-200 text-slate-800 font-bold' : 'bg-zinc-800 text-zinc-300')">
                     {{ sIdx + 1 }}
@@ -174,15 +178,8 @@
                   <button v-if="ex.sets.length > 1 && !s.completed" 
                           @click="removeSet(exIdx, sIdx)" 
                           title="删除此组"
-                          class="text-zinc-500 hover:text-red-500 text-xs font-bold cursor-pointer">
-                    -
-                  </button>
-                  <button v-if="sIdx < ex.sets.length - 1 && !s.completed" 
-                          @click="handleSyncSubsequent(exIdx, sIdx)"
-                          title="一键将该重量同步至后续未完成组"
-                          class="text-[10px] text-amber-500/80 hover:text-amber-400 font-black cursor-pointer px-0.5"
-                          :class="store.settings.themeMode === 'light' ? 'text-amber-700 hover:text-amber-800' : ''">
-                    ⬇️
+                          class="w-4 h-4 rounded flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-500/10 text-[11px] font-bold cursor-pointer transition-colors">
+                    ✕
                   </button>
                 </div>
 
@@ -258,25 +255,6 @@
                 <span v-else-if="getSetOverloadDelta(ex.name, s, sIdx).type === 'reps_pr'"
                       class="px-2 py-0.5 rounded-full bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/70 text-emerald-300 font-black shadow-[0_0_8px_rgba(16,185,129,0.4)] flex items-center gap-1">
                   <span>⚡</span>
-                  <span>{{ getSetOverloadDelta(ex.name, s, sIdx).label }}</span>
-                </span>
-
-                <!-- Lighter / Warmup Badge -->
-                <span v-else-if="getSetOverloadDelta(ex.name, s, sIdx).type === 'lighter'"
-                      class="px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400 font-medium">
-                  {{ getSetOverloadDelta(ex.name, s, sIdx).label }}
-                </span>
-
-                <!-- Matched Baseline Badge -->
-                <span v-else-if="getSetOverloadDelta(ex.name, s, sIdx).type === 'matched'"
-                      class="px-1.5 py-0.5 rounded bg-zinc-900/60 border border-zinc-800/80 text-zinc-500">
-                  {{ getSetOverloadDelta(ex.name, s, sIdx).label }}
-                </span>
-
-                <!-- Initial Baseline Badge (首次建档) -->
-                <span v-else-if="getSetOverloadDelta(ex.name, s, sIdx).type === 'initial'"
-                      class="px-1.5 py-0.5 rounded-md bg-sky-950/40 border border-sky-500/40 text-sky-300 font-bold flex items-center gap-1">
-                  <span>🌱</span>
                   <span>{{ getSetOverloadDelta(ex.name, s, sIdx).label }}</span>
                 </span>
               </div>
@@ -1200,16 +1178,6 @@ function showOverloadCelebration(text, subText, isPr = true) {
 function getSetOverloadDelta(exerciseName, s, sIdx) {
   const lastPerf = getLastExercisePerformance(exerciseName);
   if (!lastPerf || !lastPerf.sets || !lastPerf.sets.length) {
-    const curW = Number(s.weight) || 0;
-    const curR = Number(s.reps) || 0;
-    if (curW > 0 || curR > 0) {
-      return {
-        type: "initial",
-        label: "📍 首训建档中",
-        prevText: "首训档案：记录初始能力",
-        isInitial: true
-      };
-    }
     return null;
   }
 
@@ -1234,25 +1202,10 @@ function getSetOverloadDelta(exerciseName, s, sIdx) {
     const diff = curR - prevR;
     return {
       type: "reps_pr",
-      label: `+${diff}次 超负荷`,
+      label: `+${diff}次 突破`,
       prevText: `上次: ${prevW}kg × ${prevR}`,
       isOverload: true,
       diffVal: diff
-    };
-  } else if (curW < prevW && curW > 0) {
-    const diff = (prevW - curW).toFixed(1).replace(/\.0$/, "");
-    return {
-      type: "lighter",
-      label: `-${diff}kg 调整`,
-      prevText: `上次: ${prevW}kg × ${prevR}`,
-      isLighter: true
-    };
-  } else if (curW === prevW && curR === prevR && curW > 0) {
-    return {
-      type: "matched",
-      label: "✓ 达成基准",
-      prevText: `上次: ${prevW}kg × ${prevR}`,
-      isMatched: true
     };
   }
   return null;
