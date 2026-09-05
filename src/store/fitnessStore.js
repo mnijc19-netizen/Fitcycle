@@ -7,6 +7,7 @@ import { requestNotificationPermission, sendRestCompleteNotification, updateDocu
 import { DEFAULT_SETTINGS, sanitizeSettings, verifyPasscode, getPasscodeSkin, VALID_SKINS, VALID_THEME_MODES, applySkinToDOM, applyThemeToDOM } from "../utils/themeManager.js";
 import { calculateInactivityDecay, calculateSessionPointsEarned, getTierForScore, evaluateUnlockedBadges, calculateEquivalentTonnage, calculateShieldInventory } from "../engine/honorEngine.js";
 import { getSkinHonorPresentation } from "../engine/skinHonorSchemas.js";
+import { calculateAdaptiveWeights, getInitialHonorScore } from "../engine/bodyProfileEngine.js";
 
 const STORAGE_KEY = "fitcycle_app_data_v1";
 
@@ -1212,6 +1213,123 @@ export function setStrengthLevelAndRecalibrate(levelKey, customBases = null) {
   }
 
   return { success: true, levelKey, weightsMap };
+}
+
+/**
+ * 保存用户生理特征与体能感知，并自适应重新校准全计划起步重量
+ * @param {Object} profileData
+ */
+export function saveUserProfileAndRecalibrate(profileData = {}) {
+  // 1. 同步身体生理设置
+  if (profileData.gender) store.settings.gender = profileData.gender;
+  if (profileData.userAge) store.settings.userAge = Number(profileData.userAge) || store.settings.userAge;
+  if (profileData.userHeight) store.settings.userHeight = Number(profileData.userHeight) || store.settings.userHeight;
+  if (profileData.userWeight) store.settings.userWeight = Number(profileData.userWeight) || store.settings.userWeight;
+  if (profileData.trainingGoal) store.settings.trainingGoal = profileData.trainingGoal;
+  if (profileData.pushupTier) store.settings.pushupTier = profileData.pushupTier;
+  if (profileData.squatTier) store.settings.squatTier = profileData.squatTier;
+  if (profileData.strengthLevel) store.settings.strengthLevel = profileData.strengthLevel;
+  store.settings.hasConfiguredStrength = true;
+
+  // 2. 自动存入第一笔身体基准档案 (若暂无记录)
+  if (!store.bodyMetrics) store.bodyMetrics = [];
+  const currentWeight = Number(store.settings.userWeight) || 70;
+  if (store.bodyMetrics.length === 0 && currentWeight > 0) {
+    store.bodyMetrics.push({
+      id: uid("metric"),
+      date: getInitialDateStr(),
+      timestamp: Date.now(),
+      weight: currentWeight,
+      arm: 0,
+      chest: 0,
+      waist: 0,
+      thigh: 0
+    });
+  } else if (store.bodyMetrics.length > 0 && currentWeight > 0) {
+    const latest = store.bodyMetrics[store.bodyMetrics.length - 1];
+    if (latest && !latest.weight) {
+      latest.weight = currentWeight;
+    }
+  }
+
+  // 3. 计算重量映射表
+  let weightsMap = {};
+  let bases = {};
+
+  if (profileData.useCustom && profileData.customBases) {
+    store.settings.customBaseWeights = { ...profileData.customBases };
+    store.settings.strengthLevel = "custom";
+    const b = Number(profileData.customBases.bench) || 50;
+    const s = Number(profileData.customBases.squat) || 70;
+    const p = Number(profileData.customBases.pull) || 45;
+    weightsMap = {
+      "上斜哑铃卧推": Math.max(5, Math.round(b * 0.35 / 2.5) * 2.5),
+      "固定器械推胸": Math.max(10, Math.round(b * 0.85 / 2.5) * 2.5),
+      "绳索侧平举": Math.max(2.5, Math.round(b * 0.15 / 1.25) * 1.25),
+      "对握/宽握高位下拉": Math.max(10, Math.round(p * 0.9 / 2.5) * 2.5),
+      "坐姿绳索划船": Math.max(10, Math.round(p * 0.8 / 2.5) * 2.5),
+      "上斜哑铃弯举": Math.max(4, Math.round(p * 0.2 / 2) * 2),
+      "哈克深蹲 / 倒蹬腿举": Math.max(20, Math.round(s * 0.9 / 5) * 5),
+      "罗马尼亚硬拉 (RDL)": Math.max(20, Math.round(s * 0.75 / 5) * 5),
+      "俯卧器械腿弯举 (Lying Leg Curl)": Math.max(10, Math.round(s * 0.45 / 2.5) * 2.5)
+    };
+    bases = { bench: b, squat: s, pull: p };
+  } else {
+    const res = calculateAdaptiveWeights({
+      gender: store.settings.gender,
+      weightKg: currentWeight,
+      pushupTier: store.settings.pushupTier,
+      squatTier: store.settings.squatTier,
+      experienceLevel: store.settings.strengthLevel || "intermediate"
+    });
+    weightsMap = res.weightsMap;
+    bases = res.estimatedBases;
+    store.settings.customBaseWeights = { ...bases };
+  }
+
+  // 4. 更新全局计划库初始组重
+  if (store.plans) {
+    store.plans.forEach(plan => {
+      if (plan.exercises) {
+        plan.exercises.forEach(pe => {
+          if (weightsMap[pe.name] !== undefined) {
+            pe.defaultWeight = weightsMap[pe.name];
+          }
+        });
+      }
+    });
+  }
+
+  // 5. 若有正在进行的训练，同步更新所有未完成组
+  if (store.activeWorkout && store.activeWorkout.exercises) {
+    store.activeWorkout.exercises.forEach(ex => {
+      const targetW = weightsMap[ex.name];
+      if (targetW !== undefined && ex.sets) {
+        ex.sets.forEach(s => {
+          if (!s.completed) {
+            s.weight = targetW;
+          }
+        });
+      }
+    });
+  }
+
+  // 6. 若用户尚未打卡过，计算基于相对力量的天梯初始积分
+  if (!store.workoutLogs || store.workoutLogs.length === 0) {
+    const initialScore = getInitialHonorScore(store.settings.strengthLevel, (bases.bench || 50) / (currentWeight || 70));
+    if (!store.honorProfile) {
+      store.honorProfile = { score: initialScore, prestigeLevel: 1, prestigeYear: new Date().getFullYear(), highestScore: initialScore, lastWorkoutTimestamp: null, unlockedBadges: [] };
+    } else {
+      store.honorProfile.score = initialScore;
+      store.honorProfile.highestScore = Math.max(store.honorProfile.highestScore || 0, initialScore);
+    }
+  }
+
+  if (store.settings.vibrationEnabled) {
+    triggerHaptic("success");
+  }
+
+  return { success: true, weightsMap, bases };
 }
 
 export function setExerciseAllSetsWeight(exerciseIndex, newWeight) {

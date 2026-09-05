@@ -77,7 +77,7 @@
               </h3>
               <p class="text-[11px] mt-0.5 leading-snug"
                  :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
-                无论新手还是训练数月的老铁，一键测算推拉腿开局黄金组重，直接开练。
+                输入身高体重与体能感知自适应测算，免记具体公斤数，一键对齐推拉腿开局黄金组重。
               </p>
             </div>
           </div>

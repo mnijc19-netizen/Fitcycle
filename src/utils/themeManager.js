@@ -47,7 +47,13 @@ export const DEFAULT_SETTINGS = {
   hasSeenOnboarding: false,
   strengthLevel: "intermediate", // 'beginner' | 'intermediate' | 'advanced' | 'custom'
   hasConfiguredStrength: false,
-  customBaseWeights: { bench: 50, squat: 70, pull: 45 }
+  customBaseWeights: { bench: 50, squat: 70, pull: 45 },
+  gender: "male", // 'male' | 'female'
+  userAge: 25,
+  userWeight: 70, // kg
+  trainingGoal: "hypertrophy", // 'hypertrophy' | 'fat_loss' | 'strength'
+  pushupTier: "basic", // 'beginner' | 'basic' | 'moderate' | 'elite'
+  squatTier: "natural" // 'sedentary' | 'natural' | 'strong'
 };
 
 /**
@@ -146,6 +152,24 @@ export function sanitizeSettings(rawSettings) {
   sanitized.customBaseWeights = (rawSettings.customBaseWeights && typeof rawSettings.customBaseWeights === "object")
     ? { ...DEFAULT_SETTINGS.customBaseWeights, ...rawSettings.customBaseWeights }
     : { ...DEFAULT_SETTINGS.customBaseWeights };
+
+  // 5. Sanitize physiological profile
+  sanitized.gender = ["male", "female"].includes(rawSettings.gender) ? rawSettings.gender : DEFAULT_SETTINGS.gender;
+  sanitized.userAge = (typeof rawSettings.userAge === "number" && rawSettings.userAge >= 14 && rawSettings.userAge <= 100)
+    ? rawSettings.userAge
+    : DEFAULT_SETTINGS.userAge;
+  sanitized.userWeight = (typeof rawSettings.userWeight === "number" && rawSettings.userWeight >= 30 && rawSettings.userWeight <= 250)
+    ? rawSettings.userWeight
+    : DEFAULT_SETTINGS.userWeight;
+  sanitized.trainingGoal = ["hypertrophy", "fat_loss", "strength"].includes(rawSettings.trainingGoal)
+    ? rawSettings.trainingGoal
+    : DEFAULT_SETTINGS.trainingGoal;
+  sanitized.pushupTier = ["beginner", "basic", "moderate", "elite"].includes(rawSettings.pushupTier)
+    ? rawSettings.pushupTier
+    : DEFAULT_SETTINGS.pushupTier;
+  sanitized.squatTier = ["sedentary", "natural", "strong"].includes(rawSettings.squatTier)
+    ? rawSettings.squatTier
+    : DEFAULT_SETTINGS.squatTier;
 
   return sanitized;
 }
