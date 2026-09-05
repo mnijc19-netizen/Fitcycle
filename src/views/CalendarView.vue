@@ -5,18 +5,20 @@
     <!-- Top Header -->
     <div class="flex items-center justify-between">
       <div>
-        <h2 class="text-xl font-black text-white flex items-center gap-2">
+        <h2 class="text-xl font-black flex items-center gap-2" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">
           <span>训练日历</span>
-          <span class="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 font-mono font-bold">
+          <span class="text-xs px-2 py-0.5 rounded-full font-mono font-bold"
+                :class="store.settings.themeMode === 'light' ? 'bg-amber-500/25 text-amber-800 border border-amber-600/40 font-black' : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'">
             {{ store.workoutLogs.length }} 次打卡
           </span>
         </h2>
-        <p class="text-xs text-zinc-400 mt-0.5">
+        <p class="text-xs mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
           周期训练日程、历史足迹与累计做工容量
         </p>
       </div>
       <button @click="jumpToToday" 
-              class="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 active:scale-95 text-xs text-zinc-300 rounded-xl border border-zinc-800 transition-all cursor-pointer">
+              class="px-3 py-1.5 active:scale-95 text-xs rounded-xl border transition-all cursor-pointer"
+              :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold border-slate-300 shadow-xs' : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border-zinc-800'">
         回到今天
       </button>
     </div>
@@ -26,17 +28,19 @@
       
       <!-- Month Navigation -->
       <div class="flex items-center justify-between px-1">
-        <h3 class="text-base font-black text-white tracking-tight">
+        <h3 class="text-base font-black tracking-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">
           {{ currentYear }}年 {{ currentMonth + 1 }}月
         </h3>
         <div class="flex items-center gap-1.5">
           <button @click="prevMonth" 
-                  class="w-8 h-8 rounded-full bg-zinc-950 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 border border-zinc-800/80 flex items-center justify-center text-sm transition-colors cursor-pointer"
+                  class="w-8 h-8 rounded-full border flex items-center justify-center text-sm transition-colors cursor-pointer"
+                  :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300 font-bold shadow-xs' : 'bg-zinc-950 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 border-zinc-800/80'"
                   title="上一月">
             ‹
           </button>
           <button @click="nextMonth" 
-                  class="w-8 h-8 rounded-full bg-zinc-950 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 border border-zinc-800/80 flex items-center justify-center text-sm transition-colors cursor-pointer"
+                  class="w-8 h-8 rounded-full border flex items-center justify-center text-sm transition-colors cursor-pointer"
+                  :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300 font-bold shadow-xs' : 'bg-zinc-950 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 border-zinc-800/80'"
                   title="下一月">
             ›
           </button>
@@ -44,7 +48,8 @@
       </div>
 
       <!-- Weekday Headers -->
-      <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-mono font-bold text-zinc-500 py-1 border-b border-zinc-800/80">
+      <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-mono font-bold py-1 border-b"
+           :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-black border-slate-200' : 'text-zinc-500 border-zinc-800/80'">
         <span>日</span>
         <span>一</span>
         <span>二</span>
@@ -61,13 +66,19 @@
              class="aspect-square rounded-2xl flex flex-col items-center justify-between p-1 transition-all cursor-pointer relative select-none"
              :class="[
                !cell.dateStr ? 'opacity-0 pointer-events-none' : '',
-               selectedDateStr === cell.dateStr ? 'ring-2 ring-amber-400 bg-zinc-800 shadow-md' : 'bg-zinc-950/60 hover:bg-zinc-800/50',
-               cell.isToday ? 'border border-amber-500/60 font-bold' : 'border border-zinc-800/60'
+               selectedDateStr === cell.dateStr 
+                 ? (store.settings.themeMode === 'light' ? 'ring-2 ring-amber-500 bg-amber-50 shadow-md border-amber-500/60' : 'ring-2 ring-amber-400 bg-zinc-800 shadow-md') 
+                 : (store.settings.themeMode === 'light' ? 'bg-slate-100/90 hover:bg-slate-200/90 border border-slate-200/90 shadow-xs' : 'bg-zinc-950/60 hover:bg-zinc-800/50 border border-zinc-800/60'),
+               cell.isToday ? (store.settings.themeMode === 'light' ? 'border-amber-600 font-black' : 'border border-amber-500/60 font-bold') : ''
              ]">
           
           <!-- Day number -->
           <span class="text-[11px] font-mono leading-none"
-                :class="[cell.isToday ? 'text-amber-400 font-bold' : 'text-zinc-400']">
+                :class="[
+                  cell.isToday 
+                    ? (store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400 font-bold') 
+                    : (store.settings.themeMode === 'light' ? 'text-slate-800 font-bold' : 'text-zinc-400')
+                ]">
             {{ cell.day }}
           </span>
 
@@ -129,10 +140,10 @@
     <!-- Selected Date Details Card (Apple Health Inset Style) -->
     <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3">
       
-      <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
+      <div class="flex items-center justify-between pb-2 border-b" :class="store.settings.themeMode === 'light' ? 'border-slate-200' : 'border-zinc-800'">
         <div class="flex items-center gap-2">
-          <span class="text-sm font-black text-white font-mono">{{ selectedDateStr }}</span>
-          <span class="text-xs text-amber-400 font-medium">
+          <span class="text-sm font-black font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">{{ selectedDateStr }}</span>
+          <span class="text-xs font-medium" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-bold' : 'text-amber-400'">
             {{ isSelectedToday ? '(今天)' : '' }} · {{ selectedCycleDay.name }}
           </span>
         </div>
@@ -148,7 +159,8 @@
       <!-- If Log Exists for this day -->
       <div v-if="selectedDateLogs.length" class="space-y-3">
         <div v-for="log in selectedDateLogs" :key="log.id"
-             class="p-3.5 bg-zinc-950/80 border border-zinc-800 rounded-2xl space-y-2.5">
+             class="p-3.5 border rounded-2xl space-y-2.5"
+             :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-200 shadow-xs' : 'bg-zinc-950/80 border-zinc-800'">
           
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2.5">
@@ -162,8 +174,8 @@
                 {{ log.shortName || '练' }}
               </span>
               <div>
-                <h4 class="font-bold text-xs text-zinc-100">{{ log.planName }}</h4>
-                <div class="text-[10px] text-zinc-400 font-mono mt-0.5">
+                <h4 class="font-bold text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ log.planName }}</h4>
+                <div class="text-[10px] font-mono mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-400'">
                   时长: {{ Math.round((log.durationSeconds || 60) / 60) }}分钟 · 容量: {{ log.totalVolume }}kg · {{ log.totalSets }}组
                 </div>
               </div>
@@ -178,11 +190,13 @@
           <!-- Exercises list in this log -->
           <div v-if="log.exercises && log.exercises.length" class="space-y-1.5 pt-1">
             <div v-for="(ex, exIdx) in log.exercises" :key="exIdx"
-                 class="p-2.5 bg-zinc-900/60 border border-zinc-800/60 rounded-xl">
-              <div class="text-xs font-bold text-zinc-200 mb-1">{{ ex.name }}</div>
+                 class="p-2.5 rounded-xl border"
+                 :class="store.settings.themeMode === 'light' ? 'bg-slate-100/90 border-slate-200 text-slate-900' : 'bg-zinc-900/60 border-zinc-800/60'">
+              <div class="text-xs font-bold mb-1" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-200'">{{ ex.name }}</div>
               <div class="flex flex-wrap gap-1.5">
                 <span v-for="(s, sIdx) in (ex.sets || []).filter(x => x.completed)" :key="sIdx"
-                      class="px-2 py-0.5 bg-zinc-950 border border-zinc-800 rounded-lg text-[10px] font-mono text-emerald-400">
+                      class="px-2 py-0.5 rounded-lg text-[10px] font-mono"
+                      :class="store.settings.themeMode === 'light' ? 'bg-white border border-slate-300 text-emerald-800 font-bold shadow-xs' : 'bg-zinc-950 border border-zinc-800 text-emerald-400'">
                   {{ s.weight }}kg × {{ s.reps }}次
                 </span>
               </div>

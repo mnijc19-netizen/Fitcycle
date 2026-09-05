@@ -26,13 +26,13 @@
             <img v-if="honorData.presentation.tierSvg" :src="honorData.presentation.tierSvg" alt="Rank Medal" class="w-full h-full object-contain group-hover:scale-105 transition-transform" />
             <span v-else class="text-xl group-hover:scale-105 transition-transform">{{ honorData.presentation.tierIcon }}</span>
           </div>
-          <span class="text-xs font-mono font-bold text-amber-400">{{ honorData.score }} PTS</span>
+          <span class="text-xs font-mono font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">{{ honorData.score }} PTS</span>
         </div>
         <div class="mt-2.5">
-          <div class="text-xs font-bold truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">{{ honorData.presentation.tierName.split('·')[0] }}</div>
+          <div class="text-xs font-bold truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ honorData.presentation.tierName.split('·')[0] }}</div>
           <div class="text-[11px] text-zinc-400 mt-0.5 flex items-center justify-between">
-            <span>天梯排位</span>
-            <span class="text-zinc-500 group-hover:text-zinc-300 text-xs transition-colors">❯</span>
+            <span :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : ''">天梯排位</span>
+            <span class="text-xs transition-colors" :class="store.settings.themeMode === 'light' ? 'text-slate-400 group-hover:text-slate-700' : 'text-zinc-500 group-hover:text-zinc-300'">❯</span>
           </div>
         </div>
       </div>
@@ -44,20 +44,21 @@
              ? 'bg-white hover:bg-slate-50 border border-slate-200 hover:border-sky-500/40' 
              : 'bg-zinc-900/80 hover:bg-zinc-850/90 border border-zinc-800/80 hover:border-sky-500/40'">
         <div class="flex items-center justify-between">
-          <div class="w-8 h-8 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+          <div class="w-8 h-8 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center"
+               :class="store.settings.themeMode === 'light' ? 'text-sky-700' : 'text-sky-400'">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
-          <span class="text-xs font-mono font-bold text-sky-400">
+          <span class="text-xs font-mono font-bold" :class="store.settings.themeMode === 'light' ? 'text-sky-700 font-black' : 'text-sky-400'">
             {{ (store.bodyMetrics && store.bodyMetrics.length) ? `V ${vTaperRatio}` : '未记录' }}
           </span>
         </div>
         <div class="mt-2.5">
-          <div class="text-xs font-bold truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">形体围度追踪</div>
+          <div class="text-xs font-bold truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">形体围度追踪</div>
           <div class="text-[11px] text-zinc-400 mt-0.5 flex items-center justify-between">
-            <span>身体档案</span>
-            <span class="text-zinc-500 group-hover:text-zinc-300 text-xs transition-colors">❯</span>
+            <span :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : ''">身体档案</span>
+            <span class="text-xs transition-colors" :class="store.settings.themeMode === 'light' ? 'text-slate-400 group-hover:text-slate-700' : 'text-zinc-500 group-hover:text-zinc-300'">❯</span>
           </div>
         </div>
       </div>
@@ -135,7 +136,7 @@
         <div class="space-y-2">
           <div class="flex items-center justify-between text-xs">
             <span class="font-medium" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">默认组间休息</span>
-            <span class="font-bold text-amber-400 font-mono">{{ store.settings.defaultRestSeconds }} 秒</span>
+            <span class="font-bold font-mono" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">{{ store.settings.defaultRestSeconds }} 秒</span>
           </div>
           <div class="grid grid-cols-4 gap-1 p-1 rounded-xl border"
                :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border-slate-200' : 'bg-zinc-950/80 border-zinc-800/60'">
@@ -148,9 +149,13 @@
                     :key="item.sec"
                     @click="store.settings.defaultRestSeconds = item.sec"
                     class="py-1.5 rounded-lg text-center transition-all flex flex-col items-center justify-center cursor-pointer"
-                    :class="[store.settings.defaultRestSeconds === item.sec ? 'bg-amber-500 text-zinc-950 font-bold shadow-sm' : (store.settings.themeMode === 'light' ? 'text-slate-600 hover:text-slate-900' : 'text-zinc-400 hover:text-zinc-200')]">
+                    :class="[
+                      store.settings.defaultRestSeconds === item.sec 
+                        ? 'bg-amber-500 text-zinc-950 font-black shadow-sm' 
+                        : (store.settings.themeMode === 'light' ? 'bg-white hover:bg-slate-50 text-slate-800 font-bold border border-slate-200/90 shadow-xs' : 'text-zinc-400 hover:text-zinc-200')
+                    ]">
               <span class="text-xs font-mono font-bold leading-none">{{ item.sec }}s</span>
-              <span class="text-[9px] leading-none mt-0.5 opacity-85">{{ item.label }}</span>
+              <span class="text-[9px] leading-none mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'opacity-85'">{{ item.label }}</span>
             </button>
           </div>
         </div>
@@ -163,7 +168,7 @@
           </div>
           <button @click="store.settings.soundEnabled = !store.settings.soundEnabled"
                   class="w-11 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer"
-                  :class="[store.settings.soundEnabled ? 'bg-amber-500' : (store.settings.themeMode === 'light' ? 'bg-slate-200' : 'bg-zinc-800')]">
+                  :class="[store.settings.soundEnabled ? 'bg-amber-500' : (store.settings.themeMode === 'light' ? 'bg-slate-300' : 'bg-zinc-800')]">
             <div class="w-5 h-5 rounded-full bg-white transition-transform transform shadow-sm"
                  :class="[store.settings.soundEnabled ? 'translate-x-5' : 'translate-x-0']"></div>
           </button>
@@ -177,7 +182,7 @@
           </div>
           <button @click="store.settings.vibrationEnabled = !store.settings.vibrationEnabled"
                   class="w-11 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer"
-                  :class="[store.settings.vibrationEnabled ? 'bg-amber-500' : (store.settings.themeMode === 'light' ? 'bg-slate-200' : 'bg-zinc-800')]">
+                  :class="[store.settings.vibrationEnabled ? 'bg-amber-500' : (store.settings.themeMode === 'light' ? 'bg-slate-300' : 'bg-zinc-800')]">
             <div class="w-5 h-5 rounded-full bg-white transition-transform transform shadow-sm"
                  :class="[store.settings.vibrationEnabled ? 'translate-x-5' : 'translate-x-0']"></div>
           </button>
@@ -187,14 +192,14 @@
         <div class="flex items-center justify-between pt-2.5 border-t border-zinc-800/60 cursor-pointer hover:opacity-80 transition-opacity"
              @click="showHonorModal = true">
           <div>
-            <div class="text-xs font-bold text-sky-300 flex items-center gap-1">
+            <div class="text-xs font-bold flex items-center gap-1" :class="store.settings.themeMode === 'light' ? 'text-sky-800 font-black' : 'text-sky-300'">
               <span>🛡️</span>
               <span>战术减载盾牌</span>
             </div>
-            <div class="text-[10px] text-zinc-400 mt-0.5">
-              <span v-if="isDeloadActive" class="text-emerald-400 font-bold">免战休整生效中 (剩余 {{ honorData.shieldDaysRemaining }} 天)</span>
-              <span v-else-if="honorData.shieldInventory.available > 0" class="text-sky-300">储备: {{ honorData.shieldInventory.available }}/2 枚 (点击查看)</span>
-              <span v-else-if="honorData.shieldInventory.isNoviceProbation" class="text-amber-400">新兵筑基中 ({{ honorData.shieldInventory.currentChargeWorkouts }}/16 天)</span>
+            <div class="text-[10px] mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+              <span v-if="isDeloadActive" class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-emerald-700' : 'text-emerald-400'">免战休整生效中 (剩余 {{ honorData.shieldDaysRemaining }} 天)</span>
+              <span v-else-if="honorData.shieldInventory.available > 0" class="font-medium" :class="store.settings.themeMode === 'light' ? 'text-sky-800' : 'text-sky-300'">储备: {{ honorData.shieldInventory.available }}/2 枚 (点击查看)</span>
+              <span v-else-if="honorData.shieldInventory.isNoviceProbation" class="font-medium" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">新兵筑基中 ({{ honorData.shieldInventory.currentChargeWorkouts }}/16 天)</span>
               <span v-else class="text-zinc-500">充能: {{ honorData.shieldInventory.currentChargeWorkouts }}/16 天</span>
             </div>
           </div>
@@ -519,14 +524,15 @@
         <button @click="handleClearHistory" 
                 class="w-full p-3.5 hover:bg-zinc-850/60 active:bg-zinc-800 flex items-center justify-between transition-colors text-left cursor-pointer">
           <div class="flex items-center gap-2.5">
-            <div class="w-7 h-7 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 text-xs">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs"
+                 :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800' : 'bg-amber-500/10 text-amber-400'">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </div>
             <div>
-              <div class="text-xs font-bold text-amber-400">清空历史打卡记录</div>
-              <div class="text-[10px] text-zinc-500 mt-0.5">清除打卡日志，保留自定义计划与皮肤</div>
+              <div class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">清空历史打卡记录</div>
+              <div class="text-[10px] mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-500'">清除打卡日志，保留自定义计划与皮肤</div>
             </div>
           </div>
           <span class="text-zinc-500 text-xs">❯</span>
@@ -536,14 +542,15 @@
         <button @click="handleResetDefaults" 
                 class="w-full p-3.5 hover:bg-zinc-850/60 active:bg-zinc-800 flex items-center justify-between transition-colors text-left cursor-pointer">
           <div class="flex items-center gap-2.5">
-            <div class="w-7 h-7 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 text-xs">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs"
+                 :class="store.settings.themeMode === 'light' ? 'bg-red-500/15 text-red-600' : 'bg-red-500/10 text-red-400'">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
             <div>
-              <div class="text-xs font-bold text-red-400/90">恢复出厂默认设置</div>
-              <div class="text-[10px] text-zinc-500 mt-0.5">重置全部计划与数据为初始状态</div>
+              <div class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-red-700 font-black' : 'text-red-400/90'">恢复出厂默认设置</div>
+              <div class="text-[10px] mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-500'">重置全部计划与数据为初始状态</div>
             </div>
           </div>
           <span class="text-zinc-500 text-xs">❯</span>

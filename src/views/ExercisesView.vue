@@ -4,13 +4,14 @@
     <!-- Top Header -->
     <div class="flex items-center justify-between">
       <div>
-        <h2 class="text-xl font-black text-white flex items-center gap-2">
+        <h2 class="text-xl font-black flex items-center gap-2" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">
           <span>动作库</span>
-          <span class="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 font-mono font-bold">
+          <span class="text-xs px-2 py-0.5 rounded-full font-mono font-bold"
+                :class="store.settings.themeMode === 'light' ? 'bg-amber-500/25 text-amber-800 border border-amber-600/40 font-black' : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'">
             {{ store.exercises.length }}
           </span>
         </h2>
-        <p class="text-xs text-zinc-400 mt-0.5">
+        <p class="text-xs mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
           全套 3D 解剖动图、离心向心要点与平替矩阵
         </p>
       </div>
@@ -23,11 +24,11 @@
 
     <!-- Reassurance Banner (Comprehensive Library) -->
     <div class="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-between text-xs">
-      <div class="flex items-center gap-2 text-zinc-300">
+      <div class="flex items-center gap-2" :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-bold' : 'text-zinc-300'">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
         <span class="font-medium">已全面收录 7 大黄金肌群与体能动作</span>
       </div>
-      <span class="text-amber-400 font-mono font-bold">{{ store.exercises.length }} 款全覆盖</span>
+      <span class="font-mono font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">{{ store.exercises.length }} 款全覆盖</span>
     </div>
 
     <!-- Search & Filter Bar (Natural Scroll, Zero Viewport Obstruction) -->
@@ -37,7 +38,8 @@
         <input v-model="searchQuery" 
                type="text" 
                placeholder="搜索动作名称、英文、别名、目标肌群..." 
-               class="w-full bg-zinc-950 border border-zinc-700/80 rounded-xl pl-9 pr-8 py-2 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-amber-500 transition-colors" />
+               class="w-full rounded-xl pl-9 pr-8 py-2 text-xs transition-colors focus:outline-none focus:border-amber-500"
+               :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border border-slate-300 text-slate-900 placeholder-slate-400' : 'bg-zinc-950 border border-zinc-700/80 text-zinc-100 placeholder-zinc-500'" />
         <span v-if="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-2 text-xs text-zinc-400 hover:text-white cursor-pointer">✕</span>
       </div>
 
@@ -48,18 +50,18 @@
                 class="px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer flex items-center gap-1"
                 :class="[
                   activeCategory === cat.name ? 
-                  'bg-amber-500 text-zinc-950 font-bold shadow-sm shadow-amber-500/20' : 
-                  'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800/80'
+                  'bg-amber-500 text-zinc-950 font-black shadow-sm shadow-amber-500/20' : 
+                  (store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold border border-slate-300/80 shadow-xs' : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800/80')
                 ]">
           <span>{{ cat.name }}</span>
-          <span class="text-[10px] opacity-80 font-mono">({{ cat.count }})</span>
+          <span class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'opacity-80'">({{ cat.count }})</span>
         </button>
       </div>
     </div>
 
     <!-- Search Query Result Counter -->
-    <div v-if="searchQuery.trim()" class="flex items-center justify-between px-1 text-xs text-zinc-400">
-      <span>搜索关键词: <span class="text-amber-400 font-bold">"{{ searchQuery }}"</span></span>
+    <div v-if="searchQuery.trim()" class="flex items-center justify-between px-1 text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-700 font-medium' : 'text-zinc-400'">
+      <span>搜索关键词: <span class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">"{{ searchQuery }}"</span></span>
       <span class="font-mono">找到 {{ filteredExercises.length }} 个动作</span>
     </div>
 
@@ -79,32 +81,36 @@
         <!-- Center Details -->
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-1.5">
-            <h3 class="font-bold text-xs text-zinc-100 truncate">{{ ex.name }}</h3>
-            <span class="text-[9px] px-1.5 py-0.2 rounded bg-zinc-800 text-amber-400 border border-zinc-700/60 font-semibold flex-shrink-0">
+            <h3 class="font-bold text-xs truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</h3>
+            <span class="text-[9px] px-1.5 py-0.2 rounded border flex-shrink-0"
+                  :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-zinc-800 text-amber-400 border-zinc-700/60 font-semibold'">
               {{ ex.category }}
             </span>
           </div>
-          <div class="text-[11px] text-zinc-400 mt-0.5 truncate">
-            🎯 <span class="text-zinc-300">{{ ex.target }}</span>
+          <div class="text-[11px] mt-0.5 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+            🎯 <span :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">{{ ex.target }}</span>
           </div>
 
           <!-- Tags & Substitutes -->
           <div class="flex flex-wrap items-center gap-1 mt-1">
-            <span v-if="ex.englishName" class="text-[9px] font-mono px-1 py-0.2 rounded bg-zinc-950 text-zinc-500 border border-zinc-800 truncate max-w-[120px]">
+            <span v-if="ex.englishName" class="text-[9px] font-mono px-1 py-0.2 rounded border truncate max-w-[120px]"
+                  :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-600 border-slate-300' : 'bg-zinc-950 text-zinc-500 border-zinc-800'">
               {{ ex.englishName }}
             </span>
             <span v-for="tag in (ex.tags || []).slice(0, 1)" :key="tag" 
-                  class="text-[9px] px-1.5 py-0.2 rounded bg-zinc-950 text-zinc-400 border border-zinc-800">
+                  class="text-[9px] px-1.5 py-0.2 rounded border"
+                  :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-700 border-slate-300 font-medium' : 'bg-zinc-950 text-zinc-400 border-zinc-800'">
               #{{ tag }}
             </span>
-            <span v-if="ex.substitutes?.length" class="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <span v-if="ex.substitutes?.length" class="text-[9px] px-1.5 py-0.2 rounded border"
+                  :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'">
               {{ ex.substitutes.length }}个平替
             </span>
           </div>
         </div>
 
         <!-- Right action icon -->
-        <div class="flex-shrink-0 text-zinc-500 hover:text-amber-400">
+        <div class="flex-shrink-0" :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-500 hover:text-amber-400'">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
           </svg>
@@ -112,9 +118,9 @@
 
       </div>
 
-      <div v-if="filteredExercises.length === 0" class="py-12 text-center text-zinc-500 text-xs space-y-2">
+      <div v-if="filteredExercises.length === 0" class="py-12 text-center text-xs space-y-2" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-500'">
         <div>未找到与关键词匹配的动作</div>
-        <button @click="openCreateExercise" class="text-amber-400 font-bold hover:underline">
+        <button @click="openCreateExercise" class="font-bold hover:underline cursor-pointer" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">
           立即添加自定义动作 ❯
         </button>
       </div>
@@ -131,7 +137,8 @@
               @click="scrollToTop" 
               type="button"
               aria-label="返回顶部"
-              class="fixed right-4 z-20 flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-zinc-900/95 hover:bg-zinc-800 active:scale-95 text-amber-400 font-bold text-xs shadow-xl shadow-black/60 border border-amber-500/40 backdrop-blur-xl transition-all cursor-pointer select-none"
+              class="fixed right-4 z-20 flex items-center gap-1.5 px-3.5 py-2 rounded-full active:scale-95 text-xs backdrop-blur-xl transition-all cursor-pointer select-none"
+              :class="store.settings.themeMode === 'light' ? 'bg-white/95 hover:bg-slate-100 text-amber-800 font-black border border-amber-500/50 shadow-xl shadow-black/10' : 'bg-zinc-900/95 hover:bg-zinc-800 text-amber-400 font-bold border border-amber-500/40 shadow-xl shadow-black/60'"
               :style="{ bottom: 'calc(max(env(safe-area-inset-bottom, 0px), 8px) + 3.85rem)' }">
         <svg class="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/>

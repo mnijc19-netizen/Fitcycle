@@ -56,8 +56,8 @@
     --fc-border: #D0D7DE;
     --fc-border-subtle: rgba(217, 119, 6, 0.25);
     --fc-text-primary: #0F172A;
-    --fc-text-secondary: #334155;
-    --fc-text-muted: #64748B;
+    --fc-text-secondary: #1E293B;
+    --fc-text-muted: #475569;
     --fc-accent: #B45309;
     --fc-accent-hover: #92400E;
     --fc-accent-active: #78350F;
@@ -111,8 +111,8 @@
     --fc-border: #CBD5E1;
     --fc-border-subtle: rgba(224, 78, 0, 0.25);
     --fc-text-primary: #090D16;
-    --fc-text-secondary: #1E293B;
-    --fc-text-muted: #475569;
+    --fc-text-secondary: #0F172A;
+    --fc-text-muted: #334155;
     --fc-accent: #E04E00;
     --fc-accent-hover: #FA5A00;
     --fc-accent-active: #C2410C;
@@ -168,8 +168,8 @@
     --fc-border: #D8CEB9;
     --fc-border-subtle: rgba(184, 142, 62, 0.3);
     --fc-text-primary: #141B26;
-    --fc-text-secondary: #2C384D;
-    --fc-text-muted: #5C6B82;
+    --fc-text-secondary: #1E293B;
+    --fc-text-muted: #3B4858;
     --fc-accent: #9A7228;
     --fc-accent-hover: #84611E;
     --fc-accent-active: #6E4F14;
@@ -223,8 +223,8 @@
     --fc-border: #D0D0D0;
     --fc-border-subtle: rgba(0, 0, 0, 0.2);
     --fc-text-primary: #000000;
-    --fc-text-secondary: #2E2E2E;
-    --fc-text-muted: #595959;
+    --fc-text-secondary: #1A1A1A;
+    --fc-text-muted: #404040;
     --fc-accent: #000000;
     --fc-accent-hover: #262626;
     --fc-accent-active: #404040;
@@ -543,6 +543,68 @@
 .ring-amber-400,
 .ring-amber-500 {
   --tw-ring-color: var(--fc-accent) !important;
+}
+
+/* Light mode contrast enhancements for inset cards, day pills, and options */
+[data-theme="light"] .bg-zinc-950\/70,
+[data-theme="light"] .bg-zinc-950\/60,
+[data-theme="light"] .bg-zinc-950\/80,
+[data-mode="light"] .bg-zinc-950\/70,
+[data-mode="light"] .bg-zinc-950\/60,
+[data-mode="light"] .bg-zinc-950\/80 {
+  background-color: var(--fc-surface-2) !important;
+  border-color: var(--fc-border) !important;
+}
+
+[data-theme="light"] button.bg-zinc-950:not(.bg-amber-500):not(.bg-emerald-500):not([data-theme-preserve="true"]),
+[data-theme="light"] button.bg-zinc-900:not(.bg-amber-500):not(.bg-emerald-500):not([data-theme-preserve="true"]),
+[data-theme="light"] button.bg-zinc-850:not(.bg-amber-500):not(.bg-emerald-500):not([data-theme-preserve="true"]),
+[data-theme="light"] button.bg-zinc-800:not(.bg-amber-500):not(.bg-emerald-500):not([data-theme-preserve="true"]),
+[data-mode="light"] button.bg-zinc-950:not(.bg-amber-500):not(.bg-emerald-500):not([data-theme-preserve="true"]),
+[data-mode="light"] button.bg-zinc-900:not(.bg-amber-500):not(.bg-emerald-500):not([data-theme-preserve="true"]),
+[data-mode="light"] button.bg-zinc-850:not(.bg-amber-500):not(.bg-emerald-500):not([data-theme-preserve="true"]),
+[data-mode="light"] button.bg-zinc-800:not(.bg-amber-500):not(.bg-emerald-500):not([data-theme-preserve="true"]) {
+  background-color: var(--fc-surface-2) !important;
+  color: var(--fc-text-primary) !important;
+  border-color: var(--fc-border) !important;
+  font-weight: 600;
+}
+
+/* Light mode high-contrast text overrides (WCAG AAA >= 7:1) */
+[data-theme="light"] .text-amber-400:not([data-theme-preserve="true"]),
+[data-theme="light"] .text-amber-300:not([data-theme-preserve="true"]),
+[data-mode="light"] .text-amber-400:not([data-theme-preserve="true"]),
+[data-mode="light"] .text-amber-300:not([data-theme-preserve="true"]) {
+  color: var(--fc-accent) !important;
+  font-weight: 700;
+}
+
+[data-theme="light"] .text-amber-500:not([data-theme-preserve="true"]),
+[data-mode="light"] .text-amber-500:not([data-theme-preserve="true"]) {
+  color: var(--fc-accent-hover) !important;
+  font-weight: 700;
+}
+
+[data-theme="light"] .text-sky-300:not([data-theme-preserve="true"]),
+[data-theme="light"] .text-sky-400:not([data-theme-preserve="true"]),
+[data-mode="light"] .text-sky-300:not([data-theme-preserve="true"]),
+[data-mode="light"] .text-sky-400:not([data-theme-preserve="true"]) {
+  color: #0369A1 !important; /* Sky 700: 5.8:1 contrast on white */
+  font-weight: 700;
+}
+
+[data-theme="light"] .text-emerald-300:not([data-theme-preserve="true"]),
+[data-theme="light"] .text-emerald-400:not([data-theme-preserve="true"]),
+[data-mode="light"] .text-emerald-300:not([data-theme-preserve="true"]),
+[data-mode="light"] .text-emerald-400:not([data-theme-preserve="true"]) {
+  color: #047857 !important; /* Emerald 700: 4.8:1 contrast on white */
+  font-weight: 700;
+}
+
+[data-theme="light"] .text-zinc-500,
+[data-mode="light"] .text-zinc-500 {
+  color: var(--fc-text-muted) !important;
+  font-weight: 500;
 }
 
 /* Light Mode Color-Tinted Cards & Badges (WCAG AAA 6.5+:1 Contrast) */

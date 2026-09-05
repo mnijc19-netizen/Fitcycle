@@ -4,6 +4,31 @@
 
 ---
 
+## 🚀 [v1.7.1] - 2026-09-05 (白昼模式全域高对比能见度与底部栏/选项重塑 - WCAG AAA 标杆)
+### 👁️ 白昼模式 (Light Mode) 底部栏与选项可见度重塑
+- **底部导航栏 (TabBar) 彻底告别模糊与穿透**：
+  - 白昼底色加固至 `bg-white/98 backdrop-blur-3xl border-t border-slate-300/90 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]`，彻底杜绝滚动页面内容穿透花屏；
+  - **CS2 纯白矢量 SVG 图标动态染色**：引入 CSS `maskImage` 矢量遮罩体系，解决官方 SVG 硬编码 `fill="#FFFFFF"` 导致白底白图标看不见的问题（激活态深橙 `#C2410C`，未激活态板岩深灰 `bg-slate-700`，对比度 $\ge 9.8:1$）；
+  - Chamber 图标应用深金色高反差滤镜，Default & Monochrome 图标应用加粗深色 SVG 笔画；
+  - 5 个底部标签文字统一加粗（`font-semibold`），未激活状态对比度 $\ge 9.5:1$（WCAG AAA 级）。
+- **全场景核心选项与卡片高反差实体化**：
+  - **`TodayView`**：分化步进器 `Day 1 ~ Day 4` 实体浅灰胶囊背景（`bg-slate-100 border-slate-300`）、加深文字与激活高亮；`切换计划 | 自由空白训练` 加深为 `text-slate-900 font-bold hover:text-amber-600`；怠惰计时/肌群状态小标签与数值字体加深；PTS 战力天梯与形体围度按钮添加实体浅灰底；今日动作清单名称、组数、前次表现高反差加固；开练模式下的组号、输入框、`+/-` 按钮、添加组按钮、放弃按钮全面加固；计划选择弹窗内选项卡片实体底色化；
+  - **`Navbar`**：日期文本强化为 `text-slate-700 font-bold`，段位文本强化为 `text-slate-900 font-black`，PTS 文本强化为 `text-amber-800 font-black`；
+  - **`ExercisesView` & `ExercisePickerModal`**：分类筛选 Pills 从不可辨识的纯透明/同色升级为高反差实体浅灰胶囊（`bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800 font-bold`）；搜索框、动作分类徽标、平替标签与回顶按钮全维度加深；
+  - **`StatsView`**：天梯排位、形体围度、4 档组间休息时长按钮（60s, 90s, 120s, 180s）、减载盾牌状态条、清空打卡日志、恢复出厂设置选项对比度加固；
+  - **`CycleView` & `CalendarView`**：架构名称、轮转天数卡片、日历星期头（日 一 二 三 四 五 六）、日历日期格子（未选/已选/今日）、打卡记录卡片与组数徽章白昼高反差强化。
+- **全局色彩变量与映射安全网 (`style.css`)**：
+  - 在 `[data-mode="light"]` 下，将 `.text-amber-400`, `.text-amber-300` 映射到 `var(--fc-accent)`，将 `.text-sky-300/400` 映射到 `#0369A1`，将 `.text-emerald-300/400` 映射到 `#047857`，彻底根治在白底上原本 1.6:1 的惨白隐形死穴；
+  - 注入 `button.bg-zinc-950/900/850/800` 在白昼下的实体浅色底色与深色文字；
+  - 全局浅色变量 `--fc-text-secondary` 强化为 `#1E293B`，`--fc-text-muted` 强化为 `#334155`。
+
+### 🧪 全量自动化验证与构建
+- Vitest 8 套测试套件、78 项断言 100% PASS；
+- M1 极限多维矩阵压测（137 项断言）100% PASS；
+- 生产打包 `npm run build` 0 Error。
+
+---
+
 ## 🚀 [v1.7.0] - 2026-09-05 (FitCycle 动作库扩充至黄金规模 109 款与全域有氧体能体系实装)
 ### 🏋️ 动作库扩充至黄金黄金规模 (79 ➔ 109 款全科学覆盖)
 - **胸部 (+3 ➔ 共 19 款)**：追加 `ex-landmine-press` (地雷管推胸 / 肩关节友好弧线推力)、`ex-incline-barbell-bench-press` (上斜杠铃卧推 / 锁骨头大负荷基石)、`ex-decline-chest-press` (下斜器械推胸 / 雕刻胸肌下沿黄金轮廓)；

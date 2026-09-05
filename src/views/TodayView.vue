@@ -148,7 +148,8 @@
           <!-- Sets Table -->
           <div class="p-3 space-y-2">
             <!-- Table Header -->
-            <div class="grid grid-cols-12 gap-1 text-[11px] font-bold text-zinc-500 px-1 text-center">
+            <div class="grid grid-cols-12 gap-1 text-[11px] font-bold px-1 text-center"
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-500'">
               <span class="col-span-2 text-left">组号</span>
               <span class="col-span-4">重量 (kg)</span>
               <span class="col-span-4">次数</span>
@@ -167,40 +168,48 @@
                 <!-- Set index -->
                 <div class="col-span-2 flex items-center gap-1">
                   <span class="w-6 h-6 rounded-lg text-xs font-mono font-bold flex items-center justify-center transition-colors"
-                        :class="s.completed ? 'bg-emerald-500/20 text-emerald-300 font-black' : 'bg-zinc-800 text-zinc-300'">
+                        :class="s.completed ? 'bg-emerald-500/20 text-emerald-300 font-black' : (store.settings.themeMode === 'light' ? 'bg-slate-200 text-slate-800 font-bold' : 'bg-zinc-800 text-zinc-300')">
                     {{ sIdx + 1 }}
                   </span>
                   <button v-if="ex.sets.length > 1 && !s.completed" 
                           @click="removeSet(exIdx, sIdx)" 
-                          class="text-zinc-600 hover:text-red-400 text-xs">
+                          class="text-zinc-500 hover:text-red-500 text-xs font-bold cursor-pointer">
                     -
                   </button>
                 </div>
 
                 <!-- Weight Input + Quick Adjust -->
-                <div class="col-span-4 flex items-center bg-zinc-900 border border-zinc-700/70 rounded-lg overflow-hidden relative">
+                <div class="col-span-4 flex items-center border rounded-lg overflow-hidden relative"
+                     :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border-slate-300' : 'bg-zinc-900 border-zinc-700/70'">
                   <button @click="s.weight = Math.max(0, (Number(s.weight) || 0) - 2.5)" 
-                          class="px-1.5 py-1 text-zinc-400 hover:text-white bg-zinc-800/50 text-xs font-bold active:scale-95">
+                          class="px-1.5 py-1 text-xs font-bold active:scale-95 transition-colors cursor-pointer"
+                          :class="store.settings.themeMode === 'light' ? 'bg-slate-200 hover:bg-slate-300 text-slate-800' : 'bg-zinc-800/50 text-zinc-400 hover:text-white'">
                     -
                   </button>
                   <input v-model.number="s.weight" type="number" step="0.5"
-                         class="w-full bg-transparent text-center text-xs font-mono font-bold text-zinc-100 focus:outline-none" />
+                         class="w-full bg-transparent text-center text-xs font-mono font-bold focus:outline-none"
+                         :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'" />
                   <button @click="s.weight = (Number(s.weight) || 0) + 2.5" 
-                          class="px-1.5 py-1 text-zinc-400 hover:text-white bg-zinc-800/50 text-xs font-bold active:scale-95">
+                          class="px-1.5 py-1 text-xs font-bold active:scale-95 transition-colors cursor-pointer"
+                          :class="store.settings.themeMode === 'light' ? 'bg-slate-200 hover:bg-slate-300 text-slate-800' : 'bg-zinc-800/50 text-zinc-400 hover:text-white'">
                     +
                   </button>
                 </div>
 
                 <!-- Reps Input + Quick Adjust -->
-                <div class="col-span-4 flex items-center bg-zinc-900 border border-zinc-700/70 rounded-lg overflow-hidden">
+                <div class="col-span-4 flex items-center border rounded-lg overflow-hidden"
+                     :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border-slate-300' : 'bg-zinc-900 border-zinc-700/70'">
                   <button @click="s.reps = Math.max(0, (Number(s.reps) || 0) - 1)" 
-                          class="px-1.5 py-1 text-zinc-400 hover:text-white bg-zinc-800/50 text-xs font-bold active:scale-95">
+                          class="px-1.5 py-1 text-xs font-bold active:scale-95 transition-colors cursor-pointer"
+                          :class="store.settings.themeMode === 'light' ? 'bg-slate-200 hover:bg-slate-300 text-slate-800' : 'bg-zinc-800/50 text-zinc-400 hover:text-white'">
                     -
                   </button>
                   <input v-model.number="s.reps" type="number" 
-                         class="w-full bg-transparent text-center text-xs font-mono font-bold text-zinc-100 focus:outline-none" />
+                         class="w-full bg-transparent text-center text-xs font-mono font-bold focus:outline-none"
+                         :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'" />
                   <button @click="s.reps = (Number(s.reps) || 0) + 1" 
-                          class="px-1.5 py-1 text-zinc-400 hover:text-white bg-zinc-800/50 text-xs font-bold active:scale-95">
+                          class="px-1.5 py-1 text-xs font-bold active:scale-95 transition-colors cursor-pointer"
+                          :class="store.settings.themeMode === 'light' ? 'bg-slate-200 hover:bg-slate-300 text-slate-800' : 'bg-zinc-800/50 text-zinc-400 hover:text-white'">
                     +
                   </button>
                 </div>
@@ -208,10 +217,10 @@
                 <!-- Complete Checkbox Button -->
                 <div class="col-span-2 flex justify-center">
                   <button @click="toggleSet(exIdx, sIdx)"
-                          class="w-8 h-8 rounded-xl flex items-center justify-center transition-all active:scale-90 relative"
+                          class="w-8 h-8 rounded-xl flex items-center justify-center transition-all active:scale-90 relative cursor-pointer"
                           :class="[
                             s.completed ? 'bg-emerald-500 text-zinc-950 shadow-md shadow-emerald-500/30' : 
-                            'bg-zinc-800 hover:bg-zinc-700 text-zinc-400 border border-zinc-700'
+                            (store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-500 border border-slate-300' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-400 border border-zinc-700')
                           ]">
                     <svg class="w-4 h-4 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
@@ -224,7 +233,7 @@
               <!-- Micro Overload Dopamine Delta Badge Bar -->
               <div v-if="getSetOverloadDelta(ex.name, s, sIdx)" 
                    class="flex items-center justify-between px-2.5 text-[9px] font-mono leading-none pb-0.5 animate-in fade-in slide-in-from-top-1 duration-200">
-                <span class="text-zinc-500">{{ getSetOverloadDelta(ex.name, s, sIdx).prevText }}</span>
+                <span :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'text-zinc-500'">{{ getSetOverloadDelta(ex.name, s, sIdx).prevText }}</span>
                 
                 <!-- Weight PR Badge -->
                 <span v-if="getSetOverloadDelta(ex.name, s, sIdx).type === 'weight_pr'"
@@ -263,7 +272,8 @@
 
             <!-- Add set button -->
             <button @click="addSet(exIdx)" 
-                    class="w-full py-2 bg-zinc-950/60 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-dashed border-zinc-800 rounded-xl text-xs font-medium flex items-center justify-center gap-1 transition-all">
+                    class="w-full py-2 border border-dashed rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer"
+                    :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300' : 'bg-zinc-950/60 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border-zinc-800'">
               <span>➕</span> 添加一组
             </button>
           </div>
@@ -273,14 +283,17 @@
 
       <!-- Add Extra Exercise to Workout -->
       <button @click="showAddExerciseModal = true" 
-              class="w-full py-3.5 bg-zinc-900 hover:bg-zinc-800 active:scale-98 border border-zinc-700/80 rounded-2xl text-xs font-bold text-zinc-200 flex items-center justify-center gap-2 shadow-lg">
+              class="w-full py-3.5 border rounded-2xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm active:scale-98 cursor-pointer"
+              :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-900 border-slate-300' : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border-zinc-700/80'">
         <span>➕</span> 临时添加新动作到本次训练
       </button>
 
       <!-- Bottom Sticky Finish / Discard Bar -->
-      <div class="sticky bottom-20 z-20 bg-zinc-950/90 backdrop-blur-md p-2 rounded-2xl border border-zinc-800/80 flex items-center gap-2">
+      <div class="sticky bottom-20 z-20 backdrop-blur-md p-2 rounded-2xl border flex items-center gap-2"
+           :class="store.settings.themeMode === 'light' ? 'bg-white/95 border-slate-300 shadow-xl' : 'bg-zinc-950/90 border-zinc-800/80'">
         <button @click="confirmDiscard" 
-                class="w-1/3 py-3 bg-zinc-900 hover:bg-red-950/40 text-zinc-400 hover:text-red-400 border border-zinc-800 rounded-xl text-xs font-bold active:scale-95 transition-all">
+                class="w-1/3 py-3 border rounded-xl text-xs font-bold active:scale-95 transition-all cursor-pointer"
+                :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 border-slate-300' : 'bg-zinc-900 hover:bg-red-950/40 text-zinc-400 hover:text-red-400 border-zinc-800'">
           放弃训练
         </button>
         <button @click="handleFinishWorkout" 
@@ -371,12 +384,12 @@
             <span>打卡今日休整</span>
           </button>
 
-          <div class="flex items-center justify-center gap-4 pt-1 text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
-            <button @click="showPlanPicker = true" class="hover:text-amber-500 transition-colors cursor-pointer">
+          <div class="flex items-center justify-center gap-4 pt-1 text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-bold' : 'text-zinc-400'">
+            <button @click="showPlanPicker = true" class="hover:text-amber-600 transition-colors cursor-pointer">
               切换计划
             </button>
-            <span :class="store.settings.themeMode === 'light' ? 'text-slate-300' : 'text-zinc-700'">|</span>
-            <button @click="startEmptyWorkout" class="hover:text-amber-500 transition-colors cursor-pointer">
+            <span :class="store.settings.themeMode === 'light' ? 'text-slate-400' : 'text-zinc-700'">|</span>
+            <button @click="startEmptyWorkout" class="hover:text-amber-600 transition-colors cursor-pointer">
               自由空白训练
             </button>
           </div>
@@ -412,7 +425,7 @@
                       timeSinceLastWorkout.urgencyLevel === 'danger' ? 'bg-red-500 animate-pulse' :
                       timeSinceLastWorkout.urgencyLevel === 'warn' ? 'bg-amber-400' : 'bg-emerald-400'
                     ]"></span>
-              <span class="font-bold text-zinc-200">{{ timeSinceLastWorkout.title }}</span>
+              <span class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">{{ timeSinceLastWorkout.title }}</span>
             </div>
             <span class="text-[10px] font-mono px-2 py-0.5 rounded-full"
                   :class="[
@@ -426,12 +439,12 @@
 
           <div class="grid grid-cols-2 gap-2 text-[11px] pt-1">
             <div class="p-2 rounded-xl bg-zinc-950/70 border border-zinc-800/80">
-              <div class="text-zinc-500 text-[10px] font-mono">怠惰计时</div>
-              <div class="text-zinc-200 font-medium truncate mt-0.5">{{ timeSinceLastWorkout.subText }}</div>
+              <div class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-700 font-bold' : 'text-zinc-500'">怠惰计时</div>
+              <div class="font-medium truncate mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-bold' : 'text-zinc-200'">{{ timeSinceLastWorkout.subText }}</div>
             </div>
             <div class="p-2 rounded-xl bg-zinc-950/70 border border-zinc-800/80">
-              <div class="text-zinc-500 text-[10px] font-mono">肌群状态</div>
-              <div class="text-zinc-200 font-medium truncate mt-0.5">{{ splitRecoveryInfo.desc }}</div>
+              <div class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-700 font-bold' : 'text-zinc-500'">肌群状态</div>
+              <div class="font-medium truncate mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-bold' : 'text-zinc-200'">{{ splitRecoveryInfo.desc }}</div>
             </div>
           </div>
         </div>
@@ -439,19 +452,25 @@
         <!-- Honor Rank & Body Metrics Launchers -->
         <div class="pt-1.5 border-t border-zinc-800/80 flex items-center justify-between gap-2">
           <button @click="showHonorModal = true" 
-                  class="flex-1 py-1.5 px-2.5 rounded-xl bg-zinc-950 hover:bg-zinc-800 border border-amber-500/30 text-[11px] font-mono text-amber-400 flex items-center justify-between transition-all cursor-pointer">
+                  class="flex-1 py-1.5 px-2.5 rounded-xl border text-[11px] font-mono flex items-center justify-between transition-all cursor-pointer"
+                  :class="store.settings.themeMode === 'light'
+                    ? 'bg-slate-100 hover:bg-slate-200 border-amber-600/40 text-amber-800 font-bold shadow-xs'
+                    : 'bg-zinc-950 hover:bg-zinc-800 border-amber-500/30 text-amber-400'">
             <span class="flex items-center gap-1.5">
               <img v-if="honorData.presentation.tierSvg" :src="honorData.presentation.tierSvg" alt="Tier" class="w-3.5 h-3.5 object-contain" />
               <span v-else>{{ honorData.presentation.tierIcon }}</span>
-              <span class="font-bold font-sans text-zinc-200">{{ honorData.presentation.tierName.split('·')[0] }}</span>
+              <span class="font-bold font-sans" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">{{ honorData.presentation.tierName.split('·')[0] }}</span>
             </span>
-            <span class="text-amber-400 font-bold">{{ honorData.score }} PTS ❯</span>
+            <span class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">{{ honorData.score }} PTS ❯</span>
           </button>
 
           <button @click="showBodyModal = true"
-                  class="py-1.5 px-3 rounded-xl bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-medium text-zinc-300 flex items-center gap-1 transition-all cursor-pointer">
+                  class="py-1.5 px-3 rounded-xl border text-[11px] font-medium flex items-center gap-1 transition-all cursor-pointer"
+                  :class="store.settings.themeMode === 'light'
+                    ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800 font-bold shadow-xs'
+                    : 'bg-zinc-950 hover:bg-zinc-800 border-zinc-800 text-zinc-300'">
             <span>形体围度</span>
-            <span class="text-zinc-500 text-[9px]">❯</span>
+            <span class="text-[9px]" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'text-zinc-500'">❯</span>
           </button>
         </div>
       </div>
@@ -464,10 +483,10 @@
                   class="py-1.5 px-1 rounded-xl text-center transition-all cursor-pointer"
                   :class="[
                     todayCycle.cycleIndex === idx ? 
-                    'bg-amber-500 text-zinc-950 font-bold shadow-sm' : 
-                    'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60'
+                    'bg-amber-500 text-zinc-950 font-black shadow-sm' : 
+                    (store.settings.themeMode === 'light' ? 'bg-slate-100/90 hover:bg-slate-200 text-slate-800 border border-slate-300/80 font-bold shadow-xs' : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60')
                   ]">
-            <div class="text-[9px] font-mono opacity-80 leading-none">Day {{ idx + 1 }}</div>
+            <div class="text-[9px] font-mono leading-none" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'opacity-80'">Day {{ idx + 1 }}</div>
             <div class="text-xs font-black mt-0.5 leading-tight truncate">
               {{ day.shortName || (day.isRest ? '休' : '练') }}
             </div>
@@ -478,11 +497,12 @@
       <!-- Today's Exercise Inset-Grouped List -->
       <div v-if="!todayCycle.isRest && currentPlan?.exercises?.length" class="space-y-2 pt-1">
         <div class="flex items-center justify-between px-1">
-          <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+          <span class="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5"
+                :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-bold' : 'text-zinc-400'">
+            <span class="w-1.5 h-1.5 rounded-full" :class="store.settings.themeMode === 'light' ? 'bg-amber-600' : 'bg-amber-400'"></span>
             <span>今日动作清单 ({{ currentPlan.exercises.length }})</span>
           </span>
-          <span class="text-[10px] text-zinc-500">点击查看 3D 轨迹</span>
+          <span class="text-[10px]" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-500'">点击查看 3D 轨迹</span>
         </div>
 
         <div class="bg-zinc-900/80 border border-zinc-800 rounded-3xl overflow-hidden divide-y divide-zinc-800/70 shadow-lg">
@@ -496,17 +516,17 @@
                              :target="ex.targetReps" 
                              customClass="w-11 h-11 rounded-xl border border-zinc-800 flex-shrink-0" />
               <div class="min-w-0">
-                <div class="font-bold text-xs text-zinc-100 truncate">{{ ex.name }}</div>
-                <div class="text-[11px] text-zinc-400 mt-0.5 flex items-center gap-2">
-                  <span class="text-amber-400 font-mono font-medium">{{ ex.setsCount }}组 × {{ ex.targetReps }}</span>
-                  <span v-if="getLastExercisePerformance(ex.name)" class="text-zinc-500 font-mono text-[10px]">
+                <div class="font-bold text-xs truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</div>
+                <div class="text-[11px] mt-0.5 flex items-center gap-2" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-400'">
+                  <span class="font-mono font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">{{ ex.setsCount }}组 × {{ ex.targetReps }}</span>
+                  <span v-if="getLastExercisePerformance(ex.name)" class="font-mono text-[10px]" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-500'">
                     前次: {{ formatLastPerf(ex.name) }}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div class="text-zinc-500 text-xs">
+            <div class="text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-500'">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
               </svg>
@@ -518,8 +538,8 @@
       <!-- Recent History Minimalist Inset List -->
       <div v-if="recentLogs.length" class="space-y-2 pt-1">
         <div class="flex items-center justify-between px-1">
-          <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider">最近打卡记录</span>
-          <button @click="store.activeTab = 'calendar'" class="text-xs text-amber-400 font-medium">全部日历 ❯</button>
+          <span class="text-xs font-bold uppercase tracking-wider" :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-bold' : 'text-zinc-400'">最近打卡记录</span>
+          <button @click="store.activeTab = 'calendar'" class="text-xs font-bold transition-colors cursor-pointer" :class="store.settings.themeMode === 'light' ? 'text-amber-800 hover:text-amber-900' : 'text-amber-400 hover:text-amber-300'">全部日历 ❯</button>
         </div>
 
         <div class="bg-zinc-900/80 border border-zinc-800 rounded-3xl overflow-hidden divide-y divide-zinc-800/70 shadow-lg">
@@ -597,15 +617,16 @@
           <div class="w-10 h-1 rounded-full bg-zinc-700/80 mx-auto -mt-1 mb-2 flex-shrink-0"></div>
 
           <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
-            <h3 class="text-sm font-black text-zinc-100 flex items-center gap-1.5">
+            <h3 class="text-sm font-black flex items-center gap-1.5" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">
               <span>选择训练计划</span>
             </h3>
-            <button @click="showPlanPicker = false" class="w-7 h-7 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer">✕</button>
+            <button @click="showPlanPicker = false" class="w-7 h-7 rounded-full flex items-center justify-center text-xs transition-colors cursor-pointer" :class="store.settings.themeMode === 'light' ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white'">✕</button>
           </div>
           <div class="space-y-2 max-h-80 overflow-y-auto overscroll-contain no-scrollbar" style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
             <div v-for="p in store.plans" :key="p.id"
                  @click="startCustomPlan(p.id)"
-                 class="p-3 bg-zinc-950/80 hover:bg-zinc-850 active:bg-zinc-800 border border-zinc-800/80 hover:border-amber-500/40 rounded-2xl cursor-pointer flex items-center justify-between transition-all gap-3 shadow-sm">
+                 class="p-3 border rounded-2xl cursor-pointer flex items-center justify-between transition-all gap-3 shadow-sm"
+                 :class="store.settings.themeMode === 'light' ? 'bg-slate-100/90 hover:bg-slate-200 border-slate-300 text-slate-900' : 'bg-zinc-950/80 hover:bg-zinc-850 active:bg-zinc-800 border-zinc-800/80 hover:border-amber-500/40 text-zinc-100'">
               <div class="flex items-center gap-2.5 min-w-0">
                 <span class="w-2.5 h-2.5 rounded-full flex-shrink-0"
                       :class="[
@@ -615,8 +636,8 @@
                         'bg-emerald-400 shadow-sm shadow-emerald-400/50'
                       ]"></span>
                 <div class="min-w-0">
-                  <div class="text-xs font-bold text-zinc-100 truncate">{{ p.name }}</div>
-                  <div class="text-[11px] text-zinc-400 mt-0.5 line-clamp-1">{{ p.coreTarget }}</div>
+                  <div class="text-xs font-bold truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ p.name }}</div>
+                  <div class="text-[11px] mt-0.5 line-clamp-1" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-400'">{{ p.coreTarget }}</div>
                 </div>
               </div>
               <button v-if="!p.isRest" 

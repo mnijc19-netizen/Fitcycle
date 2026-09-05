@@ -34,7 +34,8 @@
           <input v-model="searchQuery" 
                  type="text" 
                  placeholder="搜索动作名称、目标肌群..." 
-                 class="w-full bg-zinc-950 border border-zinc-700/80 rounded-xl px-3.5 py-2 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-amber-500" />
+                 class="w-full rounded-xl px-3.5 py-2 text-xs transition-colors focus:outline-none focus:border-amber-500"
+                 :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border border-slate-300 text-slate-900 placeholder-slate-400' : 'bg-zinc-950 border border-zinc-700/80 text-zinc-100 placeholder-zinc-500'" />
           <span v-if="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-2 text-xs text-zinc-400 cursor-pointer">✕</span>
         </div>
 
@@ -42,8 +43,12 @@
         <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar overscroll-x-contain touch-pan-x">
           <button v-for="cat in categories" :key="cat"
                   @click="activeCategory = cat"
-                  class="px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all"
-                  :class="[activeCategory === cat ? 'bg-amber-500 text-zinc-950 font-bold' : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700']">
+                  class="px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer"
+                  :class="[
+                    activeCategory === cat 
+                      ? 'bg-amber-500 text-zinc-950 font-black shadow-sm' 
+                      : (store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold border border-slate-300/80' : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700')
+                  ]">
             {{ cat }}
           </button>
         </div>
@@ -54,7 +59,8 @@
            style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
         <div v-for="ex in filteredExercises" :key="ex.id"
              @click="selectExercise(ex)"
-             class="p-2.5 bg-zinc-950/60 hover:bg-zinc-800/70 active:bg-zinc-800 border border-zinc-800/80 hover:border-amber-500/50 rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-3">
+             class="p-2.5 rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-3"
+             :class="store.settings.themeMode === 'light' ? 'bg-slate-50 hover:bg-slate-100 border border-slate-200 shadow-xs' : 'bg-zinc-950/60 hover:bg-zinc-800/70 active:bg-zinc-800 border border-zinc-800/80 hover:border-amber-500/50'">
           
           <!-- 3D Thumbnail with Zero-Broken fallback -->
           <ExerciseImage :src="ex.gifUrl" 
@@ -66,34 +72,37 @@
 
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
-              <span class="font-bold text-sm text-zinc-100 truncate">{{ ex.name }}</span>
-              <span class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-amber-400 border border-zinc-700/50 flex-shrink-0">
+              <span class="font-bold text-sm truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded border flex-shrink-0"
+                    :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-zinc-800 text-amber-400 border-zinc-700/50'">
                 {{ ex.category }}
               </span>
             </div>
-            <div class="text-xs text-zinc-400 mt-0.5 flex items-center gap-1 truncate">
-              <span class="text-zinc-500">目标:</span>
-              <span class="text-zinc-300 truncate">{{ ex.target }}</span>
+            <div class="text-xs mt-0.5 flex items-center gap-1 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+              <span :class="store.settings.themeMode === 'light' ? 'text-slate-500 font-bold' : 'text-zinc-500'">目标:</span>
+              <span class="truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">{{ ex.target }}</span>
             </div>
-            <div v-if="ex.substitutes?.length" class="text-[9px] text-amber-400/90 mt-0.5">
+            <div v-if="ex.substitutes?.length" class="text-[9px] mt-0.5 font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400/90'">
               含 {{ ex.substitutes.length }} 个平替推荐
             </div>
           </div>
 
-          <button class="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-zinc-950 text-xs font-bold rounded-xl border border-amber-500/30 transition-colors flex-shrink-0">
+          <button class="px-3 py-1.5 text-xs rounded-xl border transition-colors flex-shrink-0 cursor-pointer"
+                  :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 hover:bg-amber-500 text-amber-800 hover:text-zinc-950 border-amber-500/50 font-black' : 'bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-zinc-950 font-bold border-amber-500/30'">
             选择
           </button>
         </div>
 
-        <div v-if="filteredExercises.length === 0" class="py-8 text-center text-zinc-500 text-xs">
+        <div v-if="filteredExercises.length === 0" class="py-8 text-center text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-500'">
           没有找到匹配的动作，你可以直接创建自定义动作 👇
         </div>
       </div>
 
       <!-- Footer: Quick Add Custom Exercise -->
-      <div class="p-3 bg-zinc-950 border-t border-zinc-800">
+      <div class="p-3 border-t" :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-200' : 'bg-zinc-950 border-zinc-800'">
         <button @click="showAddCustom = true" 
-                class="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 active:scale-98 text-xs font-semibold text-zinc-200 rounded-xl border border-zinc-700/60 flex items-center justify-center gap-1.5">
+                class="w-full py-2.5 active:scale-98 text-xs font-bold rounded-xl border flex items-center justify-center gap-1.5 cursor-pointer"
+                :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border-zinc-700/60'">
           <span>➕</span> 创建并添加新自定义动作
         </button>
       </div>

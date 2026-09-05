@@ -27,14 +27,34 @@
                :src="headhunterIcon" 
                alt="Headhunter"
                class="w-6 h-6 object-contain transition-all"
+               :style="store.settings.themeMode === 'light' ? (store.activeTab === 'today' ? 'filter: brightness(0.45) contrast(1.5) drop-shadow(0 1px 3px rgba(0,0,0,0.2));' : 'filter: brightness(0.3) contrast(1.3) opacity(0.85);') : ''"
                :class="[store.activeTab === 'today' ? 'brightness-110 drop-shadow-[0_0_8px_rgba(229,195,120,0.8)] scale-110' : 'opacity-80 grayscale-[15%]']" />
           
-          <!-- CS2 Official AK-47 UI Icon -->
-          <img v-else-if="store.settings.uiSkin === 'cs'" 
-               :src="csHomeIcon" 
-               alt="AK-47" 
-               class="w-6 h-6 object-contain transition-all drop-shadow-[0_0_2px_rgba(255,255,255,0.2)]"
-               :class="[store.activeTab === 'today' ? 'brightness-110 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-75 grayscale-[30%]']" />
+          <!-- CS2 Official AK-47 UI Icon (Mask-rendered for 100% Light & Dark Contrast) -->
+          <template v-else-if="store.settings.uiSkin === 'cs'">
+            <div class="w-6 h-6 transition-all"
+                 :class="[
+                   store.activeTab === 'today'
+                     ? (store.settings.themeMode === 'light'
+                         ? 'bg-[#C2410C] drop-shadow-[0_2px_6px_rgba(194,65,12,0.4)] scale-110'
+                         : 'bg-[#FF8A3D] drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110')
+                     : (store.settings.themeMode === 'light'
+                         ? 'bg-slate-700 hover:bg-slate-900 opacity-95'
+                         : 'bg-[#94A3B8] hover:bg-white opacity-80')
+                 ]"
+                 :style="{
+                   maskImage: `url(${csHomeIcon})`,
+                   WebkitMaskImage: `url(${csHomeIcon})`,
+                   maskSize: 'contain',
+                   WebkitMaskSize: 'contain',
+                   maskRepeat: 'no-repeat',
+                   WebkitMaskRepeat: 'no-repeat',
+                   maskPosition: 'center',
+                   WebkitMaskPosition: 'center'
+                 }">
+            </div>
+            <img :src="csHomeIcon" class="hidden" alt="AK-47" aria-hidden="true" />
+          </template>
 
           <!-- Default SVG Icon -->
           <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -46,7 +66,7 @@
         </div>
 
         <!-- Label -->
-        <span class="text-[10px] mt-1 font-medium tracking-tight">今日</span>
+        <span class="text-[10px] mt-1 font-semibold tracking-tight">今日</span>
         
         <!-- Active Indicator -->
         <span v-if="store.activeTab === 'today'" :class="activeIndicatorClass"></span>
@@ -64,21 +84,41 @@
                :src="rendezvousIcon" 
                alt="Rendezvous"
                class="w-6 h-6 object-contain transition-all"
+               :style="store.settings.themeMode === 'light' ? (store.activeTab === 'cycle' ? 'filter: brightness(0.45) contrast(1.5) drop-shadow(0 1px 3px rgba(0,0,0,0.2));' : 'filter: brightness(0.3) contrast(1.3) opacity(0.85);') : ''"
                :class="[store.activeTab === 'cycle' ? 'brightness-110 drop-shadow-[0_0_8px_rgba(229,195,120,0.8)] scale-110' : 'opacity-80 grayscale-[15%]']" />
 
-          <!-- CS2 Official C4 Explosive UI Icon -->
-          <img v-else-if="store.settings.uiSkin === 'cs'" 
-               :src="csCycleIcon" 
-               alt="C4 Bomb" 
-               class="w-6 h-6 object-contain transition-all drop-shadow-[0_0_2px_rgba(255,255,255,0.2)]"
-               :class="[store.activeTab === 'cycle' ? 'brightness-110 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-75 grayscale-[30%]']" />
+          <!-- CS2 Official C4 Explosive UI Icon (Mask-rendered) -->
+          <template v-else-if="store.settings.uiSkin === 'cs'">
+            <div class="w-6 h-6 transition-all"
+                 :class="[
+                   store.activeTab === 'cycle'
+                     ? (store.settings.themeMode === 'light'
+                         ? 'bg-[#C2410C] drop-shadow-[0_2px_6px_rgba(194,65,12,0.4)] scale-110'
+                         : 'bg-[#FF8A3D] drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110')
+                     : (store.settings.themeMode === 'light'
+                         ? 'bg-slate-700 hover:bg-slate-900 opacity-95'
+                         : 'bg-[#94A3B8] hover:bg-white opacity-80')
+                 ]"
+                 :style="{
+                   maskImage: `url(${csCycleIcon})`,
+                   WebkitMaskImage: `url(${csCycleIcon})`,
+                   maskSize: 'contain',
+                   WebkitMaskSize: 'contain',
+                   maskRepeat: 'no-repeat',
+                   WebkitMaskRepeat: 'no-repeat',
+                   maskPosition: 'center',
+                   WebkitMaskPosition: 'center'
+                 }">
+            </div>
+            <img :src="csCycleIcon" class="hidden" alt="C4 Bomb" aria-hidden="true" />
+          </template>
 
           <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
         </div>
 
-        <span class="text-[10px] mt-1 font-medium tracking-tight">周期</span>
+        <span class="text-[10px] mt-1 font-semibold tracking-tight">周期</span>
         
         <!-- Active Indicator -->
         <span v-if="store.activeTab === 'cycle'" :class="activeIndicatorClass"></span>
@@ -96,21 +136,41 @@
                :src="trademarkIcon" 
                alt="Trademark"
                class="w-6 h-6 object-contain transition-all"
+               :style="store.settings.themeMode === 'light' ? (store.activeTab === 'calendar' ? 'filter: brightness(0.45) contrast(1.5) drop-shadow(0 1px 3px rgba(0,0,0,0.2));' : 'filter: brightness(0.3) contrast(1.3) opacity(0.85);') : ''"
                :class="[store.activeTab === 'calendar' ? 'brightness-110 drop-shadow-[0_0_8px_rgba(229,195,120,0.8)] scale-110' : 'opacity-80 grayscale-[15%]']" />
 
-          <!-- CS2 Official Defuser UI Icon -->
-          <img v-else-if="store.settings.uiSkin === 'cs'" 
-               :src="csCalendarIcon" 
-               alt="Defuser" 
-               class="w-6 h-6 object-contain transition-all drop-shadow-[0_0_2px_rgba(255,255,255,0.2)]"
-               :class="[store.activeTab === 'calendar' ? 'brightness-110 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-75 grayscale-[30%]']" />
+          <!-- CS2 Official Defuser UI Icon (Mask-rendered) -->
+          <template v-else-if="store.settings.uiSkin === 'cs'">
+            <div class="w-6 h-6 transition-all"
+                 :class="[
+                   store.activeTab === 'calendar'
+                     ? (store.settings.themeMode === 'light'
+                         ? 'bg-[#C2410C] drop-shadow-[0_2px_6px_rgba(194,65,12,0.4)] scale-110'
+                         : 'bg-[#FF8A3D] drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110')
+                     : (store.settings.themeMode === 'light'
+                         ? 'bg-slate-700 hover:bg-slate-900 opacity-95'
+                         : 'bg-[#94A3B8] hover:bg-white opacity-80')
+                 ]"
+                 :style="{
+                   maskImage: `url(${csCalendarIcon})`,
+                   WebkitMaskImage: `url(${csCalendarIcon})`,
+                   maskSize: 'contain',
+                   WebkitMaskSize: 'contain',
+                   maskRepeat: 'no-repeat',
+                   WebkitMaskRepeat: 'no-repeat',
+                   maskPosition: 'center',
+                   WebkitMaskPosition: 'center'
+                 }">
+            </div>
+            <img :src="csCalendarIcon" class="hidden" alt="Defuser" aria-hidden="true" />
+          </template>
 
           <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
         </div>
 
-        <span class="text-[10px] mt-1 font-medium tracking-tight">日历</span>
+        <span class="text-[10px] mt-1 font-semibold tracking-tight">日历</span>
 
         <!-- Active Indicator -->
         <span v-if="store.activeTab === 'calendar'" :class="activeIndicatorClass"></span>
@@ -129,21 +189,41 @@
                :src="tourDeForceIcon" 
                alt="Tour De Force"
                class="w-6 h-6 object-contain transition-all"
+               :style="store.settings.themeMode === 'light' ? (store.activeTab === 'exercises' ? 'filter: brightness(0.45) contrast(1.5) drop-shadow(0 1px 3px rgba(0,0,0,0.2));' : 'filter: brightness(0.3) contrast(1.3) opacity(0.85);') : ''"
                :class="[store.activeTab === 'exercises' ? 'brightness-110 drop-shadow-[0_0_8px_rgba(229,195,120,0.8)] scale-110' : 'opacity-80 grayscale-[15%]']" />
 
-          <!-- CS2 Official AWP Sniper UI Icon -->
-          <img v-else-if="store.settings.uiSkin === 'cs'" 
-               :src="csExercisesIcon" 
-               alt="AWP Sniper" 
-               class="w-6 h-6 object-contain transition-all drop-shadow-[0_0_2px_rgba(255,255,255,0.2)]"
-               :class="[store.activeTab === 'exercises' ? 'brightness-110 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-75 grayscale-[30%]']" />
+          <!-- CS2 Official AWP Sniper UI Icon (Mask-rendered) -->
+          <template v-else-if="store.settings.uiSkin === 'cs'">
+            <div class="w-6 h-6 transition-all"
+                 :class="[
+                   store.activeTab === 'exercises'
+                     ? (store.settings.themeMode === 'light'
+                         ? 'bg-[#C2410C] drop-shadow-[0_2px_6px_rgba(194,65,12,0.4)] scale-110'
+                         : 'bg-[#FF8A3D] drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110')
+                     : (store.settings.themeMode === 'light'
+                         ? 'bg-slate-700 hover:bg-slate-900 opacity-95'
+                         : 'bg-[#94A3B8] hover:bg-white opacity-80')
+                 ]"
+                 :style="{
+                   maskImage: `url(${csExercisesIcon})`,
+                   WebkitMaskImage: `url(${csExercisesIcon})`,
+                   maskSize: 'contain',
+                   WebkitMaskSize: 'contain',
+                   maskRepeat: 'no-repeat',
+                   WebkitMaskRepeat: 'no-repeat',
+                   maskPosition: 'center',
+                   WebkitMaskPosition: 'center'
+                 }">
+            </div>
+            <img :src="csExercisesIcon" class="hidden" alt="AWP Sniper" aria-hidden="true" />
+          </template>
 
           <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
           </svg>
         </div>
 
-        <span class="text-[10px] mt-1 font-medium tracking-tight">动作</span>
+        <span class="text-[10px] mt-1 font-semibold tracking-tight">动作</span>
 
         <!-- Active Indicator -->
         <span v-if="store.activeTab === 'exercises'" :class="activeIndicatorClass"></span>
@@ -160,7 +240,7 @@
           <!-- Chamber Skin Inlined Tactical Card Profile SVG -->
           <svg v-if="store.settings.uiSkin === 'chamber'" 
                class="w-5 h-5 object-contain transition-all"
-               :class="[store.activeTab === 'stats' ? 'text-inherit drop-shadow-[0_0_8px_rgba(246,224,158,0.9)] scale-110' : 'text-inherit opacity-80']"
+               :class="[store.activeTab === 'stats' ? (store.settings.themeMode === 'light' ? 'text-[#854D0E] drop-shadow-[0_1px_3px_rgba(133,77,14,0.3)] scale-110' : 'text-inherit drop-shadow-[0_0_8px_rgba(246,224,158,0.9)] scale-110') : 'text-inherit opacity-85']"
                viewBox="0 0 512 512" fill="none">
             <path d="M80 120 C80 106.745 90.745 96 104 96 H360 L432 168 V392 C432 405.255 421.255 416 408 416 H104 C90.745 416 80 405.255 80 392 V120 Z" stroke="currentColor" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" fill="none" />
             <path d="M360 96 V168 H432" stroke="currentColor" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" />
@@ -178,15 +258,23 @@
           <img v-else-if="store.settings.uiSkin === 'cs'" 
                :src="csStatsIcon" 
                alt="Global Elite" 
-               class="w-6 h-6 object-contain transition-all drop-shadow-[0_0_2px_rgba(255,255,255,0.2)]"
-               :class="[store.activeTab === 'stats' ? 'brightness-110 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110' : 'opacity-75 grayscale-[30%]']" />
+               class="w-6 h-6 object-contain transition-all"
+               :class="[
+                 store.activeTab === 'stats'
+                   ? (store.settings.themeMode === 'light'
+                       ? 'scale-110 drop-shadow-[0_2px_6px_rgba(194,65,12,0.4)]'
+                       : 'brightness-110 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] scale-110')
+                   : (store.settings.themeMode === 'light'
+                       ? 'opacity-90 contrast-125 drop-shadow-[0_1px_2px_rgba(0,0,0,0.2)]'
+                       : 'opacity-75 grayscale-[30%]')
+               ]" />
 
           <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
         </div>
 
-        <span class="text-[10px] mt-1 font-medium tracking-tight">统计设置</span>
+        <span class="text-[10px] mt-1 font-semibold tracking-tight">统计设置</span>
 
         <!-- Active Indicator -->
         <span v-if="store.activeTab === 'stats'" :class="activeIndicatorClass"></span>
@@ -218,21 +306,21 @@ const tabBarThemeClasses = computed(() => {
   const skin = store.settings.uiSkin;
   if (skin === "chamber") {
     return isLight
-      ? "bg-[#F9F8F5]/96 backdrop-blur-2xl border-t border-[#D8CEB9] shadow-lg shadow-black/5"
+      ? "bg-[#FDFCFA]/98 backdrop-blur-3xl border-t border-[#D8CEB9] shadow-[0_-4px_24px_rgba(0,0,0,0.08)]"
       : "bg-[#070B14]/98 backdrop-blur-2xl border-t border-[#E5C378]/30 shadow-2xl shadow-black";
   }
   if (skin === "cs") {
     return isLight
-      ? "bg-[#F1F5F9]/96 backdrop-blur-2xl border-t border-slate-300 shadow-lg shadow-black/5"
+      ? "bg-[#F8FAFC]/98 backdrop-blur-3xl border-t border-slate-300/90 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]"
       : "bg-[#090D15]/98 backdrop-blur-2xl border-t border-[#FA5A00]/40 shadow-2xl shadow-black";
   }
   if (skin === "monochrome") {
     return isLight
-      ? "bg-white/96 backdrop-blur-2xl border-t border-neutral-300 shadow-lg shadow-black/5"
+      ? "bg-white/98 backdrop-blur-3xl border-t border-neutral-300 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]"
       : "bg-black/98 backdrop-blur-2xl border-t border-neutral-800 shadow-2xl shadow-black";
   }
   return isLight
-    ? "bg-[#F6F8FA]/96 backdrop-blur-xl border-t border-slate-200 shadow-lg shadow-black/5"
+    ? "bg-white/98 backdrop-blur-3xl border-t border-slate-200/90 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]"
     : "bg-[#0B0D11]/95 backdrop-blur-xl border-t border-zinc-800/80";
 });
 
@@ -264,15 +352,15 @@ function getTabItemClasses(tabKey) {
 
   // Inactive tab styling
   if (skin === "chamber") {
-    return isLight ? "text-[#5C6B82] hover:text-[#2C384D]" : "text-[#9AA8C2] hover:text-[#C5D1E8]";
+    return isLight ? "text-[#3B4858] font-bold hover:text-[#141B26]" : "text-[#9AA8C2] hover:text-[#C5D1E8]";
   }
   if (skin === "cs") {
-    return isLight ? "text-[#475569] hover:text-[#1E293B]" : "text-[#94A3B8] hover:text-[#CBD5E1]";
+    return isLight ? "text-[#334155] font-bold hover:text-[#090D16]" : "text-[#94A3B8] hover:text-[#CBD5E1]";
   }
   if (skin === "monochrome") {
-    return isLight ? "text-neutral-500 hover:text-neutral-900" : "text-neutral-400 hover:text-neutral-200";
+    return isLight ? "text-neutral-800 font-bold hover:text-black" : "text-neutral-400 hover:text-neutral-200";
   }
-  return isLight ? "text-slate-500 hover:text-slate-700" : "text-zinc-400 hover:text-zinc-200";
+  return isLight ? "text-slate-700 font-bold hover:text-slate-900" : "text-zinc-400 hover:text-zinc-200";
 }
 
 const activeIndicatorClass = computed(() => {

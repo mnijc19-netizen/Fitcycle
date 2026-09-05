@@ -78,23 +78,23 @@
              :class="ribbonThemeClasses">
           <!-- Split Name & Date: Full Width Guaranteed -->
           <div class="flex items-center gap-1.5 min-w-0 pr-2">
-            <span class="text-zinc-400 flex-shrink-0">{{ todayFormatted }}</span>
-            <span class="text-zinc-600 flex-shrink-0">·</span>
+            <span class="flex-shrink-0" :class="store.settings.themeMode === 'light' ? 'text-slate-700 font-bold' : 'text-zinc-400'">{{ todayFormatted }}</span>
+            <span class="flex-shrink-0" :class="store.settings.themeMode === 'light' ? 'text-slate-400' : 'text-zinc-600'">·</span>
             <span class="font-bold truncate" :class="cycleHighlightClass">{{ todayCycleDay.name }}</span>
           </div>
 
           <!-- Real Fitness Stats Telemetry: Rank / Streak / Ready -->
           <div class="text-[10px] font-mono flex items-center gap-1.5 flex-shrink-0">
             <template v-if="honorData.isDeloadActive">
-              <span class="text-sky-400 font-bold flex items-center gap-1">
+              <span class="font-bold flex items-center gap-1" :class="store.settings.themeMode === 'light' ? 'text-sky-800 font-black' : 'text-sky-400'">
                 <span>🛡️</span> 减载休整中
               </span>
             </template>
             <template v-else>
-              <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-              <span class="font-bold text-amber-400 font-mono">{{ honorData.score }} PTS</span>
-              <span class="text-zinc-600">·</span>
-              <span class="text-zinc-300 font-sans font-bold">{{ honorData.presentation.tierName.split('·')[0] }}</span>
+              <span class="w-1.5 h-1.5 rounded-full" :class="store.settings.themeMode === 'light' ? 'bg-amber-600' : 'bg-amber-400 animate-pulse'"></span>
+              <span class="font-bold font-mono" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">{{ honorData.score }} PTS</span>
+              <span :class="store.settings.themeMode === 'light' ? 'text-slate-400' : 'text-zinc-600'">·</span>
+              <span class="font-sans font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-300'">{{ honorData.presentation.tierName.split('·')[0] }}</span>
             </template>
           </div>
         </div>

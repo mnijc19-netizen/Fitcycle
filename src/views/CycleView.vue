@@ -4,13 +4,14 @@
     <!-- Top Header -->
     <div class="flex items-center justify-between">
       <div>
-        <h2 class="text-xl font-black text-white flex items-center gap-2">
+        <h2 class="text-xl font-black flex items-center gap-2" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">
           <span>分化与周期</span>
-          <span class="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 font-mono font-bold">
+          <span class="text-xs px-2 py-0.5 rounded-full font-mono font-bold"
+                :class="store.settings.themeMode === 'light' ? 'bg-amber-500/25 text-amber-800 border border-amber-600/40 font-black' : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'">
             {{ store.activeCycle.days.length }}天轮转
           </span>
         </h2>
-        <p class="text-xs text-zinc-400 mt-0.5">
+        <p class="text-xs mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
           科学轮转架构、单日做工定位与分化排期
         </p>
       </div>
@@ -53,10 +54,11 @@
     <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3">
       <div class="flex items-center justify-between">
         <div>
-          <span class="text-[11px] text-amber-400 font-bold tracking-wide">当前执行架构</span>
-          <h3 class="text-base font-black text-white">{{ store.activeCycle.name }}</h3>
+          <span class="text-[11px] font-bold tracking-wide" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">当前执行架构</span>
+          <h3 class="text-base font-black" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">{{ store.activeCycle.name }}</h3>
         </div>
-        <span class="px-2.5 py-1 bg-zinc-950 border border-zinc-800 text-zinc-300 rounded-full text-xs font-mono font-semibold">
+        <span class="px-2.5 py-1 border rounded-full text-xs font-mono font-semibold"
+              :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border-slate-300 text-slate-800' : 'bg-zinc-950 border-zinc-800 text-zinc-300'">
           每 {{ store.activeCycle.days.length }} 天一轮
         </span>
       </div>
@@ -69,10 +71,10 @@
                 :class="[
                   selectedPreviewDayIdx === idx ? 
                   'bg-zinc-800 border-amber-500/80 shadow-md ring-1 ring-amber-400/40' : 
-                  'bg-zinc-950/70 border-zinc-800 hover:bg-zinc-850'
+                  (store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 shadow-xs' : 'bg-zinc-950/70 border-zinc-800 hover:bg-zinc-850')
                 ]">
           <!-- Day badge -->
-          <span class="text-[10px] font-mono text-zinc-400">Day {{ idx + 1 }}</span>
+          <span class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'text-zinc-400'">Day {{ idx + 1 }}</span>
           
           <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black my-0.5"
                 :class="[
@@ -84,7 +86,7 @@
             {{ day.shortName || (day.isRest ? '休' : '练') }}
           </span>
 
-          <span class="text-[11px] font-bold text-zinc-200 truncate w-full">
+          <span class="text-[11px] font-bold truncate w-full" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">
             {{ day.name.split(' ')[0] }}
           </span>
 
@@ -98,13 +100,14 @@
            class="p-3.5 bg-zinc-950/80 border border-zinc-800 rounded-2xl space-y-2 text-left animate-in fade-in duration-150">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <span class="text-xs font-black text-white">Day {{ selectedPreviewDayIdx + 1 }}: {{ selectedPreviewDay.name }}</span>
-            <span class="text-[10px] text-zinc-400 font-mono">
+            <span class="text-xs font-black" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">Day {{ selectedPreviewDayIdx + 1 }}: {{ selectedPreviewDay.name }}</span>
+            <span class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'text-zinc-400'">
               ({{ getPlanExerciseCount(selectedPreviewDay.planId) }})
             </span>
           </div>
           <button @click="openPlanDetails(selectedPreviewDay.planId)" 
-                  class="text-xs text-amber-400 hover:text-amber-300 font-medium cursor-pointer">
+                  class="text-xs font-bold cursor-pointer transition-colors"
+                  :class="store.settings.themeMode === 'light' ? 'text-amber-800 hover:text-amber-900' : 'text-amber-400 hover:text-amber-300'">
             编辑动作 ❯
           </button>
         </div>
@@ -126,8 +129,8 @@
     <!-- Workout Plans Library / Templates Inset Group -->
     <div class="space-y-3">
       <div class="flex items-center justify-between px-1">
-        <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider">训练计划模板库 ({{ store.plans.length }})</span>
-        <button @click="openCreatePlan" class="text-xs text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 cursor-pointer">
+        <span class="text-xs font-bold uppercase tracking-wider" :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-bold' : 'text-zinc-400'">训练计划模板库 ({{ store.plans.length }})</span>
+        <button @click="openCreatePlan" class="text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors" :class="store.settings.themeMode === 'light' ? 'text-amber-800 hover:text-amber-900' : 'text-amber-400 hover:text-amber-300'">
           ➕ 新建计划
         </button>
       </div>
@@ -145,14 +148,16 @@
                       plan.color === 'purple' ? 'bg-purple-400' :
                       'bg-emerald-400'
                     ]"></span>
-              <h4 class="font-bold text-xs text-zinc-100">{{ plan.name }}</h4>
+              <h4 class="font-bold text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ plan.name }}</h4>
             </div>
-            <button @click="editPlan(plan)" class="p-1 px-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs rounded-lg transition-colors cursor-pointer">
+            <button @click="editPlan(plan)" 
+                    class="p-1 px-2 text-xs rounded-lg transition-colors cursor-pointer"
+                    :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold shadow-xs' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300'">
               ✏️ 编辑
             </button>
           </div>
 
-          <p v-if="plan.coreTarget" class="text-[11px] text-zinc-400">
+          <p v-if="plan.coreTarget" class="text-[11px]" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-400'">
             🎯 {{ plan.coreTarget }}
           </p>
 
@@ -160,11 +165,12 @@
           <div v-if="plan.exercises && plan.exercises.length" class="flex flex-wrap gap-1 pt-0.5">
             <span v-for="(ex, exIdx) in plan.exercises" :key="exIdx"
                   @click="openExerciseDetailByName(ex.name)"
-                  class="px-2 py-0.5 bg-zinc-950 border border-zinc-800/90 rounded-lg text-[10px] text-zinc-300 hover:text-amber-400 hover:border-amber-500/40 cursor-pointer transition-colors">
-              {{ ex.name }} <span class="text-zinc-500 font-mono">({{ ex.setsCount }}组)</span>
+                  class="px-2 py-0.5 rounded-lg text-[10px] cursor-pointer transition-colors"
+                  :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border border-slate-300 text-slate-800 font-medium hover:border-amber-500/50' : 'bg-zinc-950 border border-zinc-800/90 text-zinc-300 hover:text-amber-400 hover:border-amber-500/40'">
+              {{ ex.name }} <span class="font-mono text-[10px]" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">({{ ex.setsCount }}组)</span>
             </span>
           </div>
-          <div v-else class="text-[11px] text-zinc-500">
+          <div v-else class="text-[11px]" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">
             休息与超量恢复计划
           </div>
 
