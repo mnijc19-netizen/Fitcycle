@@ -855,22 +855,16 @@
   color: var(--fc-accent-text) !important;
 }
 
-/* Ensure dark badges on media and image previews always preserve crisp white text */
-[data-theme="light"] [class*="bg-black/"] .text-white,
-[data-theme="light"] [class*="bg-black/"] .text-zinc-100,
-[data-theme="light"] [class*="bg-black/"] .text-zinc-200,
-[data-theme="light"] [class*="bg-black/"] .text-zinc-300,
-[data-theme="light"] [class*="bg-black/"] .text-zinc-400,
-[data-mode="light"] [class*="bg-black/"] .text-white,
-[data-mode="light"] [class*="bg-black/"] .text-zinc-100,
-[data-mode="light"] [class*="bg-black/"] .text-zinc-200,
-[data-mode="light"] [class*="bg-black/"] .text-zinc-300,
-[data-mode="light"] [class*="bg-black/"] .text-zinc-400 {
+/* Ensure dark badges inside preserved media viewports always preserve crisp white text */
+[data-theme="light"] [data-theme-preserve="true"] [class*="bg-black/"],
+[data-mode="light"] [data-theme-preserve="true"] [class*="bg-black/"],
+[data-theme="light"] [data-theme-preserve="true"] [class*="bg-black/"] *,
+[data-mode="light"] [data-theme-preserve="true"] [class*="bg-black/"] * {
   color: #FFFFFF !important;
 }
 
-[data-theme="light"] [class*="bg-black/"] .text-amber-400,
-[data-mode="light"] [class*="bg-black/"] .text-amber-400 {
+[data-theme="light"] [data-theme-preserve="true"] [class*="bg-black/"] .text-amber-400,
+[data-mode="light"] [data-theme-preserve="true"] [class*="bg-black/"] .text-amber-400 {
   color: #FBBF24 !important;
 }
 

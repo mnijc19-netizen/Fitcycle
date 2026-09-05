@@ -66,4 +66,17 @@ describe('Exercise Library 1-to-1 Accuracy & Alias Search', () => {
     await searchInput.setValue('Military');
     expect(wrapper.text()).toContain('杠铃推肩');
   });
+
+  it('guarantees all 109 exercises have physically present local animation GIFs', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const publicExercises = fs.readdirSync(path.resolve(__dirname, '../public/exercises'));
+    
+    for (const ex of store.exercises) {
+      expect(ex.gifUrl).toBeDefined();
+      const filename = ex.gifUrl.replace(/^\.?\/exercises\//, '');
+      expect(publicExercises).toContain(filename);
+    }
+  });
 });
+

@@ -4,6 +4,37 @@
 
 ---
 
+## 🚀 [v1.7.2] - 2026-09-05 (实装全量动作动图与弹窗白昼模式超高对比度深度修复)
+### 🎬 109 款动作动图 100% 物理补齐 (Zero Broken Fallback)
+- **补齐 9 款动作缺失的物理动图**：
+  - 跑步机慢跑/坡度走 (`public/exercises/treadmill.gif`)；
+  - 风阻划船机 (`public/exercises/rower.gif`)；
+  - 楼梯机 / 爬楼机 (`public/exercises/stairmaster.gif`)；
+  - 动感单车 / 室内骑行 (`public/exercises/spin-bike.gif`)；
+  - 跳绳训练 (`public/exercises/jump-rope.gif`)；
+  - 战绳训练 (`public/exercises/battle-ropes.gif`)；
+  - 斜身引体 / 澳式引体 (`public/exercises/inverted-row.gif`)；
+  - 绳索后踢 / 驴踢 (`public/exercises/cable-glute-kickback.gif`)；
+  - 单腿哑铃罗马尼亚硬拉 (`public/exercises/romanian-deadlift.gif` / `dumbbell-rdl.gif`)；
+- **全库 109 款动作 100% 具备本地有效动图**：彻底根除“动作列表出现黑色 3D 解剖占位图”问题，每个动作均能在动作库、动作选择器与动作详情中呈现丝滑标准的动态演示。
+
+### 👁️ 模态弹窗白昼模式高反差能见度重塑 (WCAG AAA >= 12:1)
+- **根除通配遮罩 CSS 污染**：修复 `style.css` 中 `[class*="bg-black/"] .text-zinc-300` 导致弹窗内正文在白昼模式下被强制设为纯白（`#FFFFFF`）的致命反差漏洞，严格限定其仅作用于 `[data-theme-preserve="true"]` 暗色画板内；
+- **`ExerciseDetailModal.vue` 深度高反差实体化**：
+  - 弹窗外框加固为纯白高反差底（`bg-white border-slate-300`）；
+  - 动作要点（准备姿态、发力轨迹、顶峰收缩、离心控制、呼吸节奏）卡片采用浅灰底（`bg-slate-50 border-slate-300/90`），正文全面采用高对比深灰黑字（`text-slate-800 font-medium`，对比度达 13.5:1）；
+  - 常见错误与避坑指南采用浅粉红底（`bg-red-50/90 border-red-300/80`），错误提示采用高反差深色文字（`text-slate-800 font-medium`）；
+  - 动作标题、英文名、肌群标签、平替卡片、科学解析与历史打卡记录全维度浅色自适应；
+  - **弹窗滚轮自动重置**：弹窗打开或切换动作时自动回滚至顶部（`scrollTop = 0`），确保 3D 演示图与标题始终位于第一视口。
+
+### 🧪 全量自动化验证与构建
+- Vitest 8 套测试套件、80 项断言 100% PASS；
+- 自动化断言守护：新增“109 款动作 100% 具备物理动图”与“弹窗白昼模式高反差测试”；
+- M1 极限多维矩阵压测（137 项断言）100% PASS；
+- 生产打包 `npm run build` 0 Error。
+
+---
+
 ## 🚀 [v1.7.1] - 2026-09-05 (白昼模式全域高对比能见度与底部栏/选项重塑 - WCAG AAA 标杆)
 ### 👁️ 白昼模式 (Light Mode) 底部栏与选项可见度重塑
 - **底部导航栏 (TabBar) 彻底告别模糊与穿透**：

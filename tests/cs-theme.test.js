@@ -122,4 +122,22 @@ describe("CS2 Official Theme Integration & UI Tests", () => {
 
     expect(store.settings.themeMode).toBe("light");
   });
+
+  it("renders ExerciseDetailModal in light mode with high-contrast text and solid white background", async () => {
+    const { setThemeMode } = await import("../src/store/fitnessStore.js");
+    setThemeMode("light");
+    
+    const ExerciseDetailModal = (await import("../src/components/ExerciseDetailModal.vue")).default;
+    const testEx = store.exercises[0];
+    const wrapper = mount(ExerciseDetailModal, {
+      props: {
+        visible: true,
+        exercise: testEx
+      }
+    });
+
+    const html = document.body.innerHTML;
+    expect(html).toContain("bg-white");
+    expect(html).toContain("text-slate-800");
+  });
 });

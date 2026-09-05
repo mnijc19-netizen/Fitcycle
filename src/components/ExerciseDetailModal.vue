@@ -8,29 +8,35 @@
       <div class="absolute inset-0" @click="$emit('close')"></div>
 
     <!-- Modal Card / Bottom Sheet -->
-    <div class="relative z-10 bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-md w-full h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
+    <div class="relative z-10 border rounded-t-3xl sm:rounded-3xl max-w-md w-full h-[88vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200"
+         :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-300' : 'bg-zinc-900 border-zinc-700/80'">
       
       <!-- Top Ergonomic Grabber Pill for Bottom Sheet Gesture -->
-      <div class="w-10 h-1 rounded-full bg-zinc-700/80 mx-auto mt-2 -mb-1 flex-shrink-0"></div>
+      <div class="w-10 h-1 rounded-full mx-auto mt-2 -mb-1 flex-shrink-0"
+           :class="store.settings.themeMode === 'light' ? 'bg-slate-300' : 'bg-zinc-700/80'"></div>
 
       <!-- Top Fixed Header Bar -->
-      <div class="p-3.5 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between flex-shrink-0">
+      <div class="p-3.5 border-b flex items-center justify-between flex-shrink-0"
+           :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-200' : 'bg-zinc-900 border-zinc-800'">
         <div class="flex items-center gap-2">
-          <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold flex items-center gap-1">
+          <span class="px-2 py-0.5 rounded-full text-xs font-bold flex items-center gap-1 border"
+                :class="store.settings.themeMode === 'light' ? 'bg-amber-500/15 text-amber-800 border-amber-500/30' : 'bg-amber-500/20 text-amber-400 border-amber-500/30'">
             <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
             3D 动作指导
           </span>
-          <span class="text-xs text-zinc-400">{{ exercise?.category }}</span>
+          <span class="text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-700 font-bold' : 'text-zinc-400'">{{ exercise?.category }}</span>
         </div>
 
         <button @click="$emit('close')" 
-                class="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-zinc-300 flex items-center justify-center text-sm font-bold transition-all">
+                class="w-8 h-8 rounded-full active:scale-95 flex items-center justify-center text-sm font-bold transition-all"
+                :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300'">
           ✕
         </button>
       </div>
 
       <!-- Single Smooth Touch-Scrollable Body -->
-      <div class="overflow-y-auto flex-1 p-4 space-y-4 overscroll-contain" 
+      <div ref="scrollContainer"
+           class="overflow-y-auto flex-1 p-4 space-y-4 overscroll-contain" 
            style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
         
         <!-- 3D Muscle Diagram / Animation Display Box -->
@@ -59,104 +65,128 @@
 
         <!-- Title & Targets -->
         <div>
-          <h2 class="text-xl font-black text-white tracking-tight">
+          <h2 class="text-xl font-black tracking-tight"
+              :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-white'">
             {{ exercise?.name }}
           </h2>
-          <p v-if="exercise?.englishName" class="text-xs text-zinc-400 font-mono mt-0.5">
+          <p v-if="exercise?.englishName" class="text-xs font-mono mt-0.5"
+             :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'text-zinc-400'">
             {{ exercise.englishName }}
           </p>
 
           <div class="flex flex-wrap items-center gap-1.5 mt-2.5">
-            <span class="px-2.5 py-1 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold flex items-center gap-1">
+            <span class="px-2.5 py-1 rounded-xl text-xs font-bold flex items-center gap-1 border"
+                  :class="store.settings.themeMode === 'light' ? 'bg-amber-500/15 border-amber-500/30 text-amber-800' : 'bg-amber-500/20 border-amber-500/40 text-amber-300'">
               <span>🎯 主目标:</span> {{ exercise?.target }}
             </span>
             <span v-for="sec in exercise?.secondaryMuscles || []" :key="sec"
-                  class="px-2 py-1 rounded-xl bg-zinc-800 text-zinc-300 text-xs border border-zinc-700">
+                  class="px-2 py-1 rounded-xl text-xs border font-semibold"
+                  :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-800 border-slate-300' : 'bg-zinc-800 text-zinc-300 border-zinc-700'">
               + {{ sec }}
             </span>
           </div>
         </div>
 
         <!-- Navigation Tabs -->
-        <div class="flex items-center border-b border-zinc-800 gap-4 text-xs font-bold pt-1">
+        <div class="flex items-center border-b gap-4 text-xs font-bold pt-1"
+             :class="store.settings.themeMode === 'light' ? 'border-slate-200' : 'border-zinc-800'">
           <button @click="activeTab = 'tips'"
                   class="py-2 relative transition-colors"
-                  :class="[activeTab === 'tips' ? 'text-amber-400 font-black' : 'text-zinc-400 hover:text-zinc-200']">
+                  :class="[activeTab === 'tips' ? (store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400 font-black') : (store.settings.themeMode === 'light' ? 'text-slate-600 hover:text-slate-900 font-bold' : 'text-zinc-400 hover:text-zinc-200')]">
             动作要点
-            <span v-if="activeTab === 'tips'" class="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-400 rounded-full"></span>
+            <span v-if="activeTab === 'tips'" class="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-500 rounded-full"></span>
           </button>
 
           <button @click="activeTab = 'substitutes'"
                   class="py-2 relative transition-colors flex items-center gap-1"
-                  :class="[activeTab === 'substitutes' ? 'text-amber-400 font-black' : 'text-zinc-400 hover:text-zinc-200']">
+                  :class="[activeTab === 'substitutes' ? (store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400 font-black') : (store.settings.themeMode === 'light' ? 'text-slate-600 hover:text-slate-900 font-bold' : 'text-zinc-400 hover:text-zinc-200')]">
             平替动作
-            <span v-if="exercise?.substitutes?.length" class="px-1.5 py-0.2 rounded-full bg-zinc-800 text-[9px] text-amber-400 font-mono">
+            <span v-if="exercise?.substitutes?.length" class="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold"
+                  :class="store.settings.themeMode === 'light' ? 'bg-amber-100 text-amber-800 border border-amber-300' : 'bg-zinc-800 text-amber-400'">
               {{ exercise.substitutes.length }}
             </span>
-            <span v-if="activeTab === 'substitutes'" class="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-400 rounded-full"></span>
+            <span v-if="activeTab === 'substitutes'" class="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-500 rounded-full"></span>
           </button>
 
           <button @click="activeTab = 'science'"
                   class="py-2 relative transition-colors"
-                  :class="[activeTab === 'science' ? 'text-amber-400 font-black' : 'text-zinc-400 hover:text-zinc-200']">
+                  :class="[activeTab === 'science' ? (store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400 font-black') : (store.settings.themeMode === 'light' ? 'text-slate-600 hover:text-slate-900 font-bold' : 'text-zinc-400 hover:text-zinc-200')]">
             科学解析
-            <span v-if="activeTab === 'science'" class="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-400 rounded-full"></span>
+            <span v-if="activeTab === 'science'" class="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-500 rounded-full"></span>
           </button>
 
           <button @click="activeTab = 'history'"
                   class="py-2 relative transition-colors"
-                  :class="[activeTab === 'history' ? 'text-amber-400 font-black' : 'text-zinc-400 hover:text-zinc-200']">
+                  :class="[activeTab === 'history' ? (store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400 font-black') : (store.settings.themeMode === 'light' ? 'text-slate-600 hover:text-slate-900 font-bold' : 'text-zinc-400 hover:text-zinc-200')]">
             历史记录
-            <span v-if="activeTab === 'history'" class="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-400 rounded-full"></span>
+            <span v-if="activeTab === 'history'" class="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-500 rounded-full"></span>
           </button>
         </div>
 
         <!-- TAB 1: 动作要点 (Tips) -->
         <div v-if="activeTab === 'tips'" class="space-y-2.5 text-xs">
           <div v-if="exercise?.tips" class="space-y-2">
-            <div v-if="exercise.tips.prep" class="p-3 bg-zinc-950/80 border border-zinc-800/80 rounded-2xl space-y-1">
-              <div class="font-bold text-amber-400 flex items-center gap-1.5">
+            <div v-if="exercise.tips.prep" class="p-3 rounded-2xl space-y-1 border"
+                 :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300/90 shadow-xs' : 'bg-zinc-950/80 border-zinc-800/80'">
+              <div class="font-bold flex items-center gap-1.5"
+                   :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">
                 <span>1️⃣</span> 准备姿态
               </div>
-              <p class="text-zinc-300 leading-relaxed pl-5">{{ exercise.tips.prep }}</p>
+              <p class="leading-relaxed pl-5 font-medium"
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ exercise.tips.prep }}</p>
             </div>
 
-            <div v-if="exercise.tips.execution" class="p-3 bg-zinc-950/80 border border-zinc-800/80 rounded-2xl space-y-1">
-              <div class="font-bold text-amber-400 flex items-center gap-1.5">
+            <div v-if="exercise.tips.execution" class="p-3 rounded-2xl space-y-1 border"
+                 :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300/90 shadow-xs' : 'bg-zinc-950/80 border-zinc-800/80'">
+              <div class="font-bold flex items-center gap-1.5"
+                   :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">
                 <span>2️⃣</span> 发力轨迹
               </div>
-              <p class="text-zinc-300 leading-relaxed pl-5">{{ exercise.tips.execution }}</p>
+              <p class="leading-relaxed pl-5 font-medium"
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ exercise.tips.execution }}</p>
             </div>
 
-            <div v-if="exercise.tips.peak" class="p-3 bg-zinc-950/80 border border-zinc-800/80 rounded-2xl space-y-1">
-              <div class="font-bold text-emerald-400 flex items-center gap-1.5">
+            <div v-if="exercise.tips.peak" class="p-3 rounded-2xl space-y-1 border"
+                 :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300/90 shadow-xs' : 'bg-zinc-950/80 border-zinc-800/80'">
+              <div class="font-bold flex items-center gap-1.5"
+                   :class="store.settings.themeMode === 'light' ? 'text-emerald-800 font-black' : 'text-emerald-400'">
                 <span>3️⃣</span> 顶峰收缩 (Peak Contraction)
               </div>
-              <p class="text-zinc-300 leading-relaxed pl-5">{{ exercise.tips.peak }}</p>
+              <p class="leading-relaxed pl-5 font-medium"
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ exercise.tips.peak }}</p>
             </div>
 
-            <div v-if="exercise.tips.negative" class="p-3 bg-zinc-950/80 border border-zinc-800/80 rounded-2xl space-y-1">
-              <div class="font-bold text-sky-400 flex items-center gap-1.5">
+            <div v-if="exercise.tips.negative" class="p-3 rounded-2xl space-y-1 border"
+                 :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300/90 shadow-xs' : 'bg-zinc-950/80 border-zinc-800/80'">
+              <div class="font-bold flex items-center gap-1.5"
+                   :class="store.settings.themeMode === 'light' ? 'text-sky-800 font-black' : 'text-sky-400'">
                 <span>4️⃣</span> 离心控制 (Negative / Stretch)
               </div>
-              <p class="text-zinc-300 leading-relaxed pl-5">{{ exercise.tips.negative }}</p>
+              <p class="leading-relaxed pl-5 font-medium"
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ exercise.tips.negative }}</p>
             </div>
 
-            <div v-if="exercise.tips.breathing" class="p-3 bg-zinc-950/80 border border-zinc-800/80 rounded-2xl space-y-1">
-              <div class="font-bold text-purple-400 flex items-center gap-1.5">
+            <div v-if="exercise.tips.breathing" class="p-3 rounded-2xl space-y-1 border"
+                 :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300/90 shadow-xs' : 'bg-zinc-950/80 border-zinc-800/80'">
+              <div class="font-bold flex items-center gap-1.5"
+                   :class="store.settings.themeMode === 'light' ? 'text-purple-800 font-black' : 'text-purple-400'">
                 <span>🫁</span> 呼吸节奏
               </div>
-              <p class="text-zinc-300 leading-relaxed pl-5">{{ exercise.tips.breathing }}</p>
+              <p class="leading-relaxed pl-5 font-medium"
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ exercise.tips.breathing }}</p>
             </div>
           </div>
 
           <!-- Common Mistakes -->
           <div v-if="exercise?.commonMistakes && exercise.commonMistakes.length" 
-               class="p-3.5 bg-red-950/20 border border-red-500/30 rounded-2xl space-y-1.5">
-            <div class="font-bold text-red-400 flex items-center gap-1.5">
+               class="p-3.5 rounded-2xl space-y-1.5 border"
+               :class="store.settings.themeMode === 'light' ? 'bg-red-50/90 border-red-300/80 shadow-xs' : 'bg-red-950/20 border-red-500/30'">
+            <div class="font-bold flex items-center gap-1.5"
+                 :class="store.settings.themeMode === 'light' ? 'text-red-700 font-black' : 'text-red-400'">
               <span>⚠️</span> 常见错误与避坑指南
             </div>
-            <ul class="space-y-1 pl-5 list-disc text-zinc-300">
+            <ul class="space-y-1 pl-5 list-disc"
+                :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">
               <li v-for="(mistake, mIdx) in exercise.commonMistakes" :key="mIdx" class="leading-relaxed">
                 {{ mistake }}
               </li>
@@ -166,43 +196,51 @@
 
         <!-- TAB 2: 平替动作 (Substitutes) -->
         <div v-if="activeTab === 'substitutes'" class="space-y-2.5 text-xs">
-          <p class="text-zinc-400 text-[11px]">
+          <p :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium text-[11px]' : 'text-zinc-400 text-[11px]'">
             💡 器械被占或想换刺激角度时，推荐以下高匹配平替：
           </p>
 
           <div v-if="exercise?.substitutes && exercise.substitutes.length" class="space-y-2">
             <div v-for="(sub, sIdx) in exercise.substitutes" :key="sIdx"
                  @click="handleSelectSubstitute(sub.name)"
-                 class="p-3 bg-zinc-950/80 hover:bg-zinc-800 border border-zinc-800 hover:border-amber-500/40 rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-3">
+                 class="p-3 border rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-3"
+                 :class="store.settings.themeMode === 'light' ? 'bg-slate-50 hover:bg-slate-100 border-slate-300 shadow-xs' : 'bg-zinc-950/80 hover:bg-zinc-800 border-zinc-800 hover:border-amber-500/40'">
               <div>
-                <div class="font-bold text-sm text-zinc-100 flex items-center gap-1.5">
+                <div class="font-bold text-sm flex items-center gap-1.5"
+                     :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">
                   <span>🔄</span> {{ sub.name }}
                 </div>
-                <p class="text-zinc-400 text-xs mt-0.5">{{ sub.reason }}</p>
+                <p class="text-xs mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">{{ sub.reason }}</p>
               </div>
-              <button class="px-2.5 py-1 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-lg border border-amber-500/30 flex-shrink-0">
+              <button class="px-2.5 py-1 text-xs font-bold rounded-lg border flex-shrink-0"
+                      :class="store.settings.themeMode === 'light' ? 'bg-amber-500/15 text-amber-800 border-amber-500/30' : 'bg-amber-500/10 text-amber-400 border-amber-500/30'">
                 查看/替换
               </button>
             </div>
           </div>
 
-          <div v-else class="p-6 text-center text-zinc-500 border border-dashed border-zinc-800 rounded-2xl">
+          <div v-else class="p-6 text-center border border-dashed rounded-2xl"
+               :class="store.settings.themeMode === 'light' ? 'text-slate-500 border-slate-300' : 'text-zinc-500 border-zinc-800'">
             暂无预设平替，可在动作库中选择同部位动作
           </div>
         </div>
 
         <!-- TAB 3: 科学解析 (Science) -->
         <div v-if="activeTab === 'science'" class="space-y-3 text-xs">
-          <div class="p-3.5 bg-zinc-950/80 border border-zinc-800/80 rounded-2xl space-y-2">
-            <div class="font-bold text-amber-400 flex items-center gap-1.5">
+          <div class="p-3.5 rounded-2xl space-y-2 border"
+               :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300 shadow-xs' : 'bg-zinc-950/80 border-zinc-800/80'">
+            <div class="font-bold flex items-center gap-1.5"
+                 :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">
               <span>🔬</span> 动作美学目的与科学细节
             </div>
-            <p class="text-zinc-200 leading-relaxed text-xs">
+            <p class="leading-relaxed text-xs font-medium"
+               :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-200'">
               {{ exercise?.scienceDetail || "注重动作规范与顶峰离心张力，避免代偿借力。" }}
             </p>
             <div v-if="exercise?.tags && exercise.tags.length" class="flex flex-wrap gap-1.5 pt-1">
               <span v-for="tag in exercise.tags" :key="tag" 
-                    class="text-[10px] px-2.5 py-0.5 rounded-full bg-zinc-800 text-amber-300 border border-zinc-700">
+                    class="text-[10px] px-2.5 py-0.5 rounded-full border font-bold"
+                    :class="store.settings.themeMode === 'light' ? 'bg-slate-200 text-slate-800 border-slate-300' : 'bg-zinc-800 text-amber-300 border-zinc-700'">
                 #{{ tag }}
               </span>
             </div>
@@ -211,28 +249,33 @@
 
         <!-- TAB 4: 历史记录 (History) -->
         <div v-if="activeTab === 'history'" class="space-y-2 text-xs">
-          <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center justify-between pb-1">
+          <div class="text-xs font-bold uppercase tracking-wider flex items-center justify-between pb-1"
+               :class="store.settings.themeMode === 'light' ? 'text-slate-700 font-bold' : 'text-zinc-400'">
             <span>📈 个人历史打卡记录</span>
-            <span class="text-[10px] text-zinc-500">最近 {{ exerciseHistory.length }} 次</span>
+            <span class="text-[10px]" :class="store.settings.themeMode === 'light' ? 'text-slate-500 font-bold' : 'text-zinc-500'">最近 {{ exerciseHistory.length }} 次</span>
           </div>
 
           <div v-if="exerciseHistory.length" class="space-y-2">
             <div v-for="(hist, idx) in exerciseHistory" :key="idx"
-                 class="p-3 bg-zinc-950/70 border border-zinc-800 rounded-xl space-y-1">
-              <div class="flex items-center justify-between text-zinc-400 font-mono">
-                <span class="text-zinc-200 font-semibold">{{ hist.date }}</span>
+                 class="p-3 border rounded-xl space-y-1"
+                 :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300 shadow-xs' : 'bg-zinc-950/70 border-zinc-800'">
+              <div class="flex items-center justify-between font-mono"
+                   :class="store.settings.themeMode === 'light' ? 'text-slate-700 font-semibold' : 'text-zinc-400'">
+                <span :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-bold' : 'text-zinc-200 font-semibold'">{{ hist.date }}</span>
                 <span>{{ hist.planName }}</span>
               </div>
               <div class="flex flex-wrap gap-1.5">
                 <span v-for="(s, sIdx) in hist.sets" :key="sIdx"
-                      class="px-2 py-0.5 bg-zinc-900 border border-zinc-700/80 rounded-lg text-xs font-mono font-medium text-emerald-400">
+                      class="px-2 py-0.5 border rounded-lg text-xs font-mono font-bold"
+                      :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-300 text-emerald-800' : 'bg-zinc-900 border-zinc-700/80 text-emerald-400'">
                   {{ s.weight }}kg × {{ s.reps }}
                 </span>
               </div>
             </div>
           </div>
 
-          <div v-else class="p-8 text-center text-zinc-500 border border-dashed border-zinc-800 rounded-xl">
+          <div v-else class="p-8 text-center border border-dashed rounded-xl"
+               :class="store.settings.themeMode === 'light' ? 'text-slate-500 border-slate-300' : 'text-zinc-500 border-zinc-800'">
             暂无历史打卡记录，完成该动作训练后将自动记录在此
           </div>
         </div>
@@ -243,7 +286,8 @@
       </div>
 
       <!-- Bottom Sticky CTA Button (Yellow / Amber prominent bar) -->
-      <div class="p-3.5 bg-zinc-950 border-t border-zinc-800/80 flex-shrink-0 safe-bottom-padding">
+      <div class="p-3.5 border-t flex-shrink-0 safe-bottom-padding"
+           :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-200' : 'bg-zinc-950 border-zinc-800/80'">
         <button @click="handleActionStart" 
                 class="w-full py-3.5 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-400 hover:from-amber-300 hover:to-amber-400 active:scale-98 text-zinc-950 font-black text-sm rounded-2xl shadow-xl shadow-amber-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer">
           <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -257,7 +301,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onUnmounted } from "vue";
+import { ref, computed, watch, onUnmounted, nextTick } from "vue";
 import { store, getExerciseDetails, addExerciseToActiveWorkout } from "../store/fitnessStore.js";
 import { getMuscleDiagramSvg } from "../utils/muscleDiagrams.js";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
@@ -268,10 +312,18 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["close", "selectSubstitute"]);
+const scrollContainer = ref(null);
 
-watch(() => props.visible, (val) => {
-  if (val) lockBodyScroll();
-  else unlockBodyScroll();
+watch(() => props.visible, async (val) => {
+  if (val) {
+    lockBodyScroll();
+    await nextTick();
+    if (scrollContainer.value) {
+      scrollContainer.value.scrollTop = 0;
+    }
+  } else {
+    unlockBodyScroll();
+  }
 }, { immediate: true });
 
 onUnmounted(() => {
@@ -285,9 +337,13 @@ const muscleSvg = computed(() => {
   return getMuscleDiagramSvg(props.exercise?.category || "胸部", props.exercise?.target || props.exercise?.name || "");
 });
 
-watch(() => props.exercise, () => {
+watch(() => props.exercise, async () => {
   gifError.value = false;
   activeTab.value = "tips";
+  await nextTick();
+  if (scrollContainer.value) {
+    scrollContainer.value.scrollTop = 0;
+  }
 });
 
 const exerciseHistory = computed(() => {
