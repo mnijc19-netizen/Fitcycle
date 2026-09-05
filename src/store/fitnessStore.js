@@ -475,9 +475,12 @@ export function addExerciseToActiveWorkout(exerciseItem) {
   const lastPerf = getLastExercisePerformance(fullItem.name);
   const sets = [];
   const defaultSetsCount = fullItem.defaultSets || 3;
+  const levelKey = store.settings.strengthLevel || "intermediate";
+  const levelConfig = STRENGTH_LEVEL_CONFIGS[levelKey];
+  const configuredWeight = levelConfig?.weights?.[fullItem.name];
 
   for (let i = 0; i < defaultSetsCount; i++) {
-    let w = fullItem.defaultWeight || 20;
+    let w = configuredWeight !== undefined ? configuredWeight : (fullItem.defaultWeight || 20);
     let r = 10;
     if (lastPerf && lastPerf.sets[i]) {
       w = lastPerf.sets[i].weight;
@@ -544,9 +547,12 @@ export function replaceExerciseInActiveWorkout(exerciseIndex, newExerciseItem) {
 
   const setsCount = ex.sets.length || newExerciseItem.defaultSets || 3;
   const newSets = [];
+  const levelKey = store.settings.strengthLevel || "intermediate";
+  const levelConfig = STRENGTH_LEVEL_CONFIGS[levelKey];
+  const configuredWeight = levelConfig?.weights?.[newExerciseItem.name];
 
   for (let i = 0; i < setsCount; i++) {
-    let w = 20;
+    let w = configuredWeight !== undefined ? configuredWeight : 20;
     let r = 10;
     if (lastPerf && lastPerf.sets[i]) {
       w = lastPerf.sets[i].weight;
@@ -1070,5 +1076,191 @@ export function performPrestigeReset() {
   store.honorProfile.score = 2400; // soft reset to Tier 6
   if (store.settings.vibrationEnabled) triggerHaptic("success");
   return true;
+}
+
+// --- STRENGTH LEVEL PROFILES & ADAPTIVE ONBOARDING ENGINE ---
+export const STRENGTH_LEVEL_CONFIGS = {
+  beginner: {
+    id: "beginner",
+    name: "新手筑基",
+    badge: "🌱 新手",
+    desc: "适合刚接触健身 0~3 个月，注重建立正确发力轨迹",
+    initialScore: 200,
+    benchBase: 25,
+    squatBase: 35,
+    pullBase: 25,
+    weights: {
+      "上斜哑铃卧推": 12.5,
+      "固定器械推胸": 25,
+      "绳索侧平举": 3.75,
+      "对握/宽握高位下拉": 25,
+      "坐姿绳索划船": 25,
+      "上斜哑铃弯举": 6,
+      "哈克深蹲 / 倒蹬腿举": 35,
+      "罗马尼亚硬拉 (RDL)": 30,
+      "俯卧器械腿弯举 (Lying Leg Curl)": 20
+    }
+  },
+  intermediate: {
+    id: "intermediate",
+    name: "进阶中坚",
+    badge: "⚡ 中坚",
+    desc: "适合有 3~12 个月规律健身习惯，具备稳定做工能力",
+    initialScore: 850,
+    benchBase: 50,
+    squatBase: 70,
+    pullBase: 45,
+    weights: {
+      "上斜哑铃卧推": 20,
+      "固定器械推胸": 45,
+      "绳索侧平举": 7.5,
+      "对握/宽握高位下拉": 45,
+      "坐姿绳索划船": 40,
+      "上斜哑铃弯举": 10,
+      "哈克深蹲 / 倒蹬腿举": 60,
+      "罗马尼亚硬拉 (RDL)": 50,
+      "俯卧器械腿弯举 (Lying Leg Curl)": 35
+    }
+  },
+  advanced: {
+    id: "advanced",
+    name: "资深老手",
+    badge: "🔥 老手",
+    desc: "适合系统抗阻训练 1 年以上，大负荷力量老铁",
+    initialScore: 1400,
+    benchBase: 80,
+    squatBase: 110,
+    pullBase: 70,
+    weights: {
+      "上斜哑铃卧推": 30,
+      "固定器械推胸": 75,
+      "绳索侧平举": 12.5,
+      "对握/宽握高位下拉": 70,
+      "坐姿绳索划船": 65,
+      "上斜哑铃弯举": 15,
+      "哈克深蹲 / 倒蹬腿举": 110,
+      "罗马尼亚硬拉 (RDL)": 90,
+      "俯卧器械腿弯举 (Lying Leg Curl)": 55
+    }
+  }
+};
+
+export function setStrengthLevelAndRecalibrate(levelKey, customBases = null) {
+  const config = STRENGTH_LEVEL_CONFIGS[levelKey] || STRENGTH_LEVEL_CONFIGS.intermediate;
+  store.settings.strengthLevel = levelKey;
+  store.settings.hasConfiguredStrength = true;
+
+  let weightsMap = { ...config.weights };
+
+  if (levelKey === "custom" && customBases) {
+    store.settings.customBaseWeights = { ...customBases };
+    const b = Number(customBases.bench) || 50;
+    const s = Number(customBases.squat) || 70;
+    const p = Number(customBases.pull) || 45;
+    weightsMap = {
+      "上斜哑铃卧推": Math.max(5, Math.round(b * 0.35 / 2.5) * 2.5),
+      "固定器械推胸": Math.max(10, Math.round(b * 0.85 / 2.5) * 2.5),
+      "绳索侧平举": Math.max(2.5, Math.round(b * 0.15 / 1.25) * 1.25),
+      "对握/宽握高位下拉": Math.max(10, Math.round(p * 0.9 / 2.5) * 2.5),
+      "坐姿绳索划船": Math.max(10, Math.round(p * 0.8 / 2.5) * 2.5),
+      "上斜哑铃弯举": Math.max(4, Math.round(p * 0.2 / 2) * 2),
+      "哈克深蹲 / 倒蹬腿举": Math.max(20, Math.round(s * 0.9 / 5) * 5),
+      "罗马尼亚硬拉 (RDL)": Math.max(20, Math.round(s * 0.75 / 5) * 5),
+      "俯卧器械腿弯举 (Lying Leg Curl)": Math.max(10, Math.round(s * 0.45 / 2.5) * 2.5)
+    };
+  }
+
+  // 1. Update all plans' exercises defaultWeight in store.plans
+  if (store.plans) {
+    store.plans.forEach(plan => {
+      if (plan.exercises) {
+        plan.exercises.forEach(pe => {
+          if (weightsMap[pe.name] !== undefined) {
+            pe.defaultWeight = weightsMap[pe.name];
+          }
+        });
+      }
+    });
+  }
+
+  // 2. If active workout exists, update all uncompleted sets!
+  if (store.activeWorkout && store.activeWorkout.exercises) {
+    store.activeWorkout.exercises.forEach(ex => {
+      const targetW = weightsMap[ex.name];
+      if (targetW !== undefined && ex.sets) {
+        ex.sets.forEach(s => {
+          if (!s.completed) {
+            s.weight = targetW;
+          }
+        });
+      }
+    });
+  }
+
+  // 3. Update honorProfile score if user has no completed workout logs yet
+  if (!store.workoutLogs || store.workoutLogs.length === 0) {
+    if (!store.honorProfile) {
+      store.honorProfile = { score: config.initialScore, prestigeLevel: 1, prestigeYear: new Date().getFullYear(), highestScore: config.initialScore, lastWorkoutTimestamp: null, unlockedBadges: [] };
+    } else {
+      store.honorProfile.score = config.initialScore;
+      store.honorProfile.highestScore = Math.max(store.honorProfile.highestScore || 0, config.initialScore);
+    }
+  }
+
+  if (store.settings.vibrationEnabled) {
+    triggerHaptic("success");
+  }
+
+  return { success: true, levelKey, weightsMap };
+}
+
+export function setExerciseAllSetsWeight(exerciseIndex, newWeight) {
+  if (!store.activeWorkout) return 0;
+  const ex = store.activeWorkout.exercises[exerciseIndex];
+  if (!ex || !ex.sets) return 0;
+  const w = Math.max(0, Number(newWeight) || 0);
+  let updatedCount = 0;
+  ex.sets.forEach(s => {
+    if (!s.completed) {
+      s.weight = w;
+      updatedCount++;
+    }
+  });
+  if (store.settings.vibrationEnabled) triggerHaptic("light");
+  return updatedCount;
+}
+
+export function adjustExerciseAllSetsWeight(exerciseIndex, delta) {
+  if (!store.activeWorkout) return 0;
+  const ex = store.activeWorkout.exercises[exerciseIndex];
+  if (!ex || !ex.sets) return 0;
+  let updatedCount = 0;
+  ex.sets.forEach(s => {
+    if (!s.completed) {
+      s.weight = Math.max(0, Number(((Number(s.weight) || 0) + delta).toFixed(1)));
+      updatedCount++;
+    }
+  });
+  if (store.settings.vibrationEnabled) triggerHaptic("light");
+  return updatedCount;
+}
+
+export function syncFirstSetToAllSets(exerciseIndex) {
+  if (!store.activeWorkout) return 0;
+  const ex = store.activeWorkout.exercises[exerciseIndex];
+  if (!ex || !ex.sets || ex.sets.length === 0) return 0;
+  const firstSet = ex.sets[0];
+  const targetW = Number(firstSet.weight) || 0;
+  const targetR = Number(firstSet.reps) || 0;
+  let updatedCount = 0;
+  ex.sets.forEach((s, idx) => {
+    if (idx > 0 && !s.completed) {
+      s.weight = targetW;
+      s.reps = targetR;
+      updatedCount++;
+    }
+  });
+  if (store.settings.vibrationEnabled) triggerHaptic("medium");
+  return updatedCount;
 }
 

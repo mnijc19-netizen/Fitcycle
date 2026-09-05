@@ -447,6 +447,31 @@
       </div>
     </Teleport>
 
+    <!-- Strength Placement & Calibration (力量能力基准定级) -->
+    <div class="space-y-1.5">
+      <div class="text-xs font-bold text-zinc-400 px-1">力量能力基准</div>
+      <div class="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl overflow-hidden divide-y divide-zinc-800/60 shadow-sm">
+        <div @click="showStrengthModal = true"
+             class="p-3.5 hover:bg-zinc-850/60 active:bg-zinc-800 cursor-pointer flex items-center justify-between transition-colors">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-amber-500/15 flex items-center justify-center text-amber-400 text-xs">
+              ⚡
+            </div>
+            <div>
+              <div class="text-xs font-bold text-zinc-100 flex items-center gap-1.5">
+                <span>力量水平定级与初始重量</span>
+                <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  {{ currentStrengthConfig.name }}
+                </span>
+              </div>
+              <div class="text-[10px] text-zinc-400 mt-0.5">一键自适应全计划起步重量，老铁无需从空杆重调</div>
+            </div>
+          </div>
+          <span class="text-zinc-500 text-xs">❯</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Guides & Codex (Clean iOS Inset List) -->
     <div class="space-y-1.5">
       <div class="text-xs font-bold text-zinc-400 px-1">使用指南与规则</div>
@@ -594,6 +619,12 @@
       @close="showOnboardingModal = false"
     />
 
+    <!-- Strength Placement & Calibration Modal -->
+    <StrengthPlacementModal
+      :visible="showStrengthModal"
+      @close="showStrengthModal = false"
+    />
+
   </div>
 </template>
 
@@ -604,6 +635,7 @@ import HonorShowcaseModal from "../components/HonorShowcaseModal.vue";
 import BodyMetricsModal from "../components/BodyMetricsModal.vue";
 import RulesCodexModal from "../components/RulesCodexModal.vue";
 import UserOnboardingModal from "../components/UserOnboardingModal.vue";
+import StrengthPlacementModal from "../components/StrengthPlacementModal.vue";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import {
   aiSession,
@@ -623,13 +655,21 @@ import {
   restoreDefaultSkin,
   getFullHonorProfile,
   toggleDeloadShield,
-  setThemeMode
+  setThemeMode,
+  STRENGTH_LEVEL_CONFIGS
 } from "../store/fitnessStore.js";
 
 const showHonorModal = ref(false);
 const showBodyModal = ref(false);
 const showRulesModal = ref(false);
 const showOnboardingModal = ref(false);
+const showStrengthModal = ref(false);
+
+const currentStrengthConfig = computed(() => {
+  const lvl = store.settings.strengthLevel || "intermediate";
+  return STRENGTH_LEVEL_CONFIGS[lvl] || STRENGTH_LEVEL_CONFIGS.intermediate;
+});
+
 const honorData = computed(() => getFullHonorProfile());
 const isDeloadActive = computed(() => honorData.value.isDeloadActive);
 

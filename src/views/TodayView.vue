@@ -64,8 +64,19 @@
             {{ store.activeWorkout.shortName || '训练中' }}
           </span>
 
-          <div class="flex items-center gap-2 font-mono text-sm font-bold text-zinc-300">
-            <span>⏱️ {{ elapsedFormatted }}</span>
+          <div class="flex items-center gap-2">
+            <button @click="showStrengthPlacementModal = true"
+                    title="点击随时重测或切换力量水平（自适应开局组重）"
+                    class="px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 border transition-all active:scale-95 cursor-pointer shadow-2xs"
+                    :class="store.settings.themeMode === 'light'
+                      ? 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300'
+                      : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/30'">
+              <span>⚡ {{ currentStrengthConfig.name }}</span>
+              <span class="text-[8px] opacity-70">▾</span>
+            </button>
+            <div class="flex items-center gap-1 font-mono text-sm font-bold text-zinc-300">
+              <span>⏱️ {{ elapsedFormatted }}</span>
+            </div>
           </div>
         </div>
 
@@ -149,6 +160,34 @@
             <span class="text-amber-400 font-bold mr-1">发力要点:</span>{{ ex.scienceDetail }}
           </div>
 
+          <!-- Quick Plate Adjustment & Batch Sync Bar (极速加减片与统一全组) -->
+          <div class="px-3 py-2 border-b flex items-center justify-between gap-1 overflow-x-auto no-scrollbar select-none"
+               :class="store.settings.themeMode === 'light' ? 'bg-slate-100/70 border-slate-200' : 'bg-zinc-950/40 border-zinc-800/60'">
+            <div class="flex items-center gap-1 flex-shrink-0">
+              <span class="text-[10px] font-bold mr-0.5"
+                    :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">加减片:</span>
+              <button v-for="chip in [-5, 2.5, 5, 10, 20]" :key="chip"
+                      @click="handleQuickChip(exIdx, chip)"
+                      :title="chip > 0 ? `为本动作所有未完成组增加 ${chip}kg` : `为本动作所有未完成组减少 ${Math.abs(chip)}kg`"
+                      class="px-2 py-1 rounded-lg text-[11px] font-mono font-black border transition-all active:scale-90 cursor-pointer"
+                      :class="chip > 0 
+                        ? (store.settings.themeMode === 'light' ? 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-300 shadow-2xs' : 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border-amber-500/30')
+                        : (store.settings.themeMode === 'light' ? 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-400 border-zinc-700')">
+                {{ chip > 0 ? `+${chip}` : chip }}
+              </button>
+            </div>
+            
+            <button @click="handleSyncFirstSet(exIdx)"
+                    title="将第1组重量与次数快速统一到后续全部未完成组"
+                    class="px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 border transition-all active:scale-95 cursor-pointer flex-shrink-0"
+                    :class="store.settings.themeMode === 'light'
+                      ? 'bg-sky-50 hover:bg-sky-100 text-sky-800 border-sky-300 shadow-2xs'
+                      : 'bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 border-sky-500/40'">
+              <span>⚡</span>
+              <span>统一全组</span>
+            </button>
+          </div>
+
           <!-- Sets Table -->
           <div class="p-3 space-y-2">
             <!-- Table Header -->
@@ -162,63 +201,69 @@
 
             <!-- Set Rows -->
             <div v-for="(s, sIdx) in ex.sets" :key="s.id || sIdx" class="space-y-1">
-              <div class="grid grid-cols-12 gap-1.5 items-center p-1.5 rounded-xl transition-all relative overflow-hidden"
+              <div class="grid grid-cols-12 gap-1.5 items-center p-2 rounded-2xl transition-all relative overflow-hidden"
                    :class="[
                      s.completed 
                        ? 'bg-emerald-950/30 border border-emerald-500/40 shadow-sm shadow-emerald-500/10' 
                        : (getSetOverloadDelta(ex.name, s, sIdx)?.isPr ? 'bg-amber-950/20 border border-amber-500/40' : 'bg-zinc-950/70 border border-zinc-800/60')
                    ]">
                 
-                <!-- Set index -->
-                <div class="col-span-2 flex items-center justify-between pr-1">
-                  <span class="w-6 h-6 rounded-lg text-xs font-mono font-bold flex items-center justify-center transition-colors"
+                <!-- Set index & Delete -->
+                <div class="col-span-2 flex items-center justify-between pr-0.5">
+                  <span class="w-7 h-7 rounded-xl text-xs font-mono font-bold flex items-center justify-center transition-colors"
                         :class="s.completed ? 'bg-emerald-500/20 text-emerald-300 font-black' : (store.settings.themeMode === 'light' ? 'bg-slate-200 text-slate-800 font-bold' : 'bg-zinc-800 text-zinc-300')">
                     {{ sIdx + 1 }}
                   </span>
                   <button v-if="ex.sets.length > 1 && !s.completed" 
                           @click="removeSet(exIdx, sIdx)" 
                           title="删除此组"
-                          class="w-4 h-4 rounded flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-500/10 text-[11px] font-bold cursor-pointer transition-colors">
+                          class="w-6 h-6 rounded-lg flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-500/15 text-xs font-bold cursor-pointer transition-all active:scale-90">
                     ✕
                   </button>
                 </div>
 
-                <!-- Weight Input + Quick Adjust with Smart Cascade -->
-                <div class="col-span-4 flex items-center border rounded-lg overflow-hidden relative"
-                     :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border-slate-300' : 'bg-zinc-900 border-zinc-700/70'">
+                <!-- Weight Input + Ergonomic Stepper with Smart Cascade -->
+                <div class="col-span-4 h-10 flex items-center border rounded-xl overflow-hidden relative shadow-2xs"
+                     :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-300' : 'bg-zinc-900 border-zinc-700/80'">
                   <button @click="adjustSetWeight(exIdx, sIdx, -2.5)" 
-                          class="px-1.5 py-1 text-xs font-bold active:scale-95 transition-colors cursor-pointer"
-                          :class="store.settings.themeMode === 'light' ? 'bg-slate-200 hover:bg-slate-300 text-slate-800' : 'bg-zinc-800/50 text-zinc-400 hover:text-white'">
-                    -
+                          type="button"
+                          class="w-9 h-full flex items-center justify-center text-base font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800' : 'bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white'">
+                    −
                   </button>
                   <input v-model.number="s.weight" 
                          @input="onWeightChange(exIdx, sIdx)"
-                         type="number" step="0.5"
-                         class="w-full bg-transparent text-center text-xs font-mono font-bold focus:outline-none"
+                         @focus="$event.target.select()"
+                         type="number" step="0.5" inputmode="decimal"
+                         class="w-full h-full bg-transparent text-center text-sm font-mono font-black focus:outline-none focus:bg-amber-500/10 transition-colors"
                          :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'" />
                   <button @click="adjustSetWeight(exIdx, sIdx, 2.5)" 
-                          class="px-1.5 py-1 text-xs font-bold active:scale-95 transition-colors cursor-pointer"
-                          :class="store.settings.themeMode === 'light' ? 'bg-slate-200 hover:bg-slate-300 text-slate-800' : 'bg-zinc-800/50 text-zinc-400 hover:text-white'">
+                          type="button"
+                          class="w-9 h-full flex items-center justify-center text-base font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800' : 'bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white'">
                     +
                   </button>
                 </div>
 
-                <!-- Reps Input + Quick Adjust with Smart Cascade -->
-                <div class="col-span-4 flex items-center border rounded-lg overflow-hidden"
-                     :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border-slate-300' : 'bg-zinc-900 border-zinc-700/70'">
+                <!-- Reps Input + Ergonomic Stepper with Smart Cascade -->
+                <div class="col-span-4 h-10 flex items-center border rounded-xl overflow-hidden relative shadow-2xs"
+                     :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-300' : 'bg-zinc-900 border-zinc-700/80'">
                   <button @click="adjustSetReps(exIdx, sIdx, -1)" 
-                          class="px-1.5 py-1 text-xs font-bold active:scale-95 transition-colors cursor-pointer"
-                          :class="store.settings.themeMode === 'light' ? 'bg-slate-200 hover:bg-slate-300 text-slate-800' : 'bg-zinc-800/50 text-zinc-400 hover:text-white'">
-                    -
+                          type="button"
+                          class="w-9 h-full flex items-center justify-center text-base font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800' : 'bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white'">
+                    −
                   </button>
                   <input v-model.number="s.reps" 
                          @input="onRepsChange(exIdx, sIdx)"
-                         type="number" 
-                         class="w-full bg-transparent text-center text-xs font-mono font-bold focus:outline-none"
+                         @focus="$event.target.select()"
+                         type="number" step="1" inputmode="numeric"
+                         class="w-full h-full bg-transparent text-center text-sm font-mono font-black focus:outline-none focus:bg-amber-500/10 transition-colors"
                          :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'" />
                   <button @click="adjustSetReps(exIdx, sIdx, 1)" 
-                          class="px-1.5 py-1 text-xs font-bold active:scale-95 transition-colors cursor-pointer"
-                          :class="store.settings.themeMode === 'light' ? 'bg-slate-200 hover:bg-slate-300 text-slate-800' : 'bg-zinc-800/50 text-zinc-400 hover:text-white'">
+                          type="button"
+                          class="w-9 h-full flex items-center justify-center text-base font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800' : 'bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white'">
                     +
                   </button>
                 </div>
@@ -226,7 +271,7 @@
                 <!-- Complete Checkbox Button -->
                 <div class="col-span-2 flex justify-center">
                   <button @click="toggleSet(exIdx, sIdx)"
-                          class="w-8 h-8 rounded-xl flex items-center justify-center transition-all active:scale-90 relative cursor-pointer"
+                          class="w-9 h-9 rounded-xl flex items-center justify-center transition-all active:scale-90 relative cursor-pointer"
                           :class="[
                             s.completed ? 'bg-emerald-500 text-zinc-950 shadow-md shadow-emerald-500/30' : 
                             (store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-500 border border-slate-300' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-400 border border-zinc-700')
@@ -374,12 +419,20 @@
           </h1>
           
           <div v-if="!todayCycle.isRest && currentPlan?.exercises?.length" 
-               class="flex items-center gap-2 mt-2 text-xs font-mono text-zinc-400">
+               class="flex items-center flex-wrap gap-2 mt-2 text-xs font-mono text-zinc-400">
             <span class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-200'">{{ currentPlan.exercises.length }} 动作</span>
             <span class="text-zinc-600">·</span>
             <span class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-emerald-700' : 'text-emerald-400'">{{ todayTotalSets }} 组做工</span>
             <span class="text-zinc-600">·</span>
-            <span :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">约 45 分钟</span>
+            <button @click="showStrengthPlacementModal = true"
+                    title="点击随时重测或切换力量水平"
+                    class="px-2 py-0.5 rounded-full text-[10px] font-bold font-sans flex items-center gap-1 border transition-all active:scale-95 cursor-pointer shadow-2xs"
+                    :class="store.settings.themeMode === 'light'
+                      ? 'bg-amber-100 hover:bg-amber-200 text-amber-900 border-amber-300'
+                      : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/30'">
+              <span>⚡ 力量: {{ currentStrengthConfig.name }}</span>
+              <span class="text-[8px] opacity-70">▾</span>
+            </button>
           </div>
           <div v-else class="text-xs mt-1" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
             充分享受休息，促进肌肉超量恢复与中枢神经修复
@@ -415,6 +468,29 @@
           </div>
         </div>
 
+      </div>
+
+      <!-- Friendly Strength Calibration Welcome Card (针对新用户/老铁的30秒定级通道) -->
+      <div v-if="!store.settings.hasConfiguredStrength"
+           class="p-3.5 rounded-2xl border flex items-center justify-between gap-2.5 shadow-md animate-in fade-in duration-300"
+           :class="store.settings.themeMode === 'light' ? 'bg-amber-50/90 border-amber-300/80 text-amber-950' : 'bg-gradient-to-r from-amber-950/40 via-zinc-900 to-zinc-900 border-amber-500/40 text-white'">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-sm font-black flex-shrink-0">
+            ⚡
+          </div>
+          <div class="min-w-0">
+            <h4 class="text-xs font-black truncate">
+              设定力量水平（新手/中坚/老手）
+            </h4>
+            <p class="text-[10px] mt-0.5 truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-900/80' : 'text-zinc-400'">
+              自适应推拉腿起步组重，老铁无需从空杆逐组重填
+            </p>
+          </div>
+        </div>
+        <button @click="showStrengthPlacementModal = true"
+                class="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-black rounded-xl text-[11px] flex-shrink-0 shadow-sm cursor-pointer transition-all">
+          30秒定级
+        </button>
       </div>
 
       <!-- Tactical Readiness & Recovery Card -->
@@ -732,6 +808,12 @@
       @close="showBodyModal = false"
     />
 
+    <!-- Strength Placement & Level Calibration Modal -->
+    <StrengthPlacementModal
+      :visible="showStrengthPlacementModal"
+      @close="showStrengthPlacementModal = false"
+    />
+
     <!-- 7. Auto Workout Finish Celebration Modal (智能防漏结算与加练弹窗) -->
     <Teleport to="body">
       <div v-if="showAutoFinishModal" 
@@ -820,6 +902,10 @@ import {
   toggleDeloadShield,
   syncSetDataToSubsequentSets,
   addExerciseToPlan,
+  adjustExerciseAllSetsWeight,
+  setExerciseAllSetsWeight,
+  syncFirstSetToAllSets,
+  STRENGTH_LEVEL_CONFIGS,
   uid
 } from "../store/fitnessStore.js";
 import { SPLIT_RECOMMENDED_ADDONS } from "../data/defaultPlans.js";
@@ -829,10 +915,12 @@ import CycleEditorModal from "../components/CycleEditorModal.vue";
 import WorkoutSummaryModal from "../components/WorkoutSummaryModal.vue";
 import HonorShowcaseModal from "../components/HonorShowcaseModal.vue";
 import BodyMetricsModal from "../components/BodyMetricsModal.vue";
+import StrengthPlacementModal from "../components/StrengthPlacementModal.vue";
 import RulesCodexModal from "../components/RulesCodexModal.vue";
 import ExerciseImage from "../components/ExerciseImage.vue";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import { universalScrollToTop } from "../utils/scrollUtils.js";
+import { triggerHaptic } from "../utils/vibrate.js";
 
 // State
 const showAddExerciseModal = ref(false);
@@ -848,8 +936,14 @@ const showAutoFinishModal = ref(false);
 const showHonorModal = ref(false);
 const showBodyModal = ref(false);
 const showRulesModal = ref(false);
+const showStrengthPlacementModal = ref(false);
 
-const anyTodayModalOpen = computed(() => showPlanPicker.value || showAutoFinishModal.value);
+const currentStrengthConfig = computed(() => {
+  const lvl = store.settings.strengthLevel || "intermediate";
+  return STRENGTH_LEVEL_CONFIGS[lvl] || STRENGTH_LEVEL_CONFIGS.intermediate;
+});
+
+const anyTodayModalOpen = computed(() => showPlanPicker.value || showAutoFinishModal.value || showStrengthPlacementModal.value);
 watch(anyTodayModalOpen, (isOpen) => {
   if (isOpen) lockBodyScroll();
   else unlockBodyScroll();
@@ -1238,6 +1332,27 @@ function toggleSet(exIdx, sIdx) {
   }
 }
 
+function handleQuickChip(exIdx, delta) {
+  const ex = store.activeWorkout?.exercises?.[exIdx];
+  if (!ex || !ex.sets) return;
+  adjustExerciseAllSetsWeight(exIdx, delta);
+  const updatedW = ex.sets[0]?.weight;
+  showOverloadCelebration(
+    delta > 0 ? `➕ 杠铃加片 +${delta}kg` : `➖ 杠铃减片 ${delta}kg`,
+    `未完成组已同步调整至 ${updatedW}kg`,
+    false
+  );
+}
+
+function handleSyncFirstSet(exIdx) {
+  const ex = store.activeWorkout?.exercises?.[exIdx];
+  if (!ex || !ex.sets || ex.sets.length === 0) return;
+  const count = syncFirstSetToAllSets(exIdx);
+  const firstW = ex.sets[0].weight;
+  const firstR = ex.sets[0].reps;
+  showOverloadCelebration(`⚡ 统一全组规格`, `后续 ${count} 组已统一设为 ${firstW}kg × ${firstR}次`, false);
+}
+
 function adjustSetWeight(exIdx, sIdx, delta) {
   const ex = store.activeWorkout?.exercises?.[exIdx];
   if (!ex || !ex.sets?.[sIdx]) return;
@@ -1245,6 +1360,7 @@ function adjustSetWeight(exIdx, sIdx, delta) {
   const oldVal = Number(currentSet.weight) || 0;
   const newVal = Math.max(0, Number((oldVal + delta).toFixed(1)));
   currentSet.weight = newVal;
+  if (store.settings.vibrationEnabled) triggerHaptic("light");
 
   // 智能级联联动：后续未完成组若为同重或初始值，自动跟随联动
   for (let i = sIdx + 1; i < ex.sets.length; i++) {
@@ -1277,6 +1393,7 @@ function adjustSetReps(exIdx, sIdx, delta) {
   const oldVal = Number(currentSet.reps) || 0;
   const newVal = Math.max(0, oldVal + delta);
   currentSet.reps = newVal;
+  if (store.settings.vibrationEnabled) triggerHaptic("light");
 
   for (let i = sIdx + 1; i < ex.sets.length; i++) {
     const nextSet = ex.sets[i];

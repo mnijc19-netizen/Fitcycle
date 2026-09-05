@@ -44,7 +44,10 @@ export const DEFAULT_SETTINGS = {
   themeMode: "dark", // 'dark' | 'light'
   uiSkin: "default", // 'default' | 'chamber' | 'cs' | 'monochrome'
   unlockedSkins: ["default"], // string[]
-  hasSeenOnboarding: false
+  hasSeenOnboarding: false,
+  strengthLevel: "intermediate", // 'beginner' | 'intermediate' | 'advanced' | 'custom'
+  hasConfiguredStrength: false,
+  customBaseWeights: { bench: 50, squat: 70, pull: 45 }
 };
 
 /**
@@ -136,6 +139,13 @@ export function sanitizeSettings(rawSettings) {
   }
   sanitized.soundEnabled = Boolean(sanitized.soundEnabled);
   sanitized.vibrationEnabled = Boolean(sanitized.vibrationEnabled);
+  sanitized.hasConfiguredStrength = Boolean(sanitized.hasConfiguredStrength);
+  sanitized.strengthLevel = ["beginner", "intermediate", "advanced", "custom"].includes(rawSettings.strengthLevel)
+    ? rawSettings.strengthLevel
+    : "intermediate";
+  sanitized.customBaseWeights = (rawSettings.customBaseWeights && typeof rawSettings.customBaseWeights === "object")
+    ? { ...DEFAULT_SETTINGS.customBaseWeights, ...rawSettings.customBaseWeights }
+    : { ...DEFAULT_SETTINGS.customBaseWeights };
 
   return sanitized;
 }
