@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
+import { mount } from "@vue/test-utils";
 import {
   calculateEquivalentTonnage,
   calculateInactivityDecay,
@@ -11,6 +12,7 @@ import {
 } from "../src/engine/honorEngine.js";
 import { SKIN_HONOR_SCHEMAS, getSkinHonorPresentation } from "../src/engine/skinHonorSchemas.js";
 import { store, recordBodyMetric, getFullHonorProfile, performPrestigeReset, resetAllDataToDefault, toggleDeloadShield } from "../src/store/fitnessStore.js";
+import RulesCodexModal from "../src/components/RulesCodexModal.vue";
 
 describe("Fitcycle Core Constitution & Honor Rating Engine", () => {
   beforeEach(() => {
@@ -283,6 +285,74 @@ describe("Fitcycle Core Constitution & Honor Rating Engine", () => {
       const badge100t = pres.badges.find(b => b.id === "badge_tonnage_100t");
       expect(badge100t).toBeDefined();
       expect(badge100t.svg).toBe("./themes/medals/badge-tonnage-100t.svg");
+    });
+  });
+
+  describe("8. Rules Codex Modal & Human-Centric Presentation", () => {
+    it("renders 7 tiers with strictly constitutional score ranges and SVG medals", () => {
+      const wrapper = mount(RulesCodexModal, {
+        props: { visible: true },
+        global: {
+          stubs: { Teleport: true }
+        }
+      });
+
+      const text = wrapper.text();
+      expect(text).toContain("7 阶绝对天梯段位体系");
+      expect(text).toContain("0 ~ 299 分");
+      expect(text).toContain("300 ~ 699 分");
+      expect(text).toContain("700 ~ 1199 分");
+      expect(text).toContain("1200 ~ 1799 分");
+      expect(text).toContain("1800 ~ 2399 分");
+      expect(text).toContain("2400 ~ 2899 分");
+      expect(text).toContain("2900+ 分");
+
+      // Verify SVG medals exist in DOM
+      const imgs = wrapper.findAll("img");
+      expect(imgs.length).toBeGreaterThanOrEqual(7);
+
+      wrapper.unmount();
+    });
+
+    it("presents personalized rank anchor card for the user", () => {
+      store.honorProfile.score = 1450; // Tier 4
+      store.honorProfile.lastWorkoutTimestamp = Date.now();
+      const wrapper = mount(RulesCodexModal, {
+        props: { visible: true },
+        global: {
+          stubs: { Teleport: true }
+        }
+      });
+
+      expect(wrapper.text()).toContain("当前段位");
+      expect(wrapper.text()).toContain("1450");
+      expect(wrapper.text()).toContain("距下一阶还需");
+
+      wrapper.unmount();
+    });
+
+    it("has zero raw unrendered LaTeX artifacts across all tabs", async () => {
+      const wrapper = mount(RulesCodexModal, {
+        props: { visible: true },
+        global: {
+          stubs: { Teleport: true }
+        }
+      });
+
+      // Check all tabs content
+      const tabs = ["ranking", "decay", "overload", "body", "ai"];
+      for (const tabId of tabs) {
+        const tabButton = wrapper.findAll("button").find(b => b.text().includes(tabId === "decay" ? "衰减" : tabId === "overload" ? "超负荷" : tabId === "body" ? "形体" : tabId === "ai" ? "隐私" : "天梯"));
+        if (tabButton) {
+          await tabButton.trigger("click");
+          const html = wrapper.html();
+          expect(html).not.toContain("$\\ge");
+          expect(html).not.toContain("\\text{");
+          expect(html).not.toContain("$");
+        }
+      }
+
+      wrapper.unmount();
     });
   });
 });

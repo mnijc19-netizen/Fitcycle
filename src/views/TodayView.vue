@@ -739,6 +739,13 @@
     <HonorShowcaseModal
       :visible="showHonorModal"
       @close="showHonorModal = false"
+      @open-rules="showHonorModal = false; showRulesModal = true"
+    />
+
+    <!-- Rules Codex Modal -->
+    <RulesCodexModal
+      :visible="showRulesModal"
+      @close="showRulesModal = false"
     />
 
     <!-- Body Circumference & Transformation Modal -->
@@ -844,6 +851,7 @@ import CycleEditorModal from "../components/CycleEditorModal.vue";
 import WorkoutSummaryModal from "../components/WorkoutSummaryModal.vue";
 import HonorShowcaseModal from "../components/HonorShowcaseModal.vue";
 import BodyMetricsModal from "../components/BodyMetricsModal.vue";
+import RulesCodexModal from "../components/RulesCodexModal.vue";
 import ExerciseImage from "../components/ExerciseImage.vue";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import { universalScrollToTop } from "../utils/scrollUtils.js";
@@ -861,6 +869,7 @@ const latestSummary = ref(null);
 const showAutoFinishModal = ref(false);
 const showHonorModal = ref(false);
 const showBodyModal = ref(false);
+const showRulesModal = ref(false);
 
 const anyTodayModalOpen = computed(() => showPlanPicker.value || showAutoFinishModal.value);
 watch(anyTodayModalOpen, (isOpen) => {

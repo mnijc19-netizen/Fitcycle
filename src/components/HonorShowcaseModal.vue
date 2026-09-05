@@ -240,8 +240,12 @@
 
       <!-- Modal Footer -->
       <div class="p-3 border-t border-zinc-800/80 bg-zinc-950/80 flex items-center justify-between text-[11px] text-zinc-400 flex-shrink-0">
-        <span>遵循《Fitcycle 底层宪法》统一战力天梯</span>
-        <button @click="$emit('close')" class="px-4 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-bold transition-all">
+        <button @click="$emit('open-rules')" 
+                class="hover:text-amber-400 active:scale-95 cursor-pointer flex items-center gap-1 transition-all text-[11px] text-zinc-400">
+          <span>📜 排位与衰减规则法典</span>
+          <span class="text-[10px] text-amber-500">❯</span>
+        </button>
+        <button @click="$emit('close')" class="px-4 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-bold transition-all cursor-pointer">
           关闭
         </button>
       </div>
@@ -262,7 +266,7 @@ const props = defineProps({
   visible: Boolean
 });
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close", "open-rules"]);
 
 watch(() => props.visible, (val) => {
   if (val) lockBodyScroll();

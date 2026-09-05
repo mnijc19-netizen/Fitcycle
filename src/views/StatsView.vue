@@ -573,6 +573,7 @@
     <HonorShowcaseModal 
       :visible="showHonorModal" 
       @close="showHonorModal = false" 
+      @open-rules="showHonorModal = false; showRulesModal = true"
     />
 
     <!-- Body Metrics Modal -->
