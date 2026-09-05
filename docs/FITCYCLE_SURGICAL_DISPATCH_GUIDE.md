@@ -59,6 +59,10 @@
 [OP-BACKUP]     数据备份、恢复与向下兼容迁移    ├── 1. `src/store/fitnessStore.js` (export/importJSON)   npm run test tests/compatibility.test.js
                 (如版本号迁移、防脏数据清洗)    └── 2. `src/views/StatsView.vue` (导入导出按钮与 Toast)
 
+[OP-PRESET-UX]  新手轻量预设与智能重量联动      ├── 1. `src/data/defaultPlans.js` (精简3动作/加练推荐池)  npm run test tests/rest-and-ux-upgrades.test.js
+                (3动作黄金容量/级联下填/简易加练)├── 2. `src/store/fitnessStore.js` (syncSetDataToSubsequentSets)
+                                                └── 3. `src/views/TodayView.vue` (一键加练药丸/行内同步按钮)
+
 [OP-ERGO]       移动端人体工学与双模全机型适配  ├── 1. `src/utils/scrollUtils.js` (多容器三角回顶纯函数) npm run test tests/ergonomics-and-scroll.test.js
                 (单手热区、WebApp动效穿透、动态底栏)├── 2. `src/utils/scrollLock.js` (引用计数宿主锁)
                                                 ├── 3. `src/components/TabBar.vue` (通用双击回顶)
