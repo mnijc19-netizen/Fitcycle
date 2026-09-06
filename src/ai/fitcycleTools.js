@@ -348,7 +348,7 @@ function executeTool(name, args) {
           relatedExerciseIds: eq.relatedExerciseIds
         }
       },
-      message: `已找到 ${eq.name} 的真实商用器械实物图与调节规范。请务必输出器械照片 Markdown：![${eq.name}实物照片](${eq.imageUrl})，并附带直达网址链接：[🔗 查看【${eq.name}】高清实物大图](${eq.imageUrl})，再结合外观特征和插销/座椅调节指南详细回答。`
+      message: `已检索到 ${eq.name} 的真实商用器械实物图谱与调节规范。系统界面已自动为学员展示专属实物卡片，切勿在正文中重复输出 Markdown 图片或外部链接，请直接以结构化中文详细解答其外观识别特征、插销调节方法及训练避坑提示。`
     };
   }
   throw new Error("未知工具");

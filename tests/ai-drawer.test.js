@@ -256,7 +256,7 @@ describe("mobile AI drawer", () => {
     const card = wrapper.find('[data-testid="equipment-visual-card"]');
     expect(card.exists()).toBe(true);
     expect(card.text()).toContain("蝴蝶机");
-    expect(card.text()).toContain("打开图片网址 ↗");
+    expect(card.text()).toContain("查看大图与器械调节指南");
     const img = card.find("img");
     expect(img.attributes("src")).toBe("./machines/pec-deck.jpg");
 
@@ -269,6 +269,27 @@ describe("mobile AI drawer", () => {
     expect(lightbox.exists()).toBe(true);
     expect(lightbox.text()).toContain("外观一眼识别特征");
     expect(lightbox.text()).toContain("座椅与插销调节指南");
+
+    // Verify deduplication: even if AI text had duplicate markdown image syntax, it is stripped
+    aiSession.conversation.push({
+      id: "assistant_dup_test",
+      role: "assistant",
+      text: "这是蝴蝶机说明：![蝴蝶机实物照片](./machines/pec-deck.jpg)\n请注意动作规范。",
+      matchedEquipment: {
+        id: "eq-pec-deck",
+        name: "蝴蝶机",
+        englishName: "Pec Deck",
+        categoryName: "胸部",
+        imageUrl: "./machines/pec-deck.jpg"
+      }
+    });
+    await nextTick();
+
+    const markdownContents = wrapper.findAll(".ai-markdown-content");
+    const lastContent = markdownContents[markdownContents.length - 1];
+    expect(lastContent.html()).not.toContain("./machines/pec-deck.jpg");
+    expect(lastContent.text()).toContain("这是蝴蝶机说明：");
+    expect(lastContent.text()).toContain("请注意动作规范。");
 
     wrapper.unmount();
   });

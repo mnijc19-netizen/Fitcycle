@@ -87,6 +87,11 @@
 [OP-WARMUP-STRETCH]分化热身与拉伸跟练系统       ├── 1. `src/data/exercisesWarmup.js` & `exercisesStretches.js` npm test -- tests/fitcycle-warmup-flow.test.js
                 (推拉腿专属激活/ACSM松解/智能匹配)├── 2. `src/components/WarmupFlowModal.vue` & `StretchFlowModal.vue`
                                                 └── 3. `src/views/TodayView.vue` & `ExercisesView.vue` (分化选择器与首屏科学指南)
+
+[OP-GYM-VISUAL] 健身房商用器械实物图谱与AI图文 ├── 1. `src/data/gymEquipmentVisuals.js` (器械大图/调节说明) npm test -- tests/gym-machine-visuals-and-ai.test.js
+                (孤立演播室大图/防重复图文/平滑流式)├── 2. `public/machines/*.jpg` (高清单体器械实物摄影)
+                                                ├── 3. `src/components/AIAssistantDrawer.vue` (内嵌卡片与去抖滚动)
+                                                └── 4. `src/ai/assistantRuntime.js` & `fitcycleTools.js` (防重复指令)
 =====================================================================================================================================
 ```
 

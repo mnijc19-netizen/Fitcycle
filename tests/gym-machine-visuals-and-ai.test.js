@@ -79,8 +79,8 @@ describe("Commercial Gym Machine Real-World Visuals & AI Image Tooling", () => {
     expect(res.data.found).toBe(true);
     expect(res.data.equipment.name).toBe("哈克深蹲机");
     expect(res.data.equipment.imageUrl).toBe("./machines/hack-squat.jpg");
-    expect(res.data.equipment.markdownImage).toContain("![哈克深蹲机实物照片](./machines/hack-squat.jpg)");
-    expect(res.message).toContain("./machines/hack-squat.jpg");
+    expect(res.message).toContain("哈克深蹲机");
+    expect(res.message).toContain("切勿在正文中重复输出 Markdown 图片或外部链接");
 
     // Query Pec Deck (蝴蝶机)
     const resPec = runtime.request({
@@ -94,8 +94,7 @@ describe("Commercial Gym Machine Real-World Visuals & AI Image Tooling", () => {
     expect(resPec.data.found).toBe(true);
     expect(resPec.data.equipment.name).toContain("蝴蝶机");
     expect(resPec.data.equipment.imageUrl).toBe("./machines/pec-deck.jpg");
-    expect(resPec.data.equipment.directUrl).toBe("./machines/pec-deck.jpg");
-    expect(resPec.data.equipment.markdownLink).toContain("pec-deck.jpg");
+    expect(resPec.message).toContain("切勿在正文中重复输出 Markdown 图片或外部链接");
 
     // Query Unknown machine
     const resUnknown = runtime.request({

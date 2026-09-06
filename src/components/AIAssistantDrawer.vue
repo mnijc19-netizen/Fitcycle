@@ -240,14 +240,16 @@
                 </span>
               </div>
 
-              <!-- High-Res Photo Thumbnail with Click-to-Zoom Indicator -->
-              <div class="relative group/photo cursor-pointer overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900"
+              <!-- High-Res Photo Thumbnail with Click-to-Zoom Indicator (Fixed aspect ratio to eliminate layout shifts) -->
+              <div class="relative group/photo cursor-pointer overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 aspect-[16/10] w-full"
                    @click="openLightbox(message.matchedEquipment)">
                 <img :src="message.matchedEquipment.imageUrl" 
                      :alt="message.matchedEquipment.name"
-                     class="w-full h-44 sm:h-52 object-cover transition-transform duration-300 group-hover/photo:scale-105" />
+                     loading="eager"
+                     decoding="async"
+                     class="w-full h-full object-cover transition-transform duration-300 group-hover/photo:scale-105" />
                 
-                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30 flex flex-col justify-between p-2.5">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30 flex flex-col justify-between p-2.5 pointer-events-none">
                   <span class="self-end text-[10px] px-2 py-1 rounded-lg bg-black/70 backdrop-blur-md text-zinc-200 border border-white/15 flex items-center gap-1">
                     <span>🔍</span> 点击放大全屏查看
                   </span>
@@ -258,29 +260,22 @@
                 </div>
               </div>
 
-              <!-- Action Bar: Direct URL & In-App Lightbox Viewer (Directly fulfills user's request) -->
-              <div class="grid grid-cols-2 gap-2 pt-0.5">
+              <!-- Action Bar: In-App Lightbox Viewer & Adjustments Guide (No broken external URLs) -->
+              <div class="pt-0.5">
                 <button type="button" 
                         @click="openLightbox(message.matchedEquipment)"
-                        class="py-2 px-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-[11px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-all shadow-md shadow-amber-500/10">
+                        class="w-full py-2 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-md shadow-amber-500/10 cursor-pointer">
                   <span>🔍</span>
-                  <span>全屏大图与调节</span>
+                  <span>查看大图与器械调节指南</span>
                 </button>
-                <a :href="getDirectImageUrl(message.matchedEquipment)" 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   class="py-2 px-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white text-[11px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-all border border-zinc-700">
-                  <span>🔗</span>
-                  <span>打开图片网址 ↗</span>
-                </a>
               </div>
             </div>
 
-            <!-- Rendered Clean Markdown with Responsive Table Wrapper -->
-            <div v-if="message.text" 
+            <!-- Rendered Clean Markdown (Deduplicated, no repeated image tags) -->
+            <div v-if="formatAssistantMessageText(message)" 
                  class="ai-markdown-content text-xs leading-relaxed" 
                  @click="handleContentClick($event, message)"
-                 v-html="renderMarkdown(message.text)"></div>
+                 v-html="renderMarkdown(formatAssistantMessageText(message))"></div>
             <span v-if="message.streaming && !message.isThinking && message.text" class="inline-block w-2 h-3.5 bg-amber-400 animate-pulse align-middle ml-1"></span>
 
             <!-- Footer: Brand tag and Copy Button -->
@@ -391,17 +386,11 @@
                 </div>
                 <div class="text-[10px] text-zinc-400 font-mono truncate">{{ activeLightboxEquipment.englishName }}</div>
               </div>
-              <div class="flex items-center gap-2 flex-shrink-0">
-                <a :href="getDirectImageUrl(activeLightboxEquipment)" target="_blank" rel="noopener noreferrer"
-                   class="text-[10px] px-2.5 py-1 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-amber-300 hover:text-amber-200 border border-zinc-700 font-bold flex items-center gap-1 transition-all">
-                  <span>在新标签页打开</span> <span>↗</span>
-                </a>
-                <button type="button" @click="closeLightbox"
-                        class="w-7 h-7 rounded-full bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors"
-                        aria-label="关闭原图">
-                  ✕
-                </button>
-              </div>
+              <button type="button" @click="closeLightbox"
+                      class="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-sm transition-colors cursor-pointer flex-shrink-0"
+                      aria-label="关闭原图">
+                ✕
+              </button>
             </div>
 
             <!-- Scrollable Body -->
@@ -410,21 +399,6 @@
               <div class="rounded-2xl overflow-hidden border border-zinc-800 bg-black/60 relative shadow-inner">
                 <img :src="activeLightboxEquipment.imageUrl" :alt="activeLightboxEquipment.name"
                      class="w-full h-auto max-h-[380px] object-contain mx-auto" />
-              </div>
-
-              <!-- Direct Web Link Pill (Fulfills User's Direct Link Request) -->
-              <div class="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-center justify-between text-xs">
-                <div class="min-w-0 flex-1 pr-2">
-                  <div class="text-[10px] text-zinc-500 font-mono">图片直达网址 (在新窗口直接查看)：</div>
-                  <a :href="getDirectImageUrl(activeLightboxEquipment)" target="_blank" rel="noopener noreferrer"
-                     class="text-[11px] text-amber-400 hover:underline font-mono truncate block mt-0.5">
-                    {{ getDirectImageUrl(activeLightboxEquipment) }}
-                  </a>
-                </div>
-                <a :href="getDirectImageUrl(activeLightboxEquipment)" target="_blank" rel="noopener noreferrer"
-                   class="px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-[11px] whitespace-nowrap flex-shrink-0 shadow-sm transition-all active:scale-95">
-                  点击打开 ↗
-                </a>
               </div>
 
               <!-- Features & Adjustments -->
@@ -477,7 +451,7 @@ import { processImageFile } from "../ai/imageProcessor.js";
 import { getMessageBlockReason } from "../ai/modelCapabilities.js";
 import { store } from "../store/fitnessStore.js";
 import { renderMarkdown, cleanAIMessage, extractReasoningAndContent } from "../utils/aiService.js";
-import { findGymEquipmentVisual, getEquipmentDirectUrl, GYM_EQUIPMENT_VISUALS } from "../data/gymEquipmentVisuals.js";
+import { findGymEquipmentVisual, GYM_EQUIPMENT_VISUALS } from "../data/gymEquipmentVisuals.js";
 
 const isTest = typeof process !== "undefined" && (process.env?.NODE_ENV === "test" || Boolean(process.env?.VITEST));
 
@@ -492,8 +466,24 @@ function closeLightbox() {
   activeLightboxEquipment.value = null;
 }
 
-function getDirectImageUrl(equipment) {
-  return getEquipmentDirectUrl(equipment);
+/**
+ * Sanitizes assistant text to prevent duplicate markdown images and unwanted links
+ * when a structured visual card is already rendered
+ */
+function formatAssistantMessageText(message) {
+  if (!message || !message.text) return "";
+  let text = message.text;
+  if (message.matchedEquipment) {
+    // Strip inline markdown images to avoid duplicate photos
+    text = text.replace(/!\[.*?\]\(.*?\)/g, "");
+    // Strip machine links that may have been output
+    text = text.replace(/\[(?:🔗|📷|查看|打开|点击).*?\]\(\.?\/?machines\/.*?\)/g, "");
+    text = text.replace(/\[.*?\]\(\.?\/?machines\/.*?\)/g, "");
+  } else {
+    // Strip any raw machine image markdown that might slip through
+    text = text.replace(/!\[.*?\]\(\.?\/?machines\/.*?\)/g, "");
+  }
+  return text.trim();
 }
 
 function handleContentClick(event, message) {
@@ -725,8 +715,8 @@ const defaultChips = [
   {
     icon: "📸",
     title: "蝴蝶机长啥样？",
-    desc: "查看商用器械实物照片、直达网址与插销调节指南",
-    prompt: "蝴蝶机长啥样？请发一张它的健身房真实照片和网址链接，并详细告诉我怎么认出它和调节插销。"
+    desc: "查看商用器械实物大图与插销调节指南",
+    prompt: "蝴蝶机长啥样？请详细告诉我它的外观特征、座椅与插销怎么调节，以及常见训练误区。"
   }
 ];
 
@@ -750,7 +740,7 @@ const inputHint = computed(() => {
 });
 const inputHintError = computed(() => Boolean(inputError.value || (attachments.value.length && !selectedModel.value?.capabilities.image)));
 
-watch(() => aiSession.conversation.length, scrollToBottom);
+watch(() => aiSession.conversation.length, () => scrollToBottom(true));
 watch(
   () => [aiSession.drawerOpen, aiSession.pendingAutoRun],
   async ([isOpen, isAutoRun]) => {
@@ -784,8 +774,19 @@ function handleScroll() {
   userScrolledUp.value = distanceFromBottom > 50;
 }
 
+let scrollRafId = null;
+
 function scrollToBottom(force = false) {
-  nextTick(() => {
+  if (isTest) {
+    if (!messageList.value) return;
+    if (!force && userScrolledUp.value) return;
+    messageList.value.scrollTop = messageList.value.scrollHeight;
+    return;
+  }
+
+  if (scrollRafId) return;
+  scrollRafId = requestAnimationFrame(() => {
+    scrollRafId = null;
     if (!messageList.value) return;
     if (!force && userScrolledUp.value) return;
     messageList.value.scrollTop = messageList.value.scrollHeight;
