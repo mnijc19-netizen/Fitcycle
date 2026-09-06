@@ -22,15 +22,6 @@
       </button>
     </div>
 
-    <!-- Reassurance Banner (Comprehensive Library) -->
-    <div class="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-between text-xs">
-      <div class="flex items-center gap-2" :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-bold' : 'text-zinc-300'">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span class="font-medium">已全面收录 9 大部位与动态热身/练后拉伸全谱系</span>
-      </div>
-      <span class="font-mono font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">{{ store.exercises.length }} 款全覆盖</span>
-    </div>
-
     <!-- Search & Filter Bar (Natural Scroll, Zero Viewport Obstruction) -->
     <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-3 space-y-2.5 shadow-md">
       <!-- Multimodal Gym Machine Finder Quick Entry -->
@@ -42,7 +33,7 @@
           <span>拍照 / 语音智能识器械</span>
         </span>
         <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500 text-zinc-950 flex items-center gap-1 shadow-sm">
-          <span>秒识 {{ store.exercises.length }} 动作</span>
+          <span>智能识别</span>
           <span>→</span>
         </span>
       </button>
@@ -96,9 +87,9 @@
           <h3 class="text-xs font-black uppercase tracking-wider flex items-center gap-1.5"
               :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">
             <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-            <span>按部位精准检索 (点击直达对应动作)</span>
+            <span>动作分类</span>
           </h3>
-          <span class="text-[11px] text-zinc-500 font-mono">拒绝漫无目的盲目滑动</span>
+          <span class="text-[11px] text-zinc-500 font-mono">9 个分类</span>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
@@ -138,9 +129,8 @@
           <h3 class="text-xs font-black uppercase tracking-wider flex items-center gap-1.5"
               :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">
             <span class="text-amber-500">⭐</span>
-            <span>黄金复合基石王牌 (快速调阅解剖力线)</span>
+            <span>常用动作参考</span>
           </h3>
-          <span class="text-[11px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">6 项基石</span>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
@@ -167,13 +157,11 @@
       <!-- 3. 🎓 NSCA / ACSM / CSCS 权威运动医学与防伤科学专栏 -->
       <div class="space-y-2.5 pt-1">
         <div class="flex items-center justify-between px-1">
-          <h3 class="text-xs font-black uppercase tracking-wider flex items-center gap-1.5 text-amber-500">
-            <span>🎓</span>
-            <span>NSCA / ACSM 运动医学与防伤专栏</span>
+          <h3 class="text-xs font-black uppercase tracking-wider flex items-center gap-1.5"
+              :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+            <span>运动科学指南</span>
           </h3>
-          <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
-            必读干货
-          </span>
         </div>
 
         <!-- Science Card 1: 练前动态 vs 练后静态 (RAMP 原则) -->
@@ -186,7 +174,7 @@
                 为什么大重量抗阻前严禁静态拉伸？
               </h4>
             </div>
-            <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-500">NSCA 铁律</span>
+            <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-500">练前激活</span>
           </div>
           <p class="text-[11px] leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
             大重量前做长达 30 秒以上的静态伸展，会导致肌梭敏感性骤降、高尔基腱器官抑制中枢神经冲动，使肌肉刚度与瞬时爆发力下降 <strong class="text-rose-500">8%~15%</strong>，且破坏关节稳定性！正确的练前流程必须采用 <strong class="text-amber-500">RAMP 动态激活</strong>（关节绕环、胸椎灵活性、肩袖激活），通过主动做工提升体温与滑液分泌。
@@ -203,7 +191,7 @@
                 练后 3 分钟筋膜重置与副交感神经唤醒
               </h4>
             </div>
-            <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-500">ACSM 标准</span>
+            <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-500">练后拉伸</span>
           </div>
           <p class="text-[11px] leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
             训练结束心率回落至 100bpm 以下后，方可进行静态伸展。保持每个部位 <strong class="text-emerald-600">20~30 秒</strong>，牵拉感维持在 6~7 级舒适酸胀，绝不可过度拉扯至剧烈疼痛。配合鼻吸口呼的慢速腹式呼吸，能快速平抑交感神经、降低皮质醇，开启肌糖原重组。
@@ -220,10 +208,10 @@
                 0~72 小时超量恢复与力量自愈公理
               </h4>
             </div>
-            <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400">母宪法公理</span>
+            <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400">生理恢复</span>
           </div>
           <p class="text-[11px] leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
-            力量训练本质上是骨骼肌微损伤过程，真正的战力增长发生在睡眠修复期。FitCycle 宪法铁律规定：<strong class="text-sky-600">0~72 小时内严禁扣减任何战力积分</strong>，杜绝用户产生因休息而焦虑的负罪感，鼓励运动员遵循运动生理规律。
+            力量训练后肌纤维需要 24~72 小时完成修复与超量重组。系统在 72 小时内不会产生任何怠惰衰减，保障科学的休息周期，避免过度训练与焦虑。
           </p>
         </div>
 
@@ -258,13 +246,13 @@
       <div v-if="activeCategory === '热身' && !searchQuery.trim()" 
            class="p-2.5 rounded-xl border text-xs flex items-center gap-2 bg-amber-500/10 border-amber-500/30 text-amber-300">
         <span class="text-sm">🔥</span>
-        <span class="text-[11px] leading-tight">NSCA 动态热身专区：升温体温、分泌关节滑液、唤醒神经传导，大重量前严禁静态死拉伸。</span>
+        <span class="text-[11px] leading-tight">动态热身：通过主动做工提升体温与关节滑液，为抗阻训练做好准备。</span>
       </div>
 
       <div v-if="activeCategory === '拉伸' && !searchQuery.trim()" 
            class="p-2.5 rounded-xl border text-xs flex items-center gap-2 bg-emerald-500/10 border-emerald-500/30 text-emerald-300">
         <span class="text-sm">🧘</span>
-        <span class="text-[11px] leading-tight">ACSM 练后拉伸专区：心率平复后单次保持 20-30 秒，深吸慢吐，松解肌筋膜粘连。</span>
+        <span class="text-[11px] leading-tight">练后拉伸：心率平复后单次保持 20~30 秒，配合深长呼吸，放松紧张肌群。</span>
       </div>
 
       <!-- Inset List -->
@@ -504,15 +492,15 @@ const categoryOptions = computed(() => {
 
 // Visual Category Hub Cards
 const visualHubCards = computed(() => [
-  { name: "胸部", title: "胸部集群", icon: "🛡️", desc: "卧推·夹胸·俯卧撑，铠甲胸大肌", count: store.exercises.filter(e => e.category === "胸部").length },
-  { name: "背部", title: "背部集群", icon: "🦅", desc: "引体·划船·剪刀机，V字倒三角", count: store.exercises.filter(e => e.category === "背部").length },
-  { name: "肩部", title: "肩部集群", icon: "🏹", desc: "推肩·侧平举·面拉，3D南瓜肩", count: store.exercises.filter(e => e.category === "肩部").length },
-  { name: "手臂", title: "手臂集群", icon: "💪", desc: "弯举·三头下压·屈伸，充血麒麟臂", count: store.exercises.filter(e => e.category === "手臂").length },
-  { name: "腿部", title: "下肢集群", icon: "🦵", desc: "深蹲·硬拉·倒蹬，夯实力量基座", count: store.exercises.filter(e => e.category === "腿部").length },
-  { name: "核心", title: "核心集群", icon: "🧱", desc: "卷腹·悬垂举腿·平板，钢板腹肌", count: store.exercises.filter(e => e.category === "核心").length },
-  { name: "有氧", title: "有氧燃脂", icon: "🏃", desc: "单车·跑步·跳绳，燃脂增强心肺", count: store.exercises.filter(e => e.category === "有氧").length },
-  { name: "热身", title: "🔥 动态热身", icon: "🔥", desc: "NSCA 升温激活·滑液润滑·告别撞击", count: store.exercises.filter(e => e.category === "热身").length },
-  { name: "拉伸", title: "🧘 练后拉伸", icon: "🧘", desc: "ACSM 筋膜重置·平抑皮质醇·超量恢复", count: store.exercises.filter(e => e.category === "拉伸").length }
+  { name: "胸部", title: "胸部", icon: "🛡️", desc: "卧推、飞鸟与俯卧撑", count: store.exercises.filter(e => e.category === "胸部").length },
+  { name: "背部", title: "背部", icon: "🦅", desc: "引体向上、划船与高位下拉", count: store.exercises.filter(e => e.category === "背部").length },
+  { name: "肩部", title: "肩部", icon: "🏹", desc: "推肩、侧平举与面拉", count: store.exercises.filter(e => e.category === "肩部").length },
+  { name: "手臂", title: "手臂", icon: "💪", desc: "弯举、三头下压与臂屈伸", count: store.exercises.filter(e => e.category === "手臂").length },
+  { name: "腿部", title: "腿部", icon: "🦵", desc: "深蹲、硬拉与腿举", count: store.exercises.filter(e => e.category === "腿部").length },
+  { name: "核心", title: "核心", icon: "🧱", desc: "卷腹、悬垂举腿与平板支撑", count: store.exercises.filter(e => e.category === "核心").length },
+  { name: "有氧", title: "有氧", icon: "🏃", desc: "单车、跑步与跳绳", count: store.exercises.filter(e => e.category === "有氧").length },
+  { name: "热身", title: "动态热身", icon: "🔥", desc: "关节活动度与动态激活", count: store.exercises.filter(e => e.category === "热身").length },
+  { name: "拉伸", title: "练后拉伸", icon: "🧘", desc: "肌群牵拉与筋膜放松", count: store.exercises.filter(e => e.category === "拉伸").length }
 ]);
 
 // 6 Curated Staple Exercises

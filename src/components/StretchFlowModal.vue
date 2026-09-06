@@ -32,7 +32,7 @@
               </div>
               <p class="text-[11px] mt-0.5"
                  :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-400'">
-                ACSM 筋膜重置 · 平抑皮质醇 · 唤醒副交感加速超量恢复
+                静态伸展放松 · 缓解紧张与促进恢复
               </p>
             </div>
           </div>
@@ -104,7 +104,7 @@
                :class="store.settings.themeMode === 'light' ? 'bg-emerald-50/70 border-emerald-200/80 text-emerald-950' : 'bg-emerald-500/10 border-emerald-500/25 text-emerald-200'">
             <div class="flex items-center gap-1.5 text-xs font-black text-emerald-600">
               <span>🌿</span>
-              <span>ACSM 科学原理与恢复机制</span>
+              <span>动作原理与牵拉目标</span>
             </div>
             <p class="text-[11px] leading-relaxed"
                :class="store.settings.themeMode === 'light' ? 'text-emerald-900 font-medium' : 'text-zinc-200'">
@@ -174,7 +174,7 @@
           <button v-else
                   @click="finishStretch" 
                   class="flex-1 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-zinc-950 font-black text-xs rounded-xl shadow-lg shadow-teal-500/25 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
-            <span>✨ 拉伸完成 · 享受超量恢复！</span>
+            <span>完成拉伸</span>
           </button>
         </div>
 

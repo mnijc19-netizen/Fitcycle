@@ -32,7 +32,7 @@
               </div>
               <p class="text-[11px] mt-0.5"
                  :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
-                拒绝静态死拉伸 · 激活关节滑液与肌群神经传导
+                激活关节滑液 · 预热肌群神经传导
               </p>
             </div>
           </div>
@@ -103,7 +103,7 @@
                :class="store.settings.themeMode === 'light' ? 'bg-amber-50/70 border-amber-200/80 text-amber-950' : 'bg-amber-500/10 border-amber-500/25 text-amber-200'">
             <div class="flex items-center gap-1.5 text-xs font-black text-amber-500">
               <span>🧠</span>
-              <span>为什么练前必做？（运动科学原理）</span>
+              <span>动作原理与激活目标</span>
             </div>
             <p class="text-[11px] leading-relaxed"
                :class="store.settings.themeMode === 'light' ? 'text-amber-900' : 'text-zinc-200'">
@@ -174,7 +174,7 @@
           <button v-else
                   @click="finishWarmup" 
                   class="flex-1 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-zinc-950 font-black text-xs rounded-xl shadow-lg shadow-emerald-500/25 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
-            <span>⚡ 热身完毕 · 开启主课！</span>
+            <span>完成热身 · 开始训练</span>
           </button>
         </div>
 

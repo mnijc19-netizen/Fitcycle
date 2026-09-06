@@ -62,13 +62,13 @@ describe('Exercise Library 1-to-1 Accuracy & Alias Search', () => {
 
   it('renders Visual Category Hub and Science Academy when viewing all exercises without search query', () => {
     const wrapper = mount(ExercisesView);
-    expect(wrapper.text()).toContain('按部位精准检索');
-    expect(wrapper.text()).toContain('胸部集群');
+    expect(wrapper.text()).toContain('动作分类');
+    expect(wrapper.text()).toContain('胸部');
     expect(wrapper.text()).toContain('动态热身');
     expect(wrapper.text()).toContain('练后拉伸');
-    expect(wrapper.text()).toContain('黄金复合基石王牌');
+    expect(wrapper.text()).toContain('常用动作参考');
     expect(wrapper.text()).toContain('为什么大重量抗阻前严禁静态拉伸');
-    expect(wrapper.text()).toContain('NSCA / ACSM 运动医学与防伤专栏');
+    expect(wrapper.text()).toContain('运动科学指南');
   });
   it('allows alias search in ExercisesView', async () => {
     const wrapper = mount(ExercisesView);

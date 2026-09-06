@@ -729,7 +729,7 @@
                 </span>
               </div>
               <p class="text-[11px] mt-0.5 leading-snug truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-900/80' : 'text-zinc-400'">
-                针对今日{{ currentPlan?.shortName || todayCycle.name }}动态激活，杜绝肩峰撞击与腰痛
+                针对今日{{ currentPlan?.shortName || todayCycle.name }}进行动态激活与关节润滑
               </p>
             </div>
           </div>
@@ -776,7 +776,7 @@
                 </span>
               </div>
               <p class="text-[11px] mt-0.5 leading-snug truncate" :class="store.settings.themeMode === 'light' ? 'text-emerald-900/80' : 'text-zinc-400'">
-                针对今日{{ currentPlan?.shortName || todayCycle.name }}深度松解筋膜，平抑皮质醇
+                针对今日{{ currentPlan?.shortName || todayCycle.name }}进行肌群牵拉与筋膜放松
               </p>
             </div>
           </div>
@@ -1330,8 +1330,8 @@ function handleWarmupCompleted() {
   overloadCelebration.value = {
     visible: true,
     isPr: false,
-    text: "🔥 动态热身完毕 · 状态拉满！",
-    subText: "关节滑液分泌充盈，肌群神经已充分唤醒，开启主课做工！"
+    text: "🔥 动态热身完毕",
+    subText: "关节与肌群已完成预热激活，准备开启训练。"
   };
   setTimeout(() => {
     overloadCelebration.value.visible = false;
@@ -1378,8 +1378,8 @@ function handleStretchCompleted() {
     overloadCelebration.value = {
       visible: true,
       isPr: false,
-      text: '🧘 筋膜拉伸重置完毕 · 滋养开启！',
-      subText: '皮质醇已平抑，副交感神经唤醒，进入黄金超量恢复周期！'
+      text: '🧘 练后拉伸完毕',
+      subText: '肌肉筋膜已恢复放松，注意补充水分与蛋白质。'
     };
     setTimeout(() => {
       if (overloadCelebration && overloadCelebration.value) {

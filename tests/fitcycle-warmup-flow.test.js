@@ -44,7 +44,7 @@ describe('FitCycle Dynamic Warm-up System (NSCA RAMP Protocol)', () => {
     expect(wrapper.text()).toContain('推日专属');
     // First exercise is wrist circles or arm circles
     expect(wrapper.text()).toContain('动作 1 / 4');
-    expect(wrapper.text()).toContain('为什么练前必做');
+    expect(wrapper.text()).toContain('动作原理与激活目标');
 
     // Click next step
     const nextBtn = wrapper.find('button.bg-amber-500');
@@ -69,7 +69,6 @@ describe('FitCycle Dynamic Warm-up System (NSCA RAMP Protocol)', () => {
     expect(wrapper.text()).toContain('腿日专属');
     expect(wrapper.text()).toContain('髂腰肌');
   });
-
 
   it('defines 20 verified stretch exercises with ACSM scientific cues and valid local GIFs', () => {
     expect(STRETCH_EXERCISES).toHaveLength(20);
@@ -106,7 +105,7 @@ describe('FitCycle Dynamic Warm-up System (NSCA RAMP Protocol)', () => {
     expect(wrapper.text()).toContain('3 分钟练后拉伸流');
     expect(wrapper.text()).toContain('推日专属拉伸');
     expect(wrapper.text()).toContain('动作 1 / 4');
-    expect(wrapper.text()).toContain('ACSM 科学原理');
+    expect(wrapper.text()).toContain('动作原理与牵拉目标');
 
     // Click next step (locate the next-step button specifically)
     const buttons = wrapper.findAll('button');
