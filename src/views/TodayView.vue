@@ -763,12 +763,25 @@
         <!-- Mini Warmup Quick-Pill Preview -->
         <div class="pt-2 border-t flex items-center gap-2 overflow-x-auto no-scrollbar"
              :class="store.settings.themeMode === 'light' ? 'border-amber-200/60' : 'border-zinc-800/80'">
-          <div v-for="wEx in todayWarmupQuickList" :key="wEx.name"
+          <div v-for="(wEx, idx) in todayWarmupQuickList" :key="wEx.name"
                @click="showWarmupModal = true"
-               class="flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[11px] flex-shrink-0 cursor-pointer transition-all active:scale-95"
-               :class="store.settings.themeMode === 'light' ? 'bg-white border-amber-200 text-slate-800 hover:border-amber-400 shadow-2xs' : 'bg-zinc-950/70 border-zinc-800 text-zinc-300 hover:border-zinc-700'">
-            <ExerciseImage :src="getExerciseGif(wEx.name)" :name="wEx.name" :category="'热身'" customClass="w-5 h-5 rounded object-contain" />
-            <span class="font-medium truncate max-w-[100px]">{{ wEx.name }}</span>
+               class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl border text-xs flex-shrink-0 cursor-pointer transition-all active:scale-95 shadow-2xs group"
+               :class="store.settings.themeMode === 'light' 
+                 ? 'bg-white/95 border-amber-200 text-slate-800 hover:border-amber-400 hover:bg-white' 
+                 : 'bg-zinc-950/80 border-zinc-800 text-zinc-300 hover:border-zinc-700'">
+            <div class="w-6 h-6 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center border"
+                 :class="store.settings.themeMode === 'light' ? 'bg-amber-100/70 border-amber-200' : 'bg-zinc-900 border-zinc-800'">
+              <img v-if="getExerciseGif(wEx.fullName || wEx.name)" 
+                   :src="getExerciseGif(wEx.fullName || wEx.name)" 
+                   :alt="wEx.name"
+                   class="w-full h-full object-cover" />
+              <span v-else 
+                    class="text-[10px] font-black font-mono"
+                    :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">
+                {{ idx + 1 }}
+              </span>
+            </div>
+            <span class="font-bold text-[11px] whitespace-nowrap">{{ wEx.name }}</span>
           </div>
         </div>
       </div>
@@ -829,12 +842,25 @@
         <!-- Mini Stretch Quick-Pill Preview -->
         <div class="pt-2 border-t flex items-center gap-2 overflow-x-auto no-scrollbar"
              :class="store.settings.themeMode === 'light' ? 'border-emerald-200/60' : 'border-zinc-800/80'">
-          <div v-for="sEx in todayStretchQuickList" :key="sEx.name"
+          <div v-for="(sEx, idx) in todayStretchQuickList" :key="sEx.name"
                @click="showStretchModal = true"
-               class="flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[11px] flex-shrink-0 cursor-pointer transition-all active:scale-95"
-               :class="store.settings.themeMode === 'light' ? 'bg-white border-emerald-200 text-slate-800 hover:border-emerald-400 shadow-2xs' : 'bg-zinc-950/70 border-zinc-800 text-zinc-300 hover:border-zinc-700'">
-            <ExerciseImage :src="getExerciseGif(sEx.name)" :name="sEx.name" :category="'拉伸'" customClass="w-5 h-5 rounded object-contain" />
-            <span class="font-medium truncate max-w-[100px]">{{ sEx.name }}</span>
+               class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl border text-xs flex-shrink-0 cursor-pointer transition-all active:scale-95 shadow-2xs group"
+               :class="store.settings.themeMode === 'light' 
+                 ? 'bg-white/95 border-emerald-200 text-slate-800 hover:border-emerald-400 hover:bg-white' 
+                 : 'bg-zinc-950/80 border-zinc-800 text-zinc-300 hover:border-zinc-700'">
+            <div class="w-6 h-6 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center border"
+                 :class="store.settings.themeMode === 'light' ? 'bg-emerald-100/70 border-emerald-200' : 'bg-zinc-900 border-zinc-800'">
+              <img v-if="getExerciseGif(sEx.fullName || sEx.name)" 
+                   :src="getExerciseGif(sEx.fullName || sEx.name)" 
+                   :alt="sEx.name"
+                   class="w-full h-full object-cover" />
+              <span v-else 
+                    class="text-[10px] font-black font-mono"
+                    :class="store.settings.themeMode === 'light' ? 'text-emerald-800' : 'text-emerald-400'">
+                {{ idx + 1 }}
+              </span>
+            </div>
+            <span class="font-bold text-[11px] whitespace-nowrap">{{ sEx.name }}</span>
           </div>
         </div>
       </div>
@@ -1372,33 +1398,33 @@ const todayWarmupQuickList = computed(() => {
   const k = activeWarmupSplitKey.value;
   if (k === "push") {
     return [
-      { name: "腕关节绕环与活动度" },
-      { name: "双臂肩关节环绕" },
-      { name: "靠墙W肩胛滑动" },
-      { name: "弹力带对拉" }
+      { name: "腕关节绕环活动度", fullName: "腕关节绕环活动度 (Wrist Circles & Mobility)" },
+      { name: "双臂肩关节环绕", fullName: "双臂肩关节环绕 (Arm Circles)" },
+      { name: "靠墙W肩胛滑动", fullName: "靠墙W肩胛滑动 (Wall Slides)" },
+      { name: "弹力带对拉", fullName: "弹力带对拉 (Band Pull-Apart)" }
     ];
   }
   if (k === "pull") {
     return [
-      { name: "猫牛式脊柱伸展" },
-      { name: "弹力带对拉" },
-      { name: "毛毛虫爬行动态拉伸" },
-      { name: "腕关节绕环与活动度" }
+      { name: "猫牛式脊柱伸展", fullName: "猫牛式脊柱伸展 (Cat-Cow Stretch)" },
+      { name: "弹力带对拉", fullName: "弹力带对拉 (Band Pull-Apart)" },
+      { name: "毛毛虫爬行动态拉伸", fullName: "毛毛虫爬行动态拉伸 (Inchworm Walkout)" },
+      { name: "腕关节绕环活动度", fullName: "腕关节绕环活动度 (Wrist Circles & Mobility)" }
     ];
   }
   if (k === "legs") {
     return [
-      { name: "跪姿髋屈肌动态拉伸" },
-      { name: "动态仰卧臀桥" },
-      { name: "行进间高抬腿弓步" },
-      { name: "动态开合跳升温" }
+      { name: "跪姿髋屈肌动态拉伸", fullName: "跪姿髋屈肌动态拉伸 (Half-Kneeling Hip Flexor Stretch)" },
+      { name: "动态仰卧臀桥", fullName: "动态仰卧臀桥 (Glute Bridge Mobility)" },
+      { name: "行进间高抬腿弓步", fullName: "行进间高抬腿弓步 (Walking Lunge with Knee Drive)" },
+      { name: "动态开合跳升温", fullName: "动态开合跳升温 (Jumping Jacks)" }
     ];
   }
   return [
-    { name: "动态开合跳升温" },
-    { name: "猫牛式脊柱伸展" },
-    { name: "双臂肩关节环绕" },
-    { name: "动态仰卧臀桥" }
+    { name: "动态开合跳升温", fullName: "动态开合跳升温 (Jumping Jacks)" },
+    { name: "猫牛式脊柱伸展", fullName: "猫牛式脊柱伸展 (Cat-Cow Stretch)" },
+    { name: "双臂肩关节环绕", fullName: "双臂肩关节环绕 (Arm Circles)" },
+    { name: "动态仰卧臀桥", fullName: "动态仰卧臀桥 (Glute Bridge Mobility)" }
   ];
 });
 
@@ -1445,33 +1471,33 @@ const todayStretchQuickList = computed(() => {
   const k = activeStretchSplitKey.value;
   if (k === "push") {
     return [
-      { name: "门框立柱胸大肌拉伸 (Doorway Pec Stretch)" },
-      { name: "交叉臂肩部三角肌伸展" },
-      { name: "站姿颈后肱三头肌伸展" },
-      { name: "肩袖深层冈下肌温和牵拉" }
+      { name: "门框立柱胸大肌拉伸", fullName: "门框立柱胸大肌拉伸 (Doorway Pec Stretch)" },
+      { name: "手臂交叉肩后侧拉伸", fullName: "手臂交叉肩后侧拉伸 (Across-Chest Shoulder Stretch)" },
+      { name: "站姿过顶肱三头肌拉伸", fullName: "站姿过顶肱三头肌拉伸 (Overhead Triceps Stretch)" },
+      { name: "肩袖冈下肌侧方拉伸", fullName: "肩袖冈下肌侧方拉伸 (Side Rotator Cuff Stretch)" }
     ];
   }
   if (k === "pull") {
     return [
-      { name: "单侧立柱背阔肌侧屈伸展" },
-      { name: "上背抱胸含胸牵拉" },
-      { name: "泡沫轴上背胸椎滚动" },
-      { name: "反向腕伸肌前臂伸展" }
+      { name: "靠墙单侧背阔肌深层拉伸", fullName: "靠墙单侧背阔肌深层拉伸 (Unilateral Wall Lat Stretch)" },
+      { name: "双臂抱球上背菱形肌拉伸", fullName: "双臂抱球上背菱形肌拉伸 (Upper Back Cross-Arm Stretch)" },
+      { name: "泡沫轴上背胸椎滚压放松", fullName: "泡沫轴上背胸椎滚压放松 (Foam Roller Upper Back Roll)" },
+      { name: "反向腕屈肌静态延展", fullName: "反向腕屈肌静态延展 (Reverse Wrist Flexor Stretch)" }
     ];
   }
   if (k === "legs") {
     return [
-      { name: "站姿股四头肌单腿拉伸" },
-      { name: "坐姿腘绳肌单腿前屈伸展" },
-      { name: "仰卧4字形抱膝臀大肌拉伸" },
-      { name: "90-90 髋关节活动度伸展" }
+      { name: "站姿单腿股四头肌拉伸", fullName: "站姿单腿股四头肌拉伸 (Standing Quadriceps Stretch)" },
+      { name: "坐姿单腿腘绳肌拉伸", fullName: "坐姿单腿腘绳肌拉伸 (Seated Single-Leg Hamstring Stretch)" },
+      { name: "仰卧4字形臀大肌拉伸", fullName: "仰卧4字形臀大肌拉伸 (Lying Figure-4 Glute Stretch)" },
+      { name: "90-90 髋关节活动度伸展", fullName: "90-90 髋关节内外旋灵活性活动度 (90/90 Hip Mobility Stretch)" }
     ];
   }
   return [
-    { name: "门框立柱胸大肌拉伸 (Doorway Pec Stretch)" },
-    { name: "单侧立柱背阔肌侧屈伸展" },
-    { name: "坐姿腘绳肌单腿前屈伸展" },
-    { name: "眼镜蛇式腹直肌伸展" }
+    { name: "门框立柱胸大肌拉伸", fullName: "门框立柱胸大肌拉伸 (Doorway Pec Stretch)" },
+    { name: "靠墙单侧背阔肌深层拉伸", fullName: "靠墙单侧背阔肌深层拉伸 (Unilateral Wall Lat Stretch)" },
+    { name: "坐姿单腿腘绳肌拉伸", fullName: "坐姿单腿腘绳肌拉伸 (Seated Single-Leg Hamstring Stretch)" },
+    { name: "眼镜蛇式腹肌与前链拉伸", fullName: "眼镜蛇式腹肌与前链拉伸 (Cobra Abdominal Stretch)" }
   ];
 });
 

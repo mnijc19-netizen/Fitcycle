@@ -28,6 +28,7 @@ export function uid(prefix = "id") {
 
 function loadSavedState() {
   try {
+    if (typeof localStorage === "undefined") return null;
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
@@ -326,7 +327,37 @@ export function getLastExercisePerformance(exerciseName) {
 }
 
 export function getExerciseDetails(exerciseIdOrName) {
-  return store.exercises.find(e => e.id === exerciseIdOrName || e.name === exerciseIdOrName) || null;
+  if (!exerciseIdOrName) return null;
+  const target = typeof exerciseIdOrName === "string" ? exerciseIdOrName.trim().toLowerCase() : "";
+  if (!target) return null;
+
+  // 1. Exact id or name match
+  const exact = store.exercises.find(e => e.id === exerciseIdOrName || e.name === exerciseIdOrName);
+  if (exact) return exact;
+
+  // 2. Case-insensitive exact name or id
+  const ciExact = store.exercises.find(e => 
+    (e.id && e.id.toLowerCase() === target) || 
+    (e.name && e.name.toLowerCase() === target)
+  );
+  if (ciExact) return ciExact;
+
+  // 3. Name starts with target (e.g. "腕关节绕环与活动度" matches "腕关节绕环与活动度 (Wrist Circles & Mobility)")
+  const prefixMatch = store.exercises.find(e => {
+    const eName = (e.name || "").toLowerCase();
+    return eName.startsWith(target) || (target.length >= 3 && eName.includes(target));
+  });
+  if (prefixMatch) return prefixMatch;
+
+  // 4. English name or Aliases match
+  const aliasMatch = store.exercises.find(e => {
+    if (e.englishName && e.englishName.toLowerCase() === target) return true;
+    if (Array.isArray(e.aliases) && e.aliases.some(a => a.toLowerCase() === target || a.toLowerCase().includes(target))) return true;
+    return false;
+  });
+  if (aliasMatch) return aliasMatch;
+
+  return null;
 }
 
 // --- WORKOUT SESSION LOGIC ---

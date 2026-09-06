@@ -247,7 +247,7 @@ export const WARMUP_EXERCISES = [
     category: "热身",
     target: "腕骨关节滑液分泌 / 腕屈肌与伸肌动态顺应",
     secondaryMuscles: ["前臂小肌群", "指长屈肌"],
-    aliases: ["手腕热身", "转手腕", "手腕活动", "护腕热身", "Wrist Circles", "Wrist Mobility"],
+    aliases: ["手腕热身", "转手腕", "手腕活动", "护腕热身", "腕关节绕环活动度", "腕关节绕环与活动度", "Wrist Circles", "Wrist Mobility"],
     gifUrl: "./exercises/wrist-circles.gif",
     defaultSets: 2,
     defaultReps: "各方向20圈",
