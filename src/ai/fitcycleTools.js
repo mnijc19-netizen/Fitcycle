@@ -339,14 +339,16 @@ function executeTool(name, args) {
           englishName: eq.englishName,
           categoryName: eq.categoryName,
           imageUrl: eq.imageUrl,
+          directUrl: eq.imageUrl,
           markdownImage: `![${eq.name}实物照片](${eq.imageUrl})`,
+          markdownLink: `[🔗 点击在新窗口打开【${eq.name}】高清实物图片](${eq.imageUrl})`,
           appearanceFeature: eq.appearanceFeature,
           adjustmentTips: eq.adjustmentTips,
           commonMistakes: eq.commonMistakes,
           relatedExerciseIds: eq.relatedExerciseIds
         }
       },
-      message: `已找到 ${eq.name} 的真实商用器械实物图与调节规范。请务必使用 Markdown 图片语法输出器械照片：![${eq.name}实物照片](${eq.imageUrl})，并结合外观特征和插销/座椅调节指南详细回答。`
+      message: `已找到 ${eq.name} 的真实商用器械实物图与调节规范。请务必输出器械照片 Markdown：![${eq.name}实物照片](${eq.imageUrl})，并附带直达网址链接：[🔗 查看【${eq.name}】高清实物大图](${eq.imageUrl})，再结合外观特征和插销/座椅调节指南详细回答。`
     };
   }
   throw new Error("未知工具");

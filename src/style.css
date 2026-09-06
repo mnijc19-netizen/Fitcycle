@@ -1086,6 +1086,18 @@ button.fixed {
   background: rgba(229, 195, 120, 0.08);
 }
 
+.ai-markdown-content a {
+  color: #f59e0b;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.ai-markdown-content a:hover {
+  color: #fbbf24;
+}
+
 .ai-markdown-content img {
   max-width: 100%;
   width: 100%;
@@ -1097,7 +1109,13 @@ button.fixed {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
   display: block;
   background: #18181b;
+  cursor: zoom-in;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ai-markdown-content img:hover {
+  transform: scale(1.015);
+  box-shadow: 0 6px 24px rgba(245, 158, 11, 0.2);
 }
 
 [data-theme="light"] .ai-markdown-content img,

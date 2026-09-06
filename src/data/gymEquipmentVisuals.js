@@ -65,7 +65,7 @@ export const GYM_EQUIPMENT_VISUALS = [
     id: "eq-pec-deck",
     name: "蝴蝶机 / 夹胸与反向飞鸟机",
     englishName: "Pec Deck / Butterfly Fly Machine",
-    aliases: ["蝴蝶机", "夹胸器", "蝴蝶式夹胸机", "坐姿飞鸟机", "蝴蝶夹胸", "pec deck", "fly machine", "反向飞鸟机"],
+    aliases: ["蝴蝶机", "夹胸器", "夹胸机", "飞鸟机", "蝴蝶夹胸", "坐姿飞鸟机", "反向飞鸟机", "蝴蝶式夹胸机", "pec deck", "fly machine"],
     category: "chest",
     categoryName: "胸部 / 胸大肌中缝与肩后束",
     imageUrl: "./machines/pec-deck.jpg",
@@ -79,7 +79,7 @@ export const GYM_EQUIPMENT_VISUALS = [
     id: "eq-cable-crossover",
     name: "龙门架 / 大飞鸟缆绳训练机",
     englishName: "Dual Cable Crossover / Functional Trainer",
-    aliases: ["龙门架", "大飞鸟", "小飞鸟", "飞鸟架", "双滑轮缆绳机", "cable crossover", "龙门架飞鸟"],
+    aliases: ["龙门架", "大飞鸟", "小飞鸟", "飞鸟架", "双滑轮缆绳机", "cable crossover", "龙门架飞鸟", "绳索大飞鸟"],
     category: "full_body",
     categoryName: "全身功能性 / 胸·背·肩·手臂全能",
     imageUrl: "./machines/cable-crossover.jpg",
@@ -93,7 +93,7 @@ export const GYM_EQUIPMENT_VISUALS = [
     id: "eq-seated-row",
     name: "坐姿划船机 / 低位拉背机",
     englishName: "Seated Cable Row Machine",
-    aliases: ["坐姿划船", "划船机", "低拉机", "坐姿缆绳划船", "seated row", "划船器"],
+    aliases: ["坐姿划船", "划船机", "低拉机", "坐姿缆绳划船", "seated row", "划船器", "低位划船"],
     category: "back",
     categoryName: "背部 / 背阔肌·斜方肌中下部·菱形肌",
     imageUrl: "./machines/seated-row.jpg",
@@ -107,7 +107,7 @@ export const GYM_EQUIPMENT_VISUALS = [
     id: "eq-leg-extension",
     name: "坐姿腿屈伸机",
     englishName: "Leg Extension Machine",
-    aliases: ["腿屈伸", "坐姿踢腿机", "大腿前侧机", "腿伸展机", "leg extension", "坐姿腿伸展"],
+    aliases: ["腿屈伸", "坐姿踢腿机", "大腿前侧机", "腿伸展机", "leg extension", "坐姿腿伸展", "踢腿机"],
     category: "legs",
     categoryName: "腿部 / 股四头肌孤立雕刻",
     imageUrl: "./machines/leg-extension.jpg",
@@ -121,7 +121,7 @@ export const GYM_EQUIPMENT_VISUALS = [
     id: "eq-chest-press",
     name: "坐姿器械推胸机",
     englishName: "Seated Chest Press Machine",
-    aliases: ["推胸机", "坐姿推胸", "坐姿推胸器", "推胸器械", "chest press machine", "固定推胸机"],
+    aliases: ["推胸机", "坐姿推胸", "坐姿推胸器", "推胸器械", "chest press machine", "固定推胸机", "推胸"],
     category: "chest",
     categoryName: "胸部 / 胸大肌整体厚度",
     imageUrl: "./machines/chest-press.jpg",
@@ -138,7 +138,22 @@ export const GYM_EQUIPMENT_VISUALS = [
  */
 function cleanQuery(str) {
   if (typeof str !== "string") return "";
-  return str.toLowerCase().replace(/[\s\-_，。？！、\(\)（）]/g, "");
+  return str.toLowerCase().replace(/[\s\-_，。？！、\(\)（）/·]/g, "");
+}
+
+/**
+ * Generates an absolute direct URL for the equipment image
+ */
+export function getEquipmentDirectUrl(eq) {
+  if (!eq || !eq.imageUrl) return "";
+  if (typeof window !== "undefined" && window.location) {
+    try {
+      return new URL(eq.imageUrl, window.location.origin).href;
+    } catch {
+      return eq.imageUrl;
+    }
+  }
+  return eq.imageUrl;
 }
 
 /**
@@ -159,15 +174,18 @@ export function findGymEquipmentVisual(query) {
     }
   }
 
-  // 2. Substring containment match (query contains equipment name/alias, or alias contains query if query >= 3 chars)
+  // 2. Substring containment match (query contains equipment alias, or alias contains query)
   for (const eq of GYM_EQUIPMENT_VISUALS) {
-    const cleanName = cleanQuery(eq.name);
-    if (q.includes(cleanName) || (cleanName.length >= 4 && cleanName.includes(q) && q.length >= 3)) {
-      return eq;
-    }
-    for (const alias of eq.aliases) {
-      const cleanAlias = cleanQuery(alias);
-      if (q.includes(cleanAlias) || (cleanAlias.length >= 4 && cleanAlias.includes(q) && q.length >= 3)) {
+    const candidates = [eq.name, eq.englishName, ...eq.aliases];
+    for (const cand of candidates) {
+      const c = cleanQuery(cand);
+      if (!c) continue;
+      // If query contains alias (e.g. "蝴蝶机长啥样" contains "蝴蝶机", "飞鸟机怎么找" contains "飞鸟机")
+      if (c.length >= 2 && q.includes(c)) {
+        return eq;
+      }
+      // If alias contains query (e.g. "蝴蝶机" contains "蝴蝶")
+      if (q.length >= 2 && c.includes(q)) {
         return eq;
       }
     }
@@ -182,7 +200,7 @@ export function findGymEquipmentVisual(query) {
     }
     for (const alias of eq.aliases) {
       const ca = cleanQuery(alias);
-      if (ca.length >= 3 && q.includes(ca)) {
+      if (ca.length >= 2 && q.includes(ca)) {
         score += 8;
       }
     }

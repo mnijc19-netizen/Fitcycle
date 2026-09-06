@@ -223,6 +223,55 @@ describe("mobile AI drawer", () => {
     expect(scrollToMock).not.toHaveBeenCalled();
     wrapper.unmount();
   });
+
+  it("renders equipment visual card and lightbox modal when asking about 蝴蝶机", async () => {
+    aiSession.drawerOpen = true;
+    setSessionApiKey("session-only-test-key", "deepseek");
+    const wrapper = mount(AIAssistantDrawer, { attachTo: document.body });
+
+    // Simulate asking about 蝴蝶机
+    aiSession.conversation.push({
+      id: "user_test_pec",
+      role: "user",
+      text: "蝴蝶机长啥样"
+    });
+    aiSession.conversation.push({
+      id: "assistant_test_pec",
+      role: "assistant",
+      text: "蝴蝶机主要用于胸大肌中缝训练，上机前先调节座椅高度。",
+      matchedEquipment: {
+        id: "eq-pec-deck",
+        name: "蝴蝶机 / 夹胸与反向飞鸟机",
+        englishName: "Pec Deck / Butterfly Fly Machine",
+        categoryName: "胸部 / 胸大肌中缝与肩后束",
+        imageUrl: "./machines/pec-deck.jpg",
+        appearanceFeature: "垂直靠背座椅，两侧旋转金属摇臂",
+        adjustmentTips: "拔出座椅黄色把手调节高度"
+      }
+    });
+
+    await nextTick();
+
+    // Verify equipment-visual-card is rendered
+    const card = wrapper.find('[data-testid="equipment-visual-card"]');
+    expect(card.exists()).toBe(true);
+    expect(card.text()).toContain("蝴蝶机");
+    expect(card.text()).toContain("打开图片网址 ↗");
+    const img = card.find("img");
+    expect(img.attributes("src")).toBe("./machines/pec-deck.jpg");
+
+    // Click full screen button to open Lightbox modal
+    const fullBtn = card.find("button");
+    await fullBtn.trigger("click");
+    await nextTick();
+
+    const lightbox = wrapper.find('[data-testid="equipment-lightbox-modal"]');
+    expect(lightbox.exists()).toBe(true);
+    expect(lightbox.text()).toContain("外观一眼识别特征");
+    expect(lightbox.text()).toContain("座椅与插销调节指南");
+
+    wrapper.unmount();
+  });
 });
 
 

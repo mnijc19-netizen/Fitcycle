@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
-import { GYM_EQUIPMENT_VISUALS, findGymEquipmentVisual } from "../src/data/gymEquipmentVisuals.js";
+import { GYM_EQUIPMENT_VISUALS, findGymEquipmentVisual, getEquipmentDirectUrl } from "../src/data/gymEquipmentVisuals.js";
 import { createFitcycleToolRuntime } from "../src/ai/fitcycleTools.js";
 
 describe("Commercial Gym Machine Real-World Visuals & AI Image Tooling", () => {
@@ -42,9 +42,15 @@ describe("Commercial Gym Machine Real-World Visuals & AI Image Tooling", () => {
     expect(legPress2?.id).toBe("eq-leg-press");
     expect(legPress3?.id).toBe("eq-leg-press");
 
-    // 3. Butterfly / Pec Deck
-    const pecDeck = findGymEquipmentVisual("蝴蝶机");
-    expect(pecDeck?.id).toBe("eq-pec-deck");
+    // 3. Butterfly / Pec Deck (蝴蝶机)
+    const pecDeck1 = findGymEquipmentVisual("蝴蝶机");
+    const pecDeck2 = findGymEquipmentVisual("蝴蝶机长啥样");
+    const pecDeck3 = findGymEquipmentVisual("飞鸟机怎么找");
+    expect(pecDeck1?.id).toBe("eq-pec-deck");
+    expect(pecDeck2?.id).toBe("eq-pec-deck");
+    expect(pecDeck3?.id).toBe("eq-pec-deck");
+    expect(pecDeck1.imageUrl).toBe("./machines/pec-deck.jpg");
+    expect(getEquipmentDirectUrl(pecDeck1)).toContain("pec-deck.jpg");
 
     // 4. Cable Crossover / 大飞鸟 / 龙门架
     const cable1 = findGymEquipmentVisual("龙门架");
@@ -75,6 +81,21 @@ describe("Commercial Gym Machine Real-World Visuals & AI Image Tooling", () => {
     expect(res.data.equipment.imageUrl).toBe("./machines/hack-squat.jpg");
     expect(res.data.equipment.markdownImage).toContain("![哈克深蹲机实物照片](./machines/hack-squat.jpg)");
     expect(res.message).toContain("./machines/hack-squat.jpg");
+
+    // Query Pec Deck (蝴蝶机)
+    const resPec = runtime.request({
+      id: "call_test_pec_1",
+      function: {
+        name: "get_gym_machine_appearance",
+        arguments: JSON.stringify({ query: "蝴蝶机长啥样" })
+      }
+    });
+    expect(resPec.success).toBe(true);
+    expect(resPec.data.found).toBe(true);
+    expect(resPec.data.equipment.name).toContain("蝴蝶机");
+    expect(resPec.data.equipment.imageUrl).toBe("./machines/pec-deck.jpg");
+    expect(resPec.data.equipment.directUrl).toBe("./machines/pec-deck.jpg");
+    expect(resPec.data.equipment.markdownLink).toContain("pec-deck.jpg");
 
     // Query Unknown machine
     const resUnknown = runtime.request({

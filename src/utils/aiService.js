@@ -43,6 +43,8 @@ export function renderMarkdown(markdownText) {
   const cleaned = cleanAIMessage(markdownText);
   try {
     let parsed = marked.parse(cleaned);
+    // Ensure all markdown links open safely in a new browser tab
+    parsed = parsed.replace(/<a\s+(?!.*target=)/gi, '<a target="_blank" rel="noopener noreferrer" ');
     // Wrap all <table> elements with responsive scroll container and style class
     parsed = parsed.replace(/<table>/gi, '<div class="table-wrapper"><table class="ai-markdown-table">');
     parsed = parsed.replace(/<\/table>/gi, '</table></div>');

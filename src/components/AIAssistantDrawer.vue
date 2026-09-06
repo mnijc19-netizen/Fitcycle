@@ -226,8 +226,61 @@
               <span>正在连接模型并准备生成…</span>
             </div>
 
+            <!-- 📸 健身房真实器械实物大图与调节图谱 (100% 自动识别并呈现，支持全屏缩放与直达网址) -->
+            <div v-if="message.matchedEquipment" 
+                 class="rounded-2xl border border-amber-500/30 bg-zinc-950 p-3 space-y-2.5 shadow-lg"
+                 data-testid="equipment-visual-card">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5 text-xs font-bold text-amber-400 min-w-0">
+                  <span>📸</span>
+                  <span class="truncate">真实商用器械：{{ message.matchedEquipment.name }}</span>
+                </div>
+                <span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20 font-mono whitespace-nowrap flex-shrink-0">
+                  {{ message.matchedEquipment.englishName }}
+                </span>
+              </div>
+
+              <!-- High-Res Photo Thumbnail with Click-to-Zoom Indicator -->
+              <div class="relative group/photo cursor-pointer overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900"
+                   @click="openLightbox(message.matchedEquipment)">
+                <img :src="message.matchedEquipment.imageUrl" 
+                     :alt="message.matchedEquipment.name"
+                     class="w-full h-44 sm:h-52 object-cover transition-transform duration-300 group-hover/photo:scale-105" />
+                
+                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30 flex flex-col justify-between p-2.5">
+                  <span class="self-end text-[10px] px-2 py-1 rounded-lg bg-black/70 backdrop-blur-md text-zinc-200 border border-white/15 flex items-center gap-1">
+                    <span>🔍</span> 点击放大全屏查看
+                  </span>
+                  <div>
+                    <div class="text-[11px] font-bold text-white drop-shadow">{{ message.matchedEquipment.categoryName }}</div>
+                    <div class="text-[10px] text-zinc-300 drop-shadow line-clamp-1 mt-0.5">{{ message.matchedEquipment.appearanceFeature }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Bar: Direct URL & In-App Lightbox Viewer (Directly fulfills user's request) -->
+              <div class="grid grid-cols-2 gap-2 pt-0.5">
+                <button type="button" 
+                        @click="openLightbox(message.matchedEquipment)"
+                        class="py-2 px-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-[11px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-all shadow-md shadow-amber-500/10">
+                  <span>🔍</span>
+                  <span>全屏大图与调节</span>
+                </button>
+                <a :href="getDirectImageUrl(message.matchedEquipment)" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="py-2 px-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white text-[11px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-all border border-zinc-700">
+                  <span>🔗</span>
+                  <span>打开图片网址 ↗</span>
+                </a>
+              </div>
+            </div>
+
             <!-- Rendered Clean Markdown with Responsive Table Wrapper -->
-            <div v-if="message.text" class="ai-markdown-content text-xs leading-relaxed" v-html="renderMarkdown(message.text)"></div>
+            <div v-if="message.text" 
+                 class="ai-markdown-content text-xs leading-relaxed" 
+                 @click="handleContentClick($event, message)"
+                 v-html="renderMarkdown(message.text)"></div>
             <span v-if="message.streaming && !message.isThinking && message.text" class="inline-block w-2 h-3.5 bg-amber-400 animate-pulse align-middle ml-1"></span>
 
             <!-- Footer: Brand tag and Copy Button -->
@@ -311,7 +364,98 @@
   </div>
 </transition>
 </Teleport>
-</template>
+
+    <!-- Fullscreen Equipment Lightbox & Zoom Modal -->
+    <Teleport to="body" :disabled="isTest">
+      <transition
+        enter-active-class="transition-opacity duration-200 ease-out"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition-opacity duration-150 ease-in"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div v-if="activeLightboxEquipment" 
+             class="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-4"
+             data-testid="equipment-lightbox-modal">
+          <!-- Dark Backdrop -->
+          <div class="absolute inset-0 bg-black/85 backdrop-blur-md" @click="closeLightbox"></div>
+
+          <!-- Modal Card -->
+          <div class="relative w-full max-w-lg bg-zinc-950 border border-zinc-700/90 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] z-10 animate-in fade-in zoom-in-95 duration-200">
+            <!-- Header -->
+            <div class="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-900/95 flex-shrink-0">
+              <div class="min-w-0 flex-1 pr-2">
+                <div class="text-xs sm:text-sm font-bold text-zinc-100 flex items-center gap-1.5 truncate">
+                  <span class="text-amber-400">📸</span> {{ activeLightboxEquipment.name }}
+                </div>
+                <div class="text-[10px] text-zinc-400 font-mono truncate">{{ activeLightboxEquipment.englishName }}</div>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <a :href="getDirectImageUrl(activeLightboxEquipment)" target="_blank" rel="noopener noreferrer"
+                   class="text-[10px] px-2.5 py-1 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-amber-300 hover:text-amber-200 border border-zinc-700 font-bold flex items-center gap-1 transition-all">
+                  <span>在新标签页打开</span> <span>↗</span>
+                </a>
+                <button type="button" @click="closeLightbox"
+                        class="w-7 h-7 rounded-full bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors"
+                        aria-label="关闭原图">
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            <!-- Scrollable Body -->
+            <div class="overflow-y-auto p-4 space-y-3.5 scrollbar-thin">
+              <!-- Full High-Res Photo -->
+              <div class="rounded-2xl overflow-hidden border border-zinc-800 bg-black/60 relative shadow-inner">
+                <img :src="activeLightboxEquipment.imageUrl" :alt="activeLightboxEquipment.name"
+                     class="w-full h-auto max-h-[380px] object-contain mx-auto" />
+              </div>
+
+              <!-- Direct Web Link Pill (Fulfills User's Direct Link Request) -->
+              <div class="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-center justify-between text-xs">
+                <div class="min-w-0 flex-1 pr-2">
+                  <div class="text-[10px] text-zinc-500 font-mono">图片直达网址 (在新窗口直接查看)：</div>
+                  <a :href="getDirectImageUrl(activeLightboxEquipment)" target="_blank" rel="noopener noreferrer"
+                     class="text-[11px] text-amber-400 hover:underline font-mono truncate block mt-0.5">
+                    {{ getDirectImageUrl(activeLightboxEquipment) }}
+                  </a>
+                </div>
+                <a :href="getDirectImageUrl(activeLightboxEquipment)" target="_blank" rel="noopener noreferrer"
+                   class="px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-[11px] whitespace-nowrap flex-shrink-0 shadow-sm transition-all active:scale-95">
+                  点击打开 ↗
+                </a>
+              </div>
+
+              <!-- Features & Adjustments -->
+              <div class="space-y-2.5 text-xs">
+                <div v-if="activeLightboxEquipment.appearanceFeature" class="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800/80 space-y-1">
+                  <div class="text-[11px] font-bold text-amber-400 flex items-center gap-1">
+                    <span>👁️</span> 外观一眼识别特征
+                  </div>
+                  <p class="text-zinc-300 leading-relaxed text-[11px]">{{ activeLightboxEquipment.appearanceFeature }}</p>
+                </div>
+
+                <div v-if="activeLightboxEquipment.adjustmentTips" class="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800/80 space-y-1">
+                  <div class="text-[11px] font-bold text-emerald-400 flex items-center gap-1">
+                    <span>⚙️</span> 座椅与插销调节指南
+                  </div>
+                  <p class="text-zinc-300 leading-relaxed text-[11px] whitespace-pre-line">{{ activeLightboxEquipment.adjustmentTips }}</p>
+                </div>
+
+                <div v-if="activeLightboxEquipment.commonMistakes" class="p-3 rounded-2xl bg-red-500/10 border border-red-500/20 space-y-1">
+                  <div class="text-[11px] font-bold text-red-400 flex items-center gap-1">
+                    <span>⚠️</span> 新手上机避坑提示
+                  </div>
+                  <p class="text-zinc-300 leading-relaxed text-[11px]">{{ activeLightboxEquipment.commonMistakes }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </Teleport>
+  </template>
 
 <script setup>
 import { computed, nextTick, reactive, ref, watch, onMounted, onUnmounted } from "vue";
@@ -333,8 +477,45 @@ import { processImageFile } from "../ai/imageProcessor.js";
 import { getMessageBlockReason } from "../ai/modelCapabilities.js";
 import { store } from "../store/fitnessStore.js";
 import { renderMarkdown, cleanAIMessage, extractReasoningAndContent } from "../utils/aiService.js";
+import { findGymEquipmentVisual, getEquipmentDirectUrl, GYM_EQUIPMENT_VISUALS } from "../data/gymEquipmentVisuals.js";
 
 const isTest = typeof process !== "undefined" && (process.env?.NODE_ENV === "test" || Boolean(process.env?.VITEST));
+
+const activeLightboxEquipment = ref(null);
+
+function openLightbox(equipment) {
+  if (!equipment) return;
+  activeLightboxEquipment.value = equipment;
+}
+
+function closeLightbox() {
+  activeLightboxEquipment.value = null;
+}
+
+function getDirectImageUrl(equipment) {
+  return getEquipmentDirectUrl(equipment);
+}
+
+function handleContentClick(event, message) {
+  const img = event.target.closest("img");
+  if (img) {
+    const src = img.getAttribute("src");
+    const matched = message?.matchedEquipment || GYM_EQUIPMENT_VISUALS.find(eq => eq.imageUrl === src || src?.includes(eq.id.replace("eq-", "")));
+    if (matched) {
+      openLightbox(matched);
+    } else {
+      openLightbox({
+        id: "custom-img",
+        name: img.getAttribute("alt") || "器械实物照片",
+        englishName: "Gym Equipment Visual",
+        categoryName: "器械实物参考",
+        imageUrl: src,
+        appearanceFeature: "健身房真实器械实物展示",
+        adjustmentTips: "请结合教练文字指导进行上机与调节。"
+      });
+    }
+  }
+}
 
 const MAX_ATTACHMENTS = 3;
 const toolRuntime = createFitcycleToolRuntime();
@@ -543,9 +724,9 @@ const defaultChips = [
   },
   {
     icon: "📸",
-    title: "哈克深蹲机长啥样？",
-    desc: "查看商用器械真实照片与插销调节指南",
-    prompt: "哈克深蹲机长啥样？请发一张它的健身房真实照片，并详细告诉我怎么认出它和调节插销。"
+    title: "蝴蝶机长啥样？",
+    desc: "查看商用器械实物照片、直达网址与插销调节指南",
+    prompt: "蝴蝶机长啥样？请发一张它的健身房真实照片和网址链接，并详细告诉我怎么认出它和调节插销。"
   }
 ];
 
@@ -628,6 +809,12 @@ function copyText(text) {
 
 // Only push state-changing mutations with undo support into conversation (hide read-only queries)
 function addToolResult(result) {
+  if (result.tool === "get_gym_machine_appearance" && result.data?.equipment) {
+    const lastAssistant = [...aiSession.conversation].reverse().find(m => m.role === "assistant");
+    if (lastAssistant) {
+      lastAssistant.matchedEquipment = result.data.equipment;
+    }
+  }
   if (result.undoAvailable || !result.success) {
     aiSession.conversation.push(makeMessage("tool", result.message, {
       tool: result.tool,
@@ -646,11 +833,16 @@ async function sendPrompt(promptText) {
 }
 
 async function runCurrentHistory(runOptions = {}) {
+  // Check if last user message asked about an equipment
+  const lastUserMsg = [...aiSession.conversation].reverse().find(m => m.role === "user");
+  const matchedEqFromUser = lastUserMsg?.text ? findGymEquipmentVisual(lastUserMsg.text) : null;
+
   const assistantBubble = makeMessage("assistant", "", { 
     streaming: true, 
     reasoning: "", 
     isThinking: false, 
-    reasoningCollapsed: false 
+    reasoningCollapsed: false,
+    matchedEquipment: matchedEqFromUser || null
   });
   aiSession.conversation.push(assistantBubble);
   generating.value = true;
@@ -709,6 +901,14 @@ async function runCurrentHistory(runOptions = {}) {
       assistantBubble.reasoningCollapsed = true;
     }
     
+    // If not matched yet, check if assistant's own response discusses an equipment
+    if (!assistantBubble.matchedEquipment && assistantBubble.text) {
+      const matchedFromContent = findGymEquipmentVisual(assistantBubble.text);
+      if (matchedFromContent && /长啥样|长什么样|外观|照片|实物|调节|插销|座椅/i.test(assistantBubble.text)) {
+        assistantBubble.matchedEquipment = matchedFromContent;
+      }
+    }
+    
     if (result.status === "confirmation_required") pendingContext.value = result;
     if (result.status === "tool_limit") assistantBubble.text = result.content;
   } catch (error) {
@@ -738,7 +938,14 @@ async function send() {
   if (sendDisabledReason.value) return;
   const text = draft.value.trim();
   const images = attachments.value.map((image) => ({ ...image }));
-  const userMessage = buildUserMessage(text, images);
+
+  const matchedEq = findGymEquipmentVisual(text);
+  let promptTextForApi = text;
+  if (matchedEq && /长啥样|长什么样|长什么样子|外观|怎么认|怎么找|照片|图片|调座椅|调插销|怎么调/i.test(text)) {
+    promptTextForApi = `${text}\n\n[教练系统提示：界面已为学员展示【${matchedEq.name}】的高清实物大图卡片与直接网址。请详细指导该器械的外观识别特征、座椅与插销调节规范、常见避坑要点]`;
+  }
+
+  const userMessage = buildUserMessage(promptTextForApi, images);
   aiSession.apiMessages.push(userMessage);
   aiSession.conversation.push(makeMessage("user", text || "请分析这张图片。", { images }));
   draft.value = "";
