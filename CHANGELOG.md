@@ -2,6 +2,52 @@
 
 > **日志法则：** 本文件是 Fitcycle 项目唯一的物理变更事实记录库。任何 AI 或开发者在完成功能迭代、修宪、BUG 修复或重构后，**必须强制在此追加版本记录**，确保经历几百轮对话后仍能 100% 溯源所有历史决策！
 
+## 🚀 [v1.10.0] - 2026-09-06 (企业级四维硬核加固：多端云端漫游同步、离线 PWA 地下室零断网打卡、五大经典科学训练分化周期库、生物力学防刷与排位天梯护盾)
+### ☁️ R1. 数据持久化与跨端多端漫游同步 (`cloudSyncEngine.js`, `CloudSyncModal.vue`, `StatsView.vue`, `themeManager.js`, `fitnessStore.js`)
+- **彻底告别本地纯 localStorage 数据孤岛与丢失风险**：
+  - 研发轻量无服务器（Serverless）云端快照同步引擎 `cloudSyncEngine.js`，支持将用户全量训练计划、历史打卡日志、个人战力分、自适应体能档案一键打包为加密快照；
+  - 深度集成 **GitHub Gist 极速云端同步**（支持个人访问令牌 PAT 鉴权、自动生成并关联私有 Gist、一键双向拉取与推流合并）；
+  - 支持 **自定义 REST Webhook 接口同步**，无缝对接用户自建后端、Supabase 或无服务器云函数；
+  - 建立 **时间戳冲突裁决模型 (Timestamp Conflict Resolution)**：多设备跨端切换时，精准对比本地与云端 `timestamp`，杜绝旧数据覆盖新日志，并提供手动增量差异合并与一键 JSON 文件导出/导入冷备份；
+  - 在【统计与设置】页常驻直达【云端跨端同步与备份】管理舱。
+
+### 📶 R2. 离线 PWA 支持与健身房地下室弱网极速打卡 (`manifest.webmanifest`, `sw.js`, `networkStatus.js`, `Navbar.vue`, `main.js`)
+- **全站 PWA (Progressive Web App) 渐进式微内核升级**：
+  - 配置符合 W3C 工业规范的 `manifest.webmanifest`，支持 iOS Safari / Android Chrome / Windows PWA 一键“添加到主屏幕/桌面端独立窗口”，获得原生 App 级流畅全屏体验与微光质感图标；
+  - 编写 Service Worker 离线缓存策略（Stale-While-Revalidate + Network-First 组合方案），自动离线缓存核心静态资源、字体与动效资产；
+  - 打造响应式实时网络感知机制 `networkStatus.js`：当用户步入信号极差的健身房地下室或深层封闭器械区时，导航栏顶部自动平滑滑出 `📶 离线打卡` 优雅微胶囊；
+  - 离线状态下所有动作记录、组数增减、打卡计时 100% 本地即时响应，联网后自动触发状态校验与云端推流上报。
+
+### 📚 R3. 经典训练分化与科学周期化预设库 (`trainingTemplates.js`, `TrainingTemplatesModal.vue`, `CycleView.vue`, `CycleEditorModal.vue`)
+- **五大世界顶级运动科学经典分化体系一键套用**：
+  - 构建结构化周期分化数据引擎 `src/data/trainingTemplates.js`，预置 5 套经典专业周期方案：
+    1. **经典 PPL 4日推拉腿超量恢复分化** (Push-Pull-Legs 4-Day): 针对肌肥大黄金分化，内置 0~72h 超量恢复安全轮换；
+    2. **PHUL 力量塑形双轨分化 4日** (Power Hypertrophy Upper Lower 4-Day): 兼顾大重量神经募集与肌浆网充血肥大；
+    3. **阿诺德经典胸背对抗分化 6日** (Arnold Chest/Back Agonist-Antagonist 6-Day): 拮抗肌群超组轰炸，高阶泵感体验；
+    4. **Wendler 5/3/1 核心力量递增 4周周期** (Wendler 5/3/1 4-Week Wave): 力量举经典波浪式周期负荷提升；
+    5. **新手全身基础循环 3日** (Beginner Full Body 3-Day Foundation): 低门槛、高动作复利，建立动作模式神经通路；
+  - 研发精致周期库选择弹窗 `TrainingTemplatesModal.vue`，展示各模板的分化标签、适合人群、周期周数、做工重点与每日动作预览；
+  - 在【周期】主视图与【周期编辑器】深度集成一键套用通道，点击秒级自动重置或补全关联计划动作，告别新手排计划时的迷茫与选择困难。
+
+### 🛡️ R4. 生物力学防刷限额与排位天梯防爆护盾 (`antiCheatEngine.js`, `honorEngine.js`, `fitnessStore.js`, `TodayView.vue`)
+- **人体生理极限防穿透与天梯排位公平性保护**：
+  - 确立符合人类运动医学与吉尼斯/IPF 世界纪录的人体单组极限安全阈值（卧推 355kg、深蹲 490kg、硬拉 501kg、单手哑铃 90kg、绳索器械 200kg、单组上限 100 次）；
+  - 研发纯函数校验算法 `clampSetInput`、`validateSessionVolume` 与 `clampSessionHonorPoints`：
+    - **极端输入即时拦截与平滑钳制**：打卡页实时侦测不合理异常数值（如误触输入“卧推 500kg”或“1000次”），自动平滑钳制在生理上限内，并在组数下方醒目展示黄色安全提示胶囊 `⚠️ 已触发人体生理上限平滑保护`；
+    - **单次训练战力封顶**：单次训练战力收益严格封顶至 100 PTS，彻底杜绝单次训练虚假刷分导致排位天梯与段位徽章系统崩溃；
+    - **体能自适应力量倍率保护**：`clampStrengthRatios` 将三大项力量系数强制锚定在 0.2 ~ 4.5 倍体重区间，兼顾大众新手与世界顶尖力量举选手的合理范畴。
+
+### 🧪 工业级自动化测试防护网与构建交付
+- **22 套 Vitest 自动化测试套件 100% PASS**（242 项测试用例全部绿灯通过）：
+  - `tests/cloud-sync-engine.test.js`: 11 项断言覆盖快照导出、反序列化、冲突裁决与端点推拉；
+  - `tests/pwa-and-offline.test.js`: 4 项断言覆盖 PWA 清单规范、SW 缓存与离线胶囊提示；
+  - `tests/training-templates.test.js`: 5 项断言覆盖 5 大模板完整性、动作对应与分化配置；
+  - `tests/anti-cheat-and-boundary.test.js`: 16 项断言覆盖生理极值钳制、单次积分封顶与防作弊保护；
+- **生产构建极速通过**：`npm run build` 1.33s 零报错打包完成；
+- **全宪法条款纯净保障**：0 皮肤侵入领域引擎、0 Getter 副作用、0 违宪逻辑。
+
+---
+
 ## 🚀 [v1.9.0] - 2026-09-06 (全维度颠覆式升级：人眼舒适工效学排版、健身房器械多模态秒级识别、常用动作智能记忆预填、随身解剖力线教学与多巴胺习惯养成闭环)
 ### 👁️ R1. 全域人眼舒适工效学排版与防劝退视觉重塑 (`TodayView.vue`, `CycleView.vue`, `CalendarView.vue`, `ExercisesView.vue`, `StatsView.vue`, `style.css`)
 - **彻底根除认知过载与视觉摩擦**：

@@ -1,5 +1,6 @@
 // Fitcycle Core Honor, Progression & Multi-Modal METs Engine
 // Strictly compliant with docs/FITCYCLE_CORE_CONSTITUTION.md
+import { clampSessionHonorPoints, clampStrengthRatios } from "./antiCheatEngine.js";
 
 /**
  * 7 Standard Tier Thresholds (0 ~ 3000+)
@@ -174,7 +175,7 @@ export function calculateSessionPointsEarned(summary, pastLogs = [], hoursSinceL
   const multiplier = isRedemptionRebound ? 1.5 : 1.0;
 
   const rawSubtotal = basePoints + overloadBonus;
-  const finalSessionPoints = Math.round(rawSubtotal * multiplier);
+  const finalSessionPoints = clampSessionHonorPoints(Math.round(rawSubtotal * multiplier));
 
   return {
     finalSessionPoints,
@@ -228,6 +229,10 @@ export function evaluateUnlockedBadges(stats = {}) {
     perfectSessionsCount = 0
   } = stats;
 
+  const clamped = clampStrengthRatios({ maxBenchRatio: stats.maxBenchRatio, maxSquatRatio: stats.maxSquatRatio });
+  const safeBenchRatio = clamped.maxBenchRatio;
+  const safeSquatRatio = clamped.maxSquatRatio;
+
   const badges = [];
 
   // Specialization A: Consistency & Volume
@@ -257,8 +262,8 @@ export function evaluateUnlockedBadges(stats = {}) {
   }
 
   // Specialization C: Strength & Power
-  if (maxBenchRatio >= 1.0) badges.push({ id: "badge_bench_bw", category: "strength", tier: 2, unlocked: true });
-  if (maxSquatRatio >= 1.5) badges.push({ id: "badge_squat_1_5bw", category: "strength", tier: 3, unlocked: true });
+  if (safeBenchRatio >= 1.0) badges.push({ id: "badge_bench_bw", category: "strength", tier: 2, unlocked: true });
+  if (safeSquatRatio >= 1.5) badges.push({ id: "badge_squat_1_5bw", category: "strength", tier: 3, unlocked: true });
 
   // Tactical Easter Eggs
   if (perfectSessionsCount >= 1) badges.push({ id: "badge_headshot_ace", category: "tactical", tier: 2, unlocked: true });

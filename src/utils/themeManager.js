@@ -53,7 +53,14 @@ export const DEFAULT_SETTINGS = {
   userWeight: 70, // kg
   trainingGoal: "hypertrophy", // 'hypertrophy' | 'fat_loss' | 'strength'
   pushupTier: "basic", // 'beginner' | 'basic' | 'moderate' | 'elite'
-  squatTier: "natural" // 'sedentary' | 'natural' | 'strong'
+  squatTier: "natural", // 'sedentary' | 'natural' | 'strong'
+  cloudSync: {
+    githubToken: "",
+    gistId: "",
+    customSyncEndpoint: "",
+    customSyncApiKey: "",
+    lastSyncTime: null
+  }
 };
 
 /**
@@ -170,6 +177,11 @@ export function sanitizeSettings(rawSettings) {
   sanitized.squatTier = ["sedentary", "natural", "strong"].includes(rawSettings.squatTier)
     ? rawSettings.squatTier
     : DEFAULT_SETTINGS.squatTier;
+
+  // 6. Sanitize cloudSync configuration
+  sanitized.cloudSync = (rawSettings.cloudSync && typeof rawSettings.cloudSync === "object")
+    ? { ...DEFAULT_SETTINGS.cloudSync, ...rawSettings.cloudSync }
+    : { ...DEFAULT_SETTINGS.cloudSync };
 
   return sanitized;
 }

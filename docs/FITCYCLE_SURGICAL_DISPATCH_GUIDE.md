@@ -67,6 +67,22 @@
                 (单手热区、WebApp动效穿透、动态底栏)├── 2. `src/utils/scrollLock.js` (引用计数宿主锁)
                                                 ├── 3. `src/components/TabBar.vue` (通用双击回顶)
                                                 └── 4. `src/views/ExercisesView.vue` (动态 safe-area 浮动回顶)
+
+[OP-CLOUD-SYNC] 多端漫游云端快照与差异合并同步  ├── 1. `src/engine/cloudSyncEngine.js` (快照校验/Gist/REST)  npm test -- tests/cloud-sync-engine.test.js
+                (GitHub Gist/自定义 Webhook/冲突解决)├── 2. `src/components/CloudSyncModal.vue` (云同步面板)
+                                                └── 3. `src/views/StatsView.vue` (设置页管理入口)
+
+[OP-OFFLINE-PWA]PWA 离线打卡与地下室弱网通信    ├── 1. `public/manifest.webmanifest` & `public/sw.js`    npm test -- tests/pwa-and-offline.test.js
+                (桌面独立窗口/SW缓存/离线微胶囊)├── 2. `src/utils/networkStatus.js` (网络状态感知)
+                                                └── 3. `src/components/Navbar.vue` (离线打卡胶囊提示)
+
+[OP-SPLIT]      五大经典科学训练分化周期库      ├── 1. `src/data/trainingTemplates.js` (5大周期预设)     npm test -- tests/training-templates.test.js
+                (PPL/PHUL/Arnold/531/新手循环)  ├── 2. `src/components/TrainingTemplatesModal.vue` (周期弹窗)
+                                                └── 3. `src/views/CycleView.vue` & `CycleEditorModal.vue`
+
+[OP-ANTI-CHEAT] 人体生理极值防刷与排位天梯护盾  ├── 1. `src/engine/antiCheatEngine.js` (纯函数极值钳制)  npm test -- tests/anti-cheat-and-boundary.test.js
+                (单组极值/单次100分封顶/倍率护盾)├── 2. `src/engine/honorEngine.js` (战力防爆整合)
+                                                └── 3. `src/views/TodayView.vue` (UI 极值黄色警告胶囊)
 =====================================================================================================================================
 ```
 

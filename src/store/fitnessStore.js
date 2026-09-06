@@ -9,6 +9,8 @@ import { calculateInactivityDecay, calculateSessionPointsEarned, getTierForScore
 import { getSkinHonorPresentation } from "../engine/skinHonorSchemas.js";
 import { calculateAdaptiveWeights, getInitialHonorScore } from "../engine/bodyProfileEngine.js";
 import { getExerciseHistoricalPrefill } from "../engine/exerciseMemoryEngine.js";
+import { validateSessionVolume } from "../engine/antiCheatEngine.js";
+import { getTrainingTemplateById } from "../data/trainingTemplates.js";
 
 const STORAGE_KEY = "fitcycle_app_data_v1";
 
@@ -635,20 +637,28 @@ export function finishWorkout() {
   const now = Date.now();
   const durationSec = Math.max(60, Math.round((now - (store.activeWorkout.startTime || now)) / 1000));
   
-  let totalVolume = 0;
-  let totalCompletedSets = 0;
+  // Sanitize rogue inputs with biological limit engine to protect Honor Tier
+  const sessionValidation = validateSessionVolume(
+    store.activeWorkout.exercises.map(ex => ({
+      name: ex.name,
+      category: ex.category || "",
+      sets: (ex.sets || []).map(s => ({
+        ...s,
+        done: Boolean(s.completed)
+      }))
+    }))
+  );
 
-  const recordedExercises = store.activeWorkout.exercises.map(ex => {
-    const completedSets = ex.sets.filter(s => s.completed);
-    completedSets.forEach(s => {
-      totalVolume += (Number(s.weight) || 0) * (Number(s.reps) || 0);
-      totalCompletedSets += 1;
-    });
+  const totalVolume = sessionValidation.totalVolume;
+  const totalCompletedSets = sessionValidation.totalSets;
+
+  const recordedExercises = store.activeWorkout.exercises.map((ex, exIdx) => {
+    const sanitizedEx = sessionValidation.sanitizedExercises[exIdx];
     return {
       exerciseId: ex.exerciseId,
       name: ex.name,
       targetReps: ex.targetReps,
-      sets: ex.sets
+      sets: sanitizedEx ? sanitizedEx.sets : ex.sets
     };
   });
 
@@ -760,6 +770,54 @@ export function deletePlan(planId) {
 export function saveCustomCycle(cycleData) {
   store.activeCycle = JSON.parse(JSON.stringify(cycleData));
   if (store.settings.vibrationEnabled) triggerHaptic("success");
+}
+
+export function applyTrainingTemplate(templateId) {
+  const template = getTrainingTemplateById(templateId);
+  if (!template) return false;
+
+  // 1. Apply cycle definition
+  store.activeCycle = JSON.parse(JSON.stringify(template.cycle));
+  store.anchorDate = getInitialDateStr();
+
+  // 2. Merge / inject plans from template
+  if (Array.isArray(template.plans)) {
+    template.plans.forEach(newPlan => {
+      const existingIdx = store.plans.findIndex(p => p.id === newPlan.id);
+      if (existingIdx >= 0) {
+        store.plans[existingIdx] = JSON.parse(JSON.stringify(newPlan));
+      } else {
+        store.plans.push(JSON.parse(JSON.stringify(newPlan)));
+      }
+    });
+  }
+
+  // 3. Update weekly schedule if in weekly mode
+  if (store.cycleMode === "weekly" && template.cycle && Array.isArray(template.cycle.days)) {
+    const days = template.cycle.days;
+    const map = [1, 2, 3, 4, 5, 6, 0];
+    map.forEach((wDay, idx) => {
+      const targetDay = days[idx % days.length];
+      if (targetDay) {
+        store.weeklySchedule[wDay] = targetDay.planId;
+      }
+    });
+  }
+
+  if (store.settings.vibrationEnabled) triggerHaptic("success");
+  return true;
+}
+
+export function updateCloudSyncConfig(config = {}) {
+  if (!store.settings.cloudSync) {
+    store.settings.cloudSync = {};
+  }
+  if (config.githubToken !== undefined) store.settings.cloudSync.githubToken = config.githubToken;
+  if (config.gistId !== undefined) store.settings.cloudSync.gistId = config.gistId;
+  if (config.customSyncEndpoint !== undefined) store.settings.cloudSync.customSyncEndpoint = config.customSyncEndpoint;
+  if (config.customSyncApiKey !== undefined) store.settings.cloudSync.customSyncApiKey = config.customSyncApiKey;
+  if (config.lastSyncTime !== undefined) store.settings.cloudSync.lastSyncTime = config.lastSyncTime;
+  if (store.settings.vibrationEnabled) triggerHaptic("light");
 }
 
 // --- THEME / SKIN ACTIONS ---

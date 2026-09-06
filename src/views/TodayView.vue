@@ -292,6 +292,12 @@
 
               </div>
 
+              <!-- Anti-Cheat Physical Limit Clamped Notice -->
+              <div v-if="s.wasClamped" 
+                   class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-500/15 border border-amber-500/40 text-amber-300 animate-in fade-in duration-200">
+                <span>⚠️ {{ s.clampReason }}</span>
+              </div>
+
               <!-- Micro Overload Dopamine Delta Badge Bar -->
               <div v-if="getSetOverloadDelta(ex.name, s, sIdx)" 
                    class="flex items-center justify-between px-2.5 text-[11px] font-mono leading-none pb-0.5 animate-in fade-in slide-in-from-top-1 duration-200">
@@ -1020,6 +1026,7 @@ import {
   uid
 } from "../store/fitnessStore.js";
 import { calculateSupercompensationStatus } from "../engine/dopamineFeedbackEngine.js";
+import { clampSetInput } from "../engine/antiCheatEngine.js";
 import { SPLIT_RECOMMENDED_ADDONS } from "../data/defaultPlans.js";
 import ExercisePickerModal from "../components/ExercisePickerModal.vue";
 import GymMachineFinderModal from "../components/GymMachineFinderModal.vue";
@@ -1485,6 +1492,11 @@ function adjustSetWeight(exIdx, sIdx, delta) {
   const oldVal = Number(currentSet.weight) || 0;
   const newVal = Math.max(0, Number((oldVal + delta).toFixed(1)));
   currentSet.weight = newVal;
+
+  const clampCheck = clampSetInput(ex.name, newVal, currentSet.reps, ex.category);
+  currentSet.wasClamped = clampCheck.wasClamped;
+  currentSet.clampReason = clampCheck.reason;
+
   if (store.settings.vibrationEnabled) triggerHaptic("light");
 
   // 智能级联联动：后续未完成组若为同重或初始值，自动跟随联动
@@ -1492,6 +1504,8 @@ function adjustSetWeight(exIdx, sIdx, delta) {
     const nextSet = ex.sets[i];
     if (!nextSet.completed && (Number(nextSet.weight) === oldVal || Number(nextSet.weight) === 0)) {
       nextSet.weight = newVal;
+      nextSet.wasClamped = clampCheck.wasClamped;
+      nextSet.clampReason = clampCheck.reason;
     }
   }
 }
@@ -1501,11 +1515,18 @@ function onWeightChange(exIdx, sIdx) {
   if (!ex || !ex.sets?.[sIdx]) return;
   const currentSet = ex.sets[sIdx];
   const newVal = Number(currentSet.weight) || 0;
+
+  const clampCheck = clampSetInput(ex.name, newVal, currentSet.reps, ex.category);
+  currentSet.wasClamped = clampCheck.wasClamped;
+  currentSet.clampReason = clampCheck.reason;
+
   // 修改第1组时，自动联动下填后续未完成组
   if (sIdx === 0) {
     for (let i = 1; i < ex.sets.length; i++) {
       if (!ex.sets[i].completed) {
         ex.sets[i].weight = newVal;
+        ex.sets[i].wasClamped = clampCheck.wasClamped;
+        ex.sets[i].clampReason = clampCheck.reason;
       }
     }
   }
@@ -1518,12 +1539,19 @@ function adjustSetReps(exIdx, sIdx, delta) {
   const oldVal = Number(currentSet.reps) || 0;
   const newVal = Math.max(0, oldVal + delta);
   currentSet.reps = newVal;
+
+  const clampCheck = clampSetInput(ex.name, currentSet.weight, newVal, ex.category);
+  currentSet.wasClamped = clampCheck.wasClamped;
+  currentSet.clampReason = clampCheck.reason;
+
   if (store.settings.vibrationEnabled) triggerHaptic("light");
 
   for (let i = sIdx + 1; i < ex.sets.length; i++) {
     const nextSet = ex.sets[i];
     if (!nextSet.completed && (Number(nextSet.reps) === oldVal || Number(nextSet.reps) === 0)) {
       nextSet.reps = newVal;
+      nextSet.wasClamped = clampCheck.wasClamped;
+      nextSet.clampReason = clampCheck.reason;
     }
   }
 }
@@ -1533,10 +1561,17 @@ function onRepsChange(exIdx, sIdx) {
   if (!ex || !ex.sets?.[sIdx]) return;
   const currentSet = ex.sets[sIdx];
   const newVal = Number(currentSet.reps) || 0;
+
+  const clampCheck = clampSetInput(ex.name, currentSet.weight, newVal, ex.category);
+  currentSet.wasClamped = clampCheck.wasClamped;
+  currentSet.clampReason = clampCheck.reason;
+
   if (sIdx === 0) {
     for (let i = 1; i < ex.sets.length; i++) {
       if (!ex.sets[i].completed) {
         ex.sets[i].reps = newVal;
+        ex.sets[i].wasClamped = clampCheck.wasClamped;
+        ex.sets[i].clampReason = clampCheck.reason;
       }
     }
   }

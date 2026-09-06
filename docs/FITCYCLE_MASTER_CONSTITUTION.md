@@ -75,6 +75,29 @@ Fitcycle 采用严格单向依赖的 5 层洋葱架构，**严禁跨层反向污
                                           ├── 8.3 `src/components/TabBar.vue` (实现双击/再次点击已激活 Tab 顺滑回顶)
                                           ├── 8.4 各主要弹窗组件 (注入顶部 Grabber 抓手条、背景遮罩速退并挂接 scrollLock)
                                           └── 8.5 `tests/ergonomics-and-scroll.test.js` (自动化人体工学与防穿透断言)
+
+9. 云端漫游与跨端同步 (Cloud Sync)         ├── 9.1 `src/engine/cloudSyncEngine.js` (导出验证、冲突裁决与 Gist/REST 同步)
+                                          ├── 9.2 `src/store/fitnessStore.js` (`updateCloudSyncConfig` 与状态持久化)
+                                          ├── 9.3 `src/components/CloudSyncModal.vue` (云同步配置、快照预览与手动导入导出)
+                                          ├── 9.4 `src/views/StatsView.vue` (设置页云端同步管理入口)
+                                          └── 9.5 `tests/cloud-sync-engine.test.js` (断言快照结构、时间戳冲突与端点通讯)
+
+10. 离线 PWA 与弱网韧性 (Offline PWA)      ├── 10.1 `public/manifest.webmanifest` & `public/sw.js` (PWA 规范与离线缓存策略)
+                                          ├── 10.2 `src/utils/networkStatus.js` (全局响应式网络状态监听)
+                                          ├── 10.3 `src/components/Navbar.vue` (离线胶囊提示与状态展示)
+                                          └── 10.4 `tests/pwa-and-offline.test.js` (断言 SW 注册、manifest 规范与离线响应)
+
+11. 经典分化与科学周期库 (Periodization)    ├── 11.1 `src/data/trainingTemplates.js` (5 大经典分化结构与动作编排)
+                                          ├── 11.2 `src/store/fitnessStore.js` (`applyTrainingTemplate` 状态应用)
+                                          ├── 11.3 `src/components/TrainingTemplatesModal.vue` (周期库弹窗与一键套用)
+                                          ├── 11.4 `src/views/CycleView.vue` & `CycleEditorModal.vue` (周期库直达入口)
+                                          └── 11.5 `tests/training-templates.test.js` (断言 5 大分化完整性与周期流转)
+
+12. 生物力学防刷与天梯护盾 (Anti-Cheat)    ├── 12.1 `src/engine/antiCheatEngine.js` (人体生理极限纯函数、单组与单次封顶)
+                                          ├── 12.2 `src/engine/honorEngine.js` (战力积分与自适应力量倍率钳制)
+                                          ├── 12.3 `src/store/fitnessStore.js` (`finishWorkout` 生理极限校验)
+                                          ├── 12.4 `src/views/TodayView.vue` (打卡界面生理极值平滑告警胶囊)
+                                          └── 12.5 `tests/anti-cheat-and-boundary.test.js` (断言世界纪录阈值与防刷分保护)
 ========================================================================================================================
 ```
 

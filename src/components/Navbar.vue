@@ -34,6 +34,14 @@
         <!-- Right: Ergonomic Utility Controls & Telemetry -->
         <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
           
+          <!-- Offline Indicator (Gym Basement Signal Resilient) -->
+          <div v-if="!isOnline"
+               title="网络已断开 · 离线打卡功能100%正常运行"
+               class="h-8 px-2 rounded-full bg-amber-500/15 border border-amber-500/30 text-[10px] font-bold text-amber-400 flex items-center gap-1 flex-shrink-0 animate-pulse">
+            <span>📶</span>
+            <span class="hidden xs:inline">离线打卡</span>
+          </div>
+
           <!-- Workout in Progress Status Indicator -->
           <button v-if="store.activeWorkout" 
                   @click="store.activeTab = 'today'"
@@ -97,6 +105,7 @@ import HonorShowcaseModal from "./HonorShowcaseModal.vue";
 import RulesCodexModal from "./RulesCodexModal.vue";
 import FitCycleLogo from "./FitCycleLogo.vue";
 import { triggerHaptic } from "../utils/vibrate.js";
+import { isOnline } from "../utils/networkStatus.js";
 
 const showCycleModal = ref(false);
 const showHonorModal = ref(false);

@@ -38,7 +38,13 @@
         
         <!-- Preset Quick Picks -->
         <div>
-          <label class="text-xs font-bold text-zinc-400 tracking-wider uppercase">快速应用经典模板</label>
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-zinc-400 tracking-wider uppercase">快速应用经典模板</label>
+            <button @click="showTemplatesModal = true" 
+                    class="text-xs text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 cursor-pointer">
+              <span>📚 完整 5 大体系 ↗</span>
+            </button>
+          </div>
           <div class="grid grid-cols-3 gap-2 mt-2">
             <button v-for="preset in PRESET_CYCLES" :key="preset.id"
                     @click="applyPreset(preset)"
@@ -143,6 +149,13 @@
         </button>
       </div>
 
+      <!-- Training Templates Modal -->
+      <TrainingTemplatesModal
+        :visible="showTemplatesModal"
+        @close="showTemplatesModal = false"
+        @applied="onTemplateApplied"
+      />
+
       </div>
     </div>
   </Teleport>
@@ -153,6 +166,7 @@ import { ref, computed, watch, onUnmounted } from "vue";
 import { store, saveCustomCycle, setTodayAsCycleIndex, getCycleDayForDate, uid } from "../store/fitnessStore.js";
 import { PRESET_CYCLES } from "../data/defaultPlans.js";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
+import TrainingTemplatesModal from "./TrainingTemplatesModal.vue";
 
 const props = defineProps({
   visible: Boolean
@@ -160,7 +174,13 @@ const props = defineProps({
 
 const emit = defineEmits(["close"]);
 
+const showTemplatesModal = ref(false);
 const editCycle = ref(JSON.parse(JSON.stringify(store.activeCycle)));
+
+function onTemplateApplied(template) {
+  editCycle.value = JSON.parse(JSON.stringify(store.activeCycle));
+  showTemplatesModal.value = false;
+}
 
 watch(() => props.visible, (val) => {
   if (val) {

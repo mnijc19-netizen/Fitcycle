@@ -510,6 +510,26 @@
     <div class="space-y-1.5">
       <div class="text-xs font-bold text-zinc-400 px-1">数据管理</div>
       <div class="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl overflow-hidden divide-y divide-zinc-800/60 shadow-sm">
+        <!-- Cloud Sync & Multi-Device Backup -->
+        <button @click="showCloudSyncModal = true" 
+                class="w-full p-3.5 hover:bg-zinc-850/60 active:bg-zinc-800 flex items-center justify-between transition-colors text-left cursor-pointer">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 text-xs font-bold">
+              ☁️
+            </div>
+            <div>
+              <div class="text-xs font-bold text-zinc-100 flex items-center gap-2">
+                <span>云端跨端同步与备份</span>
+                <span class="text-[9px] px-1.5 py-0.2 rounded font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  GitHub / 云端
+                </span>
+              </div>
+              <div class="text-[10px] text-zinc-400 mt-0.5">跨设备数据自动漫游 · 永久防丢</div>
+            </div>
+          </div>
+          <span class="text-zinc-500 text-xs">❯</span>
+        </button>
+
         <!-- Export -->
         <button @click="handleExport" 
                 class="w-full p-3.5 hover:bg-zinc-850/60 active:bg-zinc-800 flex items-center justify-between transition-colors text-left cursor-pointer">
@@ -626,6 +646,13 @@
       @close="showStrengthModal = false"
     />
 
+    <!-- Cloud Sync & Backup Modal -->
+    <CloudSyncModal
+      :visible="showCloudSyncModal"
+      @close="showCloudSyncModal = false"
+      @restored="showToast('🎉 数据已成功从云端恢复！')"
+    />
+
   </div>
 </template>
 
@@ -637,6 +664,7 @@ import BodyMetricsModal from "../components/BodyMetricsModal.vue";
 import RulesCodexModal from "../components/RulesCodexModal.vue";
 import UserOnboardingModal from "../components/UserOnboardingModal.vue";
 import StrengthPlacementModal from "../components/StrengthPlacementModal.vue";
+import CloudSyncModal from "../components/CloudSyncModal.vue";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import {
   aiSession,
@@ -684,14 +712,20 @@ const vTaperRatio = computed(() => {
 });
 
 const showAISettingsModal = ref(false);
+const showCloudSyncModal = ref(false);
 
 watch(showAISettingsModal, (val) => {
   if (val) lockBodyScroll();
   else unlockBodyScroll();
 });
 
+watch(showCloudSyncModal, (val) => {
+  if (val) lockBodyScroll();
+  else unlockBodyScroll();
+});
+
 onUnmounted(() => {
-  if (showAISettingsModal.value) unlockBodyScroll();
+  if (showAISettingsModal.value || showCloudSyncModal.value) unlockBodyScroll();
 });
 
 const activeAIProvider = computed(getActiveProvider);
