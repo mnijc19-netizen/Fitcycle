@@ -18,8 +18,8 @@ describe('FitCycle Brand & Dynamic Vector Logo', () => {
 });
 
 describe('Exercise Library 1-to-1 Accuracy & Alias Search', () => {
-  it('contains verified exercises across all major muscle and mobility categories (148 models)', () => {
-    expect(store.exercises).toHaveLength(148);
+  it('contains verified exercises across all major muscle and mobility categories (230+ models)', () => {
+    expect(store.exercises.length).toBeGreaterThanOrEqual(230);
     const categories = new Set(store.exercises.map(e => e.category));
     expect(categories.has('胸部')).toBe(true);
     expect(categories.has('背部')).toBe(true);

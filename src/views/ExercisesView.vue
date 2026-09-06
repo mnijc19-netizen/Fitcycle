@@ -1,5 +1,5 @@
 <template>
-  <div class="pb-32 px-4 pt-2 max-w-md mx-auto space-y-4">
+  <div class="pb-32 px-4 pt-2 max-w-md mx-auto space-y-3.5">
     
     <!-- Top Header -->
     <div class="flex items-center justify-between">
@@ -12,7 +12,7 @@
           </span>
         </h2>
         <p class="text-xs mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
-          标准 3D 解剖动图、力线要领与平替参考
+          涵盖自由重量、固定器械、绳索与自重变式
         </p>
       </div>
       <button @click="openCreateExercise" 
@@ -38,18 +38,19 @@
         </span>
       </button>
 
+      <!-- Search Input Bar -->
       <div class="flex items-center gap-2">
         <div class="relative flex-1">
           <div class="absolute left-3.5 top-2.5 text-zinc-500 text-xs">🔍</div>
           <input v-model="searchQuery" 
                  type="text" 
-                 placeholder="搜索动作名称、腹肌、胸肌、剪刀机、英文..." 
+                 placeholder="搜索动作、部位、器械(杠铃/哑铃)、俗称(早安/剪刀机)..." 
                  class="w-full rounded-xl pl-9 pr-8 py-2 text-xs transition-colors focus:outline-none focus:border-amber-500"
                  :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border border-slate-300 text-slate-900 placeholder-slate-400' : 'bg-zinc-950 border border-zinc-700/80 text-zinc-100 placeholder-zinc-500'" />
           <span v-if="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-2 text-xs text-zinc-400 hover:text-white cursor-pointer">✕</span>
         </div>
 
-        <!-- Inline Camera/Voice trigger button next to search bar -->
+        <!-- Inline Camera/Voice trigger button -->
         <button @click="showMachineFinder = true" 
                 title="拍照/语音智能识器械"
                 class="px-2.5 py-2 rounded-xl text-xs font-black border transition-all active:scale-95 cursor-pointer flex items-center gap-1 flex-shrink-0"
@@ -59,7 +60,7 @@
         </button>
       </div>
 
-      <!-- Categories Pills with Real-Time Counts and Plain-Chinese Labels -->
+      <!-- Level 1: Categories Horizontal Pills -->
       <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar overscroll-x-contain touch-pan-x">
         <button v-for="cat in categoryOptions" :key="cat.name"
                 @click="selectCategory(cat.name)"
@@ -73,12 +74,45 @@
           <span class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'opacity-80'">({{ cat.count }})</span>
         </button>
       </div>
+
+      <!-- Level 2: Equipment Filter Pills -->
+      <div class="pt-1.5 border-t flex items-center gap-1.5 overflow-x-auto no-scrollbar"
+           :class="store.settings.themeMode === 'light' ? 'border-slate-200' : 'border-zinc-800/80'">
+        <button v-for="eq in equipmentOptionsWithCounts" :key="eq.key"
+                @click="selectEquipment(eq.key)"
+                class="px-2 py-0.8 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1"
+                :class="[
+                  activeEquipment === eq.key
+                    ? 'bg-amber-500 text-zinc-950 font-black shadow-xs'
+                    : (store.settings.themeMode === 'light' ? 'bg-white text-slate-700 border border-slate-300 hover:border-amber-400' : 'bg-zinc-950 text-zinc-400 border border-zinc-800 hover:border-zinc-700')
+                ]">
+          <span>{{ eq.icon }}</span>
+          <span>{{ eq.label }}</span>
+          <span class="text-[10px] font-mono opacity-80">({{ eq.count }})</span>
+        </button>
+      </div>
+
+      <!-- Level 3: Sub-Target Muscle Chips (Context-Aware) -->
+      <div v-if="subTargetOptions.length > 1" class="flex items-center gap-1 overflow-x-auto pb-0.5 no-scrollbar pt-0.5">
+        <span class="text-[10px] font-bold flex-shrink-0 mr-1"
+              :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">🎯 目标:</span>
+        <button v-for="sub in subTargetOptions" :key="sub"
+                @click="selectSubTarget(sub)"
+                class="px-2 py-0.5 rounded-md text-[10px] font-bold whitespace-nowrap transition-all cursor-pointer"
+                :class="[
+                  activeSubTarget === sub
+                    ? 'bg-amber-400/25 text-amber-500 border border-amber-400/50 font-black'
+                    : (store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200' : 'bg-zinc-950 text-zinc-400 hover:text-zinc-200 border border-zinc-800/80')
+                ]">
+          {{ sub }}
+        </button>
+      </div>
     </div>
 
     <!-- ======================================================== -->
-    <!-- VIEW A: VISUAL CATEGORY HUB & SCIENCE ACADEMY (全部模式) -->
+    <!-- VIEW A: VISUAL CATEGORY HUB & SCIENCE ACADEMY (全部默认模式) -->
     <!-- ======================================================== -->
-    <div v-if="activeCategory === '全部' && !searchQuery.trim()" class="space-y-4">
+    <div v-if="isDefaultHubView" class="space-y-4">
       
       <!-- 💡 运动科学与防伤指南 (首屏置顶可折叠，用户第一眼即可见，无需向下滑动) -->
       <div class="rounded-2xl border p-3.5 transition-all shadow-xs"
@@ -165,7 +199,7 @@
         </div>
       </div>
 
-      <!-- 1. 9 大部位与功能视觉导航矩阵 (清晰易懂的新手人话翻译，如核心=腹肌/腰腹) -->
+      <!-- 1. 9 大部位与功能视觉导航矩阵 (清晰易懂的新手人话翻译) -->
       <div class="space-y-2">
         <div class="flex items-center justify-between px-1">
           <h3 class="text-xs font-black uppercase tracking-wider flex items-center gap-1.5"
@@ -173,7 +207,7 @@
             <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
             <span>动作分类</span>
           </h3>
-          <span class="text-[11px] text-zinc-500 font-mono">9 个分类</span>
+          <span class="text-[11px] text-zinc-500 font-mono">共 {{ store.exercises.length }} 款动作</span>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
@@ -207,7 +241,7 @@
         </div>
       </div>
 
-      <!-- 2. ⭐ 常用动作参考 (精选 6 大基石动作) -->
+      <!-- 2. ⭐ 常用动作参考 (精选基石动作) -->
       <div class="space-y-2">
         <div class="flex items-center justify-between px-1">
           <h3 class="text-xs font-black uppercase tracking-wider flex items-center gap-1.5"
@@ -241,29 +275,32 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- VIEW B: TARGETED EXERCISES LIST (特定部位或搜索结果展示) -->
+    <!-- VIEW B: TARGETED EXERCISES LIST (多维筛选与动作呈现列表) -->
     <!-- ======================================================== -->
     <div v-else class="space-y-2.5">
       
-      <!-- Top Context Banner (Showing Active Category or Search) -->
+      <!-- Top Context Banner (Active Category, Equipment & Sub-target Breadcrumbs) -->
       <div class="flex items-center justify-between px-1 text-xs">
-        <div class="flex items-center gap-1.5">
-          <span class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-200'">
-            <span v-if="searchQuery.trim()">搜索结果："<span class="text-amber-500 font-black">{{ searchQuery }}</span>"</span>
-            <span v-else>{{ activeCategory }}动作清单</span>
+        <div class="flex items-center gap-1.5 flex-wrap min-w-0">
+          <span class="font-bold truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-200'">
+            <span v-if="searchQuery.trim()">搜索："<span class="text-amber-500 font-black">{{ searchQuery }}</span>"</span>
+            <span v-else>{{ activeCategory }} · {{ activeEquipment === '全部' ? '全部器械' : activeEquipment }}</span>
           </span>
-          <span class="font-mono text-[11px] opacity-70">({{ filteredExercises.length }}个动作)</span>
+          <span v-if="activeSubTarget !== '全部'" class="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-500 font-bold border border-amber-500/30">
+            {{ activeSubTarget }}
+          </span>
+          <span class="font-mono text-[11px] opacity-70">({{ filteredExercises.length }}款)</span>
         </div>
 
-        <button @click="selectCategory('全部')" 
-                class="px-2 py-0.5 rounded-lg border text-[11px] font-medium transition-all cursor-pointer flex items-center gap-1"
+        <button @click="resetAllFilters" 
+                class="px-2 py-0.5 rounded-lg border text-[11px] font-medium transition-all cursor-pointer flex items-center gap-1 flex-shrink-0"
                 :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border-zinc-700'">
           <span>↩</span>
-          <span>返回全部导航</span>
+          <span>重置/返回分类</span>
         </button>
       </div>
 
-      <!-- 🎯 热身分化智能筛选器 (练腿还是练胸？按部位匹配热身与跟练) -->
+      <!-- 🎯 热身分化智能筛选器 -->
       <div v-if="activeCategory === '热身' && !searchQuery.trim()" class="space-y-2">
         <div class="p-3 rounded-2xl border transition-all"
              :class="store.settings.themeMode === 'light' ? 'bg-amber-50/80 border-amber-200 text-slate-900' : 'bg-amber-500/10 border-amber-500/30 text-amber-200'">
@@ -278,7 +315,6 @@
             </button>
           </div>
 
-          <!-- Split Tabs: 推 / 拉 / 腿 / 全部 -->
           <div class="grid grid-cols-4 gap-1.5 mt-2">
             <button v-for="sp in warmupSplits" :key="sp.key"
                     @click="activeWarmupSplit = sp.key"
@@ -298,7 +334,7 @@
         </div>
       </div>
 
-      <!-- 🧘 拉伸分化智能筛选器 (练后按部位匹配拉伸与跟练) -->
+      <!-- 🧘 拉伸分化智能筛选器 -->
       <div v-if="activeCategory === '拉伸' && !searchQuery.trim()" class="space-y-2">
         <div class="p-3 rounded-2xl border transition-all"
              :class="store.settings.themeMode === 'light' ? 'bg-emerald-50/80 border-emerald-200 text-slate-900' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200'">
@@ -313,7 +349,6 @@
             </button>
           </div>
 
-          <!-- Split Tabs: 推 / 拉 / 腿 / 全部 -->
           <div class="grid grid-cols-4 gap-1.5 mt-2">
             <button v-for="sp in stretchSplits" :key="sp.key"
                     @click="activeStretchSplit = sp.key"
@@ -333,7 +368,7 @@
         </div>
       </div>
 
-      <!-- Inset List -->
+      <!-- Inset List of Exercises -->
       <div class="space-y-2">
         <div v-for="ex in filteredExercises" :key="ex.id"
              @click="openExerciseDetail(ex)"
@@ -348,27 +383,33 @@
 
           <!-- Center Details -->
           <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-1.5">
-              <h3 class="font-bold text-xs truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</h3>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span v-if="isStapleExercise(ex)" 
+                    class="text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-500 text-zinc-950 shadow-2xs">
+                ⭐ 基石
+              </span>
+              <h3 class="font-bold text-xs truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">
+                {{ ex.name }}
+              </h3>
               <span class="text-[9px] px-1.5 py-0.2 rounded border flex-shrink-0"
                     :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-zinc-800 text-amber-400 border-zinc-700/60 font-semibold'">
                 {{ ex.category }}
               </span>
             </div>
+            
             <div class="text-[11px] mt-0.5 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
               🎯 <span :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">{{ ex.target }}</span>
             </div>
 
-            <!-- Tags & Substitutes -->
+            <!-- Tags, Equipment & Substitutes -->
             <div class="flex flex-wrap items-center gap-1 mt-1">
-              <span v-if="ex.englishName" class="text-[9px] font-mono px-1 py-0.2 rounded border truncate max-w-[120px]"
-                    :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-600 border-slate-300' : 'bg-zinc-950 text-zinc-500 border-zinc-800'">
-                {{ ex.englishName }}
+              <span class="text-[9px] px-1.5 py-0.2 rounded border font-mono font-medium"
+                    :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-zinc-950 text-zinc-400 border-zinc-800'">
+                {{ getExerciseEquipment(ex) }}
               </span>
-              <span v-for="tag in (ex.tags || []).slice(0, 1)" :key="tag" 
-                    class="text-[9px] px-1.5 py-0.2 rounded border"
-                    :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-700 border-slate-300 font-medium' : 'bg-zinc-950 text-zinc-400 border-zinc-800'">
-                #{{ tag }}
+              <span v-if="getExerciseSubTarget(ex)" class="text-[9px] px-1.5 py-0.2 rounded border font-medium"
+                    :class="store.settings.themeMode === 'light' ? 'bg-amber-50 text-amber-900 border-amber-200' : 'bg-zinc-950 text-amber-400/90 border-zinc-800'">
+                #{{ getExerciseSubTarget(ex) }}
               </span>
               <span v-if="ex.substitutes?.length" class="text-[9px] px-1.5 py-0.2 rounded border"
                     :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'">
@@ -377,7 +418,7 @@
             </div>
           </div>
 
-          <!-- Right action icon -->
+          <!-- Right Action Chevron -->
           <div class="flex-shrink-0" :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-500 hover:text-amber-400'">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -389,10 +430,10 @@
         <div v-if="filteredExercises.length === 0" class="py-10 text-center text-xs space-y-3 px-4" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-500'">
           <div class="space-y-1">
             <div class="text-sm font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">
-              未找到与「{{ searchQuery.trim() || '当前条件' }}」匹配的动作
+              未找到与当前筛选条件匹配的动作
             </div>
             <p class="text-[11px] max-w-xs mx-auto">
-              遇到健身房的特定品牌、罕见器械或个性化动作？支持 1 秒创建！
+              遇到健身房的特定品牌、罕见器械或自创动作？支持 1 秒新建！
             </p>
           </div>
 
@@ -401,10 +442,10 @@
                     class="w-full sm:w-auto px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-black rounded-xl text-xs active:scale-95 transition-all cursor-pointer shadow-sm">
               ✨ 1秒以「{{ searchQuery.trim() || '新动作' }}」新建自定义动作 ❯
             </button>
-            <button @click="showMachineFinder = true"
+            <button @click="resetAllFilters"
                     class="w-full sm:w-auto px-3.5 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer"
                     :class="store.settings.themeMode === 'light' ? 'border-slate-300 bg-white hover:bg-slate-100 text-slate-700' : 'border-zinc-700 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300'">
-              📸 拍照 / 语音识器械查平替
+              ↺ 清空全部筛选
             </button>
           </div>
         </div>
@@ -412,7 +453,7 @@
 
     </div>
 
-    <!-- Floating Back-to-Top Pill Button (Natural Thumb Zone Ergonomics) -->
+    <!-- Floating Back-to-Top Pill Button -->
     <Transition enter-active-class="transition duration-200 ease-out"
                 enter-from-class="opacity-0 translate-y-4 scale-90"
                 enter-to-class="opacity-100 translate-y-0 scale-100"
@@ -440,7 +481,6 @@
       @close="showDetailModal = false" 
     />
 
-    <!-- Gym Machine Multimodal Finder Modal -->
     <GymMachineFinderModal
       :visible="showMachineFinder"
       @close="showMachineFinder = false"
@@ -448,14 +488,12 @@
       @viewDetail="handleMachineFinderDetail"
     />
 
-    <!-- Warmup Flow Modal for Split Follow-Along -->
     <WarmupFlowModal
       :visible="showWarmupFlowModal"
       :plan="splitWarmupPlan"
       @close="showWarmupFlowModal = false"
     />
 
-    <!-- Stretch Flow Modal for Split Follow-Along -->
     <StretchFlowModal
       :visible="showStretchFlowModal"
       :plan="splitStretchPlan"
@@ -467,11 +505,9 @@
       <div v-if="showCreateModal" 
            class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-xl p-0 sm:p-4 animate-in fade-in duration-200"
            style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
-        <!-- Backdrop dismiss -->
         <div class="absolute inset-0" @click="showCreateModal = false"></div>
         
         <div class="relative z-10 bg-zinc-900 border border-zinc-700/80 rounded-t-3xl sm:rounded-3xl max-w-md w-full p-4 space-y-3 animate-in slide-in-from-bottom duration-200 shadow-2xl">
-          <!-- Top ergonomic drag pill -->
           <div class="w-10 h-1 rounded-full bg-zinc-700 mx-auto -mt-1 mb-2 flex-shrink-0"></div>
 
           <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
@@ -532,6 +568,13 @@ import GymMachineFinderModal from "../components/GymMachineFinderModal.vue";
 import WarmupFlowModal from "../components/WarmupFlowModal.vue";
 import StretchFlowModal from "../components/StretchFlowModal.vue";
 import ExerciseImage from "../components/ExerciseImage.vue";
+import { 
+  EQUIPMENT_OPTIONS, 
+  SUB_TARGET_MAP, 
+  isStapleExercise, 
+  getExerciseEquipment, 
+  getExerciseSubTarget 
+} from "../utils/exerciseFilterUtils.js";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import { triggerHaptic } from "../utils/vibrate.js";
 import { getUniversalScrollTop, universalScrollToTop } from "../utils/scrollUtils.js";
@@ -539,11 +582,12 @@ import { getUniversalScrollTop, universalScrollToTop } from "../utils/scrollUtil
 const showMachineFinder = ref(false);
 const searchQuery = ref("");
 const activeCategory = ref("全部");
+const activeEquipment = ref("全部");
+const activeSubTarget = ref("全部");
 const showScienceGuide = ref(false);
 
 const categories = ["全部", "胸部", "背部", "肩部", "手臂", "腿部", "核心", "有氧", "热身", "拉伸", "其它"];
 
-// Category labels with human-friendly plain translations
 const categoryDisplayNames = {
   "全部": "全部",
   "胸部": "胸部 (胸肌)",
@@ -557,6 +601,13 @@ const categoryDisplayNames = {
   "拉伸": "练后拉伸 (放松防酸)",
   "其它": "其它"
 };
+
+const isDefaultHubView = computed(() => {
+  return activeCategory.value === "全部" && 
+         activeEquipment.value === "全部" && 
+         activeSubTarget.value === "全部" && 
+         !searchQuery.value.trim();
+});
 
 // Warmup Split Filter state
 const activeWarmupSplit = ref("push");
@@ -577,7 +628,7 @@ const currentWarmupTip = computed(() => {
   if (activeWarmupSplit.value === "legs") {
     return "💡 练腿无需过多预热上肢推举肩袖。久坐导致髂腰肌紧绷缩短引起骨盆前倾，重点跪姿拉伸打开髋屈肌、臀桥唤醒沉睡的臀大肌。";
   }
-  return "💡 完整 10 款动态激活动作清单，可根据今日训练需要自由选择。";
+  return "💡 完整动态激活动作清单，可根据今日训练需要自由选择。";
 });
 
 // Stretch Split Filter state
@@ -599,7 +650,7 @@ const currentStretchTip = computed(() => {
   if (activeStretchSplit.value === "legs") {
     return "🌿 深蹲硬拉后股四、腘绳与臀肌承受高张力。单腿站立屈膝牵拉股直肌，仰卧4字抱膝松解深层梨状肌，减轻坐骨压力。";
   }
-  return "🌿 完整 20 款静态拉伸与肌筋膜滚压动作清单，心率平复后进行，保持20~30秒舒适牵拉。";
+  return "🌿 完整静态拉伸与肌筋膜滚压动作清单，心率平复后进行，保持20~30秒舒适牵拉。";
 });
 
 // Follow-along modals for warmup / stretch
@@ -637,7 +688,26 @@ function scrollToTop() {
 
 function selectCategory(catName) {
   activeCategory.value = catName;
+  activeSubTarget.value = "全部";
   if (store.settings.vibrationEnabled) triggerHaptic("selection");
+}
+
+function selectEquipment(equipKey) {
+  activeEquipment.value = equipKey;
+  if (store.settings.vibrationEnabled) triggerHaptic("selection");
+}
+
+function selectSubTarget(sub) {
+  activeSubTarget.value = sub;
+  if (store.settings.vibrationEnabled) triggerHaptic("selection");
+}
+
+function resetAllFilters() {
+  activeCategory.value = "全部";
+  activeEquipment.value = "全部";
+  activeSubTarget.value = "全部";
+  searchQuery.value = "";
+  if (store.settings.vibrationEnabled) triggerHaptic("light");
 }
 
 onMounted(() => {
@@ -668,20 +738,39 @@ const categoryOptions = computed(() => {
   });
 });
 
-// Visual Category Hub Cards with Plain Chinese Descriptions
+const equipmentOptionsWithCounts = computed(() => {
+  return EQUIPMENT_OPTIONS.map(opt => {
+    if (opt.key === "全部") {
+      const pool = activeCategory.value === "全部" 
+        ? store.exercises 
+        : store.exercises.filter(e => e.category === activeCategory.value);
+      return { ...opt, count: pool.length };
+    }
+    const pool = activeCategory.value === "全部" 
+      ? store.exercises 
+      : store.exercises.filter(e => e.category === activeCategory.value);
+    const count = pool.filter(e => getExerciseEquipment(e) === opt.key).length;
+    return { ...opt, count };
+  });
+});
+
+const subTargetOptions = computed(() => {
+  if (activeCategory.value === "全部") return [];
+  return SUB_TARGET_MAP[activeCategory.value] || [];
+});
+
 const visualHubCards = computed(() => [
-  { name: "胸部", title: "胸部 (胸肌)", icon: "🛡️", desc: "卧推、飞鸟与俯卧撑 · 强化上肢推力", count: store.exercises.filter(e => e.category === "胸部").length },
-  { name: "背部", title: "背部 (后背)", icon: "🦅", desc: "引体向上、划船与下拉 · 塑造倒三角", count: store.exercises.filter(e => e.category === "背部").length },
-  { name: "肩部", title: "肩部 (肩膀/三角肌)", icon: "🏹", desc: "推肩、侧平举与面拉 · 塑造立体肩部", count: store.exercises.filter(e => e.category === "肩部").length },
-  { name: "手臂", title: "手臂 (二头/三头)", icon: "💪", desc: "弯举、三头下压与臂屈伸 · 充血紧致手臂", count: store.exercises.filter(e => e.category === "手臂").length },
-  { name: "腿部", title: "腿部 (臀腿/下肢)", icon: "🦵", desc: "深蹲、硬拉、腿举与分腿蹲 · 强化力量基座", count: store.exercises.filter(e => e.category === "腿部").length },
-  { name: "核心", title: "核心 (腹肌/腰腹)", icon: "🧱", desc: "卷腹、举腿与平板支撑 · 针对腹直肌与腰腹稳定", count: store.exercises.filter(e => e.category === "核心").length },
-  { name: "有氧", title: "有氧 (心肺/燃脂)", icon: "🏃", desc: "单车、跑步与跳绳 · 增强心肺与热量消耗", count: store.exercises.filter(e => e.category === "有氧").length },
-  { name: "热身", title: "动态热身 (练前激活)", icon: "🔥", desc: "关节活动度与动态拉伸 · 升温滑液防拉伤", count: store.exercises.filter(e => e.category === "热身").length },
-  { name: "拉伸", title: "练后拉伸 (放松防酸)", icon: "🧘", desc: "肌群静态牵拉与肌筋膜松解 · 缓解酸痛与僵硬", count: store.exercises.filter(e => e.category === "拉伸").length }
+  { name: "胸部", title: "胸部 (胸肌)", icon: "🛡️", desc: "卧推、飞鸟、推胸机与双杠臂屈伸", count: store.exercises.filter(e => e.category === "胸部").length },
+  { name: "背部", title: "背部 (后背)", icon: "🦅", desc: "硬拉、高位下拉、各式划船与引体", count: store.exercises.filter(e => e.category === "背部").length },
+  { name: "肩部", title: "肩部 (肩膀/三角肌)", icon: "🏹", desc: "推肩、侧平举、面拉与肩袖防伤", count: store.exercises.filter(e => e.category === "肩部").length },
+  { name: "手臂", title: "手臂 (二头/三头)", icon: "💪", desc: "各式弯举、三头下压与臂屈伸", count: store.exercises.filter(e => e.category === "手臂").length },
+  { name: "腿部", title: "腿部 (臀腿/下肢)", icon: "🦵", desc: "深蹲、倒蹬、腿屈伸、臀推与小腿提踵", count: store.exercises.filter(e => e.category === "腿部").length },
+  { name: "核心", title: "核心 (腹肌/腰腹)", icon: "🧱", desc: "举腿、卷腹、龙旗、雨刷与平板支撑", count: store.exercises.filter(e => e.category === "核心").length },
+  { name: "有氧", title: "有氧 (心肺/燃脂)", icon: "🏃", desc: "单车、跑步机、椭圆机与跳绳", count: store.exercises.filter(e => e.category === "有氧").length },
+  { name: "热身", title: "动态热身 (练前激活)", icon: "🔥", desc: "关节活动度与动态拉伸 · 升温滑液", count: store.exercises.filter(e => e.category === "热身").length },
+  { name: "拉伸", title: "练后拉伸 (放松防酸)", icon: "🧘", desc: "肌群静态牵拉与肌筋膜松解", count: store.exercises.filter(e => e.category === "拉伸").length }
 ]);
 
-// 6 Curated Staple Exercises
 const stapleExercises = computed(() => {
   const ids = [
     "ex-barbell-bench-press",
@@ -713,11 +802,27 @@ watch(showCreateModal, (val) => {
 });
 
 const filteredExercises = computed(() => {
+  const q = searchQuery.value.trim().toLowerCase();
+
   return store.exercises.filter(ex => {
-    const matchCat = activeCategory.value === "全部" || ex.category === activeCategory.value;
-    const q = searchQuery.value.trim().toLowerCase();
-    
-    // Split filter for warmup
+    // 1. Category Filter
+    if (activeCategory.value !== "全部" && ex.category !== activeCategory.value) {
+      return false;
+    }
+
+    // 2. Equipment Filter
+    if (activeEquipment.value !== "全部") {
+      const eq = getExerciseEquipment(ex);
+      if (eq !== activeEquipment.value) return false;
+    }
+
+    // 3. SubTarget Filter
+    if (activeSubTarget.value !== "全部") {
+      const sub = getExerciseSubTarget(ex);
+      if (sub !== activeSubTarget.value) return false;
+    }
+
+    // 4. Split filter for warmup
     if (activeCategory.value === "热身" && !q && activeWarmupSplit.value !== "all") {
       if (activeWarmupSplit.value === "push") {
         const pushIds = ["ex-warmup-wrist-circles", "ex-warmup-arm-circles", "ex-warmup-wall-slide", "ex-warmup-band-pull-apart"];
@@ -731,7 +836,7 @@ const filteredExercises = computed(() => {
       }
     }
 
-    // Split filter for stretch
+    // 5. Split filter for stretch
     if (activeCategory.value === "拉伸" && !q && activeStretchSplit.value !== "all") {
       if (activeStretchSplit.value === "push") {
         const pushIds = ["ex-stretch-doorway-pec", "ex-stretch-across-chest-shoulder", "ex-stretch-standing-triceps", "ex-stretch-rotator-cuff"];
@@ -745,13 +850,21 @@ const filteredExercises = computed(() => {
       }
     }
 
-    if (!q) return matchCat;
-    const matchQuery = ex.name.toLowerCase().includes(q) || 
-                       (ex.englishName && ex.englishName.toLowerCase().includes(q)) ||
-                       (ex.aliases && ex.aliases.some(a => a.toLowerCase().includes(q))) ||
-                       (ex.target && ex.target.toLowerCase().includes(q)) || 
-                       (ex.tags && ex.tags.some(t => t.toLowerCase().includes(q)));
-    return matchCat && matchQuery;
+    // 6. Search query match
+    if (!q) return true;
+    return ex.name.toLowerCase().includes(q) || 
+           (ex.englishName && ex.englishName.toLowerCase().includes(q)) ||
+           (ex.aliases && ex.aliases.some(a => a.toLowerCase().includes(q))) ||
+           (ex.target && ex.target.toLowerCase().includes(q)) || 
+           (ex.tags && ex.tags.some(t => t.toLowerCase().includes(q))) ||
+           getExerciseEquipment(ex).includes(q) ||
+           getExerciseSubTarget(ex).includes(q);
+  }).sort((a, b) => {
+    // Rank staples higher unless explicitly searching
+    if (q) return 0;
+    const aStaple = isStapleExercise(a) ? 1 : 0;
+    const bStaple = isStapleExercise(b) ? 1 : 0;
+    return bStaple - aStaple;
   });
 });
 
