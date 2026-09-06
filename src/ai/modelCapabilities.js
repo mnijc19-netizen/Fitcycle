@@ -10,7 +10,7 @@ function familyCapabilities(provider, modelId) {
     // Pure text models (GLM-4-Flash, GLM-4-Plus, GLM-4-Air, GLM-4-Long, GLM-Zero) DO NOT support image
     const isImageSupported = /\d+(?:\.\d+)?v/i.test(id) || id.includes("visual") || id.includes("vision");
     const isToolsSupported = !id.includes("zero") && !id.includes("embedding");
-    const isReasoning = id.includes("zero");
+    const isReasoning = id.includes("zero") || id.includes("4.5-air") || id.includes("reason");
     return { image: isImageSupported, tools: isToolsSupported, reasoning: isReasoning };
   }
   

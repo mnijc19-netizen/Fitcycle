@@ -4,6 +4,7 @@ import { runAssistantLoop } from "../src/ai/assistantRuntime.js";
 import { createFitcycleToolRuntime } from "../src/ai/fitcycleTools.js";
 import { fetchProviderModels, streamProviderChatCompletion } from "../src/ai/providerClient.js";
 import { exportBackupJSON, importBackupJSON, store, stopRestTimer } from "../src/store/fitnessStore.js";
+import { addCustomModel, DEFAULT_PRESET_MODELS, getActiveModelId, setActiveProvider } from "../src/ai/aiSession.js";
 
 let baseline;
 
@@ -61,6 +62,34 @@ describe("dynamic model capabilities", () => {
 
   it("does not advertise image input based on description text", () => {
     expect(getModelCapabilities({ architecture: { input_modalities: ["text"], output_modalities: ["text"] }, description: "image expert" }).image).toBe(false);
+  });
+
+  it("recognizes GLM-4.5-Air and GLM-4.6V capabilities accurately", () => {
+    const glmAir = normalizeProviderModel("zhipu", { id: "glm-4.5-air" });
+    const glmVision = normalizeProviderModel("zhipu", { id: "glm-4.6v" });
+
+    // GLM-4.5-Air: thinking & reasoning, tools, pure text (not image)
+    expect(glmAir.capabilities.reasoning).toBe(true);
+    expect(glmAir.capabilities.image).toBe(false);
+    expect(glmAir.capabilities.tools).toBe(true);
+
+    // GLM-4.6V: multimodal vision, tools, not deep reasoning
+    expect(glmVision.capabilities.image).toBe(true);
+    expect(glmVision.capabilities.tools).toBe(true);
+    expect(glmVision.capabilities.reasoning).toBe(false);
+
+    // Verify preset models list contains both models right at the top
+    const zhipuPresets = DEFAULT_PRESET_MODELS.zhipu.map((m) => m.id);
+    expect(zhipuPresets.slice(0, 2)).toEqual(["glm-4.5-air", "glm-4.6v"]);
+  });
+
+  it("supports dynamically adding and selecting custom model IDs", () => {
+    setActiveProvider("zhipu");
+    const custom = addCustomModel("glm-4.7v-special", "GLM 4.7V 专有版", "zhipu");
+    expect(custom).not.toBeNull();
+    expect(custom.id).toBe("glm-4.7v-special");
+    expect(custom.capabilities.image).toBe(true);
+    expect(getActiveModelId()).toBe("glm-4.7v-special");
   });
 });
 

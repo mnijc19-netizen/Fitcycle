@@ -84,11 +84,36 @@
         <span class="text-[10px] text-amber-400 font-mono">点击直接切换</span>
       </div>
 
-      <!-- Quick Search Bar -->
-      <div class="relative">
-        <input id="model-search" v-model="modelSearch" type="search" 
-               placeholder="🔍 输入名称搜索模型 ID (如 glm-4-plus, glm-4v, deepseek-r1)..."
-               class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3 py-2 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition-colors" />
+      <!-- Quick Search Bar & Custom Model Input -->
+      <div class="space-y-2">
+        <div class="relative">
+          <input id="model-search" v-model="modelSearch" type="search" 
+                 placeholder="🔍 搜索模型 ID (如 glm-4.5-air, glm-4.6v, deepseek-r1)..."
+                 class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3 py-2 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition-colors" />
+        </div>
+
+        <!-- Custom Model Input Row -->
+        <div class="p-2.5 rounded-xl bg-zinc-900/70 border border-zinc-800/80 space-y-1.5">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="font-medium text-zinc-300 flex items-center gap-1">
+              <span class="text-amber-400">➕</span> 自定义添加/指定模型 ID
+            </span>
+            <span class="text-[10px] text-zinc-500 font-mono">支持输入任意新专享包/微调 ID</span>
+          </div>
+          <div class="flex gap-1.5">
+            <input v-model="customModelInput" type="text"
+                   :placeholder="customModelPlaceholder"
+                   class="flex-1 bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-lg px-2.5 py-1.5 text-xs text-zinc-100 font-mono outline-none"
+                   @keyup.enter="handleApplyCustomModel" />
+            <button type="button" @click="handleApplyCustomModel" :disabled="!customModelInput.trim()"
+                    class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 disabled:bg-zinc-800 disabled:text-zinc-600 text-zinc-950 text-xs font-bold active:scale-95 transition-all">
+              选用
+            </button>
+          </div>
+          <div v-if="customSuccessMsg" class="text-[10px] text-emerald-400 flex items-center gap-1">
+            <span>✓</span> <span>{{ customSuccessMsg }}</span>
+          </div>
+        </div>
       </div>
 
       <!-- 宫格卡片式模型选择列表 (2-Column Grid Layout) -->
@@ -106,6 +131,9 @@
               <span v-if="selectedModelId === model.id" class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0 animate-pulse"></span>
             </div>
             <div class="text-[9px] text-zinc-500 font-mono truncate mt-0.5">{{ model.id }}</div>
+            <div v-if="model.description" class="text-[9px] text-zinc-400/80 leading-tight line-clamp-2 mt-0.5" :title="model.description">
+              {{ model.description }}
+            </div>
           </div>
 
           <!-- Feature Pills in Grid Card -->
@@ -167,6 +195,8 @@ function handleOpenChat() {
 }
 import {
   AI_PROVIDERS,
+  DEFAULT_PRESET_MODELS,
+  addCustomModel,
   aiSession,
   clearAIConnection,
   getActiveApiKey,
@@ -186,11 +216,33 @@ const loading = ref(false);
 const statusText = ref("");
 const statusError = ref(false);
 const modelSearch = ref("");
+const customModelInput = ref("");
+const customSuccessMsg = ref("");
 
 const activeProvider = computed(getActiveProvider);
 const connected = computed(() => Boolean(getActiveApiKey()));
 const portalLink = computed(() => activeProvider.value.portal);
 const activeModels = computed(getActiveModels);
+
+const customModelPlaceholder = computed(() => {
+  if (aiSession.activeProvider === "zhipu") return "如 glm-4.5-air 或 glm-4.6v";
+  if (aiSession.activeProvider === "deepseek") return "如 deepseek-chat 或 deepseek-reasoner";
+  if (aiSession.activeProvider === "qwen") return "如 qwen2.5-72b-instruct";
+  return "输入模型 ID (如 custom-model-id)";
+});
+
+function handleApplyCustomModel() {
+  const id = customModelInput.value.trim();
+  if (!id) return;
+  const added = addCustomModel(id);
+  if (added) {
+    customSuccessMsg.value = `已选用「${added.name || added.id}」`;
+    customModelInput.value = "";
+    setTimeout(() => {
+      customSuccessMsg.value = "";
+    }, 4000);
+  }
+}
 
 const hasAnyConnection = computed(() => Object.values(aiSession.apiKeys).some((key) => Boolean(key)));
 
@@ -222,6 +274,8 @@ watch(
     statusText.value = "";
     statusError.value = false;
     modelSearch.value = "";
+    customModelInput.value = "";
+    customSuccessMsg.value = "";
   }
 );
 
@@ -255,18 +309,28 @@ async function testConnection() {
   try {
     const models = await fetchProviderModels(targetProvider, key);
 
-    setSessionApiKey(key, targetProvider);
-    setProviderModels(models, targetProvider);
-
-    if (models.length > 0) {
-      const current = getActiveModelId();
-      const stillValid = models.some((m) => m.id === current);
-      if (!stillValid) {
-        setSelectedModel(models[0].id, targetProvider);
+    // Merge defaults so promo models like glm-4.5-air / glm-4.6v aren't lost if remote /models endpoint omits them
+    const existingIds = new Set(models.map((m) => m.id.toLowerCase()));
+    const defaults = DEFAULT_PRESET_MODELS[targetProvider] || [];
+    const merged = [...models];
+    for (const d of defaults) {
+      if (!existingIds.has(d.id.toLowerCase())) {
+        merged.push(d);
       }
     }
 
-    statusText.value = `${activeProvider.value.name} 连接成功，已获取 ${models.length} 个可用对话模型。`;
+    setSessionApiKey(key, targetProvider);
+    setProviderModels(merged, targetProvider);
+
+    if (merged.length > 0) {
+      const current = getActiveModelId();
+      const stillValid = merged.some((m) => m.id === current);
+      if (!stillValid) {
+        setSelectedModel(merged[0].id, targetProvider);
+      }
+    }
+
+    statusText.value = `${activeProvider.value.name} 连接成功，已获取 ${merged.length} 个可用对话模型。`;
     statusError.value = false;
   } catch (err) {
     statusText.value = err.message || "连接失败，请检查 API Key 是否有效。";

@@ -53,6 +53,36 @@ export const DEFAULT_PRESET_MODELS = {
   ],
   zhipu: [
     {
+      id: "glm-4.5-air",
+      name: "GLM-4.5-Air (智能体与深度思考)",
+      description: "106B参数高性价比智能体模型，支持深度思考与工具调用 (1200万专享包)",
+      capabilities: { text: true, image: false, tools: true, streaming: true, reasoning: true }
+    },
+    {
+      id: "glm-4.6v",
+      name: "GLM-4.6V (多模态视觉旗舰 · 106B)",
+      description: "新一代视觉多模态大模型，原生支持高精识图与工具调用 (600万专享包)",
+      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false }
+    },
+    {
+      id: "glm-4.6v-flash",
+      name: "GLM-4.6V-Flash (极速多模态)",
+      description: "极速轻量多模态视觉识图模型",
+      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false }
+    },
+    {
+      id: "glm-4.5",
+      name: "GLM-4.5 (新一代旗舰全能)",
+      description: "智谱新一代通用旗舰基座模型",
+      capabilities: { text: true, image: false, tools: true, streaming: true, reasoning: false }
+    },
+    {
+      id: "glm-4.5v",
+      name: "GLM-4.5V (多模态图文)",
+      description: "多模态视觉分析与图文理解",
+      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false }
+    },
+    {
       id: "glm-4-plus",
       name: "GLM-4-Plus (高智能旗舰)",
       description: "智谱顶级通用全功能模型",
@@ -254,14 +284,20 @@ function writeStorageValue(key, value) {
 }
 
 function readCachedModels(provider) {
+  const defaults = DEFAULT_PRESET_MODELS[provider] ? JSON.parse(JSON.stringify(DEFAULT_PRESET_MODELS[provider])) : [];
   try {
     const raw = readStorageValue(CACHED_MODELS_KEYS[provider]);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // Retain curated defaults first (with latest order & capabilities), followed by any custom models user added
+        const defaultIds = new Set(defaults.map((m) => m.id.toLowerCase()));
+        const customModels = parsed.filter((m) => !defaultIds.has(String(m.id || "").toLowerCase()));
+        return [...defaults, ...customModels];
+      }
     }
   } catch {}
-  return DEFAULT_PRESET_MODELS[provider] ? JSON.parse(JSON.stringify(DEFAULT_PRESET_MODELS[provider])) : [];
+  return defaults;
 }
 
 const initActiveProvider = AI_PROVIDERS.some((item) => item.id === readStorageValue(PROVIDER_SESSION_KEY))
@@ -350,6 +386,34 @@ export function setProviderModels(models, provider = aiSession.activeProvider) {
   if (clean.length > 0) {
     writeStorageValue(CACHED_MODELS_KEYS[provider], JSON.stringify(clean));
   }
+}
+
+export function addCustomModel(modelId, modelName = "", provider = aiSession.activeProvider) {
+  const cleanId = typeof modelId === "string" ? modelId.trim() : "";
+  if (!cleanId) return null;
+  const currentModels = [...getActiveModels()];
+  let existing = currentModels.find((m) => m.id.toLowerCase() === cleanId.toLowerCase());
+  if (!existing) {
+    const isImage = /\d+(?:\.\d+)?v/i.test(cleanId) || cleanId.toLowerCase().includes("vision") || cleanId.toLowerCase().includes("vl");
+    const isReasoning = cleanId.toLowerCase().includes("reason") || cleanId.toLowerCase().includes("r1") || cleanId.toLowerCase().includes("zero") || cleanId.toLowerCase().includes("air");
+    const newModel = {
+      id: cleanId,
+      name: (typeof modelName === "string" && modelName.trim()) ? modelName.trim() : cleanId,
+      description: "用户自定义添加模型",
+      capabilities: {
+        text: true,
+        image: isImage,
+        tools: true,
+        streaming: true,
+        reasoning: isReasoning
+      }
+    };
+    currentModels.unshift(newModel);
+    setProviderModels(currentModels, provider);
+    existing = newModel;
+  }
+  setSelectedModel(existing.id, provider);
+  return existing;
 }
 
 export function clearConversation() {
