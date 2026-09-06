@@ -35,7 +35,7 @@
                 </span>
               </h3>
               <p class="text-[11px]" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">
-                拍照、语音或口语描述，毫秒级定位 109 款黄金动作
+                拍照、语音或口语描述，毫秒级定位 {{ store.exercises.length }} 款黄金动作
               </p>
             </div>
           </div>

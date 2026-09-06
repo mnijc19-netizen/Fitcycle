@@ -42,7 +42,7 @@
           <span>拍照 / 语音智能识器械</span>
         </span>
         <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500 text-zinc-950 flex items-center gap-1 shadow-sm">
-          <span>秒识 109 动作</span>
+          <span>秒识 {{ store.exercises.length }} 动作</span>
           <span>→</span>
         </span>
       </button>
@@ -143,11 +143,27 @@
 
       </div>
 
-      <div v-if="filteredExercises.length === 0" class="py-12 text-center text-xs space-y-2" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-500'">
-        <div>未找到与关键词匹配的动作</div>
-        <button @click="openCreateExercise" class="font-bold hover:underline cursor-pointer" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">
-          立即添加自定义动作 ❯
-        </button>
+      <div v-if="filteredExercises.length === 0" class="py-10 text-center text-xs space-y-3 px-4" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-500'">
+        <div class="space-y-1">
+          <div class="text-sm font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">
+            未找到与「{{ searchQuery.trim() || '当前条件' }}」匹配的动作
+          </div>
+          <p class="text-[11px] max-w-xs mx-auto">
+            遇到健身房的特定品牌、罕见器械或个性化动作？别担心，FitCycle 支持 1 秒创建！
+          </p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+          <button @click="openCreateExercise" 
+                  class="w-full sm:w-auto px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-black rounded-xl text-xs active:scale-95 transition-all cursor-pointer shadow-sm">
+            ✨ 1秒以「{{ searchQuery.trim() || '新动作' }}」新建自定义动作 ❯
+          </button>
+          <button @click="showMachineFinder = true"
+                  class="w-full sm:w-auto px-3.5 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer"
+                  :class="store.settings.themeMode === 'light' ? 'border-slate-300 bg-white hover:bg-slate-100 text-slate-700' : 'border-zinc-700 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300'">
+            📸 拍照 / 语音识器械查平替
+          </button>
+        </div>
       </div>
     </div>
 
@@ -350,7 +366,25 @@ function handleMachineFinderDetail(exercise) {
 }
 
 function openCreateExercise() {
-  newEx.value = { name: "", category: "胸部", target: "", scienceDetail: "", defaultSets: 3, defaultReps: "10-12" };
+  const q = searchQuery.value.trim();
+  let guessedCat = activeCategory.value !== "全部" ? activeCategory.value : "背部";
+  if (q) {
+    if (q.includes("背") || q.includes("拉") || q.includes("划船") || q.includes("引体") || q.includes("剪刀")) guessedCat = "背部";
+    else if (q.includes("胸") || q.includes("卧推") || q.includes("俯卧撑") || q.includes("夹胸")) guessedCat = "胸部";
+    else if (q.includes("肩") || q.includes("推举") || q.includes("侧平举") || q.includes("飞鸟")) guessedCat = "肩部";
+    else if (q.includes("臂") || q.includes("弯举") || q.includes("下压") || q.includes("二头") || q.includes("三头")) guessedCat = "手臂";
+    else if (q.includes("腿") || q.includes("蹲") || q.includes("倒蹬") || q.includes("硬拉") || q.includes("哈克")) guessedCat = "腿部";
+    else if (q.includes("腹") || q.includes("核心") || q.includes("卷腹") || q.includes("平板")) guessedCat = "核心";
+    else if (q.includes("跑") || q.includes("车") || q.includes("有氧") || q.includes("绳")) guessedCat = "有氧";
+  }
+  newEx.value = { 
+    name: q, 
+    category: guessedCat, 
+    target: "", 
+    scienceDetail: "", 
+    defaultSets: 3, 
+    defaultReps: "10-12" 
+  };
   showCreateModal.value = true;
 }
 

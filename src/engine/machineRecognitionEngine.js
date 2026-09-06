@@ -86,7 +86,7 @@ const LEXICON_ENTRIES = [
     label: "高位向下拉背",
     keywords: [
       "往下拉", "向下拉", "下拉", "往下拉背", "高位拉", "手往下拉", "从上往下拉",
-      "向下拽", "拉横杆", "下拉背阔"
+      "向下拽", "拉横杆", "下拉背阔", "剪刀下拉", "剪刀拉背", "剪刀机"
     ]
   },
   {
@@ -195,6 +195,14 @@ const LEXICON_ENTRIES = [
     label: "高位下拉器",
     keywords: [
       "高位下拉器", "下拉机", "高位下拉机", "背部下拉机", "器械下拉", "背阔下拉机"
+    ]
+  },
+  {
+    category: FEATURE_CATEGORIES.EQUIPMENT,
+    tag: "equipment:scissor_machine",
+    label: "剪刀机/分动圆弧器械",
+    keywords: [
+      "剪刀机", "剪刀下拉", "剪刀拉背", "剪刀划船", "悍马剪刀机", "分动高位下拉", "圆弧下拉机", "剪刀臂", "剪刀式", "剪刀"
     ]
   },
   {
@@ -476,6 +484,15 @@ const EXERCISE_SPECIFIC_FEATURE_MAP = {
     "posture:seated",
     "action:pull_down",
     "equipment:lat_pulldown_machine",
+    "equipment:general_machine",
+    "muscle:back"
+  ],
+  "ex-diverging-lat-pulldown": [
+    "posture:seated",
+    "action:pull_down",
+    "equipment:scissor_machine",
+    "equipment:lat_pulldown_machine",
+    "equipment:lever_hammer_machine",
     "equipment:general_machine",
     "muscle:back"
   ],
@@ -809,8 +826,17 @@ export function recognizeMachineByQuery(queryText, allExercises = DEFAULT_EXERCI
     }
   }
 
-  // Sort descending by confidence, then by exercise name length
-  results.sort((a, b) => b.confidence - a.confidence);
+  // Sort descending by confidence, with tie-breaker for direct name/alias matches
+  results.sort((a, b) => {
+    if (b.confidence !== a.confidence) {
+      return b.confidence - a.confidence;
+    }
+    const aDirect = a.matchedFeatures.some(f => f.includes("命中"));
+    const bDirect = b.matchedFeatures.some(f => f.includes("命中"));
+    if (aDirect && !bDirect) return -1;
+    if (!aDirect && bDirect) return 1;
+    return 0;
+  });
 
   return results.slice(0, limit);
 }

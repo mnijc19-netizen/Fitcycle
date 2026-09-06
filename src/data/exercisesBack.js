@@ -492,5 +492,39 @@ export const BACK_EXERCISES = [
       { name: "辅助引体", reason: "器械配重减重引体" },
       { name: "胸垫胸前划船 (T-Bar)", reason: "器械上背厚度雕刻" }
     ]
+  },
+  {
+    id: "ex-diverging-lat-pulldown",
+    name: "分动剪刀式高位下拉 (剪刀机)",
+    englishName: "Iso-Lateral Diverging Lat Pulldown (Circular / Scissor Machine)",
+    category: "背部",
+    target: "背阔肌外下束 / 弧形分动力线",
+    secondaryMuscles: ["大圆肌", "菱形肌", "肱二头肌"],
+    aliases: [
+      "剪刀机", "剪刀拉背", "剪刀划船", "剪刀下拉", "剪刀高位下拉", "剪刀式高位下拉", 
+      "悍马剪刀机", "分动高位下拉", "圆弧高位下拉", "环形下拉", "圆弧下拉机",
+      "Iso-Lateral Lat Pulldown", "Diverging Lat Pulldown", "Circular Lat Pulldown", "Scissor Pulldown", "Scissor Row"
+    ],
+    gifUrl: "./exercises/lat-pulldown.gif",
+    defaultSets: 4,
+    defaultReps: "10-12",
+    scienceDetail: "商业与硬核健身房练背顶级器械！双臂独立活动臂呈剪刀状圆弧形外展内收，完全顺应背阔肌从外上方到内下方的扇形解剖肌纤维力线。两臂独立分动彻底杜绝惯用侧借力，底端行程能实现比固定直杆更极致的沉肩内收与峰值挤压。",
+    tags: ["剪刀机王牌", "分动独立力臂", "背阔肌扇形力线", "倒三角神器"],
+    tips: {
+      prep: "调节座椅与大腿海绵挡板，确保双腿被牢牢卡紧，挺胸微后仰10°，双手对握或半对握剪刀机手柄。",
+      execution: "肩胛骨先主动下沉下压，驱动手肘顺着器械剪刀弧线垂直向身体两侧后下方拉动，将把手拉至胸部两侧。",
+      peak: "在底端手肘紧靠躯干肋骨两侧，强烈顶峰挤压背阔肌1.5~2秒。",
+      negative: "控制配重受控向上顺应圆弧缓慢回放，直到背阔肌被完全向上向外拉伸展开。",
+      breathing: "向下发力呼气，缓慢回放吸气。"
+    },
+    commonMistakes: [
+      "身体大幅度剧烈后仰利用重力砸拉",
+      "只用双手手腕和二头死拉，肩胛骨未主动下沉带动"
+    ],
+    substitutes: [
+      { name: "对握/宽握高位下拉", reason: "经典滑轮直杆下拉" },
+      { name: "单臂高位下拉", reason: "单侧自由旋转角度拉力" },
+      { name: "胸垫胸前划船 (T-Bar)", reason: "器械稳定上背厚度雕刻" }
+    ]
   }
 ];

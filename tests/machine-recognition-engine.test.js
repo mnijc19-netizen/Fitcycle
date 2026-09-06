@@ -107,4 +107,16 @@ describe("machineRecognitionEngine (Offline Colloquial Gym Machine Recognition)"
     expect(features.detectedTags.has("visual:yellow")).toBe(true);
     expect(features.detectedTags.has("equipment:lever_hammer_machine")).toBe(true);
   });
+
+  it("recognizes gym colloquial '练背的剪刀机' / '剪刀机' as diverging lat pulldown with confidence >= 0.90", () => {
+    const matches = recognizeMachineByQuery("练背的剪刀机", DEFAULT_EXERCISES);
+    expect(matches.length).toBeGreaterThan(0);
+    expect(matches[0].exercise.id).toBe("ex-diverging-lat-pulldown");
+    expect(matches[0].confidence).toBeGreaterThanOrEqual(0.90);
+    expect(matches[0].matchedFeatures.some(f => f.includes("剪刀机") || f.includes("别名"))).toBe(true);
+
+    const directScissor = recognizeMachineByQuery("剪刀机", DEFAULT_EXERCISES);
+    expect(directScissor.length).toBeGreaterThan(0);
+    expect(directScissor[0].exercise.id).toBe("ex-diverging-lat-pulldown");
+  });
 });

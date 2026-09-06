@@ -18,8 +18,8 @@ describe('FitCycle Brand & Dynamic Vector Logo', () => {
 });
 
 describe('Exercise Library 1-to-1 Accuracy & Alias Search', () => {
-  it('contains exactly 109 verified exercises across all major muscle categories', () => {
-    expect(store.exercises).toHaveLength(109);
+  it('contains verified exercises across all major muscle categories (110 models)', () => {
+    expect(store.exercises).toHaveLength(110);
     const categories = new Set(store.exercises.map(e => e.category));
     expect(categories.has('胸部')).toBe(true);
     expect(categories.has('背部')).toBe(true);
@@ -47,6 +47,12 @@ describe('Exercise Library 1-to-1 Accuracy & Alias Search', () => {
     expect(pushdown).toBeDefined();
     expect(pushdown.name).toContain('站姿绳索三头下压');
     expect(pushdown.aliases).toContain('绳索下压');
+
+    const scissorLat = store.exercises.find(e => e.id === 'ex-diverging-lat-pulldown');
+    expect(scissorLat).toBeDefined();
+    expect(scissorLat.name).toContain('分动剪刀式高位下拉');
+    expect(scissorLat.aliases).toContain('剪刀机');
+    expect(scissorLat.aliases).toContain('剪刀拉背');
   });
 
   it('allows alias search in ExercisesView', async () => {
@@ -65,9 +71,13 @@ describe('Exercise Library 1-to-1 Accuracy & Alias Search', () => {
     // Search by English name "Military" -> should find overhead barbell press
     await searchInput.setValue('Military');
     expect(wrapper.text()).toContain('杠铃推肩');
+
+    // Search by popular gym machine nickname "剪刀机" -> should find diverging lat pulldown
+    await searchInput.setValue('剪刀机');
+    expect(wrapper.text()).toContain('分动剪刀式高位下拉');
   });
 
-  it('guarantees all 109 exercises have physically present local animation GIFs', () => {
+  it('guarantees all verified exercises have physically present local animation GIFs', () => {
     const fs = require('fs');
     const path = require('path');
     const publicExercises = fs.readdirSync(path.resolve(__dirname, '../public/exercises'));
