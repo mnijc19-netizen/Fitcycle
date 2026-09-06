@@ -25,7 +25,7 @@
             <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
             3D 动作指导
           </span>
-          <span class="text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-700 font-bold' : 'text-zinc-400'">{{ exercise?.category }}</span>
+          <span class="text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-700 font-bold' : 'text-zinc-400'">{{ currentExercise?.category }}</span>
         </div>
 
         <button @click="$emit('close')" 
@@ -42,15 +42,21 @@
         
         <!-- 3D Muscle Diagram / Animation Display Box -->
         <div class="w-full h-60 bg-zinc-950 border border-zinc-800 rounded-3xl overflow-hidden flex items-center justify-center relative p-2 shadow-2xl" data-theme-preserve="true">
-          <img v-if="exercise?.gifUrl && !gifError" 
-               :src="exercise.gifUrl" 
-               :alt="exercise.name" 
+          <img v-if="currentExercise?.gifUrl && !gifError" 
+               :src="currentExercise.gifUrl" 
+               :alt="currentExercise.name" 
                @error="gifError = true"
                class="w-full h-full object-contain mix-blend-screen transition-all" />
           
-          <!-- Guaranteed 3D Muscle Diagram fallback -->
-          <div v-show="!exercise?.gifUrl || gifError" class="w-full h-full flex items-center justify-center">
-            <div v-html="muscleSvg" class="w-full h-full max-h-48 max-w-48 flex items-center justify-center"></div>
+          <!-- Unified 3D Anatomy Display Box (Strictly uniform 3D anatomical model style, zero 2D schematics) -->
+          <div v-show="!currentExercise?.gifUrl || gifError" class="w-full h-full flex flex-col items-center justify-center gap-3 p-6 text-center">
+            <div class="w-16 h-16 rounded-2xl bg-zinc-900/90 border border-zinc-700/80 flex items-center justify-center shadow-lg animate-pulse">
+              <span class="text-3xl">🏋️‍♂️</span>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-zinc-300">3D 解剖动图加载中</div>
+              <div class="text-[11px] text-zinc-500 font-mono mt-0.5">{{ currentExercise?.name || '标准发力动作' }}</div>
+            </div>
           </div>
 
           <!-- 3D Badges -->
@@ -68,23 +74,23 @@
         <div>
           <h2 class="text-xl font-black tracking-tight"
               :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-white'">
-            {{ exercise?.name }}
+            {{ currentExercise?.name }}
           </h2>
-          <p v-if="exercise?.englishName" class="text-xs font-mono mt-0.5"
+          <p v-if="currentExercise?.englishName" class="text-xs font-mono mt-0.5"
              :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'text-zinc-400'">
-            {{ exercise.englishName }}
+            {{ currentExercise.englishName }}
           </p>
 
           <div class="flex flex-wrap items-center gap-1.5 mt-2.5">
             <span class="px-2.5 py-1 rounded-xl text-xs font-bold flex items-center gap-1 border"
                   :class="store.settings.themeMode === 'light' ? 'bg-amber-500/15 border-amber-500/30 text-amber-800' : 'bg-amber-500/20 border-amber-500/40 text-amber-300'">
-              <span>🎯 主目标:</span> {{ exercise?.target }}
+              <span>🎯 主目标:</span> {{ currentExercise?.target }}
             </span>
             <span class="px-2.5 py-1 rounded-xl text-xs font-bold flex items-center gap-1 border"
                   :class="store.settings.themeMode === 'light' ? 'bg-sky-100 text-sky-800 border-sky-300' : 'bg-sky-950/80 text-sky-400 border-sky-500/40'">
               <span>📐 平面:</span> {{ movementPlaneInfo.name }}
             </span>
-            <span v-for="sec in exercise?.secondaryMuscles || []" :key="sec"
+            <span v-for="sec in currentExercise?.secondaryMuscles || []" :key="sec"
                   class="px-2 py-1 rounded-xl text-xs border font-semibold"
                   :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-800 border-slate-300' : 'bg-zinc-800 text-zinc-300 border-zinc-700'">
               + {{ sec }}
@@ -106,9 +112,9 @@
                   class="py-2 relative transition-colors flex items-center gap-1"
                   :class="[activeTab === 'substitutes' ? (store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400 font-black') : (store.settings.themeMode === 'light' ? 'text-slate-600 hover:text-slate-900 font-bold' : 'text-zinc-400 hover:text-zinc-200')]">
             平替动作
-            <span v-if="exercise?.substitutes?.length" class="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold"
+            <span v-if="currentExercise?.substitutes?.length" class="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold"
                   :class="store.settings.themeMode === 'light' ? 'bg-amber-100 text-amber-800 border border-amber-300' : 'bg-zinc-800 text-amber-400'">
-              {{ exercise.substitutes.length }}
+              {{ currentExercise.substitutes.length }}
             </span>
             <span v-if="activeTab === 'substitutes'" class="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-500 rounded-full"></span>
           </button>
@@ -130,55 +136,55 @@
 
         <!-- TAB 1: 动作要点 (Tips) -->
         <div v-if="activeTab === 'tips'" class="space-y-2.5 text-xs">
-          <div v-if="exercise?.tips" class="space-y-2">
-            <div v-if="exercise.tips.prep" class="p-3 rounded-2xl space-y-1 border"
+          <div v-if="currentExercise?.tips" class="space-y-2">
+            <div v-if="currentExercise.tips.prep" class="p-3 rounded-2xl space-y-1 border"
                  :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300/90 shadow-xs' : 'bg-zinc-950/80 border-zinc-800/80'">
               <div class="font-bold flex items-center gap-1.5"
                    :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">
                 <span>1️⃣</span> 准备姿态
               </div>
               <p class="leading-relaxed pl-5 font-medium"
-                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ exercise.tips.prep }}</p>
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ currentExercise.tips.prep }}</p>
             </div>
 
-            <div v-if="exercise.tips.execution" class="p-3 rounded-2xl space-y-1 border"
+            <div v-if="currentExercise.tips.execution" class="p-3 rounded-2xl space-y-1 border"
                  :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300/90 shadow-xs' : 'bg-zinc-950/80 border-zinc-800/80'">
               <div class="font-bold flex items-center gap-1.5"
                    :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">
                 <span>2️⃣</span> 发力轨迹
               </div>
               <p class="leading-relaxed pl-5 font-medium"
-                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ exercise.tips.execution }}</p>
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ currentExercise.tips.execution }}</p>
             </div>
 
-            <div v-if="exercise.tips.peak" class="p-3 rounded-2xl space-y-1 border"
+            <div v-if="currentExercise.tips.peak" class="p-3 rounded-2xl space-y-1 border"
                  :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300/90 shadow-xs' : 'bg-zinc-950/80 border-zinc-800/80'">
               <div class="font-bold flex items-center gap-1.5"
                    :class="store.settings.themeMode === 'light' ? 'text-emerald-800 font-black' : 'text-emerald-400'">
                 <span>3️⃣</span> 顶峰收缩 (Peak Contraction)
               </div>
               <p class="leading-relaxed pl-5 font-medium"
-                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ exercise.tips.peak }}</p>
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ currentExercise.tips.peak }}</p>
             </div>
 
-            <div v-if="exercise.tips.negative" class="p-3 rounded-2xl space-y-1 border"
+            <div v-if="currentExercise.tips.negative" class="p-3 rounded-2xl space-y-1 border"
                  :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300/90 shadow-xs' : 'bg-zinc-950/80 border-zinc-800/80'">
               <div class="font-bold flex items-center gap-1.5"
                    :class="store.settings.themeMode === 'light' ? 'text-sky-800 font-black' : 'text-sky-400'">
                 <span>4️⃣</span> 离心控制 (Negative / Stretch)
               </div>
               <p class="leading-relaxed pl-5 font-medium"
-                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ exercise.tips.negative }}</p>
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ currentExercise.tips.negative }}</p>
             </div>
 
-            <div v-if="exercise.tips.breathing" class="p-3 rounded-2xl space-y-1 border"
+            <div v-if="currentExercise.tips.breathing" class="p-3 rounded-2xl space-y-1 border"
                  :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300/90 shadow-xs' : 'bg-zinc-950/80 border-zinc-800/80'">
               <div class="font-bold flex items-center gap-1.5"
                    :class="store.settings.themeMode === 'light' ? 'text-purple-800 font-black' : 'text-purple-400'">
                 <span>🫁</span> 呼吸节奏
               </div>
               <p class="leading-relaxed pl-5 font-medium"
-                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ exercise.tips.breathing }}</p>
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ currentExercise.tips.breathing }}</p>
             </div>
           </div>
 
@@ -202,7 +208,7 @@
           </div>
 
           <!-- Common Mistakes -->
-          <div v-if="exercise?.commonMistakes && exercise.commonMistakes.length" 
+          <div v-if="currentExercise?.commonMistakes && currentExercise.commonMistakes.length" 
                class="p-3.5 rounded-2xl space-y-1.5 border"
                :class="store.settings.themeMode === 'light' ? 'bg-red-50/90 border-red-300/80 shadow-xs' : 'bg-red-950/20 border-red-500/30'">
             <div class="font-bold flex items-center gap-1.5"
@@ -211,7 +217,7 @@
             </div>
             <ul class="space-y-1 pl-5 list-disc"
                 :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">
-              <li v-for="(mistake, mIdx) in exercise.commonMistakes" :key="mIdx" class="leading-relaxed">
+              <li v-for="(mistake, mIdx) in currentExercise.commonMistakes" :key="mIdx" class="leading-relaxed">
                 {{ mistake }}
               </li>
             </ul>
@@ -271,8 +277,8 @@
             💡 器械被占或想换刺激角度时，推荐以下高匹配平替：
           </p>
 
-          <div v-if="exercise?.substitutes && exercise.substitutes.length" class="space-y-2">
-            <div v-for="(sub, sIdx) in exercise.substitutes" :key="sIdx"
+          <div v-if="currentExercise?.substitutes && currentExercise.substitutes.length" class="space-y-2">
+            <div v-for="(sub, sIdx) in currentExercise.substitutes" :key="sIdx"
                  @click="handleSelectSubstitute(sub.name)"
                  class="p-3 border rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-3"
                  :class="store.settings.themeMode === 'light' ? 'bg-slate-50 hover:bg-slate-100 border-slate-300 shadow-xs' : 'bg-zinc-950/80 hover:bg-zinc-800 border-zinc-800 hover:border-amber-500/40'">
@@ -306,10 +312,10 @@
             </div>
             <p class="leading-relaxed text-xs font-medium"
                :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-200'">
-              {{ exercise?.scienceDetail || "注重动作规范与顶峰离心张力，避免代偿借力。" }}
+              {{ currentExercise?.scienceDetail || "注重动作规范与顶峰离心张力，避免代偿借力。" }}
             </p>
-            <div v-if="exercise?.tags && exercise.tags.length" class="flex flex-wrap gap-1.5 pt-1">
-              <span v-for="tag in exercise.tags" :key="tag" 
+            <div v-if="currentExercise?.tags && currentExercise.tags.length" class="flex flex-wrap gap-1.5 pt-1">
+              <span v-for="tag in currentExercise.tags" :key="tag" 
                     class="text-[10px] px-2.5 py-0.5 rounded-full border font-bold"
                     :class="store.settings.themeMode === 'light' ? 'bg-slate-200 text-slate-800 border-slate-300' : 'bg-zinc-800 text-amber-300 border-zinc-700'">
                 #{{ tag }}
@@ -374,7 +380,6 @@
 <script setup>
 import { ref, computed, watch, onUnmounted, nextTick } from "vue";
 import { store, getExerciseDetails, addExerciseToActiveWorkout } from "../store/fitnessStore.js";
-import { getMuscleDiagramSvg } from "../utils/muscleDiagrams.js";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import { openAICoachWithContext } from "../ai/aiSession.js";
 
@@ -385,6 +390,19 @@ const props = defineProps({
 
 const emit = defineEmits(["close", "selectSubstitute"]);
 const scrollContainer = ref(null);
+
+const activeExercise = ref(null);
+
+// Automatically resolves partial objects (e.g. from template or history) to full 3D library objects
+const currentExercise = computed(() => {
+  const base = activeExercise.value || props.exercise;
+  if (!base) return null;
+  const resolved = getExerciseDetails(base.id || base.exerciseId || base.name);
+  if (resolved) {
+    return { ...resolved, ...base, gifUrl: resolved.gifUrl || base.gifUrl };
+  }
+  return base;
+});
 
 watch(() => props.visible, async (val) => {
   if (val) {
@@ -405,27 +423,25 @@ onUnmounted(() => {
 const activeTab = ref("tips");
 const gifError = ref(false);
 
-const muscleSvg = computed(() => {
-  return getMuscleDiagramSvg(props.exercise?.category || "胸部", props.exercise?.target || props.exercise?.name || "");
-});
-
 watch(() => props.exercise, async () => {
+  activeExercise.value = null;
   gifError.value = false;
   activeTab.value = "tips";
   await nextTick();
   if (scrollContainer.value) {
     scrollContainer.value.scrollTop = 0;
   }
-});
+}, { immediate: true });
 
 const exerciseHistory = computed(() => {
-  if (!props.exercise?.name) return [];
+  const ex = currentExercise.value;
+  if (!ex?.name) return [];
   const history = [];
   const logs = [...store.workoutLogs].sort((a, b) => (b.completedAt || 0) - (a.completedAt || 0));
   
   for (const log of logs) {
     if (log.exercises) {
-      const match = log.exercises.find(e => e.name === props.exercise.name || e.exerciseId === props.exercise.id);
+      const match = log.exercises.find(e => e.name === ex.name || e.exerciseId === ex.id);
       if (match && match.sets && match.sets.length > 0) {
         history.push({
           date: log.date,
@@ -440,7 +456,7 @@ const exerciseHistory = computed(() => {
 
 // 3D Biomechanics & Movement Plane Analysis
 const movementPlaneInfo = computed(() => {
-  const ex = props.exercise;
+  const ex = currentExercise.value;
   if (!ex) return { name: "矢状面 (Sagittal)", badge: "矢状面", action: "前后屈伸主导" };
   const cat = ex.category || "";
   const name = ex.name || "";
@@ -469,7 +485,7 @@ const movementPlaneInfo = computed(() => {
 
 // Force Vector Alignment Cue
 const forceVectorCue = computed(() => {
-  const ex = props.exercise;
+  const ex = currentExercise.value;
   if (!ex) return "肌纤维走向与阻力方向同轴，避免关节脱离力线受剪切力。";
   const cat = ex.category || "";
   const name = ex.name || "";
@@ -497,7 +513,7 @@ const forceVectorCue = computed(() => {
 
 // Compensation Checklist
 const compensationList = computed(() => {
-  const ex = props.exercise;
+  const ex = currentExercise.value;
   if (!ex) return ["耸肩代偿", "腰椎超伸", "手腕过度背屈", "惯性晃动"];
   const cat = ex.category || "";
 
@@ -556,7 +572,7 @@ const aiQueryPills = computed(() => {
     "推胸手腕疼怎么调？",
     "怎样最大化孤立刺激？"
   ];
-  const cat = props.exercise?.category;
+  const cat = currentExercise.value?.category;
   if (cat === "腿部") {
     pills[1] = "深蹲膝内扣怎么纠正？";
   } else if (cat === "背部") {
@@ -573,21 +589,28 @@ function handleAskAICoach(prompt) {
   openAICoachWithContext({
     prompt,
     autoRun: true,
-    exercise: props.exercise
+    exercise: currentExercise.value
   });
   emit("close");
 }
 
 function handleSelectSubstitute(subName) {
-  const match = getExerciseDetails(subName) || { name: subName, category: props.exercise?.category || "训练", target: props.exercise?.target || "" };
-  props.exercise.value = match;
+  const match = getExerciseDetails(subName) || { name: subName, category: currentExercise.value?.category || "训练", target: currentExercise.value?.target || "" };
+  activeExercise.value = match;
+  gifError.value = false;
+  activeTab.value = "tips";
+  nextTick(() => {
+    if (scrollContainer.value) scrollContainer.value.scrollTop = 0;
+  });
   emit("selectSubstitute", match);
 }
 
 function handleActionStart() {
+  const ex = currentExercise.value;
+  if (!ex) return;
   if (store.activeWorkout) {
-    addExerciseToActiveWorkout(props.exercise);
-    alert(`已将【${props.exercise.name}】添加到本次训练！`);
+    addExerciseToActiveWorkout(ex);
+    alert(`已将【${ex.name}】添加到本次训练！`);
     emit("close");
   } else {
     emit("close");

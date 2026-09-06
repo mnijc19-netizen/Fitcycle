@@ -132,7 +132,7 @@ export const BACK_EXERCISES = [
     category: "背部",
     target: "上背与背阔肌整体 / 力量与厚度",
     secondaryMuscles: ["竖脊肌", "核心肌群", "肱二头肌"],
-    aliases: ["杠铃划船", "俯身划船", "俯身杠铃划船", "反握划船", "正握划船", "力量划船", "Barbell Row"],
+    aliases: ["杠铃划船", "俯身划船", "俯身杠铃划船", "俯身杠铃划船 (Barbell Row)", "反握划船", "正握划船", "力量划船", "Barbell Row"],
     gifUrl: "./exercises/barbell-bent-over-row.gif",
     defaultSets: 4,
     defaultReps: "8-10",

@@ -246,6 +246,144 @@
             💡 切换明暗底色不影响任何训练与生理数据，在日光强光下提供更极致清晰的文字对比度。
           </p>
         </div>
+
+        <!-- Horizontal Scrollable Skin Carousel -->
+        <div class="space-y-2 border-t pt-2.5"
+             :class="store.settings.themeMode === 'light' ? 'border-slate-100' : 'border-zinc-800/60'">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">主题世界观与外观</span>
+            <span class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">
+              已就绪
+            </span>
+          </div>
+          <div class="flex gap-2.5 overflow-x-auto pb-1 scrollbar-none snap-x snap-mandatory">
+            <!-- Default Skin -->
+            <button @click="handleSelectSkin('default')"
+                    type="button"
+                    class="flex-shrink-0 w-[155px] snap-start p-3 rounded-xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[88px] cursor-pointer"
+                    :class="[
+                      store.settings.uiSkin === 'default' 
+                        ? (store.settings.themeMode === 'light' ? 'bg-amber-50 border-amber-500 shadow-sm ring-1 ring-amber-500/50 text-slate-950' : 'bg-amber-500/10 border-amber-500 shadow-sm ring-1 ring-amber-500/50 text-white') 
+                        : (store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700' : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80 text-zinc-300')
+                    ]">
+              <div class="flex items-center justify-between w-full">
+                <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">默认外观</span>
+                <span v-if="store.settings.uiSkin === 'default'" class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              </div>
+              <div class="text-[10px] leading-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">科学力量 · 纯净深空</div>
+              <div class="flex items-center gap-1 mt-1">
+                <span class="w-2 h-2 rounded-full bg-zinc-950 border border-zinc-700"></span>
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span v-if="store.settings.uiSkin === 'default'" class="text-[9px] text-amber-500 font-bold ml-auto font-mono">使用中</span>
+              </div>
+            </button>
+
+            <!-- Chamber Skin (尚博勒) -->
+            <button @click="handleSelectSkin('chamber')"
+                    type="button"
+                    class="flex-shrink-0 w-[155px] snap-start p-3 rounded-xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[88px] cursor-pointer"
+                    :class="[
+                      store.settings.uiSkin === 'chamber' 
+                        ? (store.settings.themeMode === 'light' ? 'bg-[#F7F4EE] border-[#C5A059] shadow-sm ring-1 ring-[#C5A059]/50 text-[#141B26]' : 'bg-[#0E1729] border-[#E5C378] shadow-sm ring-1 ring-[#E5C378]/50 text-[#F6E09E]') 
+                        : (store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700' : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80 text-zinc-300')
+                    ]">
+              <div class="flex items-center justify-between w-full">
+                <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">尚博勒</span>
+                <span v-if="store.settings.uiSkin === 'chamber'" class="w-1.5 h-1.5 rounded-full bg-[#E5C378]"></span>
+              </div>
+              <div class="text-[10px] leading-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">法式特工 · 深蓝香槟金</div>
+              <div class="flex items-center gap-1 mt-1">
+                <span class="w-2 h-2 rounded-full bg-[#070B14] border border-[#1E3052]"></span>
+                <span class="w-2 h-2 rounded-full bg-[#E5C378]"></span>
+                <span v-if="store.settings.uiSkin === 'chamber'" class="text-[9px] font-bold ml-auto font-mono"
+                      :class="store.settings.themeMode === 'light' ? 'text-[#9A7228]' : 'text-[#E5C378]'">使用中</span>
+              </div>
+            </button>
+
+            <!-- CS2 Skin (CS2 特训) -->
+            <button @click="handleSelectSkin('cs')"
+                    type="button"
+                    class="flex-shrink-0 w-[155px] snap-start p-3 rounded-xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[88px] cursor-pointer"
+                    :class="[
+                      store.settings.uiSkin === 'cs' 
+                        ? (store.settings.themeMode === 'light' ? 'bg-[#FFF7ED] border-[#E04E00] shadow-sm ring-1 ring-[#E04E00]/50 text-[#090D16]' : 'bg-[#0F172A] border-[#F97316] shadow-sm ring-1 ring-[#F97316]/50 text-[#F8FAFC]') 
+                        : (store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700' : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80 text-zinc-300')
+                    ]">
+              <div class="flex items-center justify-between w-full">
+                <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">CS2 特训</span>
+                <span v-if="store.settings.uiSkin === 'cs'" class="w-1.5 h-1.5 rounded-full bg-[#F97316]"></span>
+              </div>
+              <div class="text-[10px] leading-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">战术竞技 · 枪械与C4图标</div>
+              <div class="flex items-center gap-1 mt-1">
+                <span class="w-2 h-2 rounded-full bg-[#080C14] border border-[#1E293B]"></span>
+                <span class="w-2 h-2 rounded-full bg-[#F97316]"></span>
+                <span v-if="store.settings.uiSkin === 'cs'" class="text-[9px] font-bold ml-auto font-mono"
+                      :class="store.settings.themeMode === 'light' ? 'text-[#E04E00]' : 'text-[#F97316]'">使用中</span>
+              </div>
+            </button>
+
+            <!-- Monochrome Skin (典藏黑白) -->
+            <button @click="handleSelectSkin('monochrome')"
+                    type="button"
+                    class="flex-shrink-0 w-[155px] snap-start p-3 rounded-xl border text-left transition-all relative overflow-hidden flex flex-col justify-between min-h-[88px] cursor-pointer"
+                    :class="[
+                      store.settings.uiSkin === 'monochrome' 
+                        ? (store.settings.themeMode === 'light' ? 'bg-[#EFEFEF] border-black shadow-sm ring-1 ring-black/50 text-black' : 'bg-[#121212] border-white shadow-sm ring-1 ring-white/50 text-white') 
+                        : (store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700' : 'bg-zinc-950/70 border-zinc-800/80 hover:border-zinc-700 opacity-80 text-zinc-300')
+                    ]">
+              <div class="flex items-center justify-between w-full">
+                <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">典藏黑白</span>
+                <span v-if="store.settings.uiSkin === 'monochrome'" class="w-1.5 h-1.5 rounded-full bg-white"></span>
+              </div>
+              <div class="text-[10px] leading-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">极简纯粹 · 刀锋秩序</div>
+              <div class="flex items-center gap-1 mt-1">
+                <span class="w-2 h-2 rounded-full bg-black border border-white/60"></span>
+                <span class="w-2 h-2 rounded-full bg-white"></span>
+                <span v-if="store.settings.uiSkin === 'monochrome'" class="text-[9px] font-bold ml-auto font-mono"
+                      :class="store.settings.themeMode === 'light' ? 'text-black' : 'text-white'">使用中</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Restore Default Button (only if custom skin active) -->
+          <div v-if="store.settings.uiSkin !== 'default'" class="pt-0.5">
+            <button @click="handleRestoreDefaultSkin"
+                    type="button"
+                    class="w-full py-1.5 text-xs rounded-xl border transition-colors cursor-pointer"
+                    :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200 font-bold' : 'bg-zinc-950/80 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border-zinc-800'">
+              恢复默认外观
+            </button>
+          </div>
+        </div>
+
+        <!-- Inline Unlock Passcode Bar -->
+        <div class="space-y-1.5 border-t pt-2.5"
+             :class="store.settings.themeMode === 'light' ? 'border-slate-100' : 'border-zinc-800/60'">
+          <div class="flex items-center gap-2">
+            <input type="text"
+                   name="skin_passcode"
+                   v-model="passcodeInput"
+                   maxlength="30"
+                   autocomplete="off"
+                   autocapitalize="off"
+                   autocorrect="off"
+                   spellcheck="false"
+                   @keydown.enter.prevent="handlePasscodeSubmit"
+                   placeholder="输入彩蛋暗号 (如: 7355608 / 诶，勃勒)..."
+                   class="flex-1 border text-xs rounded-xl px-3 py-2 focus:outline-none transition-colors"
+                   :class="store.settings.themeMode === 'light'
+                     ? (passcodeError ? 'bg-white border-red-400 text-slate-900 placeholder-slate-400' : 'bg-slate-50 border-slate-200 focus:border-amber-600 text-slate-900 placeholder-slate-400')
+                     : (passcodeError ? 'bg-zinc-950/80 border-red-500/80 focus:border-red-500 text-zinc-100 placeholder-zinc-500' : 'bg-zinc-950/80 border-zinc-800 focus:border-amber-500/60 text-zinc-100 placeholder-zinc-500')" />
+            <button @click="handlePasscodeSubmit"
+                    type="button"
+                    class="py-2 px-3.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-bold text-xs rounded-xl transition-all cursor-pointer flex-shrink-0">
+              解锁
+            </button>
+          </div>
+          <div v-if="passcodeError" class="text-[11px] text-red-500 pl-1 font-medium">
+            暗号不正确
+          </div>
+        </div>
       </div>
     </div>
 
@@ -619,12 +757,6 @@ function handleSelectThemeMode(mode) {
   showToast(mode === "light" ? "☀️ 已切换为白昼晨光高反差模式" : "🌙 已切换为深邃夜色护眼模式");
 }
 
-onMounted(() => {
-  if (store.settings.uiSkin && store.settings.uiSkin !== "default") {
-    restoreDefaultSkin();
-  }
-});
-
 function handlePasscodeSubmit() {
   passcodeError.value = false;
   const result = unlockSkin(passcodeInput.value);
@@ -638,9 +770,12 @@ function handlePasscodeSubmit() {
 }
 
 function handleSelectSkin(skinName) {
+  if (!store.settings.unlockedSkins.includes(skinName)) {
+    store.settings.unlockedSkins.push(skinName);
+  }
   setUISkin(skinName);
   if (skinName === "chamber") {
-    showToast("已启用尚博勒隐藏皮肤");
+    showToast("已启用尚博勒特工外观");
   } else if (skinName === "cs") {
     showToast("💥 已启用 CS2 完美特训战术皮肤");
   } else if (skinName === "monochrome") {

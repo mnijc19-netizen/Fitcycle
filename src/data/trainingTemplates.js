@@ -128,9 +128,9 @@ export const TRAINING_TEMPLATES = [
         isRest: false,
         exercises: [
           { exerciseId: "ex-flat-bb-bench", name: "平板杠铃卧推", setsCount: 4, targetReps: "5-6次", defaultWeight: 60 },
-          { exerciseId: "ex-bb-row", name: "俯身杠铃划船 (Barbell Row)", setsCount: 4, targetReps: "5-6次", defaultWeight: 50 },
+          { exerciseId: "ex-barbell-bent-over-row", name: "俯身杠铃划船 (Barbell Row)", setsCount: 4, targetReps: "5-6次", defaultWeight: 50 },
           { exerciseId: "ex-seated-dumbbell-shoulder-press", name: "坐姿哑铃推肩", setsCount: 3, targetReps: "6-8次", defaultWeight: 22 },
-          { exerciseId: "ex-bb-bicep-curl", name: "站姿杠铃弯举 (Barbell Curl)", setsCount: 3, targetReps: "6-8次", defaultWeight: 25 }
+          { exerciseId: "ex-barbell-curl", name: "站姿杠铃弯举 (Barbell Curl)", setsCount: 3, targetReps: "6-8次", defaultWeight: 25 }
         ]
       },
       {
@@ -353,7 +353,7 @@ export const TRAINING_TEMPLATES = [
         coreTarget: "站姿杠铃推举 5/3/1 核心做工，辅以哑铃推肩与高位下拉",
         isRest: false,
         exercises: [
-          { exerciseId: "ex-overhead-press", name: "站姿杠铃推举 (Overhead Press)", setsCount: 3, targetReps: "5/3/1核心组", defaultWeight: 40 },
+          { exerciseId: "ex-overhead-barbell-press", name: "站姿杠铃推举 (Overhead Press)", setsCount: 3, targetReps: "5/3/1核心组", defaultWeight: 40 },
           { exerciseId: "ex-seated-dumbbell-shoulder-press", name: "坐姿哑铃推肩", setsCount: 4, targetReps: "10-12次 (BBB辅项)", defaultWeight: 18 },
           { exerciseId: "ex-lat-pulldown", name: "对握/宽握高位下拉", setsCount: 4, targetReps: "10-12次", defaultWeight: 45 }
         ]

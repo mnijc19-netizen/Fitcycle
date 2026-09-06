@@ -44,15 +44,17 @@ describe("Rest Presets, Carousel, Auto-Finish & AI Analysis Upgrades", () => {
     expect(html).toContain("标准推荐");
   });
 
-  it("renders clean ergonomic appearance controls and keeps experimental skins hidden", () => {
+  it("renders clean ergonomic appearance controls with day/night modes and theme skins", () => {
     const wrapper = mount(StatsView);
     const html = wrapper.html();
     
     expect(html).toContain("环境光感");
     expect(html).toContain("白昼晨光");
     expect(html).toContain("深邃夜色");
-    expect(html).not.toContain("尚博勒");
-    expect(html).not.toContain("CS2 特训");
+    expect(html).toContain("默认外观");
+    expect(html).toContain("尚博勒");
+    expect(html).toContain("CS2 特训");
+    expect(html).toContain("典藏黑白");
   });
 
   it("defaults startRestTimer to 90s standard hypertrophy time", () => {

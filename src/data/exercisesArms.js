@@ -207,7 +207,7 @@ export const ARM_EXERCISES = [
     category: "手臂",
     target: "肱二头肌整体 / 力量与肌峰",
     secondaryMuscles: ["前臂屈肌群"],
-    aliases: ["杠铃弯举", "站姿杠铃弯举", "曲杆弯举", "EZ杠弯举", "二头力量", "Barbell Curl"],
+    aliases: ["杠铃弯举", "站姿杠铃弯举", "站姿杠铃弯举 (Barbell Curl)", "曲杆弯举", "EZ杠弯举", "二头力量", "Barbell Curl"],
     gifUrl: "./exercises/barbell-curl.gif",
     defaultSets: 4,
     defaultReps: "8-10",

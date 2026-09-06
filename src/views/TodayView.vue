@@ -878,10 +878,10 @@
 
         <div class="bg-zinc-900/80 border border-zinc-800 rounded-3xl overflow-hidden divide-y divide-zinc-800/70 shadow-lg">
           <div v-for="(ex, idx) in currentPlan.exercises" :key="idx"
-               @click="openExerciseDetailByName(ex.name)"
+               @click="openExerciseDetail(ex)"
                class="p-3 hover:bg-zinc-800/60 active:bg-zinc-800 flex items-center justify-between cursor-pointer transition-colors gap-3">
             <div class="flex items-center gap-3 min-w-0">
-              <ExerciseImage :src="getExerciseGif(ex.name)" 
+              <ExerciseImage :src="getExerciseGif(ex)" 
                              :name="ex.name" 
                              :category="ex.category" 
                              :target="ex.targetReps" 

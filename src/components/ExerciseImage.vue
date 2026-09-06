@@ -6,10 +6,10 @@
          store?.settings?.themeMode === 'light' ? 'bg-slate-100' : 'bg-zinc-950'
        ]">
     
-    <!-- If External GIF loaded successfully -->
-    <img v-if="src && !hasError" 
-         :src="src" 
-         :alt="name || '动作演示'"
+    <!-- If 3D GIF loaded successfully -->
+    <img v-if="effectiveSrc && !hasError" 
+         :src="effectiveSrc" 
+         :alt="name || '3D动作演示'"
          loading="lazy"
          @load="onImgLoad"
          @error="onError"
@@ -19,18 +19,20 @@
            store?.settings?.themeMode === 'light' ? 'mix-blend-multiply' : 'mix-blend-screen'
          ]" />
 
-    <!-- 3D Muscle Anatomy Diagram (Zero-lag, 100% reliable SVG representation) -->
-    <div v-show="!imgLoaded || hasError || !src" 
-         class="w-full h-full flex items-center justify-center relative"
+    <!-- Unified 3D Anatomical Placeholder (Zero 2D schematics, 100% consistent dark/light glass aesthetic) -->
+    <div v-show="!imgLoaded || hasError || !effectiveSrc" 
+         class="w-full h-full flex flex-col items-center justify-center relative transition-all"
          :class="[
            isMicro ? 'p-0.5' : 'p-2',
-           store?.settings?.themeMode === 'light' ? 'bg-slate-100 text-slate-800' : 'bg-gradient-to-b from-zinc-900 to-zinc-950 text-white'
+           store?.settings?.themeMode === 'light' ? 'bg-slate-100 text-slate-700' : 'bg-gradient-to-b from-zinc-900 to-zinc-950 text-zinc-300'
          ]">
-      <div v-html="muscleSvg" class="w-full h-full max-h-36 max-w-36 flex items-center justify-center"></div>
+      <div class="flex flex-col items-center justify-center animate-pulse" :class="isMicro ? 'gap-0' : 'gap-1'">
+        <span :class="isMicro ? 'text-xs' : 'text-base sm:text-xl'">🏋️‍♂️</span>
+      </div>
       
       <!-- 3D Badge: Only displayed when container is large enough (not micro) -->
       <span v-if="!isMicro" class="absolute bottom-1 right-1 px-1.5 py-0.2 rounded bg-black/80 text-[8px] font-bold text-amber-400 border border-amber-500/30">
-        3D 解剖
+        3D 动图
       </span>
     </div>
 
@@ -39,8 +41,7 @@
 
 <script setup>
 import { ref, computed, watch } from "vue";
-import { getMuscleDiagramSvg } from "../utils/muscleDiagrams.js";
-import { store } from "../store/fitnessStore.js";
+import { store, getExerciseDetails } from "../store/fitnessStore.js";
 
 const props = defineProps({
   src: String,
@@ -55,14 +56,19 @@ const hasError = ref(false);
 
 const isMicro = computed(() => {
   const cls = props.customClass || "";
-  return cls.includes("w-4") || cls.includes("w-5") || cls.includes("w-6") || cls.includes("w-7") || cls.includes("w-8") || cls.includes("w-9") || cls.includes("w-10") || cls.includes("w-12");
+  return cls.includes("w-4") || cls.includes("w-5") || cls.includes("w-6") || cls.includes("w-7") || cls.includes("w-8") || cls.includes("w-9") || cls.includes("w-10") || cls.includes("w-11") || cls.includes("w-12");
 });
 
-const muscleSvg = computed(() => {
-  return getMuscleDiagramSvg(props.category || "胸部", props.target || props.name || "");
+const effectiveSrc = computed(() => {
+  if (props.src) return props.src;
+  if (props.name) {
+    const match = getExerciseDetails(props.name);
+    if (match?.gifUrl) return match.gifUrl;
+  }
+  return "";
 });
 
-watch(() => props.src, () => {
+watch(() => [props.src, effectiveSrc.value], () => {
   imgLoaded.value = false;
   hasError.value = false;
 });

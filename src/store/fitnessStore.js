@@ -342,20 +342,76 @@ export function getExerciseDetails(exerciseIdOrName) {
   );
   if (ciExact) return ciExact;
 
-  // 3. Name starts with target (e.g. "腕关节绕环与活动度" matches "腕关节绕环与活动度 (Wrist Circles & Mobility)")
+  // 3. Clean bracket notes from target (e.g. "俯身杠铃划船 (Barbell Row)" -> "俯身杠铃划船")
+  const targetNoBrackets = target.replace(/\s*[\(\（][^\)\）]*[\)\）]\s*/g, '').trim();
+
+  // 4. Exact match with bracket notes stripped
+  if (targetNoBrackets && targetNoBrackets !== target) {
+    const noBracketMatch = store.exercises.find(e => {
+      const eNameClean = (e.name || '').replace(/\s*[\(\（][^\)\）]*[\)\）]\s*/g, '').trim().toLowerCase();
+      return (e.name && e.name.toLowerCase() === targetNoBrackets) || (eNameClean && eNameClean === targetNoBrackets);
+    });
+    if (noBracketMatch) return noBracketMatch;
+  }
+
+  // 5. Prefix or substring match
   const prefixMatch = store.exercises.find(e => {
     const eName = (e.name || "").toLowerCase();
-    return eName.startsWith(target) || (target.length >= 3 && eName.includes(target));
+    const eNameClean = eName.replace(/\s*[\(\（][^\)\）]*[\)\）]\s*/g, '').trim();
+    return eName.startsWith(target) || (target.length >= 3 && eName.includes(target)) ||
+           (targetNoBrackets.length >= 3 && eNameClean.includes(targetNoBrackets));
   });
   if (prefixMatch) return prefixMatch;
 
-  // 4. English name or Aliases match
+  // 6. Reverse inclusion: target contains exercise name or alias (e.g. target="哑铃保加利亚分腿蹲" contains e.name="保加利亚分腿蹲")
+  const reverseMatch = store.exercises.find(e => {
+    const eNameClean = (e.name || '').replace(/\s*[\(\（][^\)\）]*[\)\）]\s*/g, '').trim().toLowerCase();
+    if (eNameClean && eNameClean.length >= 3 && (target.includes(eNameClean) || targetNoBrackets.includes(eNameClean))) {
+      return true;
+    }
+    if (Array.isArray(e.aliases)) {
+      return e.aliases.some(a => {
+        const cleanA = a.replace(/\s*[\(\（][^\)\）]*[\)\）]\s*/g, '').trim().toLowerCase();
+        return cleanA && cleanA.length >= 3 && (target.includes(cleanA) || targetNoBrackets.includes(cleanA));
+      });
+    }
+    return false;
+  });
+  if (reverseMatch) return reverseMatch;
+
+  // 7. Aliases or English name match
   const aliasMatch = store.exercises.find(e => {
     if (e.englishName && e.englishName.toLowerCase() === target) return true;
-    if (Array.isArray(e.aliases) && e.aliases.some(a => a.toLowerCase() === target || a.toLowerCase().includes(target))) return true;
+    if (e.englishName && targetNoBrackets && e.englishName.toLowerCase() === targetNoBrackets) return true;
+    if (Array.isArray(e.aliases)) {
+      return e.aliases.some(a => {
+        const aLow = a.toLowerCase();
+        return aLow === target || aLow === targetNoBrackets || aLow.includes(target) || (target.length >= 3 && aLow.includes(targetNoBrackets));
+      });
+    }
     return false;
   });
   if (aliasMatch) return aliasMatch;
+
+  // 8. Stripped noise / equipment prefix match
+  const cleanNoise = (s) => s.replace(/\s*[\(\（][^\)\）]*[\)\）]\s*/g, '').replace(/[\s\/\-_——]/g, '').replace(/^(哑铃|杠铃|器械|绳索|史密斯|坐姿|站姿|仰卧|俯卧|悬垂|自由|平板|上斜|下斜)/g, '').toLowerCase();
+  const strippedTarget = cleanNoise(target);
+  if (strippedTarget.length >= 2) {
+    const strippedMatch = store.exercises.find(e => {
+      const strippedName = cleanNoise(e.name || '');
+      if (strippedName && (strippedName === strippedTarget || (strippedTarget.length >= 3 && strippedName.includes(strippedTarget)) || (strippedName.length >= 3 && strippedTarget.includes(strippedName)))) {
+        return true;
+      }
+      if (Array.isArray(e.aliases)) {
+        return e.aliases.some(a => {
+          const strippedAlias = cleanNoise(a);
+          return strippedAlias && (strippedAlias === strippedTarget || (strippedTarget.length >= 3 && strippedAlias.includes(strippedTarget)) || (strippedAlias.length >= 3 && strippedTarget.includes(strippedAlias)));
+        });
+      }
+      return false;
+    });
+    if (strippedMatch) return strippedMatch;
+  }
 
   return null;
 }

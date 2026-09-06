@@ -6,7 +6,7 @@ export const SHOULDER_EXERCISES = [
     category: "肩部",
     target: "三角肌前中束 / 上肢绝对垂直推力之王",
     secondaryMuscles: ["肱三头肌", "斜方肌上中束", "核心稳定肌群"],
-    aliases: ["推肩", "杠铃推举", "军推", "军式推举", "军工推举", "站姿推肩", "坐姿推肩", "杠铃推肩", "垂直推举", "OHP", "Overhead Press", "Military Press"],
+    aliases: ["推肩", "杠铃推举", "军推", "军式推举", "军工推举", "站姿推肩", "坐姿推肩", "杠铃推肩", "垂直推举", "站姿杠铃推举", "站姿杠铃推举 (Overhead Press)", "OHP", "Overhead Press", "Military Press"],
     gifUrl: "./exercises/overhead-barbell-press.gif",
     defaultSets: 4,
     defaultReps: "6-8",
