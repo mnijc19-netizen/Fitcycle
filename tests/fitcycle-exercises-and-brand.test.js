@@ -18,8 +18,8 @@ describe('FitCycle Brand & Dynamic Vector Logo', () => {
 });
 
 describe('Exercise Library 1-to-1 Accuracy & Alias Search', () => {
-  it('contains verified exercises across all major muscle and mobility categories (120 models)', () => {
-    expect(store.exercises).toHaveLength(120);
+  it('contains verified exercises across all major muscle and mobility categories (148 models)', () => {
+    expect(store.exercises).toHaveLength(148);
     const categories = new Set(store.exercises.map(e => e.category));
     expect(categories.has('胸部')).toBe(true);
     expect(categories.has('背部')).toBe(true);
@@ -29,6 +29,7 @@ describe('Exercise Library 1-to-1 Accuracy & Alias Search', () => {
     expect(categories.has('核心')).toBe(true);
     expect(categories.has('有氧')).toBe(true);
     expect(categories.has('热身')).toBe(true);
+    expect(categories.has('拉伸')).toBe(true);
   });
 
   it('verifies posture-corrected exercises match their physical biomechanics', () => {
@@ -58,6 +59,17 @@ describe('Exercise Library 1-to-1 Accuracy & Alias Search', () => {
     expect(scissorLat.gifUrl).not.toBe('./exercises/lat-pulldown.gif');
   });
 
+
+  it('renders Visual Category Hub and Science Academy when viewing all exercises without search query', () => {
+    const wrapper = mount(ExercisesView);
+    expect(wrapper.text()).toContain('按部位精准检索');
+    expect(wrapper.text()).toContain('胸部集群');
+    expect(wrapper.text()).toContain('动态热身');
+    expect(wrapper.text()).toContain('练后拉伸');
+    expect(wrapper.text()).toContain('黄金复合基石王牌');
+    expect(wrapper.text()).toContain('为什么大重量抗阻前严禁静态拉伸');
+    expect(wrapper.text()).toContain('NSCA / ACSM 运动医学与防伤专栏');
+  });
   it('allows alias search in ExercisesView', async () => {
     const wrapper = mount(ExercisesView);
     const searchInput = wrapper.find('input[type="text"]');

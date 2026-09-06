@@ -26,7 +26,7 @@
     <div class="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-between text-xs">
       <div class="flex items-center gap-2" :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-bold' : 'text-zinc-300'">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span class="font-medium">已全面收录 8 大分类与动态热身/激活动作</span>
+        <span class="font-medium">已全面收录 9 大部位与动态热身/练后拉伸全谱系</span>
       </div>
       <span class="font-mono font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">{{ store.exercises.length }} 款全覆盖</span>
     </div>
@@ -71,7 +71,7 @@
       <!-- Categories Pills with Real-Time Counts -->
       <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar overscroll-x-contain touch-pan-x">
         <button v-for="cat in categoryOptions" :key="cat.name"
-                @click="activeCategory = cat.name"
+                @click="selectCategory(cat.name)"
                 class="px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer flex items-center gap-1"
                 :class="[
                   activeCategory === cat.name ? 
@@ -84,87 +84,266 @@
       </div>
     </div>
 
-    <!-- Search Query Result Counter -->
-    <div v-if="searchQuery.trim()" class="flex items-center justify-between px-1 text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-700 font-medium' : 'text-zinc-400'">
-      <span>搜索关键词: <span class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">"{{ searchQuery }}"</span></span>
-      <span class="font-mono">找到 {{ filteredExercises.length }} 个动作</span>
-    </div>
-
-    <!-- Exercises Inset List -->
-    <div class="space-y-2">
-      <div v-for="ex in filteredExercises" :key="ex.id"
-           @click="openExerciseDetail(ex)"
-           class="p-3 bg-zinc-900/80 hover:bg-zinc-850 active:bg-zinc-800 border border-zinc-800/90 hover:border-amber-500/40 rounded-2xl cursor-pointer transition-all shadow-sm flex items-center gap-3">
-        
-        <!-- 3D Animated Thumbnail with Zero-Broken fallback -->
-        <ExerciseImage :src="ex.gifUrl" 
-                       :name="ex.name" 
-                       :category="ex.category" 
-                       :target="ex.target" 
-                       customClass="w-14 h-14 rounded-xl border border-zinc-800 flex-shrink-0" />
-
-        <!-- Center Details -->
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-1.5">
-            <h3 class="font-bold text-xs truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</h3>
-            <span class="text-[9px] px-1.5 py-0.2 rounded border flex-shrink-0"
-                  :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-zinc-800 text-amber-400 border-zinc-700/60 font-semibold'">
-              {{ ex.category }}
-            </span>
-          </div>
-          <div class="text-[11px] mt-0.5 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
-            🎯 <span :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">{{ ex.target }}</span>
-          </div>
-
-          <!-- Tags & Substitutes -->
-          <div class="flex flex-wrap items-center gap-1 mt-1">
-            <span v-if="ex.englishName" class="text-[9px] font-mono px-1 py-0.2 rounded border truncate max-w-[120px]"
-                  :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-600 border-slate-300' : 'bg-zinc-950 text-zinc-500 border-zinc-800'">
-              {{ ex.englishName }}
-            </span>
-            <span v-for="tag in (ex.tags || []).slice(0, 1)" :key="tag" 
-                  class="text-[9px] px-1.5 py-0.2 rounded border"
-                  :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-700 border-slate-300 font-medium' : 'bg-zinc-950 text-zinc-400 border-zinc-800'">
-              #{{ tag }}
-            </span>
-            <span v-if="ex.substitutes?.length" class="text-[9px] px-1.5 py-0.2 rounded border"
-                  :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'">
-              {{ ex.substitutes.length }}个平替
-            </span>
-          </div>
+    <!-- ======================================================== -->
+    <!-- VIEW A: VISUAL CATEGORY HUB & SCIENCE ACADEMY (全部模式) -->
+    <!-- 彻底解决用户指出的无脑下滑 120+ 动作长列表反人类痛点 -->
+    <!-- ======================================================== -->
+    <div v-if="activeCategory === '全部' && !searchQuery.trim()" class="space-y-4">
+      
+      <!-- 1. 9 大部位与功能视觉导航矩阵 (Visual Muscle Hub) -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <h3 class="text-xs font-black uppercase tracking-wider flex items-center gap-1.5"
+              :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+            <span>按部位精准检索 (点击直达对应动作)</span>
+          </h3>
+          <span class="text-[11px] text-zinc-500 font-mono">拒绝漫无目的盲目滑动</span>
         </div>
 
-        <!-- Right action icon -->
-        <div class="flex-shrink-0" :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-500 hover:text-amber-400'">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-          </svg>
-        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+          <div v-for="hub in visualHubCards" :key="hub.name"
+               @click="selectCategory(hub.name)"
+               class="p-3 rounded-2xl border transition-all cursor-pointer active:scale-97 shadow-sm group relative overflow-hidden"
+               :class="store.settings.themeMode === 'light' 
+                 ? 'bg-white hover:bg-slate-50 border-slate-200 hover:border-amber-400' 
+                 : 'bg-zinc-900/80 hover:bg-zinc-850 border-zinc-800/90 hover:border-amber-500/50'">
+            
+            <div class="flex items-start justify-between">
+              <div class="text-xl">{{ hub.icon }}</div>
+              <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full border"
+                    :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-zinc-800 text-amber-400 border-zinc-700'">
+                {{ hub.count }} 款
+              </span>
+            </div>
 
+            <div class="mt-2">
+              <div class="font-black text-xs flex items-center gap-1"
+                   :class="store.settings.themeMode === 'light' ? 'text-slate-900 group-hover:text-amber-700' : 'text-zinc-100 group-hover:text-amber-400'">
+                <span>{{ hub.title }}</span>
+                <span class="text-[10px] opacity-60">❯</span>
+              </div>
+              <p class="text-[10px] mt-0.5 line-clamp-1 leading-tight"
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">
+                {{ hub.desc }}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div v-if="filteredExercises.length === 0" class="py-10 text-center text-xs space-y-3 px-4" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-500'">
-        <div class="space-y-1">
-          <div class="text-sm font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">
-            未找到与「{{ searchQuery.trim() || '当前条件' }}」匹配的动作
+      <!-- 2. ⭐ 黄金复合王牌速选 (精选 6 大核心动作，无需翻找) -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <h3 class="text-xs font-black uppercase tracking-wider flex items-center gap-1.5"
+              :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">
+            <span class="text-amber-500">⭐</span>
+            <span>黄金复合基石王牌 (快速调阅解剖力线)</span>
+          </h3>
+          <span class="text-[11px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">6 项基石</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div v-for="staple in stapleExercises" :key="staple.id"
+               @click="openExerciseDetail(staple)"
+               class="p-2.5 rounded-2xl border flex items-center gap-2.5 transition-all cursor-pointer active:scale-97 shadow-xs"
+               :class="store.settings.themeMode === 'light' ? 'bg-white hover:bg-slate-50 border-slate-200' : 'bg-zinc-900/80 hover:bg-zinc-850 border-zinc-800'">
+            <ExerciseImage :src="staple.gifUrl" 
+                           :name="staple.name" 
+                           :category="staple.category" 
+                           customClass="w-10 h-10 rounded-xl border border-zinc-800 flex-shrink-0" />
+            <div class="min-w-0 flex-1">
+              <div class="font-bold text-xs truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">
+                {{ staple.name }}
+              </div>
+              <div class="text-[10px] truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-medium' : 'text-amber-400'">
+                {{ staple.target }}
+              </div>
+            </div>
           </div>
-          <p class="text-[11px] max-w-xs mx-auto">
-            遇到健身房的特定品牌、罕见器械或个性化动作？别担心，FitCycle 支持 1 秒创建！
+        </div>
+      </div>
+
+      <!-- 3. 🎓 NSCA / ACSM / CSCS 权威运动医学与防伤科学专栏 -->
+      <div class="space-y-2.5 pt-1">
+        <div class="flex items-center justify-between px-1">
+          <h3 class="text-xs font-black uppercase tracking-wider flex items-center gap-1.5 text-amber-500">
+            <span>🎓</span>
+            <span>NSCA / ACSM 运动医学与防伤专栏</span>
+          </h3>
+          <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+            必读干货
+          </span>
+        </div>
+
+        <!-- Science Card 1: 练前动态 vs 练后静态 (RAMP 原则) -->
+        <div class="p-3.5 rounded-2xl border space-y-2 shadow-xs transition-colors"
+             :class="store.settings.themeMode === 'light' ? 'bg-amber-50/60 border-amber-200/80 text-slate-800' : 'bg-zinc-900/90 border-zinc-800 text-zinc-300'">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🔥</span>
+              <h4 class="text-xs font-black" :class="store.settings.themeMode === 'light' ? 'text-amber-950 font-black' : 'text-amber-400'">
+                为什么大重量抗阻前严禁静态拉伸？
+              </h4>
+            </div>
+            <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-500">NSCA 铁律</span>
+          </div>
+          <p class="text-[11px] leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
+            大重量前做长达 30 秒以上的静态伸展，会导致肌梭敏感性骤降、高尔基腱器官抑制中枢神经冲动，使肌肉刚度与瞬时爆发力下降 <strong class="text-rose-500">8%~15%</strong>，且破坏关节稳定性！正确的练前流程必须采用 <strong class="text-amber-500">RAMP 动态激活</strong>（关节绕环、胸椎灵活性、肩袖激活），通过主动做工提升体温与滑液分泌。
           </p>
         </div>
 
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
-          <button @click="openCreateExercise" 
-                  class="w-full sm:w-auto px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-black rounded-xl text-xs active:scale-95 transition-all cursor-pointer shadow-sm">
-            ✨ 1秒以「{{ searchQuery.trim() || '新动作' }}」新建自定义动作 ❯
-          </button>
-          <button @click="showMachineFinder = true"
-                  class="w-full sm:w-auto px-3.5 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer"
-                  :class="store.settings.themeMode === 'light' ? 'border-slate-300 bg-white hover:bg-slate-100 text-slate-700' : 'border-zinc-700 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300'">
-            📸 拍照 / 语音识器械查平替
-          </button>
+        <!-- Science Card 2: 练后静态拉伸与副交感唤醒 (ACSM 2024 标准) -->
+        <div class="p-3.5 rounded-2xl border space-y-2 shadow-xs transition-colors"
+             :class="store.settings.themeMode === 'light' ? 'bg-emerald-50/60 border-emerald-200/80 text-slate-800' : 'bg-zinc-900/90 border-zinc-800 text-zinc-300'">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🧘</span>
+              <h4 class="text-xs font-black" :class="store.settings.themeMode === 'light' ? 'text-emerald-950 font-black' : 'text-emerald-400'">
+                练后 3 分钟筋膜重置与副交感神经唤醒
+              </h4>
+            </div>
+            <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-500">ACSM 标准</span>
+          </div>
+          <p class="text-[11px] leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
+            训练结束心率回落至 100bpm 以下后，方可进行静态伸展。保持每个部位 <strong class="text-emerald-600">20~30 秒</strong>，牵拉感维持在 6~7 级舒适酸胀，绝不可过度拉扯至剧烈疼痛。配合鼻吸口呼的慢速腹式呼吸，能快速平抑交感神经、降低皮质醇，开启肌糖原重组。
+          </p>
+        </div>
+
+        <!-- Science Card 3: 0~72h 恢复免责宪法 -->
+        <div class="p-3.5 rounded-2xl border space-y-2 shadow-xs transition-colors"
+             :class="store.settings.themeMode === 'light' ? 'bg-sky-50/60 border-sky-200/80 text-slate-800' : 'bg-zinc-900/90 border-zinc-800 text-zinc-300'">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-base">⚡</span>
+              <h4 class="text-xs font-black" :class="store.settings.themeMode === 'light' ? 'text-sky-950 font-black' : 'text-sky-400'">
+                0~72 小时超量恢复与力量自愈公理
+              </h4>
+            </div>
+            <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400">母宪法公理</span>
+          </div>
+          <p class="text-[11px] leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
+            力量训练本质上是骨骼肌微损伤过程，真正的战力增长发生在睡眠修复期。FitCycle 宪法铁律规定：<strong class="text-sky-600">0~72 小时内严禁扣减任何战力积分</strong>，杜绝用户产生因休息而焦虑的负罪感，鼓励运动员遵循运动生理规律。
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- VIEW B: TARGETED EXERCISES LIST (特定部位或搜索结果展示) -->
+    <!-- ======================================================== -->
+    <div v-else class="space-y-2.5">
+      
+      <!-- Top Context Banner (Showing Active Category or Search) -->
+      <div class="flex items-center justify-between px-1 text-xs">
+        <div class="flex items-center gap-1.5">
+          <span class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-200'">
+            <span v-if="searchQuery.trim()">搜索结果："<span class="text-amber-500 font-black">{{ searchQuery }}</span>"</span>
+            <span v-else>{{ activeCategory }}分类清单</span>
+          </span>
+          <span class="font-mono text-[11px] opacity-70">({{ filteredExercises.length }}个动作)</span>
+        </div>
+
+        <button @click="selectCategory('全部')" 
+                class="px-2 py-0.5 rounded-lg border text-[11px] font-medium transition-all cursor-pointer flex items-center gap-1"
+                :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border-zinc-700'">
+          <span>↩</span>
+          <span>返回全部导航</span>
+        </button>
+      </div>
+
+      <!-- Specific Category Banner (For Warmup / Stretches) -->
+      <div v-if="activeCategory === '热身' && !searchQuery.trim()" 
+           class="p-2.5 rounded-xl border text-xs flex items-center gap-2 bg-amber-500/10 border-amber-500/30 text-amber-300">
+        <span class="text-sm">🔥</span>
+        <span class="text-[11px] leading-tight">NSCA 动态热身专区：升温体温、分泌关节滑液、唤醒神经传导，大重量前严禁静态死拉伸。</span>
+      </div>
+
+      <div v-if="activeCategory === '拉伸' && !searchQuery.trim()" 
+           class="p-2.5 rounded-xl border text-xs flex items-center gap-2 bg-emerald-500/10 border-emerald-500/30 text-emerald-300">
+        <span class="text-sm">🧘</span>
+        <span class="text-[11px] leading-tight">ACSM 练后拉伸专区：心率平复后单次保持 20-30 秒，深吸慢吐，松解肌筋膜粘连。</span>
+      </div>
+
+      <!-- Inset List -->
+      <div class="space-y-2">
+        <div v-for="ex in filteredExercises" :key="ex.id"
+             @click="openExerciseDetail(ex)"
+             class="p-3 bg-zinc-900/80 hover:bg-zinc-850 active:bg-zinc-800 border border-zinc-800/90 hover:border-amber-500/40 rounded-2xl cursor-pointer transition-all shadow-sm flex items-center gap-3">
+          
+          <!-- 3D Animated Thumbnail with Zero-Broken fallback -->
+          <ExerciseImage :src="ex.gifUrl" 
+                         :name="ex.name" 
+                         :category="ex.category" 
+                         :target="ex.target" 
+                         customClass="w-14 h-14 rounded-xl border border-zinc-800 flex-shrink-0" />
+
+          <!-- Center Details -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-1.5">
+              <h3 class="font-bold text-xs truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</h3>
+              <span class="text-[9px] px-1.5 py-0.2 rounded border flex-shrink-0"
+                    :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-zinc-800 text-amber-400 border-zinc-700/60 font-semibold'">
+                {{ ex.category }}
+              </span>
+            </div>
+            <div class="text-[11px] mt-0.5 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+              🎯 <span :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">{{ ex.target }}</span>
+            </div>
+
+            <!-- Tags & Substitutes -->
+            <div class="flex flex-wrap items-center gap-1 mt-1">
+              <span v-if="ex.englishName" class="text-[9px] font-mono px-1 py-0.2 rounded border truncate max-w-[120px]"
+                    :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-600 border-slate-300' : 'bg-zinc-950 text-zinc-500 border-zinc-800'">
+                {{ ex.englishName }}
+              </span>
+              <span v-for="tag in (ex.tags || []).slice(0, 1)" :key="tag" 
+                    class="text-[9px] px-1.5 py-0.2 rounded border"
+                    :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-700 border-slate-300 font-medium' : 'bg-zinc-950 text-zinc-400 border-zinc-800'">
+                #{{ tag }}
+              </span>
+              <span v-if="ex.substitutes?.length" class="text-[9px] px-1.5 py-0.2 rounded border"
+                    :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'">
+                {{ ex.substitutes.length }}个平替
+              </span>
+            </div>
+          </div>
+
+          <!-- Right action icon -->
+          <div class="flex-shrink-0" :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-500 hover:text-amber-400'">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+
+        </div>
+
+        <div v-if="filteredExercises.length === 0" class="py-10 text-center text-xs space-y-3 px-4" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-500'">
+          <div class="space-y-1">
+            <div class="text-sm font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">
+              未找到与「{{ searchQuery.trim() || '当前条件' }}」匹配的动作
+            </div>
+            <p class="text-[11px] max-w-xs mx-auto">
+              遇到健身房的特定品牌、罕见器械或个性化动作？别担心，FitCycle 支持 1 秒创建！
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+            <button @click="openCreateExercise" 
+                    class="w-full sm:w-auto px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-black rounded-xl text-xs active:scale-95 transition-all cursor-pointer shadow-sm">
+              ✨ 1秒以「{{ searchQuery.trim() || '新动作' }}」新建自定义动作 ❯
+            </button>
+            <button @click="showMachineFinder = true"
+                    class="w-full sm:w-auto px-3.5 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer"
+                    :class="store.settings.themeMode === 'light' ? 'border-slate-300 bg-white hover:bg-slate-100 text-slate-700' : 'border-zinc-700 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300'">
+              📸 拍照 / 语音识器械查平替
+            </button>
+          </div>
         </div>
       </div>
+
     </div>
 
     <!-- Floating Back-to-Top Pill Button (Natural Thumb Zone Ergonomics) -->
@@ -278,7 +457,7 @@ import { getUniversalScrollTop, universalScrollToTop } from "../utils/scrollUtil
 const showMachineFinder = ref(false);
 const searchQuery = ref("");
 const activeCategory = ref("全部");
-const categories = ["全部", "胸部", "背部", "肩部", "手臂", "腿部", "核心", "有氧", "热身", "其它"];
+const categories = ["全部", "胸部", "背部", "肩部", "手臂", "腿部", "核心", "有氧", "热身", "拉伸", "其它"];
 
 const showBackToTop = ref(false);
 
@@ -289,6 +468,11 @@ function handleScroll() {
 function scrollToTop() {
   universalScrollToTop(true);
   if (store.settings.vibrationEnabled) triggerHaptic("light");
+}
+
+function selectCategory(catName) {
+  activeCategory.value = catName;
+  if (store.settings.vibrationEnabled) triggerHaptic("selection");
 }
 
 onMounted(() => {
@@ -316,6 +500,32 @@ const categoryOptions = computed(() => {
     const count = store.exercises.filter(e => e.category === cat).length;
     return { name: cat, count };
   });
+});
+
+// Visual Category Hub Cards
+const visualHubCards = computed(() => [
+  { name: "胸部", title: "胸部集群", icon: "🛡️", desc: "卧推·夹胸·俯卧撑，铠甲胸大肌", count: store.exercises.filter(e => e.category === "胸部").length },
+  { name: "背部", title: "背部集群", icon: "🦅", desc: "引体·划船·剪刀机，V字倒三角", count: store.exercises.filter(e => e.category === "背部").length },
+  { name: "肩部", title: "肩部集群", icon: "🏹", desc: "推肩·侧平举·面拉，3D南瓜肩", count: store.exercises.filter(e => e.category === "肩部").length },
+  { name: "手臂", title: "手臂集群", icon: "💪", desc: "弯举·三头下压·屈伸，充血麒麟臂", count: store.exercises.filter(e => e.category === "手臂").length },
+  { name: "腿部", title: "下肢集群", icon: "🦵", desc: "深蹲·硬拉·倒蹬，夯实力量基座", count: store.exercises.filter(e => e.category === "腿部").length },
+  { name: "核心", title: "核心集群", icon: "🧱", desc: "卷腹·悬垂举腿·平板，钢板腹肌", count: store.exercises.filter(e => e.category === "核心").length },
+  { name: "有氧", title: "有氧燃脂", icon: "🏃", desc: "单车·跑步·跳绳，燃脂增强心肺", count: store.exercises.filter(e => e.category === "有氧").length },
+  { name: "热身", title: "🔥 动态热身", icon: "🔥", desc: "NSCA 升温激活·滑液润滑·告别撞击", count: store.exercises.filter(e => e.category === "热身").length },
+  { name: "拉伸", title: "🧘 练后拉伸", icon: "🧘", desc: "ACSM 筋膜重置·平抑皮质醇·超量恢复", count: store.exercises.filter(e => e.category === "拉伸").length }
+]);
+
+// 6 Curated Staple Exercises
+const stapleExercises = computed(() => {
+  const ids = [
+    "ex-barbell-bench-press",
+    "ex-barbell-back-squat",
+    "ex-deadlift",
+    "ex-diverging-lat-pulldown",
+    "ex-warmup-wall-slide",
+    "ex-stretch-doorway-pec"
+  ];
+  return ids.map(id => store.exercises.find(e => e.id === id)).filter(Boolean);
 });
 
 const showDetailModal = ref(false);
@@ -376,7 +586,8 @@ function openCreateExercise() {
     else if (q.includes("腿") || q.includes("蹲") || q.includes("倒蹬") || q.includes("硬拉") || q.includes("哈克")) guessedCat = "腿部";
     else if (q.includes("腹") || q.includes("核心") || q.includes("卷腹") || q.includes("平板")) guessedCat = "核心";
     else if (q.includes("跑") || q.includes("车") || q.includes("有氧") || q.includes("绳")) guessedCat = "有氧";
-    else if (q.includes("热身") || q.includes("激活") || q.includes("拉伸") || q.includes("活动度")) guessedCat = "热身";
+    else if (q.includes("热身") || q.includes("激活") || q.includes("活动度")) guessedCat = "热身";
+    else if (q.includes("拉伸") || q.includes("伸展") || q.includes("筋膜") || q.includes("滚压")) guessedCat = "拉伸";
   }
   newEx.value = { 
     name: q, 

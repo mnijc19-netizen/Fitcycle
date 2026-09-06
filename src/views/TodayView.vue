@@ -754,6 +754,53 @@
         </div>
       </div>
 
+      <!-- 练后 3 分钟筋膜拉伸流 (ACSM 筋膜重置 · 加速超量恢复) -->
+      <div v-if="!todayCycle.isRest" 
+           class="p-3.5 rounded-3xl border shadow-md relative overflow-hidden transition-all"
+           :class="store.settings.themeMode === 'light' 
+             ? 'bg-gradient-to-r from-emerald-50/90 via-teal-50/60 to-emerald-50/90 border-emerald-300/80' 
+             : 'bg-gradient-to-r from-emerald-950/30 via-zinc-900 to-zinc-900 border-emerald-500/30'">
+        
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm font-black flex-shrink-0">
+              🧘
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <h4 class="text-xs font-black truncate" :class="store.settings.themeMode === 'light' ? 'text-emerald-950' : 'text-white'">
+                  练后 3 分钟筋膜拉伸流
+                </h4>
+                <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex-shrink-0">
+                  ACSM
+                </span>
+              </div>
+              <p class="text-[11px] mt-0.5 leading-snug truncate" :class="store.settings.themeMode === 'light' ? 'text-emerald-900/80' : 'text-zinc-400'">
+                针对今日{{ currentPlan?.shortName || todayCycle.name }}深度松解筋膜，平抑皮质醇
+              </p>
+            </div>
+          </div>
+
+          <button @click="showStretchModal = true"
+                  class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-zinc-950 font-black rounded-xl text-xs flex-shrink-0 shadow-sm transition-all cursor-pointer flex items-center gap-1">
+            <span>跟练</span>
+            <span>❯</span>
+          </button>
+        </div>
+
+        <!-- Mini Stretch Quick-Pill Preview -->
+        <div class="mt-2.5 pt-2.5 border-t flex items-center gap-2 overflow-x-auto no-scrollbar"
+             :class="store.settings.themeMode === 'light' ? 'border-emerald-200/60' : 'border-zinc-800/80'">
+          <div v-for="sEx in todayStretchQuickList" :key="sEx.name"
+               @click="showStretchModal = true"
+               class="flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[11px] flex-shrink-0 cursor-pointer transition-all active:scale-95"
+               :class="store.settings.themeMode === 'light' ? 'bg-white border-emerald-200 text-slate-800 hover:border-emerald-400 shadow-2xs' : 'bg-zinc-950/70 border-zinc-800 text-zinc-300 hover:border-zinc-700'">
+            <ExerciseImage :src="getExerciseGif(sEx.name)" :name="sEx.name" :category="'拉伸'" customClass="w-5 h-5 rounded object-contain" />
+            <span class="font-medium truncate max-w-[100px]">{{ sEx.name }}</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Today's Exercise Inset-Grouped List -->
       <div v-if="!todayCycle.isRest && currentPlan?.exercises?.length" class="space-y-2 pt-1">
         <div class="flex items-center justify-between px-1">
@@ -908,6 +955,14 @@
       :plan="currentPlan || todayCycle"
       @close="showWarmupModal = false"
       @completed="handleWarmupCompleted"
+    />
+
+    <!-- 4.2 Post-Workout Static Stretch Flow Modal (ACSM) -->
+    <StretchFlowModal
+      :visible="showStretchModal"
+      :plan="currentPlan || todayCycle"
+      @close="showStretchModal = false"
+      @completed="handleStretchCompleted"
     />
 
     <!-- 5. Choose Other Plan Modal -->
@@ -1104,6 +1159,7 @@ import BodyMetricsModal from "../components/BodyMetricsModal.vue";
 import StrengthPlacementModal from "../components/StrengthPlacementModal.vue";
 import RulesCodexModal from "../components/RulesCodexModal.vue";
 import WarmupFlowModal from "../components/WarmupFlowModal.vue";
+import StretchFlowModal from "../components/StretchFlowModal.vue";
 import ExerciseImage from "../components/ExerciseImage.vue";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import { universalScrollToTop } from "../utils/scrollUtils.js";
@@ -1127,13 +1183,14 @@ const showBodyModal = ref(false);
 const showRulesModal = ref(false);
 const showStrengthPlacementModal = ref(false);
 const showWarmupModal = ref(false);
+const showStretchModal = ref(false);
 
 const currentStrengthConfig = computed(() => {
   const lvl = store.settings.strengthLevel || "intermediate";
   return STRENGTH_LEVEL_CONFIGS[lvl] || STRENGTH_LEVEL_CONFIGS.intermediate;
 });
 
-const anyTodayModalOpen = computed(() => showPlanPicker.value || showAutoFinishModal.value || showStrengthPlacementModal.value || showWarmupModal.value);
+const anyTodayModalOpen = computed(() => showPlanPicker.value || showAutoFinishModal.value || showStrengthPlacementModal.value || showWarmupModal.value || showStretchModal.value);
 watch(anyTodayModalOpen, (isOpen) => {
   if (isOpen) lockBodyScroll();
   else unlockBodyScroll();
@@ -1280,6 +1337,58 @@ function handleWarmupCompleted() {
     overloadCelebration.value.visible = false;
   }, 3500);
 }
+
+const todayStretchQuickList = computed(() => {
+  const planName = (currentPlan.value?.name || todayCycle.value?.name || todayCycle.value?.category || '').toLowerCase();
+  if (planName.includes('推') || planName.includes('push') || planName.includes('胸') || planName.includes('肩')) {
+    return [
+      { name: '门框立柱胸大肌拉伸 (Doorway Pec Stretch)' },
+      { name: '交叉臂肩部三角肌伸展' },
+      { name: '站姿颈后肱三头肌伸展' },
+      { name: '肩袖深层冈下肌温和牵拉' }
+    ];
+  }
+  if (planName.includes('拉') || planName.includes('pull') || planName.includes('背')) {
+    return [
+      { name: '单侧立柱背阔肌侧屈伸展' },
+      { name: '上背抱胸含胸牵拉' },
+      { name: '泡沫轴上背胸椎滚动' },
+      { name: '反向腕伸肌前臂伸展' }
+    ];
+  }
+  if (planName.includes('腿') || planName.includes('leg') || planName.includes('下肢') || planName.includes('深蹲')) {
+    return [
+      { name: '站姿股四头肌单腿拉伸' },
+      { name: '坐姿腘绳肌单腿前屈伸展' },
+      { name: '仰卧4字形抱膝臀大肌拉伸' },
+      { name: '90-90 髋关节活动度伸展' }
+    ];
+  }
+  return [
+    { name: '门框立柱胸大肌拉伸 (Doorway Pec Stretch)' },
+    { name: '单侧立柱背阔肌侧屈伸展' },
+    { name: '坐姿腘绳肌单腿前屈伸展' },
+    { name: '眼镜蛇式腹直肌伸展' }
+  ];
+});
+
+function handleStretchCompleted() {
+  showStretchModal.value = false;
+  if (overloadCelebration && overloadCelebration.value) {
+    overloadCelebration.value = {
+      visible: true,
+      isPr: false,
+      text: '🧘 筋膜拉伸重置完毕 · 滋养开启！',
+      subText: '皮质醇已平抑，副交感神经唤醒，进入黄金超量恢复周期！'
+    };
+    setTimeout(() => {
+      if (overloadCelebration && overloadCelebration.value) {
+        overloadCelebration.value.visible = false;
+      }
+    }, 3500);
+  }
+}
+
 
 const todayFormatted = computed(() => {
   const d = new Date();

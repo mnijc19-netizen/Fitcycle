@@ -316,7 +316,7 @@ onUnmounted(() => {
 const showMachineFinder = ref(false);
 const searchQuery = ref("");
 const activeCategory = ref("⭐常用偏好");
-const categories = ["⭐常用偏好", "⭐新手黄金", "全部", "胸部", "背部", "肩部", "腿部", "手臂", "核心", "有氧", "其它"];
+const categories = ["⭐常用偏好", "⭐新手黄金", "全部", "胸部", "背部", "肩部", "手臂", "腿部", "核心", "有氧", "热身", "拉伸", "其它"];
 
 const memoryPool = computed(() => {
   return getExerciseMemoryPool(store.workoutLogs, store.pinnedExerciseIds, store.exercises);
