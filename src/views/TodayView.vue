@@ -97,6 +97,17 @@
                :style="{ width: `${totalSetsCount > 0 ? (completedSetsCount / totalSetsCount) * 100 : 0}%` }">
           </div>
         </div>
+
+        <!-- Dynamic Warmup Quick Launcher -->
+        <div class="mt-2.5 pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[11px]">
+          <button @click="showWarmupModal = true" 
+                  class="font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                  :class="store.settings.themeMode === 'light' ? 'text-amber-800 hover:text-amber-900' : 'text-amber-400 hover:text-amber-300'">
+            <span>🔥 练前动态热身流 ({{ todayWarmupQuickList.length }} 动作)</span>
+            <span class="text-[10px]">❯</span>
+          </button>
+          <span class="text-zinc-500 font-mono text-[10px]">RAMP 科学激活</span>
+        </div>
       </div>
 
       <!-- Exercises In Workout -->
@@ -696,6 +707,53 @@
         </div>
       </div>
 
+      <!-- 练前 3 分钟动态热身流 (科学防伤 · 消除热身懵逼) -->
+      <div v-if="!todayCycle.isRest" 
+           class="p-3.5 rounded-3xl border shadow-md relative overflow-hidden transition-all"
+           :class="store.settings.themeMode === 'light' 
+             ? 'bg-gradient-to-r from-amber-50/90 via-orange-50/60 to-amber-50/90 border-amber-300/80' 
+             : 'bg-gradient-to-r from-amber-950/30 via-zinc-900 to-zinc-900 border-amber-500/30'">
+        
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-sm font-black flex-shrink-0">
+              🔥
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <h4 class="text-xs font-black truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-950' : 'text-white'">
+                  练前 3 分钟动态热身流
+                </h4>
+                <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 flex-shrink-0">
+                  定制
+                </span>
+              </div>
+              <p class="text-[11px] mt-0.5 leading-snug truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-900/80' : 'text-zinc-400'">
+                针对今日{{ currentPlan?.shortName || todayCycle.name }}动态激活，杜绝肩峰撞击与腰痛
+              </p>
+            </div>
+          </div>
+
+          <button @click="showWarmupModal = true"
+                  class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-black rounded-xl text-xs flex-shrink-0 shadow-sm transition-all cursor-pointer flex items-center gap-1">
+            <span>跟练</span>
+            <span>❯</span>
+          </button>
+        </div>
+
+        <!-- Mini Warmup Quick-Pill Preview -->
+        <div class="mt-2.5 pt-2.5 border-t flex items-center gap-2 overflow-x-auto no-scrollbar"
+             :class="store.settings.themeMode === 'light' ? 'border-amber-200/60' : 'border-zinc-800/80'">
+          <div v-for="wEx in todayWarmupQuickList" :key="wEx.name"
+               @click="showWarmupModal = true"
+               class="flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[11px] flex-shrink-0 cursor-pointer transition-all active:scale-95"
+               :class="store.settings.themeMode === 'light' ? 'bg-white border-amber-200 text-slate-800 hover:border-amber-400 shadow-2xs' : 'bg-zinc-950/70 border-zinc-800 text-zinc-300 hover:border-zinc-700'">
+            <ExerciseImage :src="getExerciseGif(wEx.name)" :name="wEx.name" :category="'热身'" customClass="w-5 h-5 rounded object-contain" />
+            <span class="font-medium truncate max-w-[100px]">{{ wEx.name }}</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Today's Exercise Inset-Grouped List -->
       <div v-if="!todayCycle.isRest && currentPlan?.exercises?.length" class="space-y-2 pt-1">
         <div class="flex items-center justify-between px-1">
@@ -842,6 +900,14 @@
     <CycleEditorModal 
       :visible="showCycleEditorModal" 
       @close="showCycleEditorModal = false" 
+    />
+
+    <!-- 4.1 Pre-Workout Dynamic Warmup Flow Modal -->
+    <WarmupFlowModal
+      :visible="showWarmupModal"
+      :plan="currentPlan || todayCycle"
+      @close="showWarmupModal = false"
+      @completed="handleWarmupCompleted"
     />
 
     <!-- 5. Choose Other Plan Modal -->
@@ -1037,6 +1103,7 @@ import HonorShowcaseModal from "../components/HonorShowcaseModal.vue";
 import BodyMetricsModal from "../components/BodyMetricsModal.vue";
 import StrengthPlacementModal from "../components/StrengthPlacementModal.vue";
 import RulesCodexModal from "../components/RulesCodexModal.vue";
+import WarmupFlowModal from "../components/WarmupFlowModal.vue";
 import ExerciseImage from "../components/ExerciseImage.vue";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import { universalScrollToTop } from "../utils/scrollUtils.js";
@@ -1059,13 +1126,14 @@ const showHonorModal = ref(false);
 const showBodyModal = ref(false);
 const showRulesModal = ref(false);
 const showStrengthPlacementModal = ref(false);
+const showWarmupModal = ref(false);
 
 const currentStrengthConfig = computed(() => {
   const lvl = store.settings.strengthLevel || "intermediate";
   return STRENGTH_LEVEL_CONFIGS[lvl] || STRENGTH_LEVEL_CONFIGS.intermediate;
 });
 
-const anyTodayModalOpen = computed(() => showPlanPicker.value || showAutoFinishModal.value || showStrengthPlacementModal.value);
+const anyTodayModalOpen = computed(() => showPlanPicker.value || showAutoFinishModal.value || showStrengthPlacementModal.value || showWarmupModal.value);
 watch(anyTodayModalOpen, (isOpen) => {
   if (isOpen) lockBodyScroll();
   else unlockBodyScroll();
@@ -1165,6 +1233,53 @@ const activeWorkoutRecommendedAddons = computed(() => {
   const existingNames = new Set((store.activeWorkout.exercises || []).map(e => e.name));
   return list.filter(addon => !existingNames.has(addon.name));
 });
+
+const todayWarmupQuickList = computed(() => {
+  const planName = (currentPlan.value?.name || todayCycle.value?.name || todayCycle.value?.category || "").toLowerCase();
+  if (planName.includes("推") || planName.includes("push") || planName.includes("胸") || planName.includes("肩")) {
+    return [
+      { name: "腕关节绕环与活动度" },
+      { name: "双臂肩关节环绕" },
+      { name: "靠墙W肩胛滑动" },
+      { name: "弹力带对拉" }
+    ];
+  }
+  if (planName.includes("拉") || planName.includes("pull") || planName.includes("背")) {
+    return [
+      { name: "猫牛式脊柱伸展" },
+      { name: "弹力带对拉" },
+      { name: "毛毛虫爬行动态拉伸" },
+      { name: "腕关节绕环与活动度" }
+    ];
+  }
+  if (planName.includes("腿") || planName.includes("leg") || planName.includes("下肢") || planName.includes("深蹲")) {
+    return [
+      { name: "跪姿髋屈肌动态拉伸" },
+      { name: "动态仰卧臀桥" },
+      { name: "行进间高抬腿弓步" },
+      { name: "动态开合跳升温" }
+    ];
+  }
+  return [
+    { name: "动态开合跳升温" },
+    { name: "猫牛式脊柱伸展" },
+    { name: "双臂肩关节环绕" },
+    { name: "动态仰卧臀桥" }
+  ];
+});
+
+function handleWarmupCompleted() {
+  showWarmupModal.value = false;
+  overloadCelebration.value = {
+    visible: true,
+    isPr: false,
+    text: "🔥 动态热身完毕 · 状态拉满！",
+    subText: "关节滑液分泌充盈，肌群神经已充分唤醒，开启主课做工！"
+  };
+  setTimeout(() => {
+    overloadCelebration.value.visible = false;
+  }, 3500);
+}
 
 const todayFormatted = computed(() => {
   const d = new Date();

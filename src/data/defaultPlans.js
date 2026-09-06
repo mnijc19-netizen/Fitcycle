@@ -5,11 +5,12 @@ import { ARM_EXERCISES } from "./exercisesArms.js";
 import { LEG_EXERCISES } from "./exercisesLegs.js";
 import { CORE_EXERCISES } from "./exercisesCore.js";
 import { CARDIO_EXERCISES } from "./exercisesCardio.js";
+import { WARMUP_EXERCISES } from "./exercisesWarmup.js";
 import { TRAINING_TEMPLATES, getTrainingTemplateById } from "./trainingTemplates.js";
 
 export { TRAINING_TEMPLATES, getTrainingTemplateById };
 
-// 全面扩充的高阶黄金 3D 动作库 (总计 109 款经典科学动作，包含 3D 肌肉解剖红光发力动图与全套解剖画板)
+// 全面扩充的高阶黄金 3D 动作库 (总计 120 款经典科学动作，包含 3D 肌肉解剖红光发力动图与全套热身)
 export const DEFAULT_EXERCISES = [
   ...CHEST_EXERCISES,
   ...BACK_EXERCISES,
@@ -17,7 +18,8 @@ export const DEFAULT_EXERCISES = [
   ...ARM_EXERCISES,
   ...LEG_EXERCISES,
   ...CORE_EXERCISES,
-  ...CARDIO_EXERCISES
+  ...CARDIO_EXERCISES,
+  ...WARMUP_EXERCISES
 ];
 
 export const DEFAULT_PLANS = [

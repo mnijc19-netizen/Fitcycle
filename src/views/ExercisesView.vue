@@ -26,7 +26,7 @@
     <div class="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800 flex items-center justify-between text-xs">
       <div class="flex items-center gap-2" :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-bold' : 'text-zinc-300'">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span class="font-medium">已全面收录 7 大黄金肌群与体能动作</span>
+        <span class="font-medium">已全面收录 8 大分类与动态热身/激活动作</span>
       </div>
       <span class="font-mono font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">{{ store.exercises.length }} 款全覆盖</span>
     </div>
@@ -278,7 +278,7 @@ import { getUniversalScrollTop, universalScrollToTop } from "../utils/scrollUtil
 const showMachineFinder = ref(false);
 const searchQuery = ref("");
 const activeCategory = ref("全部");
-const categories = ["全部", "胸部", "背部", "肩部", "手臂", "腿部", "核心", "有氧", "其它"];
+const categories = ["全部", "胸部", "背部", "肩部", "手臂", "腿部", "核心", "有氧", "热身", "其它"];
 
 const showBackToTop = ref(false);
 
@@ -376,6 +376,7 @@ function openCreateExercise() {
     else if (q.includes("腿") || q.includes("蹲") || q.includes("倒蹬") || q.includes("硬拉") || q.includes("哈克")) guessedCat = "腿部";
     else if (q.includes("腹") || q.includes("核心") || q.includes("卷腹") || q.includes("平板")) guessedCat = "核心";
     else if (q.includes("跑") || q.includes("车") || q.includes("有氧") || q.includes("绳")) guessedCat = "有氧";
+    else if (q.includes("热身") || q.includes("激活") || q.includes("拉伸") || q.includes("活动度")) guessedCat = "热身";
   }
   newEx.value = { 
     name: q, 
