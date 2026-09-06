@@ -13,6 +13,7 @@ import {
   startRestTimer,
   stopRestTimer
 } from "../store/fitnessStore.js";
+import { findGymEquipmentVisual, GYM_EQUIPMENT_VISUALS } from "../data/gymEquipmentVisuals.js";
 
 const EMPTY_OBJECT_SCHEMA = { type: "object", properties: {}, additionalProperties: false };
 const INDEX = { type: "integer", minimum: 0 };
@@ -129,7 +130,15 @@ const definitions = [
   }, "confirm"],
   ["set_unlocked_skin", "切换到用户已经解锁的皮肤；不能解锁皮肤或验证暗号。", {
     type: "object", properties: { skin_name: { type: "string", enum: ["default", "chamber"] } }, required: ["skin_name"], additionalProperties: false
-  }, "confirm"]
+  }, "confirm"],
+  ["get_gym_machine_appearance", "查询健身房真实器械的实物长相、外观照片、调节旋钮位置及关联动作。当用户询问某个器械长什么样、怎么认出它或寻找器械时调用。", {
+    type: "object",
+    properties: {
+      query: { type: "string", minLength: 1, maxLength: 80, description: "器械名称或外观特征，如'哈克深蹲机'、'蝴蝶机'、'史密斯机'、'倒蹬机'等" }
+    },
+    required: ["query"],
+    additionalProperties: false
+  }, "query"]
 ];
 
 export const FITCYCLE_TOOL_DEFINITIONS = definitions.map(([name, description, parameters]) => ({
@@ -308,6 +317,37 @@ function executeTool(name, args) {
     const before = store.settings.uiSkin;
     setUISkin(args.skin_name);
     return { data: { uiSkin: store.settings.uiSkin }, message: "外观已切换", undo: () => setUISkin(before) };
+  }
+  if (name === "get_gym_machine_appearance") {
+    const eq = findGymEquipmentVisual(args.query);
+    if (!eq) {
+      return {
+        data: {
+          found: false,
+          query: args.query,
+          availableEquipment: GYM_EQUIPMENT_VISUALS.map(item => item.name)
+        },
+        message: `未在图谱中精准匹配到“${args.query}”。目前已收录的常见商用器械实物图包括：${GYM_EQUIPMENT_VISUALS.map(item => item.name).join("、")}。`
+      };
+    }
+    return {
+      data: {
+        found: true,
+        equipment: {
+          id: eq.id,
+          name: eq.name,
+          englishName: eq.englishName,
+          categoryName: eq.categoryName,
+          imageUrl: eq.imageUrl,
+          markdownImage: `![${eq.name}实物照片](${eq.imageUrl})`,
+          appearanceFeature: eq.appearanceFeature,
+          adjustmentTips: eq.adjustmentTips,
+          commonMistakes: eq.commonMistakes,
+          relatedExerciseIds: eq.relatedExerciseIds
+        }
+      },
+      message: `已找到 ${eq.name} 的真实商用器械实物图与调节规范。请务必使用 Markdown 图片语法输出器械照片：![${eq.name}实物照片](${eq.imageUrl})，并结合外观特征和插销/座椅调节指南详细回答。`
+    };
   }
   throw new Error("未知工具");
 }

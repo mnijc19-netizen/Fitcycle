@@ -225,6 +225,45 @@
                 {{ match.reasoning }}
               </div>
 
+              <!-- Real-World Commercial Gym Machine Photo & Adjustment Expander -->
+              <div v-if="getEquipmentVisual(match.exercise.name)" class="pt-0.5">
+                <button type="button"
+                        @click="toggleEquipmentVisual(match.exercise.name)"
+                        class="w-full py-1.5 px-3 rounded-xl border text-[11px] font-bold flex items-center justify-between transition-all cursor-pointer"
+                        :class="expandedVisuals[match.exercise.name]
+                          ? (store.settings.themeMode === 'light' ? 'bg-amber-100/80 border-amber-300 text-amber-900 shadow-xs' : 'bg-amber-500/15 border-amber-500/40 text-amber-300')
+                          : (store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200/80 border-slate-300 text-slate-700' : 'bg-zinc-900 hover:bg-zinc-850 border-zinc-800 text-zinc-300')">
+                  <span class="flex items-center gap-1.5">
+                    <span>📸</span>
+                    <span>查看商业健身房器械实物长相与插销调节</span>
+                  </span>
+                  <span class="text-[10px] transform transition-transform duration-200" :class="{ 'rotate-180': expandedVisuals[match.exercise.name] }">▼</span>
+                </button>
+
+                <!-- Expanded Real Photo Body -->
+                <div v-if="expandedVisuals[match.exercise.name]" 
+                     class="mt-2 p-2.5 rounded-2xl border space-y-2 animate-in fade-in zoom-in-95 duration-150"
+                     :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300' : 'bg-zinc-900/90 border-zinc-800'">
+                  <div class="relative rounded-xl overflow-hidden border border-zinc-700/60 shadow-md max-h-48 bg-black flex items-center justify-center">
+                    <img :src="getEquipmentVisual(match.exercise.name).imageUrl" 
+                         :alt="getEquipmentVisual(match.exercise.name).name" 
+                         class="w-full h-48 object-cover" />
+                    <div class="absolute bottom-1 right-2 px-2 py-0.5 rounded-md bg-black/75 backdrop-blur-sm text-[9px] text-zinc-200 font-mono">
+                      商用实机实拍
+                    </div>
+                  </div>
+                  <div class="text-[11px] leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
+                    <span class="font-bold text-amber-500">🔍 外观识别：</span>
+                    {{ getEquipmentVisual(match.exercise.name).appearanceFeature }}
+                  </div>
+                  <div class="text-[11px] leading-relaxed p-2 rounded-xl"
+                       :class="store.settings.themeMode === 'light' ? 'bg-amber-50 text-amber-900 border border-amber-200' : 'bg-amber-500/10 text-amber-200 border border-amber-500/20'">
+                    <span class="font-black">⚙️ 上机与插销调节：</span>
+                    <p class="whitespace-pre-line mt-0.5">{{ getEquipmentVisual(match.exercise.name).adjustmentTips }}</p>
+                  </div>
+                </div>
+              </div>
+
               <!-- Action Buttons -->
               <div class="flex items-center gap-2 pt-1 border-t"
                    :class="store.settings.themeMode === 'light' ? 'border-slate-100' : 'border-zinc-900'">
@@ -294,6 +333,7 @@
 import { ref, computed, watch, onUnmounted } from "vue";
 import { store, addExerciseToActiveWorkout, replaceExerciseInActiveWorkout, addExerciseToPlan, getTodayPlan } from "../store/fitnessStore.js";
 import { recognizeMachineByQuery } from "../engine/machineRecognitionEngine.js";
+import { findGymEquipmentVisual } from "../data/gymEquipmentVisuals.js";
 import { processImageFile } from "../ai/imageProcessor.js";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import { triggerHaptic } from "../utils/vibrate.js";
@@ -330,6 +370,15 @@ const selectedImage = ref(null);
 const isListening = ref(false);
 const feedbackText = ref("");
 let recognitionInstance = null;
+const expandedVisuals = ref({});
+
+function getEquipmentVisual(exerciseName) {
+  return findGymEquipmentVisual(exerciseName);
+}
+
+function toggleEquipmentVisual(exerciseName) {
+  expandedVisuals.value[exerciseName] = !expandedVisuals.value[exerciseName];
+}
 
 // Modal Scroll Lock Lifecycle
 watch(() => props.visible, (val) => {
