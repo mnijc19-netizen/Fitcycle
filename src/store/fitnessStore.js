@@ -1354,7 +1354,22 @@ export function saveUserProfileAndRecalibrate(profileData = {}) {
   let weightsMap = {};
   let bases = {};
 
-  if (profileData.useCustom && profileData.customBases) {
+  if (profileData.isCleanSlate) {
+    store.settings.strengthLevel = "clean_slate";
+    store.settings.customBaseWeights = { bench: 0, squat: 0, pull: 0 };
+    weightsMap = {
+      "上斜哑铃卧推": 0,
+      "固定器械推胸": 0,
+      "绳索侧平举": 0,
+      "对握/宽握高位下拉": 0,
+      "坐姿绳索划船": 0,
+      "上斜哑铃弯举": 0,
+      "哈克深蹲 / 倒蹬腿举": 0,
+      "罗马尼亚硬拉 (RDL)": 0,
+      "俯卧器械腿弯举 (Lying Leg Curl)": 0
+    };
+    bases = { bench: 0, squat: 0, pull: 0 };
+  } else if (profileData.useCustom && profileData.customBases) {
     store.settings.customBaseWeights = { ...profileData.customBases };
     store.settings.strengthLevel = "custom";
     const b = Number(profileData.customBases.bench) || 50;

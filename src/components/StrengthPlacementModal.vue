@@ -42,41 +42,98 @@
           </button>
         </div>
 
-        <!-- Mode Segmented Control (极速定级 vs 精准深度) -->
-        <div class="px-4 sm:px-5 pt-3.5 flex-shrink-0">
-          <div class="p-1 rounded-2xl border flex items-center gap-1 text-xs font-bold"
+        <!-- Mode Segmented Control (四大专业通道) -->
+        <div class="px-4 sm:px-5 pt-3 flex-shrink-0">
+          <div class="p-1 rounded-2xl border flex items-center gap-1 text-[11px] font-bold"
                :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border-slate-200' : 'bg-zinc-950 border-zinc-800'">
-            <button type="button" @click="activeTab = 'quick'"
-                    class="flex-1 py-1.5 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                    :class="activeTab === 'quick'
+            <button type="button" @click="activeMode = 'veteran'"
+                    class="flex-1 py-1.5 rounded-xl transition-all flex items-center justify-center gap-1 cursor-pointer"
+                    :class="activeMode === 'veteran'
                       ? (store.settings.themeMode === 'light' ? 'bg-white text-amber-600 shadow-xs' : 'bg-zinc-800 text-amber-400 shadow-xs')
                       : (store.settings.themeMode === 'light' ? 'text-slate-500 hover:text-slate-800' : 'text-zinc-400 hover:text-zinc-200')">
-              <span>⚡ 极速定级</span>
-              <span class="text-[10px] px-1.5 py-0.2 rounded-full font-semibold"
-                    :class="activeTab === 'quick' ? 'bg-amber-500/20 text-amber-400' : 'opacity-60'">3秒搞定</span>
+              <span>🏋️ 老铁报数</span>
             </button>
-            <button type="button" @click="activeTab = 'detailed'"
-                    class="flex-1 py-1.5 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                    :class="activeTab === 'detailed'
+            <button type="button" @click="activeMode = 'blank'"
+                    class="flex-1 py-1.5 rounded-xl transition-all flex items-center justify-center gap-1 cursor-pointer"
+                    :class="activeMode === 'blank'
                       ? (store.settings.themeMode === 'light' ? 'bg-white text-amber-600 shadow-xs' : 'bg-zinc-800 text-amber-400 shadow-xs')
                       : (store.settings.themeMode === 'light' ? 'text-slate-500 hover:text-slate-800' : 'text-zinc-400 hover:text-zinc-200')">
-              <span>🧬 精准测算与代谢</span>
+              <span>⚡ 纯白板</span>
+            </button>
+            <button type="button" @click="activeMode = 'novice'"
+                    class="flex-1 py-1.5 rounded-xl transition-all flex items-center justify-center gap-1 cursor-pointer"
+                    :class="activeMode === 'novice'
+                      ? (store.settings.themeMode === 'light' ? 'bg-white text-amber-600 shadow-xs' : 'bg-zinc-800 text-amber-400 shadow-xs')
+                      : (store.settings.themeMode === 'light' ? 'text-slate-500 hover:text-slate-800' : 'text-zinc-400 hover:text-zinc-200')">
+              <span>🐣 新手自适应</span>
+            </button>
+            <button type="button" @click="activeMode = 'metabolic'"
+                    class="flex-1 py-1.5 rounded-xl transition-all flex items-center justify-center gap-1 cursor-pointer"
+                    :class="activeMode === 'metabolic'
+                      ? (store.settings.themeMode === 'light' ? 'bg-white text-amber-600 shadow-xs' : 'bg-zinc-800 text-amber-400 shadow-xs')
+                      : (store.settings.themeMode === 'light' ? 'text-slate-500 hover:text-slate-800' : 'text-zinc-400 hover:text-zinc-200')">
+              <span>🧬 生理代谢</span>
             </button>
           </div>
         </div>
 
         <!-- Scrollable Fluid Body Container -->
-        <div class="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5 space-y-4 no-scrollbar">
+        <div class="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5 space-y-3.5 no-scrollbar">
           
-          <!-- TAB 1: 极速定级 (Zero Mental Friction - 推荐默认) -->
-          <div v-show="activeTab === 'quick'" class="space-y-3.5">
-            <!-- Quick Step 1: 性别与体重快速确认 -->
-            <div class="p-3 rounded-2xl border flex items-center justify-between gap-3"
+          <!-- System Impact Explainer Card (为什么要做这个定级？后续到底有啥用？) -->
+          <div class="p-3 rounded-2xl border space-y-2"
+               :class="store.settings.themeMode === 'light'
+                 ? 'bg-amber-50/70 border-amber-200/90 text-slate-800'
+                 : 'bg-amber-500/10 border-amber-500/30 text-zinc-200'">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-amber-400 flex items-center gap-1.5">
+                <span>💡</span>
+                <span>这个定级对你后续训练到底有啥用？</span>
+              </span>
+              <span class="text-[10px] text-zinc-400">核心价值</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-[11px] leading-tight">
+              <div class="flex items-start gap-1.5">
+                <span class="text-amber-400 font-bold">1.</span>
+                <div>
+                  <span class="font-bold block text-zinc-100">开练免试重：</span>
+                  <span class="text-[10px] text-zinc-400">9大动作默认预填你的主力做工，告别每次试空杆</span>
+                </div>
+              </div>
+              <div class="flex items-start gap-1.5">
+                <span class="text-amber-400 font-bold">2.</span>
+                <div>
+                  <span class="font-bold block text-zinc-100">段位免重爬：</span>
+                  <span class="text-[10px] text-zinc-400">按真实水平直接授予黄金/钻石，老手不从青铜熬</span>
+                </div>
+              </div>
+              <div class="flex items-start gap-1.5">
+                <span class="text-amber-400 font-bold">3.</span>
+                <div>
+                  <span class="font-bold block text-zinc-100">PR 突破基准：</span>
+                  <span class="text-[10px] text-zinc-400">以此为锚点，只要加重 2.5kg 自动触发金色高光庆祝</span>
+                </div>
+              </div>
+              <div class="flex items-start gap-1.5">
+                <span class="text-amber-400 font-bold">4.</span>
+                <div>
+                  <span class="font-bold block text-zinc-100">超量恢复感知：</span>
+                  <span class="text-[10px] text-zinc-400">AI 测算中枢神经负荷，精准把控 0~72h 恢复倒计时</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================== -->
+          <!-- TRACK 1: 🏋️ 老铁直接报数 (Core Lifts Direct Input) -->
+          <!-- ============================================== -->
+          <div v-show="activeMode === 'veteran'" class="space-y-3.5">
+            <!-- Gender & Bodyweight quick bar -->
+            <div class="p-2.5 rounded-2xl border flex items-center justify-between gap-2"
                  :class="store.settings.themeMode === 'light' ? 'bg-slate-50/80 border-slate-200' : 'bg-zinc-900/60 border-zinc-800/80'">
               <div class="flex items-center gap-2">
-                <span class="text-xs font-bold"
-                      :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">基本生理</span>
-                <!-- Gender toggle -->
+                <span class="text-xs font-bold text-zinc-300">生理基准</span>
                 <div class="flex items-center bg-zinc-950 p-0.5 rounded-xl border border-zinc-800 text-[11px] font-bold">
                   <button type="button" @click="setGender('male')"
                           class="px-2 py-0.5 rounded-lg transition-all cursor-pointer"
@@ -91,109 +148,231 @@
                 </div>
               </div>
 
-              <!-- Quick weight chips / stepper -->
-              <div class="flex items-center gap-1.5">
-                <span class="text-xs font-bold text-amber-400 font-mono">{{ form.userWeight }} kg</span>
-                <div class="flex items-center gap-1">
+              <div class="flex items-center gap-1.5 font-mono">
+                <span class="text-xs font-bold text-amber-400">{{ form.userWeight }} kg 体重</span>
+                <div class="flex items-center gap-0.5">
                   <button type="button" @click="form.userWeight = Math.max(35, form.userWeight - 2.5)"
-                          title="减少2.5kg"
-                          class="w-6 h-6 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 flex items-center justify-center text-xs font-bold active:scale-90 cursor-pointer">
-                    −
-                  </button>
+                          class="w-5 h-5 rounded bg-zinc-800 text-zinc-300 flex items-center justify-center text-xs active:scale-90 cursor-pointer">−</button>
                   <button type="button" @click="form.userWeight = Math.min(180, form.userWeight + 2.5)"
-                          title="增加2.5kg"
-                          class="w-6 h-6 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 flex items-center justify-center text-xs font-bold active:scale-90 cursor-pointer">
-                    +
+                          class="w-5 h-5 rounded bg-zinc-800 text-zinc-300 flex items-center justify-center text-xs active:scale-90 cursor-pointer">+</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3 Core Exercises Direct Inputs -->
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-zinc-200">
+                  平时主力做工重量 (非极限1RM，通常6~10次组重)：
+                </span>
+                <span class="text-[10px] text-amber-400 font-mono">点击刻度秒填 ⚡</span>
+              </div>
+
+              <!-- Bench Press Input -->
+              <div class="p-2.5 rounded-xl border bg-zinc-900/80 border-zinc-800 space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-zinc-200 flex items-center gap-1">
+                    <span>🥊</span>
+                    <span>常用推胸 / 卧推做工</span>
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <input v-model.number="customBases.bench" type="number" step="2.5" 
+                           class="w-16 text-center font-mono font-black text-sm p-1 rounded-lg border bg-zinc-950 border-zinc-700 text-amber-400 focus:border-amber-500 outline-none" />
+                    <span class="text-xs font-bold text-zinc-400">kg</span>
+                  </div>
+                </div>
+                <!-- Quick scale chips -->
+                <div class="flex items-center gap-1.5 pt-0.5 overflow-x-auto no-scrollbar">
+                  <span class="text-[9px] text-zinc-500 flex-shrink-0">常做刻度:</span>
+                  <button v-for="w in [30, 50, 70, 90, 110, 130]" :key="w"
+                          type="button" @click="customBases.bench = w"
+                          class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold border transition-all cursor-pointer flex-shrink-0"
+                          :class="customBases.bench === w ? 'bg-amber-500 text-zinc-950 border-amber-400' : 'bg-zinc-950 hover:bg-zinc-800 text-zinc-300 border-zinc-700'">
+                    {{ w }}kg
+                  </button>
+                </div>
+              </div>
+
+              <!-- Squat / Leg Press Input -->
+              <div class="p-2.5 rounded-xl border bg-zinc-900/80 border-zinc-800 space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-zinc-200 flex items-center gap-1">
+                    <span>🦵</span>
+                    <span>常用深蹲 / 腿举做工</span>
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <input v-model.number="customBases.squat" type="number" step="5" 
+                           class="w-16 text-center font-mono font-black text-sm p-1 rounded-lg border bg-zinc-950 border-zinc-700 text-amber-400 focus:border-amber-500 outline-none" />
+                    <span class="text-xs font-bold text-zinc-400">kg</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1.5 pt-0.5 overflow-x-auto no-scrollbar">
+                  <span class="text-[9px] text-zinc-500 flex-shrink-0">常做刻度:</span>
+                  <button v-for="w in [40, 70, 100, 130, 160, 200]" :key="w"
+                          type="button" @click="customBases.squat = w"
+                          class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold border transition-all cursor-pointer flex-shrink-0"
+                          :class="customBases.squat === w ? 'bg-amber-500 text-zinc-950 border-amber-400' : 'bg-zinc-950 hover:bg-zinc-800 text-zinc-300 border-zinc-700'">
+                    {{ w }}kg
+                  </button>
+                </div>
+              </div>
+
+              <!-- Lat Pulldown / Pull Input -->
+              <div class="p-2.5 rounded-xl border bg-zinc-900/80 border-zinc-800 space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-zinc-200 flex items-center gap-1">
+                    <span>🦅</span>
+                    <span>常用下拉 / 划船做工</span>
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <input v-model.number="customBases.pull" type="number" step="2.5" 
+                           class="w-16 text-center font-mono font-black text-sm p-1 rounded-lg border bg-zinc-950 border-zinc-700 text-amber-400 focus:border-amber-500 outline-none" />
+                    <span class="text-xs font-bold text-zinc-400">kg</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1.5 pt-0.5 overflow-x-auto no-scrollbar">
+                  <span class="text-[9px] text-zinc-500 flex-shrink-0">常做刻度:</span>
+                  <button v-for="w in [30, 45, 60, 75, 90, 105]" :key="w"
+                          type="button" @click="customBases.pull = w"
+                          class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold border transition-all cursor-pointer flex-shrink-0"
+                          :class="customBases.pull === w ? 'bg-amber-500 text-zinc-950 border-amber-400' : 'bg-zinc-950 hover:bg-zinc-800 text-zinc-300 border-zinc-700'">
+                    {{ w }}kg
                   </button>
                 </div>
               </div>
             </div>
 
-            <!-- Quick Step 2: 4 大力量段位卡片 (一键点选，生动直观) -->
-            <div class="space-y-2">
+            <!-- Derived Plan Weights Output Grid -->
+            <div class="p-3 rounded-2xl border space-y-2 bg-gradient-to-br from-amber-500/15 via-zinc-900/90 to-zinc-950 border-amber-500/40">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-black"
-                      :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">
-                  选择最符合你现状的力量段位：
-                </span>
-                <span class="text-[10px] text-amber-500">点击卡片秒级匹配 ✨</span>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <div v-for="archetype in archetypes" :key="archetype.id"
-                     @click="selectArchetype(archetype)"
-                     class="p-3 rounded-2xl border transition-all cursor-pointer relative overflow-hidden flex flex-col justify-between"
-                     :class="[
-                       selectedArchetypeId === archetype.id
-                         ? 'bg-amber-500/15 border-amber-500 shadow-md shadow-amber-500/10 ring-1 ring-amber-500/60'
-                         : (store.settings.themeMode === 'light' ? 'bg-slate-50 hover:bg-slate-100/80 border-slate-200' : 'bg-zinc-900/80 hover:bg-zinc-800/80 border-zinc-800')
-                     ]">
-                  <!-- Active Checkmark / Highlight -->
-                  <div v-if="selectedArchetypeId === archetype.id" 
-                       class="absolute top-2 right-2 w-4 h-4 rounded-full bg-amber-500 text-zinc-950 flex items-center justify-center text-[10px] font-black">
-                    ✓
-                  </div>
-                  <div v-else-if="archetype.isHot" 
-                       class="absolute top-2 right-2 px-1.5 py-0.2 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[9px] font-bold">
-                    推荐
-                  </div>
-
-                  <div>
-                    <div class="flex items-center gap-2">
-                      <span class="text-lg">{{ archetype.icon }}</span>
-                      <div>
-                        <span class="text-xs font-black block"
-                              :class="selectedArchetypeId === archetype.id ? 'text-amber-300' : (store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white')">
-                          {{ archetype.name }}
-                        </span>
-                        <span class="text-[10px] text-zinc-400 font-mono">{{ archetype.tag }}</span>
-                      </div>
-                    </div>
-
-                    <p class="text-[11px] mt-2 leading-snug"
-                       :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
-                      {{ archetype.desc }}
-                    </p>
-                  </div>
-
-                  <!-- Suggested weight pill inside archetype -->
-                  <div class="mt-2.5 pt-2 border-t border-zinc-800/60 flex items-center justify-between text-[10px]">
-                    <span class="text-zinc-500">典型起步：</span>
-                    <span class="font-mono font-bold"
-                          :class="selectedArchetypeId === archetype.id ? 'text-amber-400' : 'text-zinc-300'">
-                      {{ archetype.sampleWeights }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Quick Step 3: 即时推导出的计划重量成果展示 -->
-            <div class="p-3.5 rounded-2xl border space-y-2"
-                 :class="store.settings.themeMode === 'light'
-                   ? 'bg-amber-50/70 border-amber-200 shadow-xs'
-                   : 'bg-gradient-to-br from-amber-500/10 via-zinc-900/90 to-zinc-950 border-amber-500/30'">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-black flex items-center gap-1.5 text-amber-400">
+                <span class="text-xs font-black text-amber-300 flex items-center gap-1">
                   <span>🎯</span>
-                  <span>已为你自适应测算开练组重 (基于 {{ form.userWeight }}kg)</span>
+                  <span>按力学比例为你换算的计划起步组重</span>
                 </span>
-                <span class="text-[10px] text-zinc-400">开练直接套用</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40">
+                  {{ veteranPredictedRank.badge }}
+                </span>
               </div>
 
               <div class="grid grid-cols-3 gap-2 text-center font-mono">
-                <div class="p-2 rounded-xl border"
-                     :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-200' : 'bg-zinc-950/80 border-zinc-800'">
+                <div class="p-2 rounded-xl border bg-zinc-950/80 border-zinc-800">
+                  <span class="text-[9px] block text-zinc-400">上斜哑铃推胸</span>
+                  <span class="text-xs font-black text-amber-400">{{ derivedVeteranWeights.inclineDb }} kg/只</span>
+                </div>
+                <div class="p-2 rounded-xl border bg-zinc-950/80 border-zinc-800">
+                  <span class="text-[9px] block text-zinc-400">哈克深蹲/腿举</span>
+                  <span class="text-xs font-black text-amber-400">{{ derivedVeteranWeights.hackSquat }} kg</span>
+                </div>
+                <div class="p-2 rounded-xl border bg-zinc-950/80 border-zinc-800">
+                  <span class="text-[9px] block text-zinc-400">高位下拉</span>
+                  <span class="text-xs font-black text-amber-400">{{ derivedVeteranWeights.latPull }} kg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================== -->
+          <!-- TRACK 2: ⚡ 纯白板开练 (Zero Guessing / Free Log) -->
+          <!-- ============================================== -->
+          <div v-show="activeMode === 'blank'" class="space-y-3">
+            <div class="p-4 rounded-2xl border bg-zinc-900/90 border-zinc-800 space-y-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-2xl bg-zinc-800 flex items-center justify-center text-xl">
+                  📝
+                </div>
+                <div>
+                  <h3 class="text-sm font-black text-white">纯白板模式 · 由我自主记录</h3>
+                  <p class="text-[11px] text-zinc-400">适合对自己的训练动作与重量有绝对掌控的老铁</p>
+                </div>
+              </div>
+
+              <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800/80 space-y-2 text-xs text-zinc-300 leading-relaxed">
+                <div class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span>计划中所有动作的初始组重将<strong>全部留空 (0kg)</strong>，绝不主观猜测；</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span>今天开练时你做多少就记多少，系统会自动存入<strong>常用动作记忆池</strong>；</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-emerald-400 font-bold">✓</span>
+                  <span>下次再做该动作时，自动 100% 预填你上一次的最佳做工。</span>
+                </div>
+              </div>
+
+              <div class="p-2.5 rounded-xl border bg-amber-500/10 border-amber-500/30 text-xs text-amber-300 flex items-center justify-between">
+                <span>🛡️ 战力天梯初始锚定：</span>
+                <span class="font-mono font-bold">黄金筑基 (1000 PTS)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================== -->
+          <!-- TRACK 3: 🐣 新手自适应 (Novice Intuitive Safe Presets) -->
+          <!-- ============================================== -->
+          <div v-show="activeMode === 'novice'" class="space-y-3">
+            <div class="space-y-2">
+              <span class="text-xs font-black text-zinc-200 block">
+                选择你的抗阻训练经验档位：
+              </span>
+              <div class="grid grid-cols-3 gap-2">
+                <button type="button" v-for="lvl in experienceLevels" :key="lvl.id"
+                        @click="form.experienceLevel = lvl.id; syncNoviceTier(lvl.id)"
+                        class="p-2.5 rounded-xl border text-center transition-all cursor-pointer"
+                        :class="form.experienceLevel === lvl.id ? 'bg-amber-500/15 border-amber-500 text-amber-400 ring-1 ring-amber-500/40' : 'bg-zinc-900/70 border-zinc-800 text-zinc-400'">
+                  <div class="text-xs font-black">{{ lvl.name }}</div>
+                  <div class="text-[9px] text-zinc-500 mt-0.5">{{ lvl.badge }}</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Intuitive pushup & squat perceptions -->
+            <div class="grid grid-cols-2 gap-2">
+              <div class="p-2.5 rounded-xl border bg-zinc-900/80 border-zinc-800 space-y-1.5">
+                <span class="text-[10px] font-bold text-zinc-400 block">连续俯卧撑数量</span>
+                <div class="grid grid-cols-2 gap-1">
+                  <button v-for="p in pushupTiers" :key="p.id"
+                          type="button" @click="form.pushupTier = p.id"
+                          class="p-1 rounded text-[10px] border transition-all text-center"
+                          :class="form.pushupTier === p.id ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-zinc-950 text-zinc-400 border-zinc-800'">
+                    {{ p.name }}
+                  </button>
+                </div>
+              </div>
+
+              <div class="p-2.5 rounded-xl border bg-zinc-900/80 border-zinc-800 space-y-1.5">
+                <span class="text-[10px] font-bold text-zinc-400 block">深蹲/爬楼腿力</span>
+                <div class="grid grid-cols-3 gap-1">
+                  <button v-for="s in squatTiers" :key="s.id"
+                          type="button" @click="form.squatTier = s.id"
+                          class="p-1 rounded text-[10px] border transition-all text-center"
+                          :class="form.squatTier === s.id ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-zinc-950 text-zinc-400 border-zinc-800'">
+                    {{ s.name }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Novice Calculated Weights -->
+            <div class="p-3 rounded-2xl border space-y-2 bg-gradient-to-br from-amber-500/10 via-zinc-900/90 to-zinc-950 border-amber-500/30">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-amber-400 flex items-center gap-1">
+                  <span>🎯</span>
+                  <span>为你推导的科学安全起步组重</span>
+                </span>
+                <span class="text-[10px] text-zinc-400">空杆与轻哑铃优先</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-center font-mono">
+                <div class="p-2 rounded-xl border bg-zinc-950/80 border-zinc-800">
                   <span class="text-[9px] block text-zinc-400">上斜哑铃推胸</span>
                   <span class="text-xs font-black text-amber-400">{{ adaptiveWeights.weightsMap['上斜哑铃卧推'] }} kg/只</span>
                 </div>
-                <div class="p-2 rounded-xl border"
-                     :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-200' : 'bg-zinc-950/80 border-zinc-800'">
+                <div class="p-2 rounded-xl border bg-zinc-950/80 border-zinc-800">
                   <span class="text-[9px] block text-zinc-400">哈克腿举/深蹲</span>
                   <span class="text-xs font-black text-amber-400">{{ adaptiveWeights.weightsMap['哈克深蹲 / 倒蹬腿举'] }} kg</span>
                 </div>
-                <div class="p-2 rounded-xl border"
-                     :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-200' : 'bg-zinc-950/80 border-zinc-800'">
+                <div class="p-2 rounded-xl border bg-zinc-950/80 border-zinc-800">
                   <span class="text-[9px] block text-zinc-400">高位下拉</span>
                   <span class="text-xs font-black text-amber-400">{{ adaptiveWeights.weightsMap['对握/宽握高位下拉'] }} kg</span>
                 </div>
@@ -201,79 +380,52 @@
             </div>
           </div>
 
-          <!-- TAB 2: 精准自适应与生理代谢基线 (保留供深度用户调校与医学测试断言) -->
-          <div v-show="activeTab === 'detailed'" class="space-y-4">
+          <!-- ============================================== -->
+          <!-- TRACK 4: 🧬 精准生理与代谢基准 (医学指标与测试断言) -->
+          <!-- ============================================== -->
+          <div v-show="activeMode === 'metabolic'" class="space-y-3.5">
             <!-- SECTION 1: 生理指标与代谢基准 -->
             <div class="space-y-3">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-black flex items-center gap-1.5"
-                      :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">
+                <span class="text-xs font-black flex items-center gap-1.5 text-zinc-200">
                   <span>🧬</span>
                   <span>生理指标与代谢基准</span>
                 </span>
-                <span class="text-[10px]"
-                      :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">
-                  影响相对力量系数与打卡能耗
-                </span>
-              </div>
-
-              <!-- Gender Buttons -->
-              <div class="grid grid-cols-2 gap-2">
-                <button type="button" @click="setGender('male')"
-                        class="p-2.5 rounded-xl border flex items-center justify-center gap-2 font-bold text-xs transition-all cursor-pointer"
-                        :class="form.gender === 'male'
-                          ? 'bg-amber-500/15 border-amber-500 text-amber-500 shadow-sm ring-1 ring-amber-500/40'
-                          : (store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-200 text-slate-600' : 'bg-zinc-900/80 border-zinc-800 text-zinc-400')">
-                  <span class="text-sm">♂</span>
-                  <span>男性 (Male)</span>
-                </button>
-                <button type="button" @click="setGender('female')"
-                        class="p-2.5 rounded-xl border flex items-center justify-center gap-2 font-bold text-xs transition-all cursor-pointer"
-                        :class="form.gender === 'female'
-                          ? 'bg-amber-500/15 border-amber-500 text-amber-500 shadow-sm ring-1 ring-amber-500/40'
-                          : (store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-200 text-slate-600' : 'bg-zinc-900/80 border-zinc-800 text-zinc-400')">
-                  <span class="text-sm">♀</span>
-                  <span>女性 (Female)</span>
-                </button>
+                <span class="text-[10px] text-zinc-400">影响相对力量系数与打卡能耗</span>
               </div>
 
               <!-- Height, Weight, Age Row -->
               <div class="grid grid-cols-3 gap-2">
-                <!-- Height -->
-                <div class="p-2 rounded-xl border text-center"
-                     :class="store.settings.themeMode === 'light' ? 'bg-slate-50/90 border-slate-200' : 'bg-zinc-900/80 border-zinc-800'">
+                <div class="p-2 rounded-xl border text-center bg-zinc-900/80 border-zinc-800">
                   <span class="text-[9px] block text-zinc-400">身高 (cm)</span>
                   <div class="flex items-center justify-center gap-1 mt-0.5">
                     <button type="button" @click="form.userHeight = Math.max(130, form.userHeight - 1)"
-                            class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold active:scale-90 transition-transform cursor-pointer bg-zinc-800 text-zinc-300">−</button>
+                            class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold bg-zinc-800 text-zinc-300 cursor-pointer">−</button>
                     <span class="font-mono font-black text-xs">{{ form.userHeight }}</span>
                     <button type="button" @click="form.userHeight = Math.min(230, form.userHeight + 1)"
-                            class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold active:scale-90 transition-transform cursor-pointer bg-zinc-800 text-zinc-300">+</button>
+                            class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold bg-zinc-800 text-zinc-300 cursor-pointer">+</button>
                   </div>
                 </div>
 
-                <!-- Weight -->
                 <div class="p-2 rounded-xl border text-center ring-1 ring-amber-500/30 bg-amber-500/5 border-amber-500/40">
                   <span class="text-[9px] block font-bold text-amber-500">体重 (kg)</span>
                   <div class="flex items-center justify-center gap-1 mt-0.5">
                     <button type="button" @click="form.userWeight = Math.max(35, Number((form.userWeight - 1).toFixed(1)))"
-                            class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold active:scale-90 transition-transform cursor-pointer bg-zinc-800 text-amber-300">−</button>
+                            class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold bg-zinc-800 text-amber-300 cursor-pointer">−</button>
                     <span class="font-mono font-black text-xs text-amber-400">{{ form.userWeight }}</span>
                     <button type="button" @click="form.userWeight = Math.min(200, Number((form.userWeight + 1).toFixed(1)))"
-                            class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold active:scale-90 transition-transform cursor-pointer bg-zinc-800 text-amber-300">+</button>
+                            class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold bg-zinc-800 text-amber-300 cursor-pointer">+</button>
                   </div>
                 </div>
 
-                <!-- Age -->
-                <div class="p-2 rounded-xl border text-center"
-                     :class="store.settings.themeMode === 'light' ? 'bg-slate-50/90 border-slate-200' : 'bg-zinc-900/80 border-zinc-800'">
+                <div class="p-2 rounded-xl border text-center bg-zinc-900/80 border-zinc-800">
                   <span class="text-[9px] block text-zinc-400">年龄 (岁)</span>
                   <div class="flex items-center justify-center gap-1 mt-0.5">
                     <button type="button" @click="form.userAge = Math.max(16, form.userAge - 1)"
-                            class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold active:scale-90 transition-transform cursor-pointer bg-zinc-800 text-zinc-300">−</button>
+                            class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold bg-zinc-800 text-zinc-300 cursor-pointer">−</button>
                     <span class="font-mono font-black text-xs">{{ form.userAge }}</span>
                     <button type="button" @click="form.userAge = Math.min(90, form.userAge + 1)"
-                            class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold active:scale-90 transition-transform cursor-pointer bg-zinc-800 text-zinc-300">+</button>
+                            class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold bg-zinc-800 text-zinc-300 cursor-pointer">+</button>
                   </div>
                 </div>
               </div>
@@ -309,91 +461,12 @@
                   </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Detailed Perception & Experience -->
-            <div class="space-y-3 pt-1">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-black flex items-center gap-1.5 text-zinc-200">
-                  <span>⚡</span>
-                  <span>体能直觉感知 (免记具体公斤数)</span>
-                </span>
-                <span class="text-[10px] text-amber-500">细化微调 💡</span>
-              </div>
-
-              <!-- Pushups -->
-              <div class="space-y-1.5">
-                <span class="text-[11px] font-bold block text-zinc-300">
-                  连续标准俯卧撑的大致数量 (推力基准)
-                </span>
-                <div class="grid grid-cols-2 gap-2">
-                  <div v-for="p in pushupTiers" :key="p.id"
-                       @click="form.pushupTier = p.id; checkArchetypeMatch()"
-                       class="p-2 rounded-xl border cursor-pointer transition-all"
-                       :class="form.pushupTier === p.id
-                         ? 'bg-amber-500/15 border-amber-500 shadow-sm ring-1 ring-amber-500/40'
-                         : 'bg-zinc-900/80 border-zinc-800'">
-                    <div class="flex items-center justify-between">
-                      <span class="text-xs font-black" :class="form.pushupTier === p.id ? 'text-amber-400' : 'text-zinc-200'">{{ p.name }}</span>
-                      <span class="text-[9px] font-mono px-1.5 py-0.2 rounded border bg-zinc-800 text-zinc-400 border-zinc-700">{{ p.badge }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Squats -->
-              <div class="space-y-1.5">
-                <span class="text-[11px] font-bold block text-zinc-300">
-                  徒手深蹲或爬楼感受 (下肢与核心基准)
-                </span>
-                <div class="grid grid-cols-3 gap-2">
-                  <div v-for="s in squatTiers" :key="s.id"
-                       @click="form.squatTier = s.id; checkArchetypeMatch()"
-                       class="p-2 rounded-xl border cursor-pointer transition-all text-center"
-                       :class="form.squatTier === s.id ? 'bg-amber-500/15 border-amber-500 shadow-sm ring-1 ring-amber-500/40' : 'bg-zinc-900/80 border-zinc-800'">
-                    <div class="text-sm">{{ s.icon }}</div>
-                    <div class="text-[11px] font-bold mt-0.5" :class="form.squatTier === s.id ? 'text-amber-400' : 'text-zinc-200'">{{ s.name }}</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Experience level -->
-              <div class="space-y-1.5">
-                <span class="text-[11px] font-bold block text-zinc-300">
-                  抗阻训练年限档位
-                </span>
-                <div class="grid grid-cols-3 gap-2">
-                  <button type="button" v-for="lvl in experienceLevels" :key="lvl.id"
-                          @click="form.experienceLevel = lvl.id; checkArchetypeMatch()"
-                          class="p-2 rounded-xl border text-center transition-all cursor-pointer"
-                          :class="form.experienceLevel === lvl.id ? 'bg-amber-500/15 border-amber-500 text-amber-400 ring-1 ring-amber-500/40' : 'bg-zinc-900/70 border-zinc-800 text-zinc-400'">
-                    <div class="text-xs font-black">{{ lvl.name }}</div>
-                    <div class="text-[9px] text-zinc-500">{{ lvl.badge }}</div>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Direct Kg Input Option -->
+              <!-- Direct Kg Input Option (自定义我常做的核心重量) -->
               <div class="pt-2 border-t border-zinc-800">
                 <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">🛠️ 自定义我常做的核心重量</span>
-                  <button type="button" @click="showCustomMode = !showCustomMode" class="text-[10px] text-amber-400 underline cursor-pointer">
-                    {{ showCustomMode ? '‹ 切回自适应推算' : '展开直填' }}
-                  </button>
-                </div>
-                <div v-if="showCustomMode" class="grid grid-cols-3 gap-2 pt-2">
-                  <div>
-                    <span class="text-[9px] block text-zinc-400 mb-1">日常卧推 (kg)</span>
-                    <input v-model.number="customBases.bench" type="number" step="2.5" class="w-full text-center font-mono font-bold text-xs p-1.5 rounded-lg border outline-none bg-zinc-950 border-zinc-700 text-white focus:border-amber-500" />
-                  </div>
-                  <div>
-                    <span class="text-[9px] block text-zinc-400 mb-1">日常深蹲 (kg)</span>
-                    <input v-model.number="customBases.squat" type="number" step="5" class="w-full text-center font-mono font-bold text-xs p-1.5 rounded-lg border outline-none bg-zinc-950 border-zinc-700 text-white focus:border-amber-500" />
-                  </div>
-                  <div>
-                    <span class="text-[9px] block text-zinc-400 mb-1">日常下拉 (kg)</span>
-                    <input v-model.number="customBases.pull" type="number" step="2.5" class="w-full text-center font-mono font-bold text-xs p-1.5 rounded-lg border outline-none bg-zinc-950 border-zinc-700 text-white focus:border-amber-500" />
-                  </div>
+                  <span class="text-xs font-bold text-zinc-300">🛠️ 自定义我常做的核心重量</span>
+                  <span class="text-[10px] text-amber-400 font-mono">老铁报数已自动同步</span>
                 </div>
               </div>
             </div>
@@ -450,14 +523,14 @@ onUnmounted(() => {
   if (props.visible) unlockBodyScroll();
 });
 
-const activeTab = ref("quick"); // 'quick' | 'detailed'
-const showCustomMode = ref(false);
+const activeMode = ref("veteran"); // 'veteran' | 'blank' | 'novice' | 'metabolic'
+const showCustomMode = ref(true);
 
 const form = reactive({
   gender: store.settings.gender || "male",
   userAge: store.settings.userAge || 25,
   userHeight: store.settings.userHeight || 175,
-  userWeight: store.settings.userWeight || 70,
+  userWeight: store.settings.userWeight || 75,
   trainingGoal: store.settings.trainingGoal || "hypertrophy",
   pushupTier: store.settings.pushupTier || "basic",
   squatTier: store.settings.squatTier || "natural",
@@ -465,96 +538,62 @@ const form = reactive({
 });
 
 const customBases = reactive({
-  bench: store.settings.customBaseWeights?.bench || 50,
-  squat: store.settings.customBaseWeights?.squat || 70,
-  pull: store.settings.customBaseWeights?.pull || 45
+  bench: store.settings.customBaseWeights?.bench || 80,
+  squat: store.settings.customBaseWeights?.squat || 110,
+  pull: store.settings.customBaseWeights?.pull || 65
 });
 
-// 4 大力量段位卡片 (直觉开荒到高阶，告别选择题负担)
-const archetypes = [
-  {
-    id: "novice",
-    name: "小白开荒",
-    tag: "零基础 / 找发力感",
-    icon: "🐣",
-    desc: "较少去健身房或初次接触力量训练，以空杆或轻哑铃规范轨迹为先",
-    sampleWeights: "哑铃 4~6kg · 腿举 25~35kg",
-    pushupTier: "beginner",
-    squatTier: "sedentary",
-    experienceLevel: "beginner"
-  },
-  {
-    id: "intermediate",
-    name: "常规进阶",
-    tag: "大众健身 · 推荐",
-    icon: "🏃",
-    desc: "有一定运动基础，能做10+个俯卧撑，追求高效塑形与增肌",
-    sampleWeights: "哑铃 8~12kg · 腿举 50~65kg",
-    pushupTier: "basic",
-    squatTier: "natural",
-    experienceLevel: "intermediate",
-    isHot: true
-  },
-  {
-    id: "advanced",
-    name: "力量老铁",
-    tag: "规律抗阻 1年+",
-    icon: "🏋️",
-    desc: "动作熟练自如，三大项轨迹稳定，追求渐进超负荷与强壮体魄",
-    sampleWeights: "哑铃 14~20kg · 腿举 80~100kg",
-    pushupTier: "moderate",
-    squatTier: "strong",
-    experienceLevel: "advanced"
-  },
-  {
-    id: "elite",
-    name: "硬核高阶",
-    tag: "资深老炮 / 接近超自重",
-    icon: "🦍",
-    desc: "长期大负荷撸铁，推力接近或超越自身体重，追求极限做工",
-    sampleWeights: "哑铃 20kg+ · 腿举 110kg+",
-    pushupTier: "elite",
-    squatTier: "strong",
-    experienceLevel: "advanced"
+// Veteran derived weights calculation
+const derivedVeteranWeights = computed(() => {
+  const b = Number(customBases.bench) || 50;
+  const s = Number(customBases.squat) || 70;
+  const p = Number(customBases.pull) || 45;
+  return {
+    inclineDb: Math.max(5, Math.round(b * 0.35 / 2.5) * 2.5),
+    chestMachine: Math.max(10, Math.round(b * 0.85 / 2.5) * 2.5),
+    hackSquat: Math.max(20, Math.round(s * 0.9 / 5) * 5),
+    latPull: Math.max(10, Math.round(p * 0.9 / 2.5) * 2.5)
+  };
+});
+
+// Veteran predicted rank
+const veteranPredictedRank = computed(() => {
+  const b = Number(customBases.bench) || 50;
+  const s = Number(customBases.squat) || 70;
+  if (b >= 100 || s >= 140) {
+    return { badge: "💎 璀璨钻石 (战力 1400+)", tier: "diamond" };
+  } else if (b >= 75 || s >= 100) {
+    return { badge: "⚡ 精锐黄金 (战力 1150+)", tier: "gold" };
+  } else {
+    return { badge: "🛡️ 坚韧白银 (战力 850+)", tier: "silver" };
   }
-];
-
-const selectedArchetypeId = ref("intermediate");
-
-// Determine initial archetype based on store settings
-if (store.settings.strengthLevel === "beginner" || store.settings.pushupTier === "beginner") {
-  selectedArchetypeId.value = "novice";
-} else if (store.settings.strengthLevel === "advanced" || store.settings.pushupTier === "elite") {
-  selectedArchetypeId.value = store.settings.pushupTier === "elite" ? "elite" : "advanced";
-} else {
-  selectedArchetypeId.value = "intermediate";
-}
-
-function selectArchetype(archetype) {
-  selectedArchetypeId.value = archetype.id;
-  form.pushupTier = archetype.pushupTier;
-  form.squatTier = archetype.squatTier;
-  form.experienceLevel = archetype.experienceLevel;
-}
+});
 
 function setGender(g) {
   form.gender = g;
-  if (g === "female" && form.userWeight === 70) {
+  if (g === "female" && form.userWeight === 75) {
     form.userWeight = 55;
+    customBases.bench = 35;
+    customBases.squat = 50;
+    customBases.pull = 35;
   } else if (g === "male" && form.userWeight === 55) {
-    form.userWeight = 70;
+    form.userWeight = 75;
+    customBases.bench = 80;
+    customBases.squat = 110;
+    customBases.pull = 65;
   }
 }
 
-function checkArchetypeMatch() {
-  if (form.pushupTier === "beginner" && form.experienceLevel === "beginner") {
-    selectedArchetypeId.value = "novice";
-  } else if (form.pushupTier === "elite") {
-    selectedArchetypeId.value = "elite";
-  } else if (form.experienceLevel === "advanced") {
-    selectedArchetypeId.value = "advanced";
+function syncNoviceTier(lvlId) {
+  if (lvlId === "beginner") {
+    form.pushupTier = "beginner";
+    form.squatTier = "sedentary";
+  } else if (lvlId === "advanced") {
+    form.pushupTier = "moderate";
+    form.squatTier = "strong";
   } else {
-    selectedArchetypeId.value = "intermediate";
+    form.pushupTier = "basic";
+    form.squatTier = "natural";
   }
 }
 
@@ -576,26 +615,17 @@ const adaptiveWeights = computed(() => {
   });
 });
 
-// Update custom bases when adaptive weights update if not manually touched
-watch(adaptiveWeights, (newVal) => {
-  if (!showCustomMode.value && newVal && newVal.estimatedBases) {
-    customBases.bench = newVal.estimatedBases.bench;
-    customBases.squat = newVal.estimatedBases.squat;
-    customBases.pull = newVal.estimatedBases.pull;
-  }
-}, { immediate: true });
-
 const pushupTiers = [
-  { id: "beginner", name: "刚起步", badge: "<5个", desc: "神经募集期，规范轨迹" },
-  { id: "basic", name: "基础体能", badge: "5~15个", desc: "常运动，具推力储备" },
-  { id: "moderate", name: "规律训练", badge: "15~30个", desc: "胸肩手臂发力稳健" },
-  { id: "elite", name: "高阶强者", badge: ">30个", desc: "大负荷抗阻老铁" }
+  { id: "beginner", name: "刚起步", badge: "<5个", desc: "规范轨迹" },
+  { id: "basic", name: "基础体能", badge: "5~15个", desc: "具备推力" },
+  { id: "moderate", name: "规律训练", badge: "15~30个", desc: "发力稳健" },
+  { id: "elite", name: "高阶强者", badge: ">30个", desc: "大负荷" }
 ];
 
 const squatTiers = [
-  { id: "sedentary", icon: "🛋️", name: "久坐偏少", desc: "多蹲几次腿酸" },
-  { id: "natural", icon: "🚶", name: "体态自如", desc: "连蹲30次无压力" },
-  { id: "strong", icon: "🏃", name: "强韧有力", desc: "经常腿训或大球类" }
+  { id: "sedentary", icon: "🛋️", name: "久坐偏少", desc: "轻微酸" },
+  { id: "natural", icon: "🚶", name: "体态自如", desc: "连蹲自如" },
+  { id: "strong", icon: "🏃", name: "强韧有力", desc: "常大负荷" }
 ];
 
 const experienceLevels = [
@@ -605,20 +635,44 @@ const experienceLevels = [
 ];
 
 function applyPlacement() {
-  saveUserProfileAndRecalibrate({
-    gender: form.gender,
-    userAge: form.userAge,
-    userHeight: form.userHeight,
-    userWeight: form.userWeight,
-    trainingGoal: form.trainingGoal,
-    pushupTier: form.pushupTier,
-    squatTier: form.squatTier,
-    strengthLevel: showCustomMode.value ? "custom" : form.experienceLevel,
-    useCustom: showCustomMode.value,
-    customBases: showCustomMode.value ? customBases : null
-  });
+  if (activeMode.value === "blank") {
+    saveUserProfileAndRecalibrate({
+      gender: form.gender,
+      userAge: form.userAge,
+      userHeight: form.userHeight,
+      userWeight: form.userWeight,
+      trainingGoal: form.trainingGoal,
+      isCleanSlate: true,
+      strengthLevel: "clean_slate"
+    });
+    emit("applied", "clean_slate");
+  } else if (activeMode.value === "veteran") {
+    saveUserProfileAndRecalibrate({
+      gender: form.gender,
+      userAge: form.userAge,
+      userHeight: form.userHeight,
+      userWeight: form.userWeight,
+      trainingGoal: form.trainingGoal,
+      useCustom: true,
+      customBases: customBases,
+      strengthLevel: "custom"
+    });
+    emit("applied", "custom");
+  } else {
+    saveUserProfileAndRecalibrate({
+      gender: form.gender,
+      userAge: form.userAge,
+      userHeight: form.userHeight,
+      userWeight: form.userWeight,
+      trainingGoal: form.trainingGoal,
+      pushupTier: form.pushupTier,
+      squatTier: form.squatTier,
+      strengthLevel: form.experienceLevel,
+      useCustom: false
+    });
+    emit("applied", form.experienceLevel);
+  }
 
-  emit("applied", showCustomMode.value ? "custom" : form.experienceLevel);
   emit("close");
 }
 </script>
