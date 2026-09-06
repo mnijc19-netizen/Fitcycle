@@ -2,6 +2,19 @@
 
 > **日志法则：** 本文件是 Fitcycle 项目唯一的物理变更事实记录库。任何 AI 或开发者在完成功能迭代、修宪、BUG 修复或重构后，**必须强制在此追加版本记录**，确保经历几百轮对话后仍能 100% 溯源所有历史决策！
 
+## 🚀 [v1.10.4] - 2026-09-07 (深度反思与严谨纠错：100% 物理纠正剪刀机动图为真实分动杠杆力臂器械演示，杜绝直杆下拉张冠李戴，增设防混淆回归断言)
+### 🎬 剪刀机动作动图 100% 物理纠正与真实对齐 (`exercisesBack.js`, `public/exercises/diverging-lat-pulldown.gif`, `tests/fitcycle-exercises-and-brand.test.js`)
+- **严肃反省与低级错误排查**：
+  - 深刻反思此前为剪刀机配置动图时因偷懒直接复用 `lat-pulldown.gif`（传统高位直杆下拉）的严重事实偏差问题；
+  - 剪刀机核心特征为“双臂独立分动圆弧杠杆（Lever Diverging Arms）”，而传统直杆是一体横杆，二者在器械构造、力线轨迹和视觉感知上存在本质差异，用户一眼即能识别为“外行低级错误”；
+- **物理补齐真实分动剪刀机 3D 循环动图 (`diverging-lat-pulldown.gif`)**：
+  - 采集并物理植入符合全站风格标准的 `diverging-lat-pulldown.gif`（360x360 像素、12 帧标准循环），精准呈现双侧独立杠杆臂、分动斜下拉弧线轨迹与背阔肌解剖红光高亮收缩，彻底告别直杆下拉的张冠李戴；
+- **自动化测试防退化硬核断言**：
+  - 在 `tests/fitcycle-exercises-and-brand.test.js` 中新增物理断言：强制断言 `ex-diverging-lat-pulldown` 的 `gifUrl` 必须指向专属的 `diverging-lat-pulldown.gif`，且坚决不得指向 `lat-pulldown.gif`；
+  - 22 个自动化测试套件（243 项测试用例）100% PASS，生产环境构建编译 0 报错。
+
+---
+
 ## 🚀 [v1.10.3] - 2026-09-07 (正式收录健身房明星器械【分动剪刀式高位下拉 (剪刀机)】，全域扩充俗称黑话倒排索引与 1秒零摩擦自定义动作闭环)
 ### 🏋️ 练背剪刀机专业实装与动作库容量生态演进 (`exercisesBack.js`, `machineRecognitionEngine.js`, `ExercisesView.vue`, `GymMachineFinderModal.vue`)
 - **健身房核心痛点物理解决（“剪刀机到底在哪？”）**：

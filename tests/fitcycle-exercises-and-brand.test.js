@@ -53,6 +53,8 @@ describe('Exercise Library 1-to-1 Accuracy & Alias Search', () => {
     expect(scissorLat.name).toContain('分动剪刀式高位下拉');
     expect(scissorLat.aliases).toContain('剪刀机');
     expect(scissorLat.aliases).toContain('剪刀拉背');
+    expect(scissorLat.gifUrl).toBe('./exercises/diverging-lat-pulldown.gif');
+    expect(scissorLat.gifUrl).not.toBe('./exercises/lat-pulldown.gif');
   });
 
   it('allows alias search in ExercisesView', async () => {

@@ -505,7 +505,7 @@ export const BACK_EXERCISES = [
       "悍马剪刀机", "分动高位下拉", "圆弧高位下拉", "环形下拉", "圆弧下拉机",
       "Iso-Lateral Lat Pulldown", "Diverging Lat Pulldown", "Circular Lat Pulldown", "Scissor Pulldown", "Scissor Row"
     ],
-    gifUrl: "./exercises/lat-pulldown.gif",
+    gifUrl: "./exercises/diverging-lat-pulldown.gif",
     defaultSets: 4,
     defaultReps: "10-12",
     scienceDetail: "商业与硬核健身房练背顶级器械！双臂独立活动臂呈剪刀状圆弧形外展内收，完全顺应背阔肌从外上方到内下方的扇形解剖肌纤维力线。两臂独立分动彻底杜绝惯用侧借力，底端行程能实现比固定直杆更极致的沉肩内收与峰值挤压。",
