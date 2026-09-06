@@ -125,5 +125,18 @@ describe('FitCycle Dynamic Warm-up System (NSCA RAMP Protocol)', () => {
     const wrapper = mount(TodayView);
     expect(wrapper.text()).toContain('练前 3 分钟动态热身流');
     expect(wrapper.text()).toContain('跟练');
+    expect(wrapper.text()).toContain('推日 (胸肩)');
+    expect(wrapper.text()).toContain('拉日 (背部)');
+    expect(wrapper.text()).toContain('腿日 (深蹲)');
+  });
+
+  it('allows switching warmup split in TodayView and updates the scientific rationale tip', async () => {
+    const wrapper = mount(TodayView);
+    const legSplitBtn = wrapper.findAll('button').find(b => b.text().includes('腿日 (深蹲)'));
+    expect(legSplitBtn).toBeDefined();
+    await legSplitBtn.trigger('click');
+    expect(wrapper.text()).toContain('练腿无需预热上身');
+    expect(wrapper.text()).toContain('跪姿打开紧绷的髋屈肌');
   });
 });
+

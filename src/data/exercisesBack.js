@@ -413,7 +413,7 @@ export const BACK_EXERCISES = [
     target: "背阔肌单侧深度收缩 / 下束与腰线",
     secondaryMuscles: ["大圆肌", "斜方肌中下束", "肱二头肌", "核心抗旋转"],
     aliases: ["单臂划船", "单手绳索划船", "龙门架单臂划船", "Single Arm Row"],
-    gifUrl: "./exercises/seated-cable-row.gif",
+    gifUrl: "./exercises/one-arm-cable-row.gif",
     defaultSets: 3,
     defaultReps: "10-12",
     scienceDetail: "现代生物力学极力推崇的背阔肌下束对齐动作。单侧动作能让躯干在终点微微侧屈（Lateral Flexion），使得背阔肌纤维能够缩短到生理极限，实现双侧器械难以达到的超强肌电收缩。",

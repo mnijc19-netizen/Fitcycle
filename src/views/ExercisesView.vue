@@ -12,7 +12,7 @@
           </span>
         </h2>
         <p class="text-xs mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
-          全套 3D 解剖动图、离心向心要点与平替矩阵
+          标准 3D 解剖动图、力线要领与平替参考
         </p>
       </div>
       <button @click="openCreateExercise" 
@@ -22,7 +22,7 @@
       </button>
     </div>
 
-    <!-- Search & Filter Bar (Natural Scroll, Zero Viewport Obstruction) -->
+    <!-- Search & Multimodal Entry Bar -->
     <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-3 space-y-2.5 shadow-md">
       <!-- Multimodal Gym Machine Finder Quick Entry -->
       <button @click="showMachineFinder = true"
@@ -43,7 +43,7 @@
           <div class="absolute left-3.5 top-2.5 text-zinc-500 text-xs">🔍</div>
           <input v-model="searchQuery" 
                  type="text" 
-                 placeholder="搜索动作名称、英文、别名、目标肌群..." 
+                 placeholder="搜索动作名称、腹肌、胸肌、剪刀机、英文..." 
                  class="w-full rounded-xl pl-9 pr-8 py-2 text-xs transition-colors focus:outline-none focus:border-amber-500"
                  :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border border-slate-300 text-slate-900 placeholder-slate-400' : 'bg-zinc-950 border border-zinc-700/80 text-zinc-100 placeholder-zinc-500'" />
           <span v-if="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-2 text-xs text-zinc-400 hover:text-white cursor-pointer">✕</span>
@@ -59,7 +59,7 @@
         </button>
       </div>
 
-      <!-- Categories Pills with Real-Time Counts -->
+      <!-- Categories Pills with Real-Time Counts and Plain-Chinese Labels -->
       <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar overscroll-x-contain touch-pan-x">
         <button v-for="cat in categoryOptions" :key="cat.name"
                 @click="selectCategory(cat.name)"
@@ -69,7 +69,7 @@
                   'bg-amber-500 text-zinc-950 font-black shadow-sm shadow-amber-500/20' : 
                   (store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold border border-slate-300/80 shadow-xs' : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800/80')
                 ]">
-          <span>{{ cat.name }}</span>
+          <span>{{ cat.displayLabel }}</span>
           <span class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'opacity-80'">({{ cat.count }})</span>
         </button>
       </div>
@@ -77,11 +77,95 @@
 
     <!-- ======================================================== -->
     <!-- VIEW A: VISUAL CATEGORY HUB & SCIENCE ACADEMY (全部模式) -->
-    <!-- 彻底解决用户指出的无脑下滑 120+ 动作长列表反人类痛点 -->
     <!-- ======================================================== -->
     <div v-if="activeCategory === '全部' && !searchQuery.trim()" class="space-y-4">
       
-      <!-- 1. 9 大部位与功能视觉导航矩阵 (Visual Muscle Hub) -->
+      <!-- 💡 运动科学与防伤指南 (首屏置顶可折叠，用户第一眼即可见，无需向下滑动) -->
+      <div class="rounded-2xl border p-3.5 transition-all shadow-xs"
+           :class="store.settings.themeMode === 'light' 
+             ? 'bg-amber-50/70 border-amber-200/80 text-slate-900' 
+             : 'bg-zinc-900/90 border-zinc-800 text-zinc-100'">
+        
+        <div class="flex items-center justify-between cursor-pointer select-none"
+             @click="showScienceGuide = !showScienceGuide">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="text-base">💡</span>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <h4 class="text-xs font-black truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-950 font-black' : 'text-amber-400'">
+                  运动科学指南
+                </h4>
+                <span class="text-[10px] font-mono px-1.5 py-0.2 rounded border font-bold"
+                      :class="store.settings.themeMode === 'light' ? 'bg-white border-amber-300 text-amber-900' : 'bg-zinc-800 text-amber-400 border-zinc-700'">
+                  {{ showScienceGuide ? '收起 ▲' : '展开阅读 3 篇 ▼' }}
+                </span>
+              </div>
+              <p class="text-[11px] mt-0.5 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+                练前动态激活 · 练后静态伸展 · 72h 超量恢复原理
+              </p>
+            </div>
+          </div>
+
+          <button type="button" 
+                  class="text-xs font-bold px-2.5 py-1 rounded-lg border flex-shrink-0 transition-all cursor-pointer"
+                  :class="store.settings.themeMode === 'light' ? 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border-zinc-700'">
+            {{ showScienceGuide ? '收起' : '阅读' }}
+          </button>
+        </div>
+
+        <!-- Expandable Content -->
+        <div v-show="showScienceGuide" class="mt-3 pt-3 border-t space-y-2.5"
+             :class="store.settings.themeMode === 'light' ? 'border-amber-200/70' : 'border-zinc-800'">
+          
+          <!-- Guide 1 -->
+          <div class="p-2.5 rounded-xl border space-y-1.5"
+               :class="store.settings.themeMode === 'light' ? 'bg-white/80 border-amber-200 text-slate-800' : 'bg-zinc-950/60 border-zinc-800 text-zinc-300'">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-amber-600 flex items-center gap-1">
+                <span>🔥</span>
+                <span>为什么大重量抗阻前严禁静态拉伸？</span>
+              </span>
+              <span class="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-500 font-bold">练前激活</span>
+            </div>
+            <p class="text-[11px] leading-relaxed">
+              抗阻训练前进行长时间（>30秒）静态拉伸，会钝化肌梭感受器并抑制中枢神经冲动，使肌肉刚度与瞬时爆发力下降 8%~15%，且破坏关节囊稳定性。正确的练前流程必须采用 RAMP 动态激活（关节绕环、胸椎灵活性、肩袖激活），通过主动做工提升体温与滑液分泌。
+            </p>
+          </div>
+
+          <!-- Guide 2 -->
+          <div class="p-2.5 rounded-xl border space-y-1.5"
+               :class="store.settings.themeMode === 'light' ? 'bg-white/80 border-emerald-200 text-slate-800' : 'bg-zinc-950/60 border-zinc-800 text-zinc-300'">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-600 flex items-center gap-1">
+                <span>🧘</span>
+                <span>练后静态拉伸与副交感神经唤醒</span>
+              </span>
+              <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-500 font-bold">练后拉伸</span>
+            </div>
+            <p class="text-[11px] leading-relaxed">
+              训练结束、心率平复至 100bpm 以下后，方可进行静态伸展。保持每个部位 20~30 秒，牵拉感维持在 6~7 级舒适酸胀，避免过度拉扯至剧烈疼痛。配合鼻吸口呼的慢速腹式呼吸，能快速平抑交感神经、降低皮质醇，开启肌糖原重组。
+            </p>
+          </div>
+
+          <!-- Guide 3 -->
+          <div class="p-2.5 rounded-xl border space-y-1.5"
+               :class="store.settings.themeMode === 'light' ? 'bg-white/80 border-sky-200 text-slate-800' : 'bg-zinc-950/60 border-zinc-800 text-zinc-300'">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-sky-600 flex items-center gap-1">
+                <span>⚡</span>
+                <span>0~72 小时超量恢复生理常识</span>
+              </span>
+              <span class="text-[9px] px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400 font-bold">生理恢复</span>
+            </div>
+            <p class="text-[11px] leading-relaxed">
+              力量训练本质上是骨骼肌微损伤过程，真正的肌肉增长发生在睡眠修复期。肌纤维在微撕裂后需要 24~72 小时完成修复与超量重组。系统在 72 小时内不会产生任何怠惰衰减，保障科学的休息周期，避免过度训练与焦虑。
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 1. 9 大部位与功能视觉导航矩阵 (清晰易懂的新手人话翻译，如核心=腹肌/腰腹) -->
       <div class="space-y-2">
         <div class="flex items-center justify-between px-1">
           <h3 class="text-xs font-black uppercase tracking-wider flex items-center gap-1.5"
@@ -123,7 +207,7 @@
         </div>
       </div>
 
-      <!-- 2. ⭐ 黄金复合王牌速选 (精选 6 大核心动作，无需翻找) -->
+      <!-- 2. ⭐ 常用动作参考 (精选 6 大基石动作) -->
       <div class="space-y-2">
         <div class="flex items-center justify-between px-1">
           <h3 class="text-xs font-black uppercase tracking-wider flex items-center gap-1.5"
@@ -154,69 +238,6 @@
         </div>
       </div>
 
-      <!-- 3. 🎓 NSCA / ACSM / CSCS 权威运动医学与防伤科学专栏 -->
-      <div class="space-y-2.5 pt-1">
-        <div class="flex items-center justify-between px-1">
-          <h3 class="text-xs font-black uppercase tracking-wider flex items-center gap-1.5"
-              :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">
-            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-            <span>运动科学指南</span>
-          </h3>
-        </div>
-
-        <!-- Science Card 1: 练前动态 vs 练后静态 (RAMP 原则) -->
-        <div class="p-3.5 rounded-2xl border space-y-2 shadow-xs transition-colors"
-             :class="store.settings.themeMode === 'light' ? 'bg-amber-50/60 border-amber-200/80 text-slate-800' : 'bg-zinc-900/90 border-zinc-800 text-zinc-300'">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="text-base">🔥</span>
-              <h4 class="text-xs font-black" :class="store.settings.themeMode === 'light' ? 'text-amber-950 font-black' : 'text-amber-400'">
-                为什么大重量抗阻前严禁静态拉伸？
-              </h4>
-            </div>
-            <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-500">练前激活</span>
-          </div>
-          <p class="text-[11px] leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
-            大重量前做长达 30 秒以上的静态伸展，会导致肌梭敏感性骤降、高尔基腱器官抑制中枢神经冲动，使肌肉刚度与瞬时爆发力下降 <strong class="text-rose-500">8%~15%</strong>，且破坏关节稳定性！正确的练前流程必须采用 <strong class="text-amber-500">RAMP 动态激活</strong>（关节绕环、胸椎灵活性、肩袖激活），通过主动做工提升体温与滑液分泌。
-          </p>
-        </div>
-
-        <!-- Science Card 2: 练后静态拉伸与副交感唤醒 (ACSM 2024 标准) -->
-        <div class="p-3.5 rounded-2xl border space-y-2 shadow-xs transition-colors"
-             :class="store.settings.themeMode === 'light' ? 'bg-emerald-50/60 border-emerald-200/80 text-slate-800' : 'bg-zinc-900/90 border-zinc-800 text-zinc-300'">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="text-base">🧘</span>
-              <h4 class="text-xs font-black" :class="store.settings.themeMode === 'light' ? 'text-emerald-950 font-black' : 'text-emerald-400'">
-                练后 3 分钟筋膜重置与副交感神经唤醒
-              </h4>
-            </div>
-            <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-500">练后拉伸</span>
-          </div>
-          <p class="text-[11px] leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
-            训练结束心率回落至 100bpm 以下后，方可进行静态伸展。保持每个部位 <strong class="text-emerald-600">20~30 秒</strong>，牵拉感维持在 6~7 级舒适酸胀，绝不可过度拉扯至剧烈疼痛。配合鼻吸口呼的慢速腹式呼吸，能快速平抑交感神经、降低皮质醇，开启肌糖原重组。
-          </p>
-        </div>
-
-        <!-- Science Card 3: 0~72h 恢复免责宪法 -->
-        <div class="p-3.5 rounded-2xl border space-y-2 shadow-xs transition-colors"
-             :class="store.settings.themeMode === 'light' ? 'bg-sky-50/60 border-sky-200/80 text-slate-800' : 'bg-zinc-900/90 border-zinc-800 text-zinc-300'">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="text-base">⚡</span>
-              <h4 class="text-xs font-black" :class="store.settings.themeMode === 'light' ? 'text-sky-950 font-black' : 'text-sky-400'">
-                0~72 小时超量恢复与力量自愈公理
-              </h4>
-            </div>
-            <span class="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400">生理恢复</span>
-          </div>
-          <p class="text-[11px] leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
-            力量训练后肌纤维需要 24~72 小时完成修复与超量重组。系统在 72 小时内不会产生任何怠惰衰减，保障科学的休息周期，避免过度训练与焦虑。
-          </p>
-        </div>
-
-      </div>
-
     </div>
 
     <!-- ======================================================== -->
@@ -229,7 +250,7 @@
         <div class="flex items-center gap-1.5">
           <span class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-200'">
             <span v-if="searchQuery.trim()">搜索结果："<span class="text-amber-500 font-black">{{ searchQuery }}</span>"</span>
-            <span v-else>{{ activeCategory }}分类清单</span>
+            <span v-else>{{ activeCategory }}动作清单</span>
           </span>
           <span class="font-mono text-[11px] opacity-70">({{ filteredExercises.length }}个动作)</span>
         </div>
@@ -242,17 +263,74 @@
         </button>
       </div>
 
-      <!-- Specific Category Banner (For Warmup / Stretches) -->
-      <div v-if="activeCategory === '热身' && !searchQuery.trim()" 
-           class="p-2.5 rounded-xl border text-xs flex items-center gap-2 bg-amber-500/10 border-amber-500/30 text-amber-300">
-        <span class="text-sm">🔥</span>
-        <span class="text-[11px] leading-tight">动态热身：通过主动做工提升体温与关节滑液，为抗阻训练做好准备。</span>
+      <!-- 🎯 热身分化智能筛选器 (练腿还是练胸？按部位匹配热身与跟练) -->
+      <div v-if="activeCategory === '热身' && !searchQuery.trim()" class="space-y-2">
+        <div class="p-3 rounded-2xl border transition-all"
+             :class="store.settings.themeMode === 'light' ? 'bg-amber-50/80 border-amber-200 text-slate-900' : 'bg-amber-500/10 border-amber-500/30 text-amber-200'">
+          <div class="flex items-center justify-between">
+            <div class="font-bold text-xs flex items-center gap-1.5">
+              <span>🎯</span>
+              <span>今天练什么？按部位匹配热身：</span>
+            </div>
+            <button @click="openSplitWarmupFlow" 
+                    class="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-black text-[11px] rounded-lg shadow-sm cursor-pointer transition-all active:scale-95 flex items-center gap-1">
+              <span>▶ 3分钟跟练</span>
+            </button>
+          </div>
+
+          <!-- Split Tabs: 推 / 拉 / 腿 / 全部 -->
+          <div class="grid grid-cols-4 gap-1.5 mt-2">
+            <button v-for="sp in warmupSplits" :key="sp.key"
+                    @click="activeWarmupSplit = sp.key"
+                    class="py-1.5 px-1 rounded-xl text-[11px] font-bold border transition-all cursor-pointer text-center"
+                    :class="[
+                      activeWarmupSplit === sp.key 
+                        ? 'bg-amber-500 text-zinc-950 border-amber-500 shadow-xs' 
+                        : (store.settings.themeMode === 'light' ? 'bg-white text-slate-700 border-amber-200 hover:border-amber-400' : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:border-zinc-700')
+                    ]">
+              {{ sp.label }}
+            </button>
+          </div>
+
+          <p class="text-[11px] mt-2 leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-amber-900' : 'text-amber-300/90'">
+            {{ currentWarmupTip }}
+          </p>
+        </div>
       </div>
 
-      <div v-if="activeCategory === '拉伸' && !searchQuery.trim()" 
-           class="p-2.5 rounded-xl border text-xs flex items-center gap-2 bg-emerald-500/10 border-emerald-500/30 text-emerald-300">
-        <span class="text-sm">🧘</span>
-        <span class="text-[11px] leading-tight">练后拉伸：心率平复后单次保持 20~30 秒，配合深长呼吸，放松紧张肌群。</span>
+      <!-- 🧘 拉伸分化智能筛选器 (练后按部位匹配拉伸与跟练) -->
+      <div v-if="activeCategory === '拉伸' && !searchQuery.trim()" class="space-y-2">
+        <div class="p-3 rounded-2xl border transition-all"
+             :class="store.settings.themeMode === 'light' ? 'bg-emerald-50/80 border-emerald-200 text-slate-900' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200'">
+          <div class="flex items-center justify-between">
+            <div class="font-bold text-xs flex items-center gap-1.5">
+              <span>🧘</span>
+              <span>练后拉伸：按今日训练部位放松</span>
+            </div>
+            <button @click="openSplitStretchFlow" 
+                    class="px-2.5 py-1 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black text-[11px] rounded-lg shadow-sm cursor-pointer transition-all active:scale-95 flex items-center gap-1">
+              <span>▶ 3分钟跟练</span>
+            </button>
+          </div>
+
+          <!-- Split Tabs: 推 / 拉 / 腿 / 全部 -->
+          <div class="grid grid-cols-4 gap-1.5 mt-2">
+            <button v-for="sp in stretchSplits" :key="sp.key"
+                    @click="activeStretchSplit = sp.key"
+                    class="py-1.5 px-1 rounded-xl text-[11px] font-bold border transition-all cursor-pointer text-center"
+                    :class="[
+                      activeStretchSplit === sp.key 
+                        ? 'bg-emerald-500 text-zinc-950 border-emerald-500 shadow-xs' 
+                        : (store.settings.themeMode === 'light' ? 'bg-white text-slate-700 border-emerald-200 hover:border-emerald-400' : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:border-zinc-700')
+                    ]">
+              {{ sp.label }}
+            </button>
+          </div>
+
+          <p class="text-[11px] mt-2 leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-emerald-900' : 'text-emerald-300/90'">
+            {{ currentStretchTip }}
+          </p>
+        </div>
       </div>
 
       <!-- Inset List -->
@@ -314,7 +392,7 @@
               未找到与「{{ searchQuery.trim() || '当前条件' }}」匹配的动作
             </div>
             <p class="text-[11px] max-w-xs mx-auto">
-              遇到健身房的特定品牌、罕见器械或个性化动作？别担心，FitCycle 支持 1 秒创建！
+              遇到健身房的特定品牌、罕见器械或个性化动作？支持 1 秒创建！
             </p>
           </div>
 
@@ -370,6 +448,20 @@
       @viewDetail="handleMachineFinderDetail"
     />
 
+    <!-- Warmup Flow Modal for Split Follow-Along -->
+    <WarmupFlowModal
+      :visible="showWarmupFlowModal"
+      :plan="splitWarmupPlan"
+      @close="showWarmupFlowModal = false"
+    />
+
+    <!-- Stretch Flow Modal for Split Follow-Along -->
+    <StretchFlowModal
+      :visible="showStretchFlowModal"
+      :plan="splitStretchPlan"
+      @close="showStretchFlowModal = false"
+    />
+
     <!-- Quick Create Modal -->
     <Teleport to="body">
       <div v-if="showCreateModal" 
@@ -414,7 +506,7 @@
             </div>
 
             <div>
-              <label class="text-xs text-zinc-400 font-medium">动作美学目的与科学细节</label>
+              <label class="text-xs text-zinc-400 font-medium">动作要领与科学细节</label>
               <textarea v-model="newEx.scienceDetail" rows="3" placeholder="为什么做这个动作？刺激哪个位置？" 
                         class="w-full mt-1 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-zinc-100 focus:outline-none focus:border-amber-500"></textarea>
             </div>
@@ -437,6 +529,8 @@ import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { store, uid } from "../store/fitnessStore.js";
 import ExerciseDetailModal from "../components/ExerciseDetailModal.vue";
 import GymMachineFinderModal from "../components/GymMachineFinderModal.vue";
+import WarmupFlowModal from "../components/WarmupFlowModal.vue";
+import StretchFlowModal from "../components/StretchFlowModal.vue";
 import ExerciseImage from "../components/ExerciseImage.vue";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import { triggerHaptic } from "../utils/vibrate.js";
@@ -445,7 +539,90 @@ import { getUniversalScrollTop, universalScrollToTop } from "../utils/scrollUtil
 const showMachineFinder = ref(false);
 const searchQuery = ref("");
 const activeCategory = ref("全部");
+const showScienceGuide = ref(false);
+
 const categories = ["全部", "胸部", "背部", "肩部", "手臂", "腿部", "核心", "有氧", "热身", "拉伸", "其它"];
+
+// Category labels with human-friendly plain translations
+const categoryDisplayNames = {
+  "全部": "全部",
+  "胸部": "胸部 (胸肌)",
+  "背部": "背部 (后背)",
+  "肩部": "肩部 (肩膀)",
+  "手臂": "手臂 (二头/三头)",
+  "腿部": "腿部 (臀腿/下肢)",
+  "核心": "核心 (腹肌/腰腹)",
+  "有氧": "有氧 (心肺/燃脂)",
+  "热身": "动态热身 (练前激活)",
+  "拉伸": "练后拉伸 (放松防酸)",
+  "其它": "其它"
+};
+
+// Warmup Split Filter state
+const activeWarmupSplit = ref("push");
+const warmupSplits = [
+  { key: "push", label: "推日 (胸肩)" },
+  { key: "pull", label: "拉日 (背部)" },
+  { key: "legs", label: "腿日 (深蹲)" },
+  { key: "all", label: "全部动作" }
+];
+
+const currentWarmupTip = computed(() => {
+  if (activeWarmupSplit.value === "push") {
+    return "💡 推胸推肩掌根承受垂直剪切力，肩峰下间隙较窄。重点润滑腕关节滑液、靠墙W滑动激活前锯肌与肩袖外旋，无需过多预热下肢。";
+  }
+  if (activeWarmupSplit.value === "pull") {
+    return "💡 引体划船需要背阔肌主动下沉并锁死肩胛。重点在猫牛式松动胸椎、弹力带唤醒菱形肌、毛毛虫爬行激活后链，避免耸肩代偿。";
+  }
+  if (activeWarmupSplit.value === "legs") {
+    return "💡 练腿无需过多预热上肢推举肩袖。久坐导致髂腰肌紧绷缩短引起骨盆前倾，重点跪姿拉伸打开髋屈肌、臀桥唤醒沉睡的臀大肌。";
+  }
+  return "💡 完整 10 款动态激活动作清单，可根据今日训练需要自由选择。";
+});
+
+// Stretch Split Filter state
+const activeStretchSplit = ref("push");
+const stretchSplits = [
+  { key: "push", label: "推日 (胸肩)" },
+  { key: "pull", label: "拉日 (背部)" },
+  { key: "legs", label: "腿日 (臀腿)" },
+  { key: "all", label: "全部动作" }
+];
+
+const currentStretchTip = computed(() => {
+  if (activeStretchSplit.value === "push") {
+    return "🌿 推胸推肩后胸大肌、前束与三头极度充血缩短。利用门框与颈后伸展释放胸小肌与肩峰压力，缓解次日紧绷。";
+  }
+  if (activeStretchSplit.value === "pull") {
+    return "🌿 划船与下拉后背阔肌与前臂持续紧张。立柱侧屈能深度打开胸腰筋膜，抱胸伸展能松解菱形肌膏肓酸痛。";
+  }
+  if (activeStretchSplit.value === "legs") {
+    return "🌿 深蹲硬拉后股四、腘绳与臀肌承受高张力。单腿站立屈膝牵拉股直肌，仰卧4字抱膝松解深层梨状肌，减轻坐骨压力。";
+  }
+  return "🌿 完整 20 款静态拉伸与肌筋膜滚压动作清单，心率平复后进行，保持20~30秒舒适牵拉。";
+});
+
+// Follow-along modals for warmup / stretch
+const showWarmupFlowModal = ref(false);
+const showStretchFlowModal = ref(false);
+
+const splitWarmupPlan = computed(() => ({
+  name: activeWarmupSplit.value === "push" ? "推日 (Push)" : (activeWarmupSplit.value === "pull" ? "拉日 (Pull)" : "腿日 (Legs)"),
+  category: activeWarmupSplit.value === "push" ? "推" : (activeWarmupSplit.value === "pull" ? "拉" : "腿")
+}));
+
+const splitStretchPlan = computed(() => ({
+  name: activeStretchSplit.value === "push" ? "推日 (Push)" : (activeStretchSplit.value === "pull" ? "拉日 (Pull)" : "腿日 (Legs)"),
+  category: activeStretchSplit.value === "push" ? "推" : (activeStretchSplit.value === "pull" ? "拉" : "腿")
+}));
+
+function openSplitWarmupFlow() {
+  showWarmupFlowModal.value = true;
+}
+
+function openSplitStretchFlow() {
+  showStretchFlowModal.value = true;
+}
 
 const showBackToTop = ref(false);
 
@@ -482,25 +659,26 @@ onUnmounted(() => {
 
 const categoryOptions = computed(() => {
   return categories.map(cat => {
+    const displayLabel = categoryDisplayNames[cat] || cat;
     if (cat === "全部") {
-      return { name: cat, count: store.exercises.length };
+      return { name: cat, displayLabel, count: store.exercises.length };
     }
     const count = store.exercises.filter(e => e.category === cat).length;
-    return { name: cat, count };
+    return { name: cat, displayLabel, count };
   });
 });
 
-// Visual Category Hub Cards
+// Visual Category Hub Cards with Plain Chinese Descriptions
 const visualHubCards = computed(() => [
-  { name: "胸部", title: "胸部", icon: "🛡️", desc: "卧推、飞鸟与俯卧撑", count: store.exercises.filter(e => e.category === "胸部").length },
-  { name: "背部", title: "背部", icon: "🦅", desc: "引体向上、划船与高位下拉", count: store.exercises.filter(e => e.category === "背部").length },
-  { name: "肩部", title: "肩部", icon: "🏹", desc: "推肩、侧平举与面拉", count: store.exercises.filter(e => e.category === "肩部").length },
-  { name: "手臂", title: "手臂", icon: "💪", desc: "弯举、三头下压与臂屈伸", count: store.exercises.filter(e => e.category === "手臂").length },
-  { name: "腿部", title: "腿部", icon: "🦵", desc: "深蹲、硬拉与腿举", count: store.exercises.filter(e => e.category === "腿部").length },
-  { name: "核心", title: "核心", icon: "🧱", desc: "卷腹、悬垂举腿与平板支撑", count: store.exercises.filter(e => e.category === "核心").length },
-  { name: "有氧", title: "有氧", icon: "🏃", desc: "单车、跑步与跳绳", count: store.exercises.filter(e => e.category === "有氧").length },
-  { name: "热身", title: "动态热身", icon: "🔥", desc: "关节活动度与动态激活", count: store.exercises.filter(e => e.category === "热身").length },
-  { name: "拉伸", title: "练后拉伸", icon: "🧘", desc: "肌群牵拉与筋膜放松", count: store.exercises.filter(e => e.category === "拉伸").length }
+  { name: "胸部", title: "胸部 (胸肌)", icon: "🛡️", desc: "卧推、飞鸟与俯卧撑 · 强化上肢推力", count: store.exercises.filter(e => e.category === "胸部").length },
+  { name: "背部", title: "背部 (后背)", icon: "🦅", desc: "引体向上、划船与下拉 · 塑造倒三角", count: store.exercises.filter(e => e.category === "背部").length },
+  { name: "肩部", title: "肩部 (肩膀/三角肌)", icon: "🏹", desc: "推肩、侧平举与面拉 · 塑造立体肩部", count: store.exercises.filter(e => e.category === "肩部").length },
+  { name: "手臂", title: "手臂 (二头/三头)", icon: "💪", desc: "弯举、三头下压与臂屈伸 · 充血紧致手臂", count: store.exercises.filter(e => e.category === "手臂").length },
+  { name: "腿部", title: "腿部 (臀腿/下肢)", icon: "🦵", desc: "深蹲、硬拉、腿举与分腿蹲 · 强化力量基座", count: store.exercises.filter(e => e.category === "腿部").length },
+  { name: "核心", title: "核心 (腹肌/腰腹)", icon: "🧱", desc: "卷腹、举腿与平板支撑 · 针对腹直肌与腰腹稳定", count: store.exercises.filter(e => e.category === "核心").length },
+  { name: "有氧", title: "有氧 (心肺/燃脂)", icon: "🏃", desc: "单车、跑步与跳绳 · 增强心肺与热量消耗", count: store.exercises.filter(e => e.category === "有氧").length },
+  { name: "热身", title: "动态热身 (练前激活)", icon: "🔥", desc: "关节活动度与动态拉伸 · 升温滑液防拉伤", count: store.exercises.filter(e => e.category === "热身").length },
+  { name: "拉伸", title: "练后拉伸 (放松防酸)", icon: "🧘", desc: "肌群静态牵拉与肌筋膜松解 · 缓解酸痛与僵硬", count: store.exercises.filter(e => e.category === "拉伸").length }
 ]);
 
 // 6 Curated Staple Exercises
@@ -538,6 +716,35 @@ const filteredExercises = computed(() => {
   return store.exercises.filter(ex => {
     const matchCat = activeCategory.value === "全部" || ex.category === activeCategory.value;
     const q = searchQuery.value.trim().toLowerCase();
+    
+    // Split filter for warmup
+    if (activeCategory.value === "热身" && !q && activeWarmupSplit.value !== "all") {
+      if (activeWarmupSplit.value === "push") {
+        const pushIds = ["ex-warmup-wrist-circles", "ex-warmup-arm-circles", "ex-warmup-wall-slide", "ex-warmup-band-pull-apart"];
+        if (!pushIds.includes(ex.id)) return false;
+      } else if (activeWarmupSplit.value === "pull") {
+        const pullIds = ["ex-warmup-cat-cow", "ex-warmup-band-pull-apart", "ex-warmup-inchworm", "ex-warmup-wrist-circles"];
+        if (!pullIds.includes(ex.id)) return false;
+      } else if (activeWarmupSplit.value === "legs") {
+        const legIds = ["ex-warmup-kneeling-hip-flexor", "ex-warmup-glute-bridge", "ex-warmup-walking-lunges", "ex-warmup-jumping-jacks"];
+        if (!legIds.includes(ex.id)) return false;
+      }
+    }
+
+    // Split filter for stretch
+    if (activeCategory.value === "拉伸" && !q && activeStretchSplit.value !== "all") {
+      if (activeStretchSplit.value === "push") {
+        const pushIds = ["ex-stretch-doorway-pec", "ex-stretch-across-chest-shoulder", "ex-stretch-standing-triceps", "ex-stretch-rotator-cuff"];
+        if (!pushIds.includes(ex.id)) return false;
+      } else if (activeStretchSplit.value === "pull") {
+        const pullIds = ["ex-stretch-unilateral-lat", "ex-stretch-upper-back", "ex-stretch-foam-roller-back", "ex-stretch-reverse-wrist"];
+        if (!pullIds.includes(ex.id)) return false;
+      } else if (activeStretchSplit.value === "legs") {
+        const legIds = ["ex-stretch-standing-quad", "ex-stretch-seated-hamstring", "ex-stretch-lying-glute", "ex-stretch-standing-wall-calf", "ex-stretch-90-90-hip"];
+        if (!legIds.includes(ex.id)) return false;
+      }
+    }
+
     if (!q) return matchCat;
     const matchQuery = ex.name.toLowerCase().includes(q) || 
                        (ex.englishName && ex.englishName.toLowerCase().includes(q)) ||
@@ -572,7 +779,7 @@ function openCreateExercise() {
     else if (q.includes("肩") || q.includes("推举") || q.includes("侧平举") || q.includes("飞鸟")) guessedCat = "肩部";
     else if (q.includes("臂") || q.includes("弯举") || q.includes("下压") || q.includes("二头") || q.includes("三头")) guessedCat = "手臂";
     else if (q.includes("腿") || q.includes("蹲") || q.includes("倒蹬") || q.includes("硬拉") || q.includes("哈克")) guessedCat = "腿部";
-    else if (q.includes("腹") || q.includes("核心") || q.includes("卷腹") || q.includes("平板")) guessedCat = "核心";
+    else if (q.includes("腹") || q.includes("核心") || q.includes("卷腹") || q.includes("平板") || q.includes("腰")) guessedCat = "核心";
     else if (q.includes("跑") || q.includes("车") || q.includes("有氧") || q.includes("绳")) guessedCat = "有氧";
     else if (q.includes("热身") || q.includes("激活") || q.includes("活动度")) guessedCat = "热身";
     else if (q.includes("拉伸") || q.includes("伸展") || q.includes("筋膜") || q.includes("滚压")) guessedCat = "拉伸";

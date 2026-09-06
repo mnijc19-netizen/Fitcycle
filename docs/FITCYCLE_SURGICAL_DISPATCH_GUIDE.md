@@ -83,6 +83,10 @@
 [OP-ANTI-CHEAT] 人体生理极值防刷与排位天梯护盾  ├── 1. `src/engine/antiCheatEngine.js` (纯函数极值钳制)  npm test -- tests/anti-cheat-and-boundary.test.js
                 (单组极值/单次100分封顶/倍率护盾)├── 2. `src/engine/honorEngine.js` (战力防爆整合)
                                                 └── 3. `src/views/TodayView.vue` (UI 极值黄色警告胶囊)
+
+[OP-WARMUP-STRETCH]分化热身与拉伸跟练系统       ├── 1. `src/data/exercisesWarmup.js` & `exercisesStretches.js` npm test -- tests/fitcycle-warmup-flow.test.js
+                (推拉腿专属激活/ACSM松解/智能匹配)├── 2. `src/components/WarmupFlowModal.vue` & `StretchFlowModal.vue`
+                                                └── 3. `src/views/TodayView.vue` & `ExercisesView.vue` (分化选择器与首屏科学指南)
 =====================================================================================================================================
 ```
 

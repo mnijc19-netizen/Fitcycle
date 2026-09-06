@@ -709,7 +709,7 @@
 
       <!-- 练前 3 分钟动态热身流 (科学防伤 · 消除热身懵逼) -->
       <div v-if="!todayCycle.isRest" 
-           class="p-3.5 rounded-3xl border shadow-md relative overflow-hidden transition-all"
+           class="p-3.5 rounded-3xl border shadow-md relative overflow-hidden transition-all space-y-2.5"
            :class="store.settings.themeMode === 'light' 
              ? 'bg-gradient-to-r from-amber-50/90 via-orange-50/60 to-amber-50/90 border-amber-300/80' 
              : 'bg-gradient-to-r from-amber-950/30 via-zinc-900 to-zinc-900 border-amber-500/30'">
@@ -725,11 +725,11 @@
                   练前 3 分钟动态热身流
                 </h4>
                 <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 flex-shrink-0">
-                  定制
+                  按部位定制
                 </span>
               </div>
               <p class="text-[11px] mt-0.5 leading-snug truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-900/80' : 'text-zinc-400'">
-                针对今日{{ currentPlan?.shortName || todayCycle.name }}进行动态激活与关节润滑
+                针对今日{{ activeWarmupSplitLabel }}进行动态激活与关节润滑
               </p>
             </div>
           </div>
@@ -741,8 +741,27 @@
           </button>
         </div>
 
+        <!-- Split Quick Selector Tabs -->
+        <div class="flex items-center gap-1.5">
+          <button v-for="sp in warmupSplitOptions" :key="sp.key"
+                  @click="manualWarmupSplit = sp.key"
+                  class="flex-1 py-1 text-[11px] font-bold rounded-lg border transition-all cursor-pointer text-center"
+                  :class="[
+                    activeWarmupSplitKey === sp.key
+                      ? 'bg-amber-500 text-zinc-950 border-amber-500 shadow-xs'
+                      : (store.settings.themeMode === 'light' ? 'bg-white text-slate-700 border-amber-200 hover:border-amber-400' : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:border-zinc-700')
+                  ]">
+            {{ sp.label }}
+          </button>
+        </div>
+
+        <!-- Dynamic Sports Science Rationale Banner -->
+        <p class="text-[11px] leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-amber-950' : 'text-amber-200/90'">
+          {{ currentWarmupTip }}
+        </p>
+
         <!-- Mini Warmup Quick-Pill Preview -->
-        <div class="mt-2.5 pt-2.5 border-t flex items-center gap-2 overflow-x-auto no-scrollbar"
+        <div class="pt-2 border-t flex items-center gap-2 overflow-x-auto no-scrollbar"
              :class="store.settings.themeMode === 'light' ? 'border-amber-200/60' : 'border-zinc-800/80'">
           <div v-for="wEx in todayWarmupQuickList" :key="wEx.name"
                @click="showWarmupModal = true"
@@ -756,7 +775,7 @@
 
       <!-- 练后 3 分钟筋膜拉伸流 (ACSM 筋膜重置 · 加速超量恢复) -->
       <div v-if="!todayCycle.isRest" 
-           class="p-3.5 rounded-3xl border shadow-md relative overflow-hidden transition-all"
+           class="p-3.5 rounded-3xl border shadow-md relative overflow-hidden transition-all space-y-2.5"
            :class="store.settings.themeMode === 'light' 
              ? 'bg-gradient-to-r from-emerald-50/90 via-teal-50/60 to-emerald-50/90 border-emerald-300/80' 
              : 'bg-gradient-to-r from-emerald-950/30 via-zinc-900 to-zinc-900 border-emerald-500/30'">
@@ -772,11 +791,11 @@
                   练后 3 分钟筋膜拉伸流
                 </h4>
                 <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex-shrink-0">
-                  ACSM
+                  按部位放松
                 </span>
               </div>
               <p class="text-[11px] mt-0.5 leading-snug truncate" :class="store.settings.themeMode === 'light' ? 'text-emerald-900/80' : 'text-zinc-400'">
-                针对今日{{ currentPlan?.shortName || todayCycle.name }}进行肌群牵拉与筋膜放松
+                针对今日{{ activeStretchSplitLabel }}进行肌群牵拉与筋膜放松
               </p>
             </div>
           </div>
@@ -788,8 +807,27 @@
           </button>
         </div>
 
+        <!-- Split Quick Selector Tabs -->
+        <div class="flex items-center gap-1.5">
+          <button v-for="sp in stretchSplitOptions" :key="sp.key"
+                  @click="manualStretchSplit = sp.key"
+                  class="flex-1 py-1 text-[11px] font-bold rounded-lg border transition-all cursor-pointer text-center"
+                  :class="[
+                    activeStretchSplitKey === sp.key
+                      ? 'bg-emerald-500 text-zinc-950 border-emerald-500 shadow-xs'
+                      : (store.settings.themeMode === 'light' ? 'bg-white text-slate-700 border-emerald-200 hover:border-emerald-400' : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:border-zinc-700')
+                  ]">
+            {{ sp.label }}
+          </button>
+        </div>
+
+        <!-- Dynamic Sports Science Rationale Banner -->
+        <p class="text-[11px] leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-emerald-950' : 'text-emerald-200/90'">
+          {{ currentStretchTip }}
+        </p>
+
         <!-- Mini Stretch Quick-Pill Preview -->
-        <div class="mt-2.5 pt-2.5 border-t flex items-center gap-2 overflow-x-auto no-scrollbar"
+        <div class="pt-2 border-t flex items-center gap-2 overflow-x-auto no-scrollbar"
              :class="store.settings.themeMode === 'light' ? 'border-emerald-200/60' : 'border-zinc-800/80'">
           <div v-for="sEx in todayStretchQuickList" :key="sEx.name"
                @click="showStretchModal = true"
@@ -952,7 +990,7 @@
     <!-- 4.1 Pre-Workout Dynamic Warmup Flow Modal -->
     <WarmupFlowModal
       :visible="showWarmupModal"
-      :plan="currentPlan || todayCycle"
+      :plan="activeWarmupPlan"
       @close="showWarmupModal = false"
       @completed="handleWarmupCompleted"
     />
@@ -960,7 +998,7 @@
     <!-- 4.2 Post-Workout Static Stretch Flow Modal (ACSM) -->
     <StretchFlowModal
       :visible="showStretchModal"
-      :plan="currentPlan || todayCycle"
+      :plan="activeStretchPlan"
       @close="showStretchModal = false"
       @completed="handleStretchCompleted"
     />
@@ -1291,9 +1329,48 @@ const activeWorkoutRecommendedAddons = computed(() => {
   return list.filter(addon => !existingNames.has(addon.name));
 });
 
-const todayWarmupQuickList = computed(() => {
+// Warmup Split state & logic
+const manualWarmupSplit = ref(null);
+const warmupSplitOptions = [
+  { key: "push", label: "推日 (胸肩)" },
+  { key: "pull", label: "拉日 (背部)" },
+  { key: "legs", label: "腿日 (深蹲)" },
+  { key: "all", label: "全身" }
+];
+
+const activeWarmupSplitKey = computed(() => {
+  if (manualWarmupSplit.value) return manualWarmupSplit.value;
   const planName = (currentPlan.value?.name || todayCycle.value?.name || todayCycle.value?.category || "").toLowerCase();
-  if (planName.includes("推") || planName.includes("push") || planName.includes("胸") || planName.includes("肩")) {
+  if (planName.includes("推") || planName.includes("push") || planName.includes("胸") || planName.includes("肩")) return "push";
+  if (planName.includes("拉") || planName.includes("pull") || planName.includes("背")) return "pull";
+  if (planName.includes("腿") || planName.includes("leg") || planName.includes("下肢") || planName.includes("深蹲")) return "legs";
+  return "all";
+});
+
+const activeWarmupSplitLabel = computed(() => {
+  const opt = warmupSplitOptions.find(o => o.key === activeWarmupSplitKey.value);
+  return opt ? opt.label : "今日训练";
+});
+
+const activeWarmupPlan = computed(() => {
+  const k = activeWarmupSplitKey.value;
+  if (k === "push") return { name: "推日 (Push)", category: "推" };
+  if (k === "pull") return { name: "拉日 (Pull)", category: "拉" };
+  if (k === "legs") return { name: "腿日 (Legs)", category: "腿" };
+  return currentPlan.value || todayCycle.value;
+});
+
+const currentWarmupTip = computed(() => {
+  const k = activeWarmupSplitKey.value;
+  if (k === "push") return "💡 重点：润滑腕关节滑液与靠墙W激活肩袖外旋，无需过多预热下肢。";
+  if (k === "pull") return "💡 重点：猫牛式松动胸椎、弹力带唤醒菱形肌，避免耸肩代偿。";
+  if (k === "legs") return "💡 练腿无需预热上身！重点在跪姿打开紧绷的髋屈肌、臀桥唤醒臀大肌。";
+  return "💡 动态温和升高体温与滑液分泌，全面进入战备状态。";
+});
+
+const todayWarmupQuickList = computed(() => {
+  const k = activeWarmupSplitKey.value;
+  if (k === "push") {
     return [
       { name: "腕关节绕环与活动度" },
       { name: "双臂肩关节环绕" },
@@ -1301,7 +1378,7 @@ const todayWarmupQuickList = computed(() => {
       { name: "弹力带对拉" }
     ];
   }
-  if (planName.includes("拉") || planName.includes("pull") || planName.includes("背")) {
+  if (k === "pull") {
     return [
       { name: "猫牛式脊柱伸展" },
       { name: "弹力带对拉" },
@@ -1309,7 +1386,7 @@ const todayWarmupQuickList = computed(() => {
       { name: "腕关节绕环与活动度" }
     ];
   }
-  if (planName.includes("腿") || planName.includes("leg") || planName.includes("下肢") || planName.includes("深蹲")) {
+  if (k === "legs") {
     return [
       { name: "跪姿髋屈肌动态拉伸" },
       { name: "动态仰卧臀桥" },
@@ -1325,52 +1402,95 @@ const todayWarmupQuickList = computed(() => {
   ];
 });
 
-function handleWarmupCompleted() {
-  showWarmupModal.value = false;
-  overloadCelebration.value = {
-    visible: true,
-    isPr: false,
-    text: "🔥 动态热身完毕",
-    subText: "关节与肌群已完成预热激活，准备开启训练。"
-  };
-  setTimeout(() => {
-    overloadCelebration.value.visible = false;
-  }, 3500);
-}
+// Stretch Split state & logic
+const manualStretchSplit = ref(null);
+const stretchSplitOptions = [
+  { key: "push", label: "推日 (胸肩)" },
+  { key: "pull", label: "拉日 (背部)" },
+  { key: "legs", label: "腿日 (臀腿)" },
+  { key: "all", label: "全身" }
+];
+
+const activeStretchSplitKey = computed(() => {
+  if (manualStretchSplit.value) return manualStretchSplit.value;
+  const planName = (currentPlan.value?.name || todayCycle.value?.name || todayCycle.value?.category || "").toLowerCase();
+  if (planName.includes("推") || planName.includes("push") || planName.includes("胸") || planName.includes("肩")) return "push";
+  if (planName.includes("拉") || planName.includes("pull") || planName.includes("背")) return "pull";
+  if (planName.includes("腿") || planName.includes("leg") || planName.includes("下肢") || planName.includes("深蹲")) return "legs";
+  return "all";
+});
+
+const activeStretchSplitLabel = computed(() => {
+  const opt = stretchSplitOptions.find(o => o.key === activeStretchSplitKey.value);
+  return opt ? opt.label : "今日训练";
+});
+
+const activeStretchPlan = computed(() => {
+  const k = activeStretchSplitKey.value;
+  if (k === "push") return { name: "推日 (Push)", category: "推" };
+  if (k === "pull") return { name: "拉日 (Pull)", category: "拉" };
+  if (k === "legs") return { name: "腿日 (Legs)", category: "腿" };
+  return currentPlan.value || todayCycle.value;
+});
+
+const currentStretchTip = computed(() => {
+  const k = activeStretchSplitKey.value;
+  if (k === "push") return "🌿 重点：门框拉伸胸大肌与三角肌，释放肩峰压力，缓解次日紧绷。";
+  if (k === "pull") return "🌿 重点：立柱侧屈延展胸腰筋膜，抱胸松解上背膏肓酸痛。";
+  if (k === "legs") return "🌿 重点：牵拉股直肌与腘绳肌，仰卧4字抱膝松解深层梨状肌。";
+  return "🌿 深度静态牵拉全身大肌群，深呼吸唤醒副交感神经。";
+});
 
 const todayStretchQuickList = computed(() => {
-  const planName = (currentPlan.value?.name || todayCycle.value?.name || todayCycle.value?.category || '').toLowerCase();
-  if (planName.includes('推') || planName.includes('push') || planName.includes('胸') || planName.includes('肩')) {
+  const k = activeStretchSplitKey.value;
+  if (k === "push") {
     return [
-      { name: '门框立柱胸大肌拉伸 (Doorway Pec Stretch)' },
-      { name: '交叉臂肩部三角肌伸展' },
-      { name: '站姿颈后肱三头肌伸展' },
-      { name: '肩袖深层冈下肌温和牵拉' }
+      { name: "门框立柱胸大肌拉伸 (Doorway Pec Stretch)" },
+      { name: "交叉臂肩部三角肌伸展" },
+      { name: "站姿颈后肱三头肌伸展" },
+      { name: "肩袖深层冈下肌温和牵拉" }
     ];
   }
-  if (planName.includes('拉') || planName.includes('pull') || planName.includes('背')) {
+  if (k === "pull") {
     return [
-      { name: '单侧立柱背阔肌侧屈伸展' },
-      { name: '上背抱胸含胸牵拉' },
-      { name: '泡沫轴上背胸椎滚动' },
-      { name: '反向腕伸肌前臂伸展' }
+      { name: "单侧立柱背阔肌侧屈伸展" },
+      { name: "上背抱胸含胸牵拉" },
+      { name: "泡沫轴上背胸椎滚动" },
+      { name: "反向腕伸肌前臂伸展" }
     ];
   }
-  if (planName.includes('腿') || planName.includes('leg') || planName.includes('下肢') || planName.includes('深蹲')) {
+  if (k === "legs") {
     return [
-      { name: '站姿股四头肌单腿拉伸' },
-      { name: '坐姿腘绳肌单腿前屈伸展' },
-      { name: '仰卧4字形抱膝臀大肌拉伸' },
-      { name: '90-90 髋关节活动度伸展' }
+      { name: "站姿股四头肌单腿拉伸" },
+      { name: "坐姿腘绳肌单腿前屈伸展" },
+      { name: "仰卧4字形抱膝臀大肌拉伸" },
+      { name: "90-90 髋关节活动度伸展" }
     ];
   }
   return [
-    { name: '门框立柱胸大肌拉伸 (Doorway Pec Stretch)' },
-    { name: '单侧立柱背阔肌侧屈伸展' },
-    { name: '坐姿腘绳肌单腿前屈伸展' },
-    { name: '眼镜蛇式腹直肌伸展' }
+    { name: "门框立柱胸大肌拉伸 (Doorway Pec Stretch)" },
+    { name: "单侧立柱背阔肌侧屈伸展" },
+    { name: "坐姿腘绳肌单腿前屈伸展" },
+    { name: "眼镜蛇式腹直肌伸展" }
   ];
 });
+
+function handleWarmupCompleted() {
+  showWarmupModal.value = false;
+  if (overloadCelebration && overloadCelebration.value) {
+    overloadCelebration.value = {
+      visible: true,
+      isPr: false,
+      text: "🔥 动态热身完毕",
+      subText: "关节与肌群已完成预热激活，准备开启训练。"
+    };
+    setTimeout(() => {
+      if (overloadCelebration && overloadCelebration.value) {
+        overloadCelebration.value = false;
+      }
+    }, 3500);
+  }
+}
 
 function handleStretchCompleted() {
   showStretchModal.value = false;
