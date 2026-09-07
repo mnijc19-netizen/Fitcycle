@@ -83,14 +83,15 @@
         <h2 class="text-base font-black text-white mt-2 leading-snug">
           {{ store.activeWorkout.planName }}
         </h2>
-        <p v-if="store.activeWorkout.coreTarget" class="text-xs text-zinc-400 mt-0.5">
-          🎯 {{ store.activeWorkout.coreTarget }}
+        <p v-if="store.activeWorkout.coreTarget" class="text-xs text-zinc-400 mt-1 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+          <span>目标: {{ store.activeWorkout.coreTarget }}</span>
         </p>
 
         <!-- Progress bar -->
         <div class="mt-3 pt-3 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-400">
           <span>完成进度: {{ completedSetsCount }}/{{ totalSetsCount }} 组</span>
-          <span class="font-mono text-emerald-400 font-bold">总容量: {{ currentVolume }} kg</span>
+          <span class="font-mono text-emerald-400 font-bold text-xs sm:text-sm">已做重量: {{ currentVolume }} kg</span>
         </div>
         <div class="w-full bg-zinc-800 h-1.5 rounded-full mt-1.5 overflow-hidden">
           <div class="bg-emerald-400 h-full rounded-full transition-all duration-300"
@@ -101,45 +102,146 @@
         <!-- Dynamic Warmup Quick Launcher -->
         <div class="mt-2.5 pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[11px]">
           <button @click="showWarmupModal = true" 
-                  class="font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                  class="font-bold flex items-center gap-1.5 cursor-pointer transition-colors"
                   :class="store.settings.themeMode === 'light' ? 'text-amber-800 hover:text-amber-900' : 'text-amber-400 hover:text-amber-300'">
-            <span>🔥 练前动态热身流 ({{ todayWarmupQuickList.length }} 动作)</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            <span>练前动态热身流 ({{ todayWarmupQuickList.length }} 动作)</span>
             <span class="text-[10px]">❯</span>
           </button>
           <span class="text-zinc-500 font-mono text-[10px]">RAMP 科学激活</span>
         </div>
+
+        <!-- Real-time Split Muscle Coverage & Deficit Intelligence Island (0 Quota Local Engine) -->
+        <div v-if="splitIntelligence && !splitIntelligence.isCustom" 
+             class="mt-3 pt-3 border-t border-zinc-800/80 space-y-2.5">
+          
+          <!-- Muscle Stimulus Pills Header -->
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold flex items-center gap-1.5"
+                  :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">
+              <span class="text-amber-400 text-xs">⚡</span>
+              <span>分化肌群刺激诊断 (实时):</span>
+            </span>
+            <span class="text-[10px] font-mono"
+                  :class="splitIntelligence.overallStatus === 'success' ? 'text-emerald-400 font-bold' : 'text-zinc-500'">
+              {{ splitIntelligence.overallStatus === 'success' ? '超量恢复黄金区' : 'NSCA科学标准' }}
+            </span>
+          </div>
+
+          <!-- Muscle Coverage Progress Grid -->
+          <div class="grid grid-cols-3 gap-1.5">
+            <div v-for="m in splitIntelligence.muscles" :key="m.key"
+                 class="p-2 rounded-xl border flex flex-col justify-between transition-all"
+                 :class="[
+                   m.status === 'optimal' 
+                     ? (store.settings.themeMode === 'light' ? 'bg-emerald-50 border-emerald-300 text-emerald-900' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400')
+                     : m.status === 'insufficient'
+                       ? (store.settings.themeMode === 'light' ? 'bg-amber-50 border-amber-300 text-amber-900' : 'bg-amber-500/10 border-amber-500/30 text-amber-300')
+                       : (store.settings.themeMode === 'light' ? 'bg-slate-100 border-slate-200 text-slate-600' : 'bg-zinc-900 border-zinc-800 text-zinc-400')
+                 ]">
+              <div class="flex items-center justify-between text-[11px] font-bold">
+                <span class="truncate">{{ m.name }}</span>
+                <span class="font-mono text-xs font-black">{{ m.completedSets }}/{{ m.minSets }}</span>
+              </div>
+              <div class="flex items-center justify-between text-[10px] mt-1 pt-1 border-t border-current/15">
+                <span class="text-[9px]">{{ m.statusText }}</span>
+                <div class="w-7 h-1 rounded-full bg-current/20 overflow-hidden">
+                  <div class="h-full bg-current transition-all duration-300" :style="{ width: m.percentage + '%' }"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Diagnostic Insight & Quick-Add Recommended Chips -->
+          <div v-if="splitIntelligence.recommendedAddons && splitIntelligence.recommendedAddons.length > 0"
+               class="p-2.5 rounded-xl border space-y-2"
+               :class="store.settings.themeMode === 'light' ? 'bg-amber-50/70 border-amber-200' : 'bg-zinc-950/80 border-amber-500/25'">
+            <div class="text-[11px] leading-snug flex items-center gap-1.5"
+                 :class="store.settings.themeMode === 'light' ? 'text-amber-900' : 'text-amber-300/90'">
+              <span class="text-xs">💡</span>
+              <span>{{ splitIntelligence.headline }}</span>
+            </div>
+            
+            <!-- 1-Click Recommended Quick Add Pills -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar overscroll-x-contain touch-pan-x">
+              <button v-for="addon in splitIntelligence.recommendedAddons" :key="addon.exerciseId || addon.name"
+                      @click="handleAddRecommendedAddon(addon)"
+                      type="button"
+                      :title="'一键加入今日训练：' + addon.name"
+                      class="px-2.5 py-1.5 rounded-lg border text-xs font-bold flex items-center gap-1.5 whitespace-nowrap active:scale-95 transition-all cursor-pointer flex-shrink-0"
+                      :class="store.settings.themeMode === 'light' ? 'bg-white hover:bg-amber-100 border-amber-300 text-amber-950' : 'bg-amber-500/15 hover:bg-amber-500/25 border-amber-500/40 text-amber-300'">
+                <span class="text-amber-500 font-black">+</span>
+                <span>{{ addon.name }}</span>
+                <span class="text-[9px] px-1 py-0.2 rounded font-mono"
+                      :class="store.settings.themeMode === 'light' ? 'bg-amber-100 text-amber-800' : 'bg-amber-500/20 text-amber-200 opacity-90'">{{ addon.tag }}</span>
+              </button>
+            </div>
+          </div>
+          <div v-else-if="splitIntelligence.overallStatus === 'success'"
+               class="p-2 rounded-xl text-xs font-bold flex items-center gap-2"
+               :class="store.settings.themeMode === 'light' ? 'bg-emerald-50 border border-emerald-300 text-emerald-800' : 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'">
+            <span>🎉</span>
+            <span>今日目标肌群刺激全面饱满达标！做工充足！</span>
+          </div>
+
+        </div>
       </div>
 
       <!-- Exercises In Workout -->
-      <div class="space-y-3">
+      <div v-if="store.activeWorkout.exercises.length === 0" 
+           class="p-6 rounded-3xl border border-dashed text-center space-y-3"
+           :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300' : 'border-zinc-700/80 bg-zinc-900/40'">
+        <div class="text-3xl">🏋️‍♂️</div>
+        <div class="space-y-1">
+          <div class="text-sm font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">自由开练模式已就绪</div>
+          <div class="text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">点击上方推荐动作标签，或点击下方“临时添加动作”开始记录</div>
+        </div>
+        <div class="flex items-center justify-center gap-2 pt-1">
+          <button @click="showAddExerciseModal = true"
+                  class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-black rounded-xl cursor-pointer active:scale-95 shadow-md">
+            + 添加动作
+          </button>
+        </div>
+      </div>
+
+      <div v-else class="space-y-3">
         <div v-for="(ex, exIdx) in store.activeWorkout.exercises" :key="ex.id || exIdx"
              class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-lg transition-all">
           
           <!-- Exercise Header -->
-          <div class="p-3.5 bg-zinc-900/90 border-b border-zinc-800/80 flex items-center justify-between gap-2">
+          <div class="p-3.5 bg-zinc-900/90 border-b border-zinc-800/80 flex items-center justify-between gap-2.5">
             <div class="flex items-center gap-2.5 flex-1 min-w-0">
-              <!-- Exercise 3D Thumbnail -->
-              <div @click="openExerciseDetail(ex)" class="flex-shrink-0 cursor-pointer active:scale-95">
-                <ExerciseImage :src="getExerciseGif(ex.name)" 
+              <!-- Exercise 3D Thumbnail (点击图片直接查看动作要领) -->
+              <div @click="openExerciseDetail(ex)" 
+                   title="点击图片查看3D动作要领与轨迹"
+                   class="flex-shrink-0 cursor-pointer active:scale-95">
+                <ExerciseImage :src="getExerciseGif(ex)" 
                                :name="ex.name" 
                                :category="ex.category" 
                                :target="ex.targetReps" 
                                customClass="w-12 h-12 rounded-xl border border-zinc-800" />
               </div>
 
-
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-1.5 flex-wrap">
-                  <h3 class="font-bold text-sm text-zinc-100 truncate cursor-pointer hover:text-amber-400" @click="openExerciseDetail(ex)">{{ ex.name }}</h3>
+                  <!-- Exercise Sequence Badge (显示第几个动作) -->
+                  <span class="px-1.5 py-0.5 rounded text-[11px] font-mono font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 flex-shrink-0">
+                    动作 {{ exIdx + 1 }}/{{ store.activeWorkout.exercises.length }}
+                  </span>
+                  <!-- Full Exercise Name (无截断显示完整动作名) -->
+                  <h3 class="font-bold text-[14px] sm:text-base text-zinc-100 break-words leading-snug cursor-pointer hover:text-amber-400 transition-colors" 
+                      @click="openExerciseDetail(ex)">
+                    {{ ex.name }}
+                  </h3>
                   <span v-if="!getLastExercisePerformance(ex.name)" 
-                        class="px-1.5 py-0.5 rounded text-[11px] font-bold border"
+                        class="px-1.5 py-0.5 rounded text-[10px] font-bold border"
                         :class="store.settings.themeMode === 'light' 
                           ? 'bg-sky-50 text-sky-700 border-sky-200' 
                           : 'bg-sky-500/15 text-sky-400 border-sky-500/30'">
-                    🌱 首次训练
+                    首次训练
                   </span>
                 </div>
-                <div class="text-[11px] text-zinc-400 mt-0.5 flex items-center gap-2">
+                <div class="text-[11px] text-zinc-400 mt-1 flex items-center gap-2 flex-wrap">
                   <span class="text-amber-400/90 font-medium">建议: {{ ex.targetReps }}</span>
                   <span v-if="getLastExercisePerformance(ex.name)" class="text-zinc-500 font-mono">
                     上次: {{ formatLastPerf(ex.name) }}
@@ -148,8 +250,7 @@
               </div>
             </div>
 
-
-            <!-- Action buttons: Pin, Reorder, Guide, Swap, Machine Finder, Delete -->
+            <!-- Action buttons: Pin, Reorder, Book details, Swap, Camera finder, Delete -->
             <div class="flex items-center gap-1 flex-shrink-0">
               <button @click="pinActiveWorkoutExercise(exIdx)" 
                       title="置顶动作"
@@ -332,9 +433,9 @@
 
             <!-- Add set button -->
             <button @click="addSet(exIdx)" 
-                    class="w-full py-2 border border-dashed rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer"
-                    :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300' : 'bg-zinc-950/60 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border-zinc-800'">
-              <span>➕</span> 添加一组
+                    class="w-full py-2.5 border border-dashed rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                    :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300' : 'bg-zinc-950/60 hover:bg-zinc-800 text-zinc-300 hover:text-white border-zinc-800'">
+              <span class="text-amber-400 font-bold text-sm">+</span> 添加一组
             </button>
           </div>
 
@@ -344,9 +445,9 @@
       <!-- Quick Recommended Add-ons for Active Workout (新手简易加动作) -->
       <div v-if="activeWorkoutRecommendedAddons.length > 0" class="p-3 bg-zinc-900/90 border border-zinc-800/90 rounded-2xl space-y-2">
         <div class="flex items-center justify-between px-0.5">
-          <span class="text-xs font-bold flex items-center gap-1.5"
+          <span class="text-xs sm:text-sm font-bold flex items-center gap-1.5"
                 :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-bold' : 'text-zinc-200'">
-            <span class="text-amber-400">💡</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
             <span>新手简易加练 (点击一秒加入)</span>
           </span>
           <span class="text-[11px] text-zinc-500 font-mono">科学配比 · 3组</span>
@@ -371,17 +472,29 @@
         </div>
       </div>
 
+      <!-- 1-Click Clean Untouched Exercises Action (彻底消除预设动作手动删除麻烦) -->
+      <div v-if="untouchedExercisesCount > 0" class="flex justify-end">
+        <button @click="handlePruneUntouched"
+                type="button"
+                title="一键移除所有尚未记录完成组的动作"
+                class="px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer shadow-2xs"
+                :class="store.settings.themeMode === 'light' ? 'bg-white hover:bg-red-50 text-slate-700 hover:text-red-600 border-slate-300' : 'bg-zinc-900/90 hover:bg-zinc-850 text-zinc-400 hover:text-red-400 border-zinc-800 hover:border-red-500/40'">
+          <span>🗑️</span>
+          <span>一键移除未做动作 ({{ untouchedExercisesCount }}个)</span>
+        </button>
+      </div>
+
       <!-- Add Extra Exercise & Machine Finder Quick Entry -->
       <div class="grid grid-cols-2 gap-2">
         <button @click="showAddExerciseModal = true" 
-                class="py-3 px-2 border rounded-2xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-98 cursor-pointer"
+                class="py-3 px-2 border rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-98 cursor-pointer"
                 :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-900 border-slate-300' : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border-zinc-700/80'">
-          <span>➕</span> 临时添加动作
+          <span class="text-amber-400 font-bold">+</span> 临时添加动作
         </button>
         <button @click="openMachineFinder(-1)" 
-                class="py-3 px-2 border rounded-2xl text-xs font-black flex items-center justify-center gap-1.5 shadow-sm active:scale-98 cursor-pointer border-amber-500/40"
+                class="py-3 px-2 border rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-1.5 shadow-sm active:scale-98 cursor-pointer border-amber-500/40"
                 :class="store.settings.themeMode === 'light' ? 'bg-amber-50 hover:bg-amber-100 text-amber-950 border-amber-300' : 'bg-zinc-900 hover:bg-zinc-850 text-amber-400 border-zinc-700/80'">
-          <span>📸</span> 拍照/语音识器械
+          <span class="text-xs px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">识图</span> 拍照/语音识器械
         </button>
       </div>
 
@@ -389,13 +502,13 @@
       <div class="sticky bottom-20 z-20 backdrop-blur-md p-2 rounded-2xl border flex items-center gap-2"
            :class="store.settings.themeMode === 'light' ? 'bg-white/95 border-slate-300 shadow-xl' : 'bg-zinc-950/90 border-zinc-800/80'">
         <button @click="confirmDiscard" 
-                class="w-1/3 py-3 border rounded-xl text-xs font-bold active:scale-95 transition-all cursor-pointer"
+                class="w-1/3 py-3 border rounded-xl text-xs sm:text-sm font-bold active:scale-95 transition-all cursor-pointer"
                 :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 border-slate-300' : 'bg-zinc-900 hover:bg-red-950/40 text-zinc-400 hover:text-red-400 border-zinc-800'">
           放弃训练
         </button>
         <button @click="handleFinishWorkout" 
-                class="w-2/3 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-black rounded-xl text-xs shadow-lg shadow-amber-500/25 active:scale-98 transition-all flex items-center justify-center gap-1.5">
-          <span>🏆</span> 完成并保存训练 ({{ completedSetsCount }}组)
+                class="w-2/3 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-black rounded-xl text-xs sm:text-sm shadow-lg shadow-amber-500/25 active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+          完成并保存训练 ({{ completedSetsCount }}组)
         </button>
       </div>
 
@@ -887,7 +1000,7 @@
                              :target="ex.targetReps" 
                              customClass="w-11 h-11 rounded-xl border border-zinc-800 flex-shrink-0" />
               <div class="min-w-0">
-                <div class="font-bold text-xs truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</div>
+                <div class="font-bold text-sm text-zinc-100" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</div>
                 <div class="text-[11px] mt-0.5 flex items-center gap-2" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-400'">
                   <span class="font-mono font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">{{ ex.setsCount }}组 × {{ ex.targetReps }}</span>
                   <span v-if="getLastExercisePerformance(ex.name)" class="font-mono text-[11px]" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-500'">
@@ -911,7 +1024,7 @@
         <div class="flex items-center justify-between px-1">
           <span class="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5"
                 :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-bold' : 'text-zinc-400'">
-            <span class="text-amber-400">💡</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
             <span>新手简易加动作 (点击一秒加入今日计划)</span>
           </span>
           <span class="text-[11px] text-zinc-500 font-mono">科学配比 · 3组</span>
@@ -996,6 +1109,8 @@
       :visible="showSwapModal" 
       title="替换当前动作" 
       actionLabel="替换"
+      :replacing-name="currentReplacingExerciseName"
+      :substitutes="currentSwapSubstitutes"
       @close="showSwapModal = false" 
       @select="handleSwapExerciseSelected" 
     />
@@ -1176,6 +1291,60 @@
       </div>
     </Teleport>
 
+    <!-- 8. Inactivity Auto-Finish Notification Modal (超时未关自动结算提醒弹窗) -->
+    <Teleport to="body">
+      <div v-if="store.autoFinishNotice" 
+           class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200"
+           style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
+        <div class="absolute inset-0" @click="handleDismissAutoFinishNotice"></div>
+        <div class="relative w-full max-w-sm bg-zinc-950 border border-amber-500/50 rounded-3xl p-5 shadow-2xl space-y-4 text-center animate-in zoom-in-95 duration-200">
+          <div class="w-12 h-12 mx-auto rounded-2xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-center text-amber-400 shadow-lg shadow-amber-500/20 text-xl font-bold">
+            ⏱️
+          </div>
+
+          <div class="space-y-1.5">
+            <h3 class="text-base font-black text-white">训练已自动结算保存</h3>
+            <p class="text-xs text-zinc-400 leading-relaxed">
+              检测到您上次训练（{{ store.autoFinishNotice.planName }}）未手动点击结束。<br/>
+              系统已根据最后一组完成时间（<span class="text-amber-400 font-bold font-mono">{{ store.autoFinishNotice.lastSetTimeStr }}</span>）为您自动保存！
+            </p>
+          </div>
+
+          <!-- Stats Card -->
+          <div class="p-3 bg-zinc-900/80 rounded-2xl border border-zinc-800 text-xs grid grid-cols-3 gap-2">
+            <div class="text-center">
+              <div class="text-[10px] text-zinc-500">实际用时</div>
+              <div class="text-sm font-mono font-bold text-amber-400 mt-0.5">{{ store.autoFinishNotice.durationMinutes }} 分钟</div>
+            </div>
+            <div class="text-center border-x border-zinc-800">
+              <div class="text-[10px] text-zinc-500">完成做工</div>
+              <div class="text-sm font-mono font-bold text-emerald-400 mt-0.5">{{ store.autoFinishNotice.completedSets }} 组</div>
+            </div>
+            <div class="text-center">
+              <div class="text-[10px] text-zinc-500">已做重量</div>
+              <div class="text-sm font-mono font-bold text-sky-400 mt-0.5">{{ store.autoFinishNotice.totalVolume }} kg</div>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-zinc-500">
+            数据已安全存入训练日历与战力积分档案。
+          </p>
+
+          <!-- Actions -->
+          <div class="space-y-2">
+            <button @click="handleReviewAutoFinishedWorkout"
+                    class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-amber-500/30 active:scale-95 transition-all cursor-pointer">
+              查看本次战绩复盘
+            </button>
+            <button @click="handleDismissAutoFinishNotice"
+                    class="w-full py-2 bg-zinc-900 hover:bg-zinc-850 text-zinc-400 hover:text-zinc-200 text-xs font-semibold rounded-xl border border-zinc-800 transition-colors cursor-pointer">
+              知道了
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
   </div>
 </template>
 
@@ -1208,11 +1377,15 @@ import {
   setExerciseAllSetsWeight,
   syncFirstSetToAllSets,
   STRENGTH_LEVEL_CONFIGS,
+  checkAndHandleWorkoutInactivity,
+  clearAutoFinishNotice,
+  pruneUntouchedExercisesFromActiveWorkout,
   uid
 } from "../store/fitnessStore.js";
 import { calculateSupercompensationStatus } from "../engine/dopamineFeedbackEngine.js";
 import { clampSetInput } from "../engine/antiCheatEngine.js";
-import { SPLIT_RECOMMENDED_ADDONS } from "../data/defaultPlans.js";
+import { DEFAULT_EXERCISES, SPLIT_RECOMMENDED_ADDONS } from "../data/defaultPlans.js";
+import { analyzeActiveWorkoutCoverage, getInstantSubstitutes } from "../engine/splitIntelligenceEngine.js";
 import ExercisePickerModal from "../components/ExercisePickerModal.vue";
 import GymMachineFinderModal from "../components/GymMachineFinderModal.vue";
 import ExerciseDetailModal from "../components/ExerciseDetailModal.vue";
@@ -1254,11 +1427,66 @@ const currentStrengthConfig = computed(() => {
   return STRENGTH_LEVEL_CONFIGS[lvl] || STRENGTH_LEVEL_CONFIGS.intermediate;
 });
 
-const anyTodayModalOpen = computed(() => showPlanPicker.value || showAutoFinishModal.value || showStrengthPlacementModal.value || showWarmupModal.value || showStretchModal.value);
+// 实时分化肌群刺激诊断看板（纯本地运动科学引擎，0 API 额度损耗，<1ms响应）
+const splitIntelligence = computed(() => {
+  if (!store.activeWorkout) return null;
+  return analyzeActiveWorkoutCoverage(store.activeWorkout, DEFAULT_EXERCISES);
+});
+
+// 统计当前未开动（0完成组）的动作数量
+const untouchedExercisesCount = computed(() => {
+  if (!store.activeWorkout || !Array.isArray(store.activeWorkout.exercises)) return 0;
+  const hasCompleted = store.activeWorkout.exercises.some(ex => (ex.sets || []).some(s => Boolean(s.completed)));
+  if (!hasCompleted) return 0;
+  return store.activeWorkout.exercises.filter(ex => (ex.sets || []).every(s => !s.completed)).length;
+});
+
+// 动作替换时当前被替换的动作名称
+const currentReplacingExerciseName = computed(() => {
+  if (swapTargetIdx.value === null || !store.activeWorkout || !store.activeWorkout.exercises) return "";
+  const ex = store.activeWorkout.exercises[swapTargetIdx.value];
+  return ex ? ex.name : "";
+});
+
+// 动作替换时即时提供的同部位生物力学平替推荐列表
+const currentSwapSubstitutes = computed(() => {
+  if (swapTargetIdx.value === null || !store.activeWorkout || !store.activeWorkout.exercises) return [];
+  const ex = store.activeWorkout.exercises[swapTargetIdx.value];
+  if (!ex) return [];
+  return getInstantSubstitutes(ex.name, DEFAULT_EXERCISES);
+});
+
+function handleAddRecommendedAddon(addon) {
+  addExerciseToActiveWorkout(addon);
+}
+
+function handlePruneUntouched() {
+  pruneUntouchedExercisesFromActiveWorkout();
+}
+
+const anyTodayModalOpen = computed(() => showPlanPicker.value || showAutoFinishModal.value || Boolean(store.autoFinishNotice) || showStrengthPlacementModal.value || showWarmupModal.value || showStretchModal.value);
 watch(anyTodayModalOpen, (isOpen) => {
   if (isOpen) lockBodyScroll();
   else unlockBodyScroll();
 });
+
+function handleReviewAutoFinishedWorkout() {
+  if (store.autoFinishNotice?.summary) {
+    latestSummary.value = store.autoFinishNotice.summary;
+    showSummaryModal.value = true;
+  }
+  clearAutoFinishNotice();
+}
+
+function handleDismissAutoFinishNotice() {
+  clearAutoFinishNotice();
+}
+
+function handleVisibilityChange() {
+  if (typeof document !== "undefined" && document.visibilityState === "visible") {
+    checkAndHandleWorkoutInactivity();
+  }
+}
 
 const honorData = computed(() => getFullHonorProfile());
 
@@ -1303,12 +1531,19 @@ const nowTimestamp = ref(Date.now());
 let elapsedInterval = null;
 
 onMounted(() => {
+  checkAndHandleWorkoutInactivity();
+  if (typeof document !== "undefined") {
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+  }
   elapsedInterval = setInterval(() => {
     nowTimestamp.value = Date.now();
   }, 1000);
 });
 
 onUnmounted(() => {
+  if (typeof document !== "undefined") {
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }
   if (elapsedInterval) clearInterval(elapsedInterval);
   if (anyTodayModalOpen.value) unlockBodyScroll();
 });
@@ -1735,15 +1970,8 @@ function startCustomPlan(planId) {
 }
 
 function startEmptyWorkout() {
-  const emptyPlan = {
-    id: uid("plan-free"),
-    name: "自由训练",
-    shortName: "自由",
-    color: "amber",
-    coreTarget: "自主选择动作与强度",
-    exercises: []
-  };
-  startWorkout(emptyPlan.id);
+  const currentPlanId = todayCycle.value?.planId || "plan-push";
+  startWorkout(currentPlanId, null, { mode: "blank" });
   universalScrollToTop(true);
 }
 

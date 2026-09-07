@@ -92,6 +92,15 @@
                 (孤立演播室大图/防重复图文/平滑流式)├── 2. `public/machines/*.jpg` (高清单体器械实物摄影)
                                                 ├── 3. `src/components/AIAssistantDrawer.vue` (内嵌卡片与去抖滚动)
                                                 └── 4. `src/ai/assistantRuntime.js` & `fitcycleTools.js` (防重复指令)
+
+[OP-AUTO-SETTLE] 训练未关超时自动结算与防呆提醒 ├── 1. `src/store/fitnessStore.js` (lastSetCompletedAt/结算 pure logic) npm test -- tests/auto-settle-and-exercise-ux.test.js
+                (40分钟超时/锚定尾组时间/重开温馨弹窗)├── 2. `src/views/TodayView.vue` (挂载与切台可见性探针/提醒弹窗)
+                                                └── 3. `src/components/AIAssistantDrawer.vue` (复盘卡片独立性与关闭按钮)
+
+[OP-SPLIT-INTEL] 实时分化刺激诊断与零额度动作推荐 ├── 1. `src/engine/splitIntelligenceEngine.js` (实时肌群覆盖纯函数) npm test -- tests/split-intelligence-and-zero-quota.test.js
+                (0额度损耗/肌群缺口/未做动作自动脱水)├── 2. `src/views/TodayView.vue` (刺激看板/空白起手/一键清空)
+                                                ├── 3. `src/components/ExercisePickerModal.vue` (同部位平替卡片)
+                                                └── 4. `src/store/fitnessStore.js` (pruneUntouched/blank模式)
 =====================================================================================================================================
 ```
 

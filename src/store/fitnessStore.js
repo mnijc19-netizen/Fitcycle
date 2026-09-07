@@ -118,6 +118,7 @@ const defaultInitialState = {
   },
   workoutLogs: [],
   activeWorkout: null,
+  autoFinishNotice: null,
   restTimer: {
     running: false,
     duration: 90,
@@ -169,6 +170,7 @@ watch(
     weeklySchedule: store.weeklySchedule,
     workoutLogs: store.workoutLogs,
     activeWorkout: store.activeWorkout,
+    autoFinishNotice: store.autoFinishNotice,
     bodyMetrics: store.bodyMetrics,
     honorProfile: store.honorProfile,
     settings: store.settings
@@ -328,6 +330,10 @@ export function getLastExercisePerformance(exerciseName) {
 
 export function getExerciseDetails(exerciseIdOrName) {
   if (!exerciseIdOrName) return null;
+  if (typeof exerciseIdOrName === "object" && exerciseIdOrName !== null) {
+    if (exerciseIdOrName.gifUrl) return exerciseIdOrName;
+    return getExerciseDetails(exerciseIdOrName.exerciseId || exerciseIdOrName.id || exerciseIdOrName.name);
+  }
   const target = typeof exerciseIdOrName === "string" ? exerciseIdOrName.trim().toLowerCase() : "";
   if (!target) return null;
 
@@ -393,8 +399,8 @@ export function getExerciseDetails(exerciseIdOrName) {
   });
   if (aliasMatch) return aliasMatch;
 
-  // 8. Stripped noise / equipment prefix match
-  const cleanNoise = (s) => s.replace(/\s*[\(\（][^\)\）]*[\)\）]\s*/g, '').replace(/[\s\/\-_——]/g, '').replace(/^(哑铃|杠铃|器械|绳索|史密斯|坐姿|站姿|仰卧|俯卧|悬垂|自由|平板|上斜|下斜)/g, '').toLowerCase();
+  // 8. Stripped noise / equipment prefix match (e.g. "坐姿器械" or "站姿绳索" prefix stripping)
+  const cleanNoise = (s) => s.replace(/\s*[\(\（][^\)\）]*[\)\）]\s*/g, '').replace(/[\s\/\-_——]/g, '').replace(/^(哑铃|杠铃|器械|绳索|史密斯|坐姿|站姿|仰卧|俯卧|悬垂|自由|平板|上斜|下斜)+/g, '').toLowerCase();
   const strippedTarget = cleanNoise(target);
   if (strippedTarget.length >= 2) {
     const strippedMatch = store.exercises.find(e => {
@@ -417,12 +423,13 @@ export function getExerciseDetails(exerciseIdOrName) {
 }
 
 // --- WORKOUT SESSION LOGIC ---
-export function startWorkout(planId, customDate = null) {
+export function startWorkout(planId, customDate = null, options = {}) {
   const plan = store.plans.find(p => p.id === planId) || store.plans[0];
   const workoutDate = customDate || getInitialDateStr();
+  const isBlankMode = Boolean(options && options.mode === "blank");
 
-  // Populate exercises with last history weights if available, or plan defaults
-  const sessionExercises = (plan.exercises || []).map((pe, exIdx) => {
+  // Populate exercises with last history weights if available, or plan defaults (or empty if blank mode)
+  const sessionExercises = isBlankMode ? [] : (plan.exercises || []).map((pe, exIdx) => {
     const exDetails = getExerciseDetails(pe.exerciseId) || getExerciseDetails(pe.name);
     const lastPerf = getLastExercisePerformance(pe.name);
     
@@ -475,6 +482,7 @@ export function startWorkout(planId, customDate = null) {
     coreTarget: plan.coreTarget,
     date: workoutDate,
     startTime: Date.now(),
+    lastSetCompletedAt: null,
     exercises: sessionExercises
   };
 
@@ -493,10 +501,25 @@ export function toggleSetCompletion(exerciseIndex, setIndex) {
   setItem.completed = !setItem.completed;
 
   if (setItem.completed) {
+    const now = Date.now();
+    setItem.completedAt = now;
+    store.activeWorkout.lastSetCompletedAt = now;
     if (store.settings.soundEnabled) playSetCompleteSound();
     if (store.settings.vibrationEnabled) triggerHaptic("light");
     // Automatically launch rest timer!
     startRestTimer(store.settings.defaultRestSeconds);
+  } else {
+    setItem.completedAt = null;
+    // Recompute latest completed set timestamp
+    let latest = null;
+    for (const item of store.activeWorkout.exercises) {
+      for (const s of item.sets || []) {
+        if (s.completed && s.completedAt && (!latest || s.completedAt > latest)) {
+          latest = s.completedAt;
+        }
+      }
+    }
+    store.activeWorkout.lastSetCompletedAt = latest;
   }
 }
 
@@ -718,15 +741,39 @@ export function pinActiveWorkoutExercise(index) {
   if (store.settings.vibrationEnabled) triggerHaptic("medium");
 }
 
-export function finishWorkout() {
+export function pruneUntouchedExercisesFromActiveWorkout() {
+  if (!store.activeWorkout || !Array.isArray(store.activeWorkout.exercises)) return 0;
+  const initialLen = store.activeWorkout.exercises.length;
+  // Keep only exercises that have at least one completed set
+  store.activeWorkout.exercises = store.activeWorkout.exercises.filter(ex => 
+    (ex.sets || []).some(s => Boolean(s.completed))
+  );
+  const removed = initialLen - store.activeWorkout.exercises.length;
+  if (removed > 0 && store.settings.vibrationEnabled) {
+    triggerHaptic("medium");
+  }
+  return removed;
+}
+
+export function finishWorkout(options = {}) {
   if (!store.activeWorkout) return null;
   
   const now = Date.now();
-  const durationSec = Math.max(60, Math.round((now - (store.activeWorkout.startTime || now)) / 1000));
+  const effectiveEndTime = options.overrideEndTime || now;
+  const durationSec = options.overrideDurationSec !== undefined
+    ? options.overrideDurationSec
+    : Math.max(60, Math.round((effectiveEndTime - (store.activeWorkout.startTime || effectiveEndTime)) / 1000));
   
+  // Prune untouched exercises (0 completed sets) if any exercises have completed sets
+  // Completely eliminates having to manually delete unperformed exercises
+  const hasAnyCompletedSet = store.activeWorkout.exercises.some(ex => (ex.sets || []).some(s => Boolean(s.completed)));
+  const exercisesSource = (hasAnyCompletedSet && options.pruneUntouched !== false)
+    ? store.activeWorkout.exercises.filter(ex => (ex.sets || []).some(s => Boolean(s.completed)))
+    : store.activeWorkout.exercises;
+
   // Sanitize rogue inputs with biological limit engine to protect Honor Tier
   const sessionValidation = validateSessionVolume(
-    store.activeWorkout.exercises.map(ex => ({
+    exercisesSource.map(ex => ({
       name: ex.name,
       category: ex.category || "",
       sets: (ex.sets || []).map(s => ({
@@ -739,7 +786,7 @@ export function finishWorkout() {
   const totalVolume = sessionValidation.totalVolume;
   const totalCompletedSets = sessionValidation.totalSets;
 
-  const recordedExercises = store.activeWorkout.exercises.map((ex, exIdx) => {
+  const recordedExercises = exercisesSource.map((ex, exIdx) => {
     const sanitizedEx = sessionValidation.sanitizedExercises[exIdx];
     return {
       exerciseId: ex.exerciseId,
@@ -752,7 +799,7 @@ export function finishWorkout() {
   const logEntry = {
     id: uid("log"),
     date: store.activeWorkout.date || getInitialDateStr(),
-    timestamp: now,
+    timestamp: effectiveEndTime,
     planId: store.activeWorkout.planId,
     planName: store.activeWorkout.planName,
     shortName: store.activeWorkout.shortName || "训练",
@@ -760,8 +807,9 @@ export function finishWorkout() {
     durationSeconds: durationSec,
     totalVolume,
     totalSets: totalCompletedSets,
-    completedAt: now,
-    exercises: recordedExercises
+    completedAt: effectiveEndTime,
+    exercises: recordedExercises,
+    autoSettled: Boolean(options.autoSettled)
   };
 
   // Add to workout logs (or overwrite if same day duplicate log to keep clean)
@@ -769,20 +817,20 @@ export function finishWorkout() {
   
   // Calculate and award FPS honor points
   const elapsedHours = store.workoutLogs.length > 1
-    ? (now - (store.workoutLogs[1].timestamp || store.workoutLogs[1].completedAt || (now - 86400000))) / (1000 * 3600)
+    ? (effectiveEndTime - (store.workoutLogs[1].timestamp || store.workoutLogs[1].completedAt || (effectiveEndTime - 86400000))) / (1000 * 3600)
     : 24;
 
   const sessionHonorPoints = calculateSessionPointsEarned(logEntry, store.workoutLogs.slice(1), elapsedHours);
   
   if (!store.honorProfile) {
-    store.honorProfile = { score: 850, prestigeLevel: 1, prestigeYear: new Date().getFullYear(), highestScore: 850, lastWorkoutTimestamp: now, unlockedBadges: [] };
+    store.honorProfile = { score: 850, prestigeLevel: 1, prestigeYear: new Date().getFullYear(), highestScore: 850, lastWorkoutTimestamp: effectiveEndTime, unlockedBadges: [] };
   }
 
   store.honorProfile.score = (store.honorProfile.score || 0) + sessionHonorPoints.finalSessionPoints;
   if (store.honorProfile.score > (store.honorProfile.highestScore || 0)) {
     store.honorProfile.highestScore = store.honorProfile.score;
   }
-  store.honorProfile.lastWorkoutTimestamp = now;
+  store.honorProfile.lastWorkoutTimestamp = effectiveEndTime;
   refreshUnlockedBadges();
 
   logEntry.honorPointsEarned = sessionHonorPoints;
@@ -796,6 +844,77 @@ export function finishWorkout() {
   if (store.settings.vibrationEnabled) triggerHaptic("success");
 
   return summary;
+}
+
+/**
+ * 训练超时与忘记关闭智能结算：
+ * 若用户最后一次完成组已超过设定阈值（默认 40 分钟），自动按最后一组完成时间结算并保存
+ * @param {number} inactivityLimitMs 无操作判定阈值（默认 40 分钟）
+ * @returns {Object|null} 结算生成的 summary 或 null
+ */
+export function checkAndHandleWorkoutInactivity(inactivityLimitMs = 40 * 60 * 1000) {
+  if (!store.activeWorkout) return null;
+
+  let completedCount = 0;
+  let latestCompletedAt = null;
+
+  for (const ex of store.activeWorkout.exercises || []) {
+    for (const s of ex.sets || []) {
+      if (s.completed) {
+        completedCount++;
+        if (s.completedAt && (!latestCompletedAt || s.completedAt > latestCompletedAt)) {
+          latestCompletedAt = s.completedAt;
+        }
+      }
+    }
+  }
+
+  if (!latestCompletedAt && store.activeWorkout.lastSetCompletedAt) {
+    latestCompletedAt = store.activeWorkout.lastSetCompletedAt;
+  }
+
+  const now = Date.now();
+
+  // 若有完成组，且距离最后一次完成组已超过设定阈值
+  if (completedCount > 0 && latestCompletedAt) {
+    if (now - latestCompletedAt >= inactivityLimitMs) {
+      const autoEndTime = latestCompletedAt;
+      const durationSec = Math.max(60, Math.round((autoEndTime - (store.activeWorkout.startTime || autoEndTime)) / 1000));
+
+      const summary = finishWorkout({
+        autoSettled: true,
+        overrideEndTime: autoEndTime,
+        overrideDurationSec: durationSec
+      });
+
+      if (summary) {
+        const d = new Date(autoEndTime);
+        const lastSetTimeStr = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+        store.autoFinishNotice = {
+          planName: summary.planName || "今日训练",
+          durationMinutes: Math.max(1, Math.round(durationSec / 60)),
+          completedSets: summary.totalSets || completedCount,
+          totalVolume: summary.totalVolume || 0,
+          lastSetTimeStr,
+          date: summary.date,
+          summary
+        };
+      }
+      return summary;
+    }
+  } else if (completedCount === 0) {
+    // 0 组完成且距离开始超过 45 分钟，自动清理废弃空会话
+    if (now - (store.activeWorkout.startTime || now) >= 45 * 60 * 1000) {
+      discardActiveWorkout();
+      return null;
+    }
+  }
+
+  return null;
+}
+
+export function clearAutoFinishNotice() {
+  store.autoFinishNotice = null;
 }
 
 export function discardActiveWorkout() {

@@ -189,17 +189,32 @@
           </div>
 
           <!-- Exercises list in this log -->
-          <div v-if="log.exercises && log.exercises.length" class="space-y-1.5 pt-1">
+          <div v-if="log.exercises && log.exercises.length" class="space-y-2 pt-1">
             <div v-for="(ex, exIdx) in log.exercises" :key="exIdx"
-                 class="p-2.5 rounded-xl border"
+                 class="p-2.5 rounded-2xl border flex items-center gap-3 transition-colors"
                  :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-200 text-slate-900 shadow-xs' : 'bg-zinc-900/60 border-zinc-800/60'">
-              <div class="text-xs font-bold mb-1" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-200'">{{ ex.name }}</div>
-              <div class="flex flex-wrap gap-1.5">
-                <span v-for="(s, sIdx) in (ex.sets || []).filter(x => x.completed)" :key="sIdx"
-                       class="px-2 py-0.5 rounded-lg text-[10px] font-mono"
-                       :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border border-slate-300 text-emerald-800 font-bold' : 'bg-zinc-950 border border-zinc-800 text-emerald-400'">
-                  {{ s.weight }}kg × {{ s.reps }}次
-                </span>
+              <!-- Exercise 3D Thumbnail -->
+              <div @click="openExerciseDetail(ex)" 
+                   title="点击查看动作要领与3D轨迹"
+                   class="flex-shrink-0 cursor-pointer active:scale-95">
+                <ExerciseImage :src="getExerciseGif(ex)" 
+                               :name="ex.name" 
+                               customClass="w-11 h-11 rounded-xl border border-zinc-800 flex-shrink-0" />
+              </div>
+
+              <div class="flex-1 min-w-0">
+                <div class="text-xs sm:text-sm font-bold mb-1 truncate cursor-pointer hover:text-amber-400 transition-colors" 
+                     @click="openExerciseDetail(ex)"
+                     :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-200'">
+                  {{ ex.name }}
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  <span v-for="(s, sIdx) in (ex.sets || []).filter(x => x.completed)" :key="sIdx"
+                         class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-semibold"
+                         :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border border-slate-300 text-emerald-800 font-bold' : 'bg-zinc-950 border border-zinc-800 text-emerald-400'">
+                    {{ s.weight }}kg × {{ s.reps }}次
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -233,12 +248,35 @@
 
     </div>
 
+    <!-- Exercise 3D Detail Modal -->
+    <ExerciseDetailModal :exercise="selectedExerciseForDetail" @close="selectedExerciseForDetail = null" />
+
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
-import { store, getCycleDayForDate, startWorkout, deleteWorkoutLog } from "../store/fitnessStore.js";
+import { store, getCycleDayForDate, startWorkout, deleteWorkoutLog, getExerciseDetails } from "../store/fitnessStore.js";
+import ExerciseImage from "../components/ExerciseImage.vue";
+import ExerciseDetailModal from "../components/ExerciseDetailModal.vue";
+
+const selectedExerciseForDetail = ref(null);
+
+function openExerciseDetail(ex) {
+  const details = getExerciseDetails(ex);
+  if (details) {
+    selectedExerciseForDetail.value = details;
+  } else if (typeof ex === 'string') {
+    selectedExerciseForDetail.value = { name: ex };
+  } else {
+    selectedExerciseForDetail.value = ex;
+  }
+}
+
+function getExerciseGif(nameOrObj) {
+  const details = getExerciseDetails(nameOrObj);
+  return details?.gifUrl || "";
+}
 
 const now = new Date();
 const currentYear = ref(now.getFullYear());

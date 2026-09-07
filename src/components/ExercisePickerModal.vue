@@ -73,6 +73,38 @@
       <div class="overflow-y-auto flex-1 p-3 space-y-2 overscroll-contain"
            style="-webkit-overflow-scrolling: touch; touch-action: pan-y;">
 
+        <!-- 0. Instant Biomechanical Substitutes (When swapping an exercise and not searching) -->
+        <div v-if="substitutes && substitutes.length > 0 && !searchQuery.trim()" 
+             class="p-3 rounded-2xl border space-y-2 mb-3 animate-in fade-in duration-200"
+             :class="store.settings.themeMode === 'light' ? 'bg-amber-50/80 border-amber-300 shadow-xs' : 'bg-amber-500/10 border-amber-500/30'">
+          <div class="flex items-center justify-between text-xs font-bold"
+               :class="store.settings.themeMode === 'light' ? 'text-amber-900' : 'text-amber-300'">
+            <span class="flex items-center gap-1.5">
+              <span>🔄</span>
+              <span>针对「{{ replacingName || '当前动作' }}」的科学平替</span>
+            </span>
+            <span class="text-[10px] opacity-75 font-mono">器械/哑铃同轨迹</span>
+          </div>
+          <div class="space-y-1.5">
+            <div v-for="sub in substitutes" :key="sub.name"
+                 @click="selectExercise(sub)"
+                 class="p-2 rounded-xl border flex items-center justify-between gap-2.5 transition-all active:scale-98 cursor-pointer"
+                 :class="store.settings.themeMode === 'light' ? 'bg-white hover:bg-amber-100/50 border-amber-200 text-slate-800' : 'bg-zinc-950/80 hover:bg-zinc-900 border-zinc-800 hover:border-amber-500/50 text-zinc-100'">
+              <div class="min-w-0 flex-1">
+                <div class="text-xs font-bold truncate">{{ sub.name }}</div>
+                <div class="text-[10px] truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-medium' : 'text-amber-400/90'">
+                  {{ sub.reason }}
+                </div>
+              </div>
+              <button type="button" 
+                      class="px-2.5 py-1 text-[11px] font-black rounded-lg transition-colors flex-shrink-0 cursor-pointer"
+                      :class="store.settings.themeMode === 'light' ? 'bg-amber-500 text-zinc-950 shadow-xs' : 'bg-amber-500 hover:bg-amber-400 text-zinc-950'">
+                一键替换
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- 1. Behavioral Memory Pool Grouping (When activeCategory === '⭐常用偏好' and not searching) -->
         <div v-if="activeCategory === '⭐常用偏好' && !searchQuery.trim()" class="space-y-4">
           <!-- Pinned Exercises -->
@@ -299,7 +331,12 @@ import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 const props = defineProps({
   visible: Boolean,
   title: String,
-  actionLabel: String
+  actionLabel: String,
+  replacingName: String,
+  substitutes: {
+    type: Array,
+    default: () => []
+  }
 });
 
 const emit = defineEmits(["close", "select"]);

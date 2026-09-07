@@ -228,16 +228,26 @@
 
             <!-- 📸 健身房真实器械实物大图与调节图谱 (100% 自动识别并呈现，支持全屏缩放与直达网址) -->
             <div v-if="message.matchedEquipment" 
-                 class="rounded-2xl border border-amber-500/30 bg-zinc-950 p-3 space-y-2.5 shadow-lg"
+                 class="rounded-2xl border border-amber-500/30 bg-zinc-950 p-3 space-y-2.5 shadow-lg relative"
                  data-testid="equipment-visual-card">
               <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-1.5 text-xs font-bold text-amber-400 min-w-0">
                   <span>📸</span>
                   <span class="truncate">真实商用器械：{{ message.matchedEquipment.name }}</span>
                 </div>
-                <span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20 font-mono whitespace-nowrap flex-shrink-0">
-                  {{ message.matchedEquipment.englishName }}
-                </span>
+                <div class="flex items-center gap-1.5 flex-shrink-0">
+                  <span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20 font-mono whitespace-nowrap">
+                    {{ message.matchedEquipment.englishName }}
+                  </span>
+                  <span role="button" 
+                        tabindex="0"
+                        data-testid="dismiss-equipment-card"
+                        @click="message.matchedEquipment = null" 
+                        title="收起/关闭此器械图"
+                        class="w-5 h-5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-zinc-200 text-xs flex items-center justify-center cursor-pointer transition-colors select-none">
+                    ✕
+                  </span>
+                </div>
               </div>
 
               <!-- High-Res Photo Thumbnail with Click-to-Zoom Indicator (Fixed aspect ratio to eliminate layout shifts) -->
@@ -834,9 +844,12 @@ async function sendPrompt(promptText) {
 }
 
 async function runCurrentHistory(runOptions = {}) {
-  // Check if last user message asked about an equipment
+  // Check if last user message asked about an equipment (exclude workout review prompts)
   const lastUserMsg = [...aiSession.conversation].reverse().find(m => m.role === "user");
-  const matchedEqFromUser = lastUserMsg?.text ? findGymEquipmentVisual(lastUserMsg.text) : null;
+  const userText = lastUserMsg?.text || "";
+  const isWorkoutReviewPrompt = /我刚刚完成了|深度复盘|本次训练客观数据|训练总评|各动作实测明细/i.test(userText);
+  const isEquipmentIntent = /器械|长啥样|长什么样|外观|实物|调节|插销|座椅|照片/i.test(userText);
+  const matchedEqFromUser = (!isWorkoutReviewPrompt && isEquipmentIntent) ? findGymEquipmentVisual(userText) : null;
 
   const assistantBubble = makeMessage("assistant", "", { 
     streaming: true, 
@@ -902,8 +915,8 @@ async function runCurrentHistory(runOptions = {}) {
       assistantBubble.reasoningCollapsed = true;
     }
     
-    // If not matched yet, check if assistant's own response discusses an equipment
-    if (!assistantBubble.matchedEquipment && assistantBubble.text) {
+    // If not matched yet, check if assistant's own response discusses an equipment (exclude workout reviews)
+    if (!isWorkoutReviewPrompt && !assistantBubble.matchedEquipment && assistantBubble.text) {
       const matchedFromContent = findGymEquipmentVisual(assistantBubble.text);
       if (matchedFromContent && /长啥样|长什么样|外观|照片|实物|调节|插销|座椅/i.test(assistantBubble.text)) {
         assistantBubble.matchedEquipment = matchedFromContent;

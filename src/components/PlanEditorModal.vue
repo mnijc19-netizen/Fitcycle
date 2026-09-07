@@ -85,6 +85,11 @@
                 {{ idx + 1 }}
               </div>
 
+              <!-- Exercise Thumbnail -->
+              <ExerciseImage :src="getExerciseGif(ex)" 
+                             :name="ex.name" 
+                             customClass="w-9 h-9 rounded-xl border border-zinc-800 flex-shrink-0" />
+
               <div class="flex-1 min-w-0">
                 <div class="font-bold text-xs text-zinc-100 truncate">{{ ex.name }}</div>
                 <div class="flex items-center gap-3 mt-1.5 text-xs">
@@ -146,9 +151,15 @@
 
 <script setup>
 import { ref, watch, onUnmounted } from "vue";
-import { savePlan, uid } from "../store/fitnessStore.js";
+import { savePlan, uid, getExerciseDetails } from "../store/fitnessStore.js";
 import ExercisePickerModal from "./ExercisePickerModal.vue";
+import ExerciseImage from "./ExerciseImage.vue";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
+
+function getExerciseGif(nameOrObj) {
+  const details = getExerciseDetails(nameOrObj);
+  return details?.gifUrl || "";
+}
 
 const props = defineProps({
   visible: Boolean,
