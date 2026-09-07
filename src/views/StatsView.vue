@@ -30,7 +30,7 @@
         </div>
         <div class="mt-2.5">
           <div class="text-xs font-bold truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ honorData.presentation.tierName.split('·')[0] }}</div>
-          <div class="text-[11px] text-zinc-400 mt-0.5 flex items-center justify-between">
+          <div class="text-xs text-zinc-400 mt-0.5 flex items-center justify-between">
             <span :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : ''">天梯排位</span>
             <span class="text-xs transition-colors" :class="store.settings.themeMode === 'light' ? 'text-slate-400 group-hover:text-slate-700' : 'text-zinc-500 group-hover:text-zinc-300'">❯</span>
           </div>
@@ -56,7 +56,7 @@
         </div>
         <div class="mt-2.5">
           <div class="text-xs font-bold truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">形体围度追踪</div>
-          <div class="text-[11px] text-zinc-400 mt-0.5 flex items-center justify-between">
+          <div class="text-xs text-zinc-400 mt-0.5 flex items-center justify-between">
             <span :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : ''">身体档案</span>
             <span class="text-xs transition-colors" :class="store.settings.themeMode === 'light' ? 'text-slate-400 group-hover:text-slate-700' : 'text-zinc-500 group-hover:text-zinc-300'">❯</span>
           </div>
@@ -70,25 +70,25 @@
       <div class="text-xs font-bold text-zinc-400 mb-3 px-0.5">累计生涯数据</div>
       <div class="grid grid-cols-2 gap-y-3.5 gap-x-4">
         <div>
-          <div class="text-[11px] text-zinc-400">累计做工总容量</div>
+          <div class="text-xs text-zinc-400">累计做工总容量</div>
           <div class="text-lg font-black font-mono mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">
             {{ totalVolumeMetric }} <span class="text-xs font-normal text-zinc-500">kg</span>
           </div>
         </div>
         <div>
-          <div class="text-[11px] text-zinc-400">累计特训打卡</div>
+          <div class="text-xs text-zinc-400">累计特训打卡</div>
           <div class="text-lg font-black font-mono mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">
             {{ store.workoutLogs.length }} <span class="text-xs font-normal text-zinc-500">次</span>
           </div>
         </div>
         <div>
-          <div class="text-[11px] text-zinc-400">累计训练用时</div>
+          <div class="text-xs text-zinc-400">累计训练用时</div>
           <div class="text-lg font-black font-mono mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">
             {{ totalHoursMetric }} <span class="text-xs font-normal text-zinc-500">小时</span>
           </div>
         </div>
         <div>
-          <div class="text-[11px] text-zinc-400">完成总组数</div>
+          <div class="text-xs text-zinc-400">完成总组数</div>
           <div class="text-lg font-black font-mono mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">
             {{ totalSetsMetric }} <span class="text-xs font-normal text-zinc-500">组</span>
           </div>
@@ -101,14 +101,14 @@
          :class="store.settings.themeMode === 'light' ? 'bg-white border-slate-200' : 'bg-zinc-900/80 border-zinc-800/80'">
       <div class="flex items-center justify-between">
         <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-300'">近期容量走势 (kg)</span>
-        <span class="text-[10px] text-zinc-500 font-mono">近 7 次特训</span>
+        <span class="text-xs text-zinc-500 font-mono">近 7 次特训</span>
       </div>
 
       <div v-if="recentVolumeStats.length" class="pt-2">
         <div class="flex items-end justify-between gap-1 sm:gap-2 h-28 px-0.5 sm:px-1">
           <div v-for="(item, idx) in recentVolumeStats" :key="idx"
                class="flex-1 min-w-0 flex flex-col items-center gap-1 sm:gap-1.5 h-full justify-end">
-            <span class="text-[9px] sm:text-[10px] font-mono text-zinc-400 truncate w-full text-center">{{ item.volume > 0 ? `${Math.round(item.volume / 1000)}k` : '0' }}</span>
+            <span class="text-xs font-mono text-zinc-400 truncate w-full text-center">{{ item.volume > 0 ? `${Math.round(item.volume / 1000)}k` : '0' }}</span>
             <div class="w-full rounded-full overflow-hidden flex items-end p-0.5" 
                  :class="store.settings.themeMode === 'light' ? 'bg-slate-100' : 'bg-zinc-800/50'"
                  style="height: 72px">
@@ -116,7 +116,7 @@
                    :style="{ height: `${Math.max(12, item.percent)}%` }">
               </div>
             </div>
-            <span class="text-[9px] sm:text-[10px] text-zinc-500 font-mono truncate w-full text-center">{{ item.shortDate }}</span>
+            <span class="text-xs text-zinc-500 font-mono truncate w-full text-center">{{ item.shortDate }}</span>
           </div>
         </div>
       </div>
@@ -155,7 +155,7 @@
                         : (store.settings.themeMode === 'light' ? 'bg-white hover:bg-slate-50 text-slate-800 font-bold border border-slate-200/90 shadow-xs' : 'text-zinc-400 hover:text-zinc-200')
                     ]">
               <span class="text-xs font-mono font-bold leading-none">{{ item.sec }}s</span>
-              <span class="text-[9px] leading-none mt-0.5 truncate w-full px-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'opacity-85'">{{ item.label }}</span>
+              <span class="text-xs leading-none mt-0.5 truncate w-full px-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'opacity-85'">{{ item.label }}</span>
             </button>
           </div>
         </div>
@@ -164,7 +164,7 @@
         <div class="flex items-center justify-between pt-2.5 border-t border-zinc-800/60">
           <div>
             <div class="text-xs font-medium" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">打卡提示音与倒计时铃声</div>
-            <div class="text-[10px] text-zinc-500">完成单组及休息结束时播放提示音</div>
+            <div class="text-xs text-zinc-500">完成单组及休息结束时播放提示音</div>
           </div>
           <button @click="store.settings.soundEnabled = !store.settings.soundEnabled"
                   class="w-11 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer"
@@ -178,7 +178,7 @@
         <div class="flex items-center justify-between pt-2.5 border-t border-zinc-800/60">
           <div>
             <div class="text-xs font-medium" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">触感震动反馈 (Haptic)</div>
-            <div class="text-[10px] text-zinc-500">休息结束与打卡时提供震动反馈</div>
+            <div class="text-xs text-zinc-500">休息结束与打卡时提供震动反馈</div>
           </div>
           <button @click="store.settings.vibrationEnabled = !store.settings.vibrationEnabled"
                   class="w-11 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer"
@@ -193,10 +193,9 @@
              @click="showHonorModal = true">
           <div>
             <div class="text-xs font-bold flex items-center gap-1" :class="store.settings.themeMode === 'light' ? 'text-sky-800 font-black' : 'text-sky-300'">
-              <span>🛡️</span>
               <span>战术减载盾牌</span>
             </div>
-            <div class="text-[10px] mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+            <div class="text-xs mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
               <span v-if="isDeloadActive" class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-emerald-700' : 'text-emerald-400'">免战休整生效中 (剩余 {{ honorData.shieldDaysRemaining }} 天)</span>
               <span v-else-if="honorData.shieldInventory.available > 0" class="font-medium" :class="store.settings.themeMode === 'light' ? 'text-sky-800' : 'text-sky-300'">储备: {{ honorData.shieldInventory.available }}/2 枚 (点击查看)</span>
               <span v-else-if="honorData.shieldInventory.isNoviceProbation" class="font-medium" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">新兵筑基中 ({{ honorData.shieldInventory.currentChargeWorkouts }}/16 天)</span>
@@ -221,29 +220,27 @@
         <div class="space-y-1.5 pb-1">
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">环境光感</span>
-            <span class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">
-              {{ store.settings.themeMode === 'light' ? '白昼晨光高反差' : '深邃夜色护眼' }}
+            <span class="text-xs font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">
+              {{ store.settings.themeMode === 'light' ? '白昼高反差' : '深邃夜色' }}
             </span>
           </div>
           <div class="grid grid-cols-2 gap-2 p-1 rounded-xl border"
                :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border-slate-200' : 'bg-zinc-950/60 border-zinc-800/80'">
             <button @click="handleSelectThemeMode('dark')"
                     type="button"
-                    class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer"
+                    class="flex items-center justify-center py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer"
                     :class="store.settings.themeMode !== 'light' ? 'bg-zinc-800 text-amber-400 shadow-sm border border-zinc-700' : (store.settings.themeMode === 'light' ? 'text-slate-600 hover:text-slate-900' : 'text-zinc-400 hover:text-zinc-200')">
-              <span class="text-sm">🌙</span>
               <span>深邃夜色</span>
             </button>
             <button @click="handleSelectThemeMode('light')"
                     type="button"
-                    class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer"
+                    class="flex items-center justify-center py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer"
                     :class="store.settings.themeMode === 'light' ? 'bg-white text-zinc-900 shadow-sm border border-slate-200' : 'text-zinc-400 hover:text-zinc-200'">
-              <span class="text-sm">☀️</span>
               <span>白昼晨光</span>
             </button>
           </div>
-          <p class="text-[10px] text-zinc-500 leading-tight">
-            💡 切换明暗底色不影响任何训练与生理数据，在日光强光下提供更极致清晰的文字对比度。
+          <p class="text-xs text-zinc-500 leading-normal">
+            切换明暗底色不影响训练数据，强光下可获得更高对比度。
           </p>
         </div>
 
@@ -251,8 +248,8 @@
         <div class="space-y-2 border-t pt-2.5"
              :class="store.settings.themeMode === 'light' ? 'border-slate-100' : 'border-zinc-800/60'">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">主题世界观与外观</span>
-            <span class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">
+            <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">主题外观</span>
+            <span class="text-xs font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">
               已就绪
             </span>
           </div>
@@ -270,11 +267,11 @@
                 <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">默认外观</span>
                 <span v-if="store.settings.uiSkin === 'default'" class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
               </div>
-              <div class="text-[10px] leading-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">科学力量 · 纯净深空</div>
+              <div class="text-xs leading-normal" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">科学力量 · 纯净深空</div>
               <div class="flex items-center gap-1 mt-1">
                 <span class="w-2 h-2 rounded-full bg-zinc-950 border border-zinc-700"></span>
                 <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                <span v-if="store.settings.uiSkin === 'default'" class="text-[9px] text-amber-500 font-bold ml-auto font-mono">使用中</span>
+                <span v-if="store.settings.uiSkin === 'default'" class="text-xs text-amber-500 font-bold ml-auto font-mono">使用中</span>
               </div>
             </button>
 
@@ -291,11 +288,11 @@
                 <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">尚博勒</span>
                 <span v-if="store.settings.uiSkin === 'chamber'" class="w-1.5 h-1.5 rounded-full bg-[#E5C378]"></span>
               </div>
-              <div class="text-[10px] leading-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">法式特工 · 深蓝香槟金</div>
+              <div class="text-xs leading-normal" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">法式特工 · 深蓝香槟金</div>
               <div class="flex items-center gap-1 mt-1">
                 <span class="w-2 h-2 rounded-full bg-[#070B14] border border-[#1E3052]"></span>
                 <span class="w-2 h-2 rounded-full bg-[#E5C378]"></span>
-                <span v-if="store.settings.uiSkin === 'chamber'" class="text-[9px] font-bold ml-auto font-mono"
+                <span v-if="store.settings.uiSkin === 'chamber'" class="text-xs font-bold ml-auto font-mono"
                       :class="store.settings.themeMode === 'light' ? 'text-[#9A7228]' : 'text-[#E5C378]'">使用中</span>
               </div>
             </button>
@@ -313,11 +310,11 @@
                 <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">CS2 特训</span>
                 <span v-if="store.settings.uiSkin === 'cs'" class="w-1.5 h-1.5 rounded-full bg-[#F97316]"></span>
               </div>
-              <div class="text-[10px] leading-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">战术竞技 · 枪械与C4图标</div>
+              <div class="text-xs leading-normal" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">战术竞技 · 枪械战术</div>
               <div class="flex items-center gap-1 mt-1">
                 <span class="w-2 h-2 rounded-full bg-[#080C14] border border-[#1E293B]"></span>
                 <span class="w-2 h-2 rounded-full bg-[#F97316]"></span>
-                <span v-if="store.settings.uiSkin === 'cs'" class="text-[9px] font-bold ml-auto font-mono"
+                <span v-if="store.settings.uiSkin === 'cs'" class="text-xs font-bold ml-auto font-mono"
                       :class="store.settings.themeMode === 'light' ? 'text-[#E04E00]' : 'text-[#F97316]'">使用中</span>
               </div>
             </button>
@@ -335,11 +332,11 @@
                 <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">典藏黑白</span>
                 <span v-if="store.settings.uiSkin === 'monochrome'" class="w-1.5 h-1.5 rounded-full bg-white"></span>
               </div>
-              <div class="text-[10px] leading-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">极简纯粹 · 刀锋秩序</div>
+              <div class="text-xs leading-normal" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">极简纯粹 · 刀锋秩序</div>
               <div class="flex items-center gap-1 mt-1">
                 <span class="w-2 h-2 rounded-full bg-black border border-white/60"></span>
                 <span class="w-2 h-2 rounded-full bg-white"></span>
-                <span v-if="store.settings.uiSkin === 'monochrome'" class="text-[9px] font-bold ml-auto font-mono"
+                <span v-if="store.settings.uiSkin === 'monochrome'" class="text-xs font-bold ml-auto font-mono"
                       :class="store.settings.themeMode === 'light' ? 'text-black' : 'text-white'">使用中</span>
               </div>
             </button>
@@ -380,7 +377,7 @@
               解锁
             </button>
           </div>
-          <div v-if="passcodeError" class="text-[11px] text-red-500 pl-1 font-medium">
+          <div v-if="passcodeError" class="text-xs text-red-500 pl-1 font-medium">
             暗号不正确
           </div>
         </div>
@@ -400,12 +397,12 @@
           <div class="min-w-0">
             <div class="flex items-center gap-2">
               <h3 class="text-xs font-bold text-zinc-100">AI 智能教练</h3>
-              <span class="text-[9px] px-1.5 py-0.2 rounded-full border font-mono font-medium"
+              <span class="text-xs px-2 py-0.5 rounded-full border font-mono font-medium"
                     :class="aiConnected ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-400' : 'border-zinc-700 bg-zinc-950 text-zinc-500'">
                 {{ aiConnected ? '已就绪' : '未连接' }}
               </span>
             </div>
-            <p class="text-[11px] text-zinc-400 truncate mt-0.5">
+            <p class="text-xs text-zinc-400 truncate mt-0.5">
               {{ aiConnected ? `${activeAIProvider.name} · ${activeAIModel?.name || getActiveModelId()}` : '点击配置 DeepSeek / 智谱 / 通义千问' }}
             </p>
           </div>
@@ -453,17 +450,17 @@
         <div @click="showStrengthModal = true"
              class="p-3.5 hover:bg-zinc-850/60 active:bg-zinc-800 cursor-pointer flex items-center justify-between transition-colors">
           <div class="flex items-center gap-2.5">
-            <div class="w-7 h-7 rounded-lg bg-amber-500/15 flex items-center justify-center text-amber-400 text-xs">
-              ⚡
+            <div class="w-7 h-7 rounded-lg bg-amber-500/15 flex items-center justify-center text-amber-400 text-xs font-bold">
+              ✦
             </div>
             <div>
               <div class="text-xs font-bold text-zinc-100 flex items-center gap-1.5">
                 <span>力量水平定级与初始重量</span>
-                <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
                   {{ currentStrengthConfig.name }}
                 </span>
               </div>
-              <div class="text-[10px] text-zinc-400 mt-0.5">一键自适应全计划起步重量，老铁无需从空杆重调</div>
+              <div class="text-xs text-zinc-400 mt-0.5">一键自适应全计划起步重量，老铁无需从空杆重调</div>
             </div>
           </div>
           <span class="text-zinc-500 text-xs">❯</span>
@@ -479,11 +476,13 @@
              class="p-3.5 hover:bg-zinc-850/60 active:bg-zinc-800 cursor-pointer flex items-center justify-between transition-colors">
           <div class="flex items-center gap-2.5">
             <div class="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center text-amber-400 text-xs">
-              ⚖️
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
             </div>
             <div>
               <div class="text-xs font-bold text-zinc-100">天梯排位与做工规则</div>
-              <div class="text-[10px] text-zinc-400 mt-0.5">段位体系、积分计算与衰减机制</div>
+              <div class="text-xs text-zinc-400 mt-0.5">段位体系、积分计算与衰减机制</div>
             </div>
           </div>
           <span class="text-zinc-500 text-xs">❯</span>
@@ -493,11 +492,13 @@
              class="p-3.5 hover:bg-zinc-850/60 active:bg-zinc-800 cursor-pointer flex items-center justify-between transition-colors">
           <div class="flex items-center gap-2.5">
             <div class="w-7 h-7 rounded-lg bg-zinc-800 flex items-center justify-center text-sky-400 text-xs">
-              🧭
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </div>
             <div>
               <div class="text-xs font-bold text-zinc-100">新手功能向导</div>
-              <div class="text-[10px] text-zinc-400 mt-0.5">浏览核心功能与操作流程</div>
+              <div class="text-xs text-zinc-400 mt-0.5">浏览核心功能与操作流程</div>
             </div>
           </div>
           <span class="text-zinc-500 text-xs">❯</span>
@@ -514,16 +515,18 @@
                 class="w-full p-3.5 hover:bg-zinc-850/60 active:bg-zinc-800 flex items-center justify-between transition-colors text-left cursor-pointer">
           <div class="flex items-center gap-2.5">
             <div class="w-7 h-7 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 text-xs font-bold">
-              ☁️
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z" />
+              </svg>
             </div>
             <div>
               <div class="text-xs font-bold text-zinc-100 flex items-center gap-2">
                 <span>云端跨端同步与备份</span>
-                <span class="text-[9px] px-1.5 py-0.2 rounded font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                <span class="text-xs px-2 py-0.5 rounded font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
                   GitHub / 云端
                 </span>
               </div>
-              <div class="text-[10px] text-zinc-400 mt-0.5">跨设备数据自动漫游 · 永久防丢</div>
+              <div class="text-xs text-zinc-400 mt-0.5">跨设备数据自动漫游 · 永久防丢</div>
             </div>
           </div>
           <span class="text-zinc-500 text-xs">❯</span>
@@ -540,7 +543,7 @@
             </div>
             <div>
               <div class="text-xs font-bold text-zinc-100">导出数据备份</div>
-              <div class="text-[10px] text-zinc-500 mt-0.5">下载 JSON 备份文件至本地</div>
+              <div class="text-xs text-zinc-500 mt-0.5">下载 JSON 备份文件至本地</div>
             </div>
           </div>
           <span class="text-zinc-500 text-xs">❯</span>
@@ -557,7 +560,7 @@
             </div>
             <div>
               <div class="text-xs font-bold text-zinc-100">导入恢复数据</div>
-              <div class="text-[10px] text-zinc-500 mt-0.5">从 JSON 备份文件还原记录</div>
+              <div class="text-xs text-zinc-500 mt-0.5">从 JSON 备份文件还原记录</div>
             </div>
           </div>
           <span class="text-zinc-500 text-xs">❯</span>
@@ -576,7 +579,7 @@
             </div>
             <div>
               <div class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">清空历史打卡记录</div>
-              <div class="text-[10px] mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-500'">清除打卡日志，保留自定义计划与皮肤</div>
+              <div class="text-xs mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-500'">清除打卡日志，保留自定义计划与皮肤</div>
             </div>
           </div>
           <span class="text-zinc-500 text-xs">❯</span>
@@ -594,14 +597,14 @@
             </div>
             <div>
               <div class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-red-700 font-black' : 'text-red-400/90'">恢复出厂默认设置</div>
-              <div class="text-[10px] mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-500'">重置全部计划与数据为初始状态</div>
+              <div class="text-xs mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-500'">重置全部计划与数据为初始状态</div>
             </div>
           </div>
           <span class="text-zinc-500 text-xs">❯</span>
         </button>
       </div>
 
-      <p class="text-[10px] text-zinc-500 px-1 pt-1 leading-relaxed">
+      <p class="text-xs text-zinc-500 px-1 pt-1 leading-relaxed">
         所有数据均保存在本地浏览器中，离线可用。建议定期导出备份。
       </p>
     </div>

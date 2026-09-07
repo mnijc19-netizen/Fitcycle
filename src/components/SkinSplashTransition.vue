@@ -19,12 +19,12 @@
           <div class="absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-orange-400 to-transparent animate-laser-scan opacity-70 pointer-events-none"></div>
 
           <!-- Top HUD Tactical Telemetry -->
-          <div class="w-full max-w-md flex items-center justify-between z-20 font-mono text-[11px] text-orange-400/90 border-b border-orange-500/30 pb-3">
+          <div class="w-full max-w-md flex items-center justify-between z-20 font-mono text-xs text-orange-400/90 border-b border-orange-500/30 pb-3">
             <div class="flex items-center gap-2">
               <span class="inline-block w-2 h-2 bg-orange-500 rounded-full animate-ping"></span>
               <span class="font-black tracking-widest uppercase">VALVE // SOURCE 2</span>
             </div>
-            <div class="flex items-center gap-3 text-[10px] text-zinc-400">
+            <div class="flex items-center gap-3 text-xs text-zinc-400">
               <span class="px-1.5 py-0.5 rounded bg-orange-950/80 border border-orange-500/40 text-orange-300 font-bold">128 TICK</span>
               <span>SUB-TICK 0.00ms</span>
             </div>
@@ -68,17 +68,17 @@
             </div>
 
             <!-- Real-Time Telemetry Grid -->
-            <div class="w-full grid grid-cols-3 gap-2 text-center font-mono text-[10px] pt-2">
+            <div class="w-full grid grid-cols-3 gap-2 text-center font-mono text-xs pt-2">
               <div class="p-2 rounded-xl bg-zinc-950/80 border border-orange-500/30">
-                <span class="text-zinc-500 text-[8px] block uppercase">LATENCY</span>
+                <span class="text-zinc-500 text-xs block uppercase">LATENCY</span>
                 <span class="font-bold text-orange-300">0.8 ms</span>
               </div>
               <div class="p-2 rounded-xl bg-zinc-950/80 border border-orange-500/30">
-                <span class="text-zinc-500 text-[8px] block uppercase">PACKET</span>
+                <span class="text-zinc-500 text-xs block uppercase">PACKET</span>
                 <span class="font-bold text-emerald-400">0% LOSS</span>
               </div>
               <div class="p-2 rounded-xl bg-zinc-950/80 border border-orange-500/30">
-                <span class="text-zinc-500 text-[8px] block uppercase">HUD LINK</span>
+                <span class="text-zinc-500 text-xs block uppercase">HUD LINK</span>
                 <span class="font-bold text-sky-400">ONLINE</span>
               </div>
             </div>
@@ -87,7 +87,7 @@
 
           <!-- Bottom Laser Energy Gauge -->
           <div class="w-full max-w-md z-20 space-y-2 text-center">
-            <div class="flex justify-between text-[11px] font-mono font-bold text-orange-400">
+            <div class="flex justify-between text-xs font-mono font-bold text-orange-400">
               <span class="tracking-widest">DEPLOYING INTERFACE</span>
               <span class="animate-pulse font-mono">100%</span>
             </div>
@@ -95,7 +95,7 @@
             <div class="w-full h-2 bg-zinc-950 rounded-full overflow-hidden border border-orange-500/50 p-0.5 shadow-inner">
               <div class="h-full bg-gradient-to-r from-orange-600 via-amber-400 to-orange-500 rounded-full animate-progress-fill shadow-[0_0_15px_rgba(249,115,22,1)]"></div>
             </div>
-            <p class="text-[9px] font-mono text-zinc-500 tracking-wider">
+            <p class="text-xs font-mono text-zinc-500 tracking-wider">
               轻触屏幕任意位置即时跳过 (TAP TO SKIP)
             </p>
           </div>
@@ -113,12 +113,12 @@
           <div class="absolute top-1/4 -right-20 w-80 h-80 bg-[#E5C378]/15 rounded-full blur-3xl pointer-events-none"></div>
 
           <!-- Top Status -->
-          <div class="w-full max-w-md flex items-center justify-between z-20 font-mono text-[11px] text-[#E5C378] border-b border-[#E5C378]/30 pb-3">
+          <div class="w-full max-w-md flex items-center justify-between z-20 font-mono text-xs text-[#E5C378] border-b border-[#E5C378]/30 pb-3">
             <div class="flex items-center gap-2">
               <div class="w-2 h-2 bg-[#E5C378] rotate-45 animate-pulse"></div>
               <span class="font-black tracking-widest uppercase">VALORANT // PROTOCOL 781-A</span>
             </div>
-            <span class="text-cyan-400 text-[10px] tracking-widest uppercase font-bold">CHAMBER</span>
+            <span class="text-cyan-400 text-xs tracking-widest uppercase font-bold">CHAMBER</span>
           </div>
 
           <!-- Centerpiece: Tourbillon Luxury Watch Core & Geometric Facet Shards -->
@@ -158,13 +158,13 @@
             </div>
 
             <!-- Tactical Weapon Loadout Spec -->
-            <div class="w-full grid grid-cols-2 gap-2 text-center font-mono text-[10px] pt-2">
+            <div class="w-full grid grid-cols-2 gap-2 text-center font-mono text-xs pt-2">
               <div class="p-2 rounded-xl bg-[#091122]/90 border border-[#E5C378]/40 text-left px-3">
-                <span class="text-zinc-400 text-[8px] block uppercase">CUSTOM PISTOL</span>
+                <span class="text-zinc-400 text-xs block uppercase">CUSTOM PISTOL</span>
                 <span class="font-bold text-[#E5C378]">HEADHUNTER .50</span>
               </div>
               <div class="p-2 rounded-xl bg-[#091122]/90 border border-[#E5C378]/40 text-left px-3">
-                <span class="text-zinc-400 text-[8px] block uppercase">SNIPER RIFLE</span>
+                <span class="text-zinc-400 text-xs block uppercase">SNIPER RIFLE</span>
                 <span class="font-bold text-cyan-300">TOUR DE FORCE</span>
               </div>
             </div>
@@ -173,14 +173,14 @@
 
           <!-- Bottom Cyan/Gold Energy Bar -->
           <div class="w-full max-w-md z-20 space-y-2 text-center">
-            <div class="flex justify-between text-[11px] font-mono font-bold text-[#E5C378]">
+            <div class="flex justify-between text-xs font-mono font-bold text-[#E5C378]">
               <span class="tracking-widest">“YOU WANT TO PLAY? LET'S PLAY.”</span>
               <span class="text-cyan-400 font-mono">ENGAGED</span>
             </div>
             <div class="w-full h-2 bg-[#091122] rounded-full overflow-hidden border border-[#E5C378]/50 p-0.5 shadow-inner">
               <div class="h-full bg-gradient-to-r from-[#E5C378] via-cyan-400 to-[#F6E09E] rounded-full animate-progress-fill shadow-[0_0_15px_rgba(229,195,120,1)]"></div>
             </div>
-            <p class="text-[9px] font-mono text-zinc-500 tracking-wider">
+            <p class="text-xs font-mono text-zinc-500 tracking-wider">
               轻触屏幕任意位置即时跳过 (TAP TO SKIP)
             </p>
           </div>
@@ -196,9 +196,9 @@
           <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,#f59e0b_0%,transparent_60%)] opacity-20 pointer-events-none"></div>
 
           <!-- Top Status -->
-          <div class="w-full max-w-md flex items-center justify-between z-20 font-mono text-[11px] text-amber-400 border-b border-amber-500/30 pb-3">
+          <div class="w-full max-w-md flex items-center justify-between z-20 font-mono text-xs text-amber-400 border-b border-amber-500/30 pb-3">
             <span class="font-black tracking-widest uppercase">FITCYCLE // ATHLETIC ENGINE</span>
-            <span class="text-zinc-500 text-[10px]">TITANIUM GOLD</span>
+            <span class="text-zinc-500 text-xs">TITANIUM GOLD</span>
           </div>
 
           <!-- Centerpiece: Kinetic Aperture & Brand -->
@@ -229,14 +229,14 @@
 
           <!-- Bottom Progress -->
           <div class="w-full max-w-md z-20 space-y-2 text-center">
-            <div class="flex justify-between text-[11px] font-mono font-bold text-amber-400">
+            <div class="flex justify-between text-xs font-mono font-bold text-amber-400">
               <span class="tracking-widest">SYSTEM READY</span>
               <span class="font-mono">100%</span>
             </div>
             <div class="w-full h-2 bg-zinc-900 rounded-full overflow-hidden border border-amber-500/50 p-0.5 shadow-inner">
               <div class="h-full bg-gradient-to-r from-amber-600 to-amber-400 rounded-full animate-progress-fill shadow-[0_0_15px_rgba(245,158,11,1)]"></div>
             </div>
-            <p class="text-[9px] font-mono text-zinc-500 tracking-wider">
+            <p class="text-xs font-mono text-zinc-500 tracking-wider">
               轻触屏幕任意位置即时跳过 (TAP TO SKIP)
             </p>
           </div>

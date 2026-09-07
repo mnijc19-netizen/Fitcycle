@@ -276,22 +276,22 @@ export function analyzeActiveWorkoutCoverage(activeWorkout, libraryExercises = [
 
     if (done === 0) {
       status = "missing";
-      statusText = "尚未练习 ❌";
+      statusText = "未练";
       color = "rose";
       deficits.push({ ...tm, done, needed: tm.minSets, reason: "尚未覆盖" });
     } else if (done < tm.minSets) {
       status = "insufficient";
       const diff = tm.minSets - done;
-      statusText = `尚缺 ${diff} 组 ⚠️`;
+      statusText = `缺 ${diff} 组`;
       color = "amber";
       deficits.push({ ...tm, done, needed: diff, reason: `仅 ${done} 组 (偏低)` });
     } else if (done <= tm.maxSets) {
       status = "optimal";
-      statusText = "刺激饱满 ✅";
+      statusText = "已达标";
       color = "emerald";
     } else {
       status = "surplus";
-      statusText = "高容量饱和 ⚡";
+      statusText = "充分";
       color = "sky";
     }
 
@@ -311,23 +311,22 @@ export function analyzeActiveWorkoutCoverage(activeWorkout, libraryExercises = [
     };
   });
 
-  // 3. 组织诊断标题与人性化文案
+  // 3. 组织诊断标题与人性化文案 (精简、清晰、无废话)
   let headline = "";
   let overallStatus = "neutral";
 
   if (deficits.length === 0) {
-    headline = `🎉 ${splitDef.name}各大目标肌群刺激全部充分达标！已进入超量恢复黄金区！`;
+    headline = `${splitDef.name}各大目标肌群刺激全面达标，已进入超量恢复黄金区！`;
     overallStatus = "success";
   } else if (deficits.length === splitDef.targetMuscles.length) {
-    headline = `⚡ 开启 ${splitDef.name}：核心攻坚目标为 ${splitDef.targetMuscles.map(m => m.name).join("、")}`;
+    headline = `核心目标：${splitDef.targetMuscles.map(m => m.name).join(" · ")}`;
     overallStatus = "neutral";
   } else {
-    const missingNames = deficits.filter(d => d.done === 0).map(d => d.name);
-    const lowNames = deficits.filter(d => d.done > 0).map(d => `${d.name}(差${d.needed}组)`);
-    const parts = [];
-    if (missingNames.length > 0) parts.push(`${missingNames.join("、")}尚未练习`);
-    if (lowNames.length > 0) parts.push(`${lowNames.join("、")}刺激偏低`);
-    headline = `💡 实时诊断：${parts.join("，")}。建议适量补充以达均衡肥大：`;
+    const deficitSummaries = deficits.map(d => {
+      if (d.done === 0) return `${d.name} (未练)`;
+      return `${d.name} (差${d.needed}组)`;
+    });
+    headline = `建议补充：${deficitSummaries.join(" · ")}`;
     overallStatus = "warning";
   }
 

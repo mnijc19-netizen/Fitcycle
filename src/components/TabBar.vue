@@ -58,7 +58,7 @@
         </div>
 
         <!-- Label -->
-        <span class="text-[10px] mt-1 font-semibold tracking-tight">今日</span>
+        <span class="text-xs mt-0.5 font-bold tracking-tight">今日</span>
         
         <!-- Active Indicator -->
         <span v-if="store.activeTab === 'today'" :class="activeIndicatorClass"></span>
@@ -103,7 +103,7 @@
           </svg>
         </div>
 
-        <span class="text-[10px] mt-1 font-semibold tracking-tight">周期</span>
+        <span class="text-xs mt-0.5 font-bold tracking-tight">周期</span>
         
         <!-- Active Indicator -->
         <span v-if="store.activeTab === 'cycle'" :class="activeIndicatorClass"></span>
@@ -148,7 +148,7 @@
           </svg>
         </div>
 
-        <span class="text-[10px] mt-1 font-semibold tracking-tight">日历</span>
+        <span class="text-xs mt-0.5 font-bold tracking-tight">日历</span>
 
         <!-- Active Indicator -->
         <span v-if="store.activeTab === 'calendar'" :class="activeIndicatorClass"></span>
@@ -193,7 +193,7 @@
           </svg>
         </div>
 
-        <span class="text-[10px] mt-1 font-semibold tracking-tight">动作</span>
+        <span class="text-xs mt-0.5 font-bold tracking-tight">动作</span>
 
         <!-- Active Indicator -->
         <span v-if="store.activeTab === 'exercises'" :class="activeIndicatorClass"></span>
@@ -227,7 +227,7 @@
           </svg>
         </div>
 
-        <span class="text-[10px] mt-1 font-semibold tracking-tight">统计设置</span>
+        <span class="text-xs mt-0.5 font-bold tracking-tight">统计设置</span>
 
         <!-- Active Indicator -->
         <span v-if="store.activeTab === 'stats'" :class="activeIndicatorClass"></span>

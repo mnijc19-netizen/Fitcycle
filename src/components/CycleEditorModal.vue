@@ -22,7 +22,7 @@
             </div>
             <div>
               <h3 class="text-sm font-black text-zinc-100">自定义训练分化循环</h3>
-              <p class="text-[10px] text-zinc-400 font-mono">自定义属于你的训练分化轮转天数与计划</p>
+              <p class="text-xs text-zinc-400 font-mono">自定义属于你的训练分化轮转天数与计划</p>
             </div>
           </div>
           <button @click="$emit('close')" class="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-white rounded-full bg-zinc-800 hover:bg-zinc-700 active:scale-95 transition-all cursor-pointer">
@@ -42,7 +42,7 @@
             <label class="text-xs font-bold text-zinc-400 tracking-wider uppercase">快速应用经典模板</label>
             <button @click="showTemplatesModal = true" 
                     class="text-xs text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 cursor-pointer">
-              <span>📚 完整 5 大体系 ↗</span>
+              <span>完整 5 大体系 ↗</span>
             </button>
           </div>
           <div class="grid grid-cols-3 gap-2 mt-2">
@@ -51,7 +51,7 @@
                     class="p-2.5 rounded-xl border text-left transition-all text-xs flex flex-col justify-between"
                     :class="[editCycle.id === preset.id ? 'bg-amber-500/20 border-amber-500 text-amber-300' : 'bg-zinc-950/60 border-zinc-800 text-zinc-300 hover:border-zinc-700']">
               <span class="font-bold truncate">{{ preset.name.split(' ')[0] }}</span>
-              <span class="text-[10px] text-zinc-500 mt-1">{{ preset.days.length }}天一轮</span>
+              <span class="text-xs text-zinc-500 mt-1">{{ preset.days.length }}天一轮</span>
             </button>
           </div>
         </div>
@@ -70,7 +70,7 @@
               分化轮转顺序 (共 {{ editCycle.days.length }} 天)
             </label>
             <button @click="addDay" class="text-xs text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1">
-              ➕ 添加一天
+              添加一天
             </button>
           </div>
 
@@ -123,7 +123,7 @@
         <!-- Today's Cycle Alignment (Anchor) -->
         <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-3.5">
           <div class="text-xs font-bold text-zinc-200">今天设为循环的第几天？</div>
-          <p class="text-[11px] text-zinc-400 mt-0.5">
+          <p class="text-xs text-zinc-400 mt-0.5">
             点击下方按钮可立即将今天锚定为指定的训练日，系统将自动推导未来每天的计划：
           </p>
           <div class="grid grid-cols-4 gap-2 mt-2.5">
@@ -132,7 +132,7 @@
                     class="py-2 px-1 text-center rounded-xl border text-xs font-bold transition-all"
                     :class="[currentCycleIndex === idx ? 'bg-amber-500 text-zinc-950 border-amber-500 ring-2 ring-amber-500/30' : 'bg-zinc-900 border-zinc-700/80 text-zinc-300 hover:bg-zinc-800']">
               第 {{ idx + 1 }} 天<br/>
-              <span class="text-[10px] opacity-80 font-normal">{{ day.shortName }}</span>
+              <span class="text-xs opacity-80 font-normal">{{ day.shortName }}</span>
             </button>
           </div>
         </div>

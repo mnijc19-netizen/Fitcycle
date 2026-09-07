@@ -23,7 +23,7 @@
             </div>
             <div>
               <h3 class="text-sm font-black tracking-wide text-white">FitCycle 运动科学与排位规则法典</h3>
-              <p class="text-[10px] text-zinc-400 font-mono tracking-wider">GAME RULES & SPORTS SCIENCE CODEX</p>
+              <p class="text-xs text-zinc-400 font-mono tracking-wider">GAME RULES & SPORTS SCIENCE CODEX</p>
             </div>
           </div>
           <button @click="$emit('close')" 
@@ -41,22 +41,22 @@
             </div>
             <div class="min-w-0">
               <div class="flex items-center gap-1.5">
-                <span class="text-[10px] px-1.5 py-0.5 rounded-md bg-amber-500/20 text-amber-300 font-mono font-black border border-amber-500/30">当前段位</span>
+                <span class="text-xs px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 font-mono font-black border border-amber-500/30">当前段位</span>
                 <span class="text-xs font-black text-white truncate">{{ userHonor.presentation.tierName }}</span>
               </div>
-              <div class="text-[11px] font-mono text-zinc-300 font-bold mt-0.5">
-                {{ userHonor.score }} <span class="text-[9px] text-zinc-400 font-normal">FPS 综合战力</span>
+              <div class="text-xs font-mono text-zinc-300 font-bold mt-0.5">
+                {{ userHonor.score }} <span class="text-xs text-zinc-400 font-normal">FPS 综合战力</span>
               </div>
             </div>
           </div>
 
           <div class="text-right flex-shrink-0">
             <div v-if="!userHonor.tier.isApex" class="space-y-0.5">
-              <span class="text-[10px] text-zinc-400 block">距下一阶还需</span>
-              <span class="text-xs font-black font-mono text-amber-400">+{{ Math.max(0, userHonor.tier.nextTierScore - userHonor.score) }} <span class="text-[9px]">分</span></span>
+              <span class="text-xs text-zinc-400 block">距下一阶还需</span>
+              <span class="text-xs font-black font-mono text-amber-400">+{{ Math.max(0, userHonor.tier.nextTierScore - userHonor.score) }} <span class="text-xs">分</span></span>
             </div>
             <div v-else>
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">👑 巅峰神话</span>
+              <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">巅峰神话</span>
             </div>
           </div>
         </div>
@@ -71,7 +71,6 @@
                       ? 'bg-amber-500 text-zinc-950 font-black shadow-md shadow-amber-500/20' 
                       : 'bg-zinc-900/90 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-zinc-800'
                   ]">
-            <span>{{ tab.icon }}</span>
             <span>{{ tab.name }}</span>
           </button>
         </div>
@@ -88,19 +87,21 @@
             <!-- Skin Localization Preview Selector -->
             <div class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800 space-y-2">
               <div class="flex items-center justify-between">
-                <span class="text-[11px] font-black text-amber-400 flex items-center gap-1">
-                  <span>🎨</span> 主题皮肤段位映射预览
+                <span class="text-xs font-black text-amber-400 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                  </svg>
+                  <span>主题皮肤段位映射预览</span>
                 </span>
-                <span class="text-[10px] text-zinc-400 font-mono">点击切换探索</span>
+                <span class="text-xs text-zinc-400 font-mono">点击切换探索</span>
               </div>
               <div class="grid grid-cols-4 gap-1.5">
                 <button v-for="skin in skinPreviewOptions" :key="skin.id"
                         @click="selectedSkinPreview = skin.id"
-                        class="px-1.5 py-1.5 rounded-xl text-[10px] font-bold transition-all flex flex-col items-center gap-0.5 border cursor-pointer"
+                        class="px-1.5 py-1.5 rounded-xl text-xs font-bold transition-all flex flex-col items-center gap-0.5 border cursor-pointer"
                         :class="selectedSkinPreview === skin.id 
                           ? 'bg-amber-500/20 border-amber-500/60 text-amber-300 shadow-sm' 
                           : 'bg-zinc-950/70 border-zinc-800 text-zinc-400 hover:text-zinc-200'">
-                  <span class="text-sm">{{ skin.icon }}</span>
                   <span class="truncate w-full text-center">{{ skin.name }}</span>
                 </button>
               </div>
@@ -110,9 +111,12 @@
             <div class="space-y-2">
               <div class="flex items-center justify-between px-1">
                 <span class="text-xs font-black text-zinc-100 flex items-center gap-1.5">
-                  <span>🏆</span> 7 阶绝对天梯段位体系
+                  <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                  </svg>
+                  <span>7 阶绝对天梯段位体系</span>
                 </span>
-                <span class="text-[10px] font-mono text-zinc-400">0 ~ 3000+ 分</span>
+                <span class="text-xs font-mono text-zinc-400">0 ~ 3000+ 分</span>
               </div>
 
               <div class="space-y-2">
@@ -137,17 +141,17 @@
                     <div class="min-w-0">
                       <div class="flex items-center gap-1.5">
                         <span class="text-xs font-black text-white truncate">{{ tier.name }}</span>
-                        <span v-if="tier.isCurrent" class="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-amber-500 text-zinc-950 animate-pulse flex-shrink-0">
+                        <span v-if="tier.isCurrent" class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500 text-zinc-950 animate-pulse flex-shrink-0">
                           你在此
                         </span>
                       </div>
-                      <p class="text-[10px] text-zinc-400 truncate mt-0.5">{{ tier.sub }}</p>
+                      <p class="text-xs text-zinc-400 truncate mt-0.5">{{ tier.sub }}</p>
                     </div>
                   </div>
 
                   <!-- Score Pill -->
                   <div class="text-right flex-shrink-0">
-                    <span class="px-2 py-1 rounded-xl text-[10px] font-black font-mono border"
+                    <span class="px-2.5 py-1 rounded-xl text-xs font-black font-mono border"
                           :class="tier.tier === 7 ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-zinc-950 text-zinc-300 border-zinc-800'">
                       {{ tier.rangeText }}
                     </span>
@@ -161,14 +165,17 @@
             <div class="p-3.5 rounded-2xl bg-zinc-900/80 border border-zinc-800 space-y-3">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-black text-amber-400 flex items-center gap-1.5">
-                  <span>⚡</span> 单场特训做工与战力加分公式
+                  <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span>单场特训做工与战力加分公式</span>
                 </span>
-                <span class="text-[10px] font-mono text-zinc-400">单场结算</span>
+                <span class="text-xs font-mono text-zinc-400">单场结算</span>
               </div>
 
               <!-- Visual Math Formula Flow Card -->
               <div class="p-2.5 rounded-xl bg-zinc-950 border border-zinc-800/90 text-center space-y-1.5">
-                <div class="text-[11px] font-mono font-black text-zinc-200 flex items-center justify-center gap-1.5 flex-wrap">
+                <div class="text-xs font-mono font-black text-zinc-200 flex items-center justify-center gap-1.5 flex-wrap">
                   <span class="px-2 py-0.5 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30">基础做工分 (+10~50)</span>
                   <span>+</span>
                   <span class="px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">超负荷 PR (+15)</span>
@@ -177,48 +184,48 @@
                   <span>=</span>
                   <span class="px-2.5 py-0.5 rounded-lg bg-amber-500 text-zinc-950 font-black">最终战力加分</span>
                 </div>
-                <p class="text-[10px] text-zinc-400">基于真实总吨位、动作强度与自律频次三维综合评定</p>
+                <p class="text-xs text-zinc-400">基于真实总吨位、动作强度与自律频次三维综合评定</p>
               </div>
 
               <!-- 4 Performance Grade Cards (S/A/B/C) -->
-              <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+              <div class="grid grid-cols-2 gap-2 text-xs font-mono">
                 <div class="p-2 rounded-xl bg-zinc-950 border border-amber-500/30 space-y-0.5">
                   <div class="flex items-center justify-between">
-                    <span class="text-amber-400 font-bold">🏆 S 级满载特训</span>
+                    <span class="text-amber-400 font-bold">S 级满载特训</span>
                     <span class="text-amber-300 font-black">+50 PTS</span>
                   </div>
-                  <p class="text-zinc-400 text-[9px]">≥14 组 且 总吨位 ≥6,500 kg</p>
+                  <p class="text-zinc-400 text-xs">≥14 组 且 总吨位 ≥6,500 kg</p>
                 </div>
 
                 <div class="p-2 rounded-xl bg-zinc-950 border border-sky-500/30 space-y-0.5">
                   <div class="flex items-center justify-between">
-                    <span class="text-sky-400 font-bold">⭐ A 级深度做工</span>
+                    <span class="text-sky-400 font-bold">A 级深度做工</span>
                     <span class="text-sky-300 font-black">+35 PTS</span>
                   </div>
-                  <p class="text-zinc-400 text-[9px]">≥10 组 且 总吨位 ≥3,000 kg</p>
+                  <p class="text-zinc-400 text-xs">≥10 组 且 总吨位 ≥3,000 kg</p>
                 </div>
 
                 <div class="p-2 rounded-xl bg-zinc-950 border border-emerald-500/30 space-y-0.5">
                   <div class="flex items-center justify-between">
-                    <span class="text-emerald-400 font-bold">⚡ B 级标准打卡</span>
+                    <span class="text-emerald-400 font-bold">B 级标准打卡</span>
                     <span class="text-emerald-300 font-black">+20 PTS</span>
                   </div>
-                  <p class="text-zinc-400 text-[9px]">≥6 组 或 基础吨位做工达成</p>
+                  <p class="text-zinc-400 text-xs">≥6 组 或 基础吨位做工达成</p>
                 </div>
 
                 <div class="p-2 rounded-xl bg-zinc-950 border border-zinc-800 space-y-0.5">
                   <div class="flex items-center justify-between">
-                    <span class="text-zinc-400 font-bold">🌱 C 级轻量热身</span>
+                    <span class="text-zinc-400 font-bold">C 级轻量热身</span>
                     <span class="text-zinc-300 font-black">+10 PTS</span>
                   </div>
-                  <p class="text-zinc-500 text-[9px]">&lt;6 组 或 轻量激活活动</p>
+                  <p class="text-zinc-500 text-xs">&lt;6 组 或 轻量激活活动</p>
                 </div>
               </div>
 
               <!-- Interactive Score Mini-Estimator -->
               <div class="p-2.5 rounded-xl bg-zinc-950/70 border border-zinc-800 space-y-2">
-                <div class="flex items-center justify-between text-[10px]">
-                  <span class="font-bold text-zinc-300">🎮 战力加分即时速算：</span>
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-bold text-zinc-300">战力加分即时速算：</span>
                   <span class="font-mono text-amber-300 font-black text-xs">
                     预计加分: +{{ estimatedScore }} PTS
                   </span>
@@ -227,13 +234,13 @@
                 <div class="flex items-center gap-1.5">
                   <button v-for="grade in ['S', 'A', 'B', 'C']" :key="grade"
                           @click="calcGrade = grade"
-                          class="flex-1 py-1 rounded-lg font-mono font-bold text-[10px] border transition-all cursor-pointer"
+                          class="flex-1 py-1 rounded-lg font-mono font-bold text-xs border transition-all cursor-pointer"
                           :class="calcGrade === grade ? 'bg-amber-500 text-zinc-950 border-amber-500' : 'bg-zinc-900 text-zinc-400 border-zinc-800'">
                     {{ grade }} 级
                   </button>
                 </div>
 
-                <div class="flex items-center gap-2 pt-0.5 text-[10px]">
+                <div class="flex items-center gap-2 pt-0.5 text-xs">
                   <label class="flex items-center gap-1 cursor-pointer select-none">
                     <input type="checkbox" v-model="calcOverload" class="rounded accent-amber-500" />
                     <span :class="calcOverload ? 'text-amber-300 font-bold' : 'text-zinc-400'">超负荷 PR (+15)</span>
@@ -251,11 +258,14 @@
             <div class="p-3.5 rounded-2xl bg-zinc-900/80 border border-zinc-800 space-y-2.5">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-black text-purple-400 flex items-center gap-1.5">
-                  <span>🎖️</span> CS2 同款：年度服役勋章与声望转生
+                  <svg class="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                  </svg>
+                  <span>CS2 同款：年度服役勋章与声望转生</span>
                 </span>
-                <span class="text-[10px] font-mono text-zinc-400">2900+ 开启</span>
+                <span class="text-xs font-mono text-zinc-400">2900+ 开启</span>
               </div>
-              <p class="text-[11px] text-zinc-300">
+              <p class="text-xs text-zinc-300 leading-relaxed">
                 战力冲上 <strong class="text-amber-300">2900+ 分</strong> 巅峰后，可开启【年度声望转生】。战力回落至 2400 分重新冲榜，并永久点亮当年度服役勋章星级（可逐级转生至 6 阶至尊紫红星）！
               </p>
               
@@ -265,7 +275,7 @@
                      class="p-1.5 rounded-xl border text-center space-y-1 bg-zinc-950 flex flex-col items-center"
                      :style="{ borderColor: p.border }">
                   <img :src="p.svg" :alt="p.name" class="w-6 h-6 object-contain" />
-                  <span class="text-[8px] font-mono block truncate w-full" :style="{ color: p.color }">{{ p.level }}阶</span>
+                  <span class="text-xs font-mono block truncate w-full" :style="{ color: p.color }">{{ p.level }}阶</span>
                 </div>
               </div>
             </div>
@@ -281,12 +291,15 @@
             <div class="p-3.5 rounded-2xl bg-zinc-900/80 border border-zinc-800 space-y-3">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-black text-orange-400 flex items-center gap-1.5">
-                  <span>⏳</span> 4 阶生物学生理衰减时间轴
+                  <svg class="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>4 阶生物学生理衰减时间轴</span>
                 </span>
-                <span class="text-[10px] font-mono text-emerald-400 font-bold">72h 绝对免责</span>
+                <span class="text-xs font-mono text-emerald-400 font-bold">72h 绝对免责</span>
               </div>
               
-              <p class="text-[11px] text-zinc-300">
+              <p class="text-xs text-zinc-300 leading-relaxed">
                 人体骨骼肌在停训后经历神经募集减弱与肌糖原消退。FitCycle 严格遵循运动生理学超量恢复曲线，绝不盲目扣分：
               </p>
 
@@ -295,15 +308,15 @@
                 
                 <!-- Stage 1: 0 - 72h -->
                 <div class="relative pl-6 pb-2 border-l-2 border-emerald-500/80">
-                  <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-emerald-500 border-2 border-zinc-900 flex items-center justify-center text-[9px] text-zinc-950 font-bold">
+                  <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-emerald-500 border-2 border-zinc-900 flex items-center justify-center text-xs text-zinc-950 font-bold">
                     ✓
                   </div>
                   <div class="p-2.5 rounded-xl bg-emerald-950/30 border border-emerald-500/40 space-y-1">
                     <div class="flex items-center justify-between">
                       <span class="text-xs font-bold text-emerald-300">0 ~ 72 小时 (0-3天)</span>
-                      <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-500 text-zinc-950">100% 绝对保护 · 0 扣分</span>
+                      <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-500 text-zinc-950">100% 绝对保护 · 0 扣分</span>
                     </div>
-                    <p class="text-[10px] text-zinc-300 leading-relaxed">
+                    <p class="text-xs text-zinc-300 leading-relaxed">
                       <strong>科学超量恢复黄金期：</strong> 肌肉微损伤修复与肌原纤维超量合成受宪法绝对保护，不练也是在涨肌！
                     </p>
                   </div>
@@ -311,15 +324,15 @@
 
                 <!-- Stage 2: 72 - 96h -->
                 <div class="relative pl-6 pb-2 border-l-2 border-amber-500/60">
-                  <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-amber-500 border-2 border-zinc-900 flex items-center justify-center text-[9px] text-zinc-950 font-bold">
+                  <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-amber-500 border-2 border-zinc-900 flex items-center justify-center text-xs text-zinc-950 font-bold">
                     !
                   </div>
                   <div class="p-2.5 rounded-xl bg-zinc-950 border border-amber-500/30 space-y-1">
                     <div class="flex items-center justify-between">
                       <span class="text-xs font-bold text-amber-300">72 ~ 96 小时 (第4天)</span>
-                      <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">每日微扣 -5 FPS</span>
+                      <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">每日微扣 -5 FPS</span>
                     </div>
-                    <p class="text-[10px] text-zinc-400 leading-relaxed">
+                    <p class="text-xs text-zinc-400 leading-relaxed">
                       <strong>轻微神经生锈预警：</strong> 神经募集效率开始微降，今日到健身房轻量活动即可迅速唤醒肌肉！
                     </p>
                   </div>
@@ -327,15 +340,15 @@
 
                 <!-- Stage 3: 96 - 168h -->
                 <div class="relative pl-6 pb-2 border-l-2 border-orange-500/60">
-                  <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-orange-500 border-2 border-zinc-900 flex items-center justify-center text-[9px] text-zinc-950 font-bold">
+                  <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-orange-500 border-2 border-zinc-900 flex items-center justify-center text-xs text-zinc-950 font-bold">
                     !
                   </div>
                   <div class="p-2.5 rounded-xl bg-zinc-950 border border-orange-500/30 space-y-1">
                     <div class="flex items-center justify-between">
                       <span class="text-xs font-bold text-orange-300">96 ~ 168 小时 (5-7天)</span>
-                      <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-orange-500/20 text-orange-300 border border-orange-500/30">每日扣减 -15 FPS</span>
+                      <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-500/20 text-orange-300 border border-orange-500/30">每日扣减 -15 FPS</span>
                     </div>
-                    <p class="text-[10px] text-zinc-400 leading-relaxed">
+                    <p class="text-xs text-zinc-400 leading-relaxed">
                       <strong>肌糖原消退阶段：</strong> 充血泵感与肌细胞水分自然代谢，进入温和催练阶段，提醒及时归队。
                     </p>
                   </div>
@@ -343,15 +356,15 @@
 
                 <!-- Stage 4: > 168h -->
                 <div class="relative pl-6">
-                  <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-red-500 border-2 border-zinc-900 flex items-center justify-center text-[9px] text-white font-bold">
-                    ×
+                  <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-red-500 border-2 border-zinc-900 flex items-center justify-center text-xs text-white font-bold">
+                    ✕
                   </div>
                   <div class="p-2.5 rounded-xl bg-zinc-950 border border-red-500/30 space-y-1">
                     <div class="flex items-center justify-between">
                       <span class="text-xs font-bold text-red-400">168 小时以上 (7天+)</span>
-                      <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-red-500/20 text-red-300 border border-red-500/30">每日扣减 -25 FPS (大段位保底)</span>
+                      <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-500/20 text-red-300 border border-red-500/30">每日扣减 -25 FPS (大段位保底)</span>
                     </div>
-                    <p class="text-[10px] text-zinc-400 leading-relaxed">
+                    <p class="text-xs text-zinc-400 leading-relaxed">
                       <strong>深度休眠保底防线：</strong> 触发大段位锁死保护，绝不扣穿当前大段位底线，随时准备破冰复苏！
                     </p>
                   </div>
@@ -362,11 +375,13 @@
 
             <!-- 150% Comeback Boost Card -->
             <div class="p-3.5 rounded-2xl bg-gradient-to-br from-emerald-950/40 via-zinc-900 to-zinc-900 border border-emerald-500/40 space-y-2 shadow-sm">
-              <div class="flex items-center gap-2 text-emerald-400 font-black text-xs">
-                <span class="text-base">⚡</span>
+              <div class="flex items-center gap-1.5 text-emerald-400 font-black text-xs">
+                <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
                 <span>150% 爆发复苏加成 (Comeback Boost)</span>
               </div>
-              <p class="text-[11px] text-zinc-200 leading-relaxed">
+              <p class="text-xs text-zinc-200 leading-relaxed">
                 若因工作忙碌、出差或生病停训超过 <strong>5 天（≥ 120小时）</strong>，重新回归健身房完成首场打卡时，系统将自动触发 <span class="text-emerald-400 font-black font-mono">150% 爆发复苏加成</span>，帮助你一战极速补回掉落分数，彻底消解停训焦虑！
               </p>
             </div>
@@ -375,36 +390,39 @@
             <div class="p-3.5 rounded-2xl bg-zinc-900/80 border border-zinc-800 space-y-2.5">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-black text-sky-400 flex items-center gap-1.5">
-                  <span>🛡️</span> 战术减载盾牌：运动生理学原理与充能
+                  <svg class="w-3.5 h-3.5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <span>战术减载盾牌：运动生理学原理与充能</span>
                 </span>
-                <span class="text-[10px] font-mono text-zinc-400">CNS 疲劳消解</span>
+                <span class="text-xs font-mono text-zinc-400">CNS 疲劳消解</span>
               </div>
               
-              <p class="text-[11px] text-zinc-300 leading-relaxed">
+              <p class="text-xs text-zinc-300 leading-relaxed">
                 在连续经历 4~6 周（16次+）高强度超负荷特训后，中枢神经系统 (CNS) 疲劳累积达到临界值。适时进入 7 天减载周可促发超量恢复，避免过度训练综合征。
               </p>
 
               <!-- 3 Modular Cards -->
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[10px] pt-1">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs pt-1">
                 <div class="p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
                   <div class="text-amber-400 font-bold flex items-center gap-1">
-                    <span>🔋</span> 16 次特训铸造
+                    <span>16 次特训铸造</span>
                   </div>
-                  <p class="text-zinc-400 text-[9px] leading-tight">每打卡 16 次有效特训（约1个月推拉腿）铸造 1 枚，上限储备 2 枚。</p>
+                  <p class="text-zinc-400 text-xs leading-relaxed">每打卡 16 次有效特训（约1个月推拉腿）铸造 1 枚，上限储备 2 枚。</p>
                 </div>
 
                 <div class="p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
                   <div class="text-sky-400 font-bold flex items-center gap-1">
-                    <span>🛡️</span> 7 天 0 衰减保护
+                    <span>7 天 0 衰减保护</span>
                   </div>
-                  <p class="text-zinc-400 text-[9px] leading-tight">激活开启 7 天战力绝对冻结期（0 扣分），全站日历看板同步休整。</p>
+                  <p class="text-zinc-400 text-xs leading-relaxed">激活开启 7 天战力绝对冻结期（0 扣分），全站日历看板同步休整。</p>
                 </div>
 
                 <div class="p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
                   <div class="text-emerald-400 font-bold flex items-center gap-1">
-                    <span>⏳</span> 21 天科学自适应
+                    <span>21 天科学自适应</span>
                   </div>
-                  <p class="text-zinc-400 text-[9px] leading-tight">使用后享有 21 天自适应冷却，确保有充足超负荷积累，杜绝连续躺平。</p>
+                  <p class="text-zinc-400 text-xs leading-relaxed">使用后享有 21 天自适应冷却，确保有充足超负荷积累，杜绝连续躺平。</p>
                 </div>
               </div>
 
@@ -418,36 +436,42 @@
           <div v-else-if="activeCategory === 'overload'" class="space-y-3.5">
             <div class="p-3.5 bg-zinc-900/80 border border-zinc-800 rounded-2xl space-y-2.5">
               <div class="text-amber-400 font-black flex items-center gap-1.5 text-xs">
-                <span>📈</span> 渐进超负荷比对法则
+                <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                <span>渐进超负荷比对法则</span>
               </div>
-              <p class="text-zinc-300 text-[11px]">
+              <p class="text-zinc-300 text-xs leading-relaxed">
                 增肌的核心在于施加超越以往的机械张力。系统在每次打卡时，会自动调取该动作最近一次的历史对应组：
               </p>
-              <div class="grid grid-cols-2 gap-2 text-[10px] pt-1">
+              <div class="grid grid-cols-2 gap-2 text-xs pt-1">
                 <div class="p-2 rounded-xl bg-zinc-950 border border-amber-500/30 space-y-0.5">
-                  <span class="text-amber-400 font-bold flex items-center gap-1">🔥 重量 PR 突破</span>
-                  <p class="text-zinc-400 text-[9px]">当前组重量超越上次历史，点亮金色火焰微标。</p>
+                  <span class="text-amber-400 font-bold flex items-center gap-1">重量 PR 突破</span>
+                  <p class="text-zinc-400 text-xs">当前组重量超越上次历史，点亮金色高光微标。</p>
                 </div>
                 <div class="p-2 rounded-xl bg-zinc-950 border border-emerald-500/30 space-y-0.5">
-                  <span class="text-emerald-400 font-bold flex items-center gap-1">⚡ 次数超负荷</span>
-                  <p class="text-zinc-400 text-[9px]">同重量下完成更多有效次数，点亮翡翠能量光环。</p>
+                  <span class="text-emerald-400 font-bold flex items-center gap-1">次数超负荷</span>
+                  <p class="text-zinc-400 text-xs">同重量下完成更多有效次数，点亮翡翠能量光环。</p>
                 </div>
                 <div class="p-2 rounded-xl bg-zinc-950 border border-zinc-800 space-y-0.5">
-                  <span class="text-zinc-300 font-bold flex items-center gap-1">✓ 达成基准</span>
-                  <p class="text-zinc-400 text-[9px]">重量与次数与上次持平，巩固力量平台。</p>
+                  <span class="text-zinc-300 font-bold flex items-center gap-1">达成基准</span>
+                  <p class="text-zinc-400 text-xs">重量与次数与上次持平，巩固力量平台。</p>
                 </div>
                 <div class="p-2 rounded-xl bg-zinc-950 border border-sky-500/30 space-y-0.5">
-                  <span class="text-sky-400 font-bold flex items-center gap-1">🌱 首训建档</span>
-                  <p class="text-zinc-400 text-[9px]">首次完成动作自动沉淀为基准，供未来对比。</p>
+                  <span class="text-sky-400 font-bold flex items-center gap-1">首训建档</span>
+                  <p class="text-zinc-400 text-xs">首次完成动作自动沉淀为基准，供未来对比。</p>
                 </div>
               </div>
             </div>
 
             <div class="p-3.5 bg-zinc-900/80 border border-zinc-800 rounded-2xl space-y-2">
               <div class="text-amber-400 font-black flex items-center gap-1.5 text-xs">
-                <span>🌙</span> 跨午夜训练与单日多练公理
+                <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+                <span>跨午夜训练与单日多练公理</span>
               </div>
-              <p class="text-zinc-300 text-[11px] leading-relaxed">
+              <p class="text-zinc-300 text-xs leading-relaxed">
                 <strong>起练时间归属：</strong> 夜猫子训练（如 23:30 练到次日 00:30），训练归属于点击【开始训练】的起始日，杜绝日历错位；<br>
                 <strong>单日多次训练：</strong> 早晨晨跑 + 晚上推胸，做工容量全额累加，出勤打卡精确计为当日 1 次全勤，杜绝重复刷天数。
               </p>
@@ -460,12 +484,15 @@
           <div v-else-if="activeCategory === 'body'" class="space-y-3.5">
             <div class="p-3.5 bg-zinc-900/80 border border-zinc-800 rounded-2xl space-y-2.5">
               <div class="text-purple-400 font-black flex items-center gap-1.5 text-xs">
-                <span>📐</span> 黄金 V-Taper 倒三角美学比例
+                <svg class="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+                <span>黄金 V-Taper 倒三角美学比例</span>
               </div>
-              <p class="text-zinc-300 text-[11px]">
+              <p class="text-zinc-300 text-xs leading-relaxed">
                 通过记录胸围、腰围、臂围与大腿围，系统基于人体解剖学标准自动计算视觉比例：
               </p>
-              <div class="space-y-2 font-mono text-[10px] pt-1">
+              <div class="space-y-2 font-mono text-xs pt-1">
                 <div class="p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 flex justify-between items-center">
                   <span>胸腰比 (Chest / Waist):</span>
                   <span class="text-purple-300 font-bold text-xs">黄金标准 1.25 ~ 1.35+</span>
@@ -479,9 +506,12 @@
 
             <div class="p-3.5 bg-zinc-900/80 border border-zinc-800 rounded-2xl space-y-2">
               <div class="text-purple-400 font-black flex items-center gap-1.5 text-xs">
-                <span>⏱️</span> 7 天测绘防刷冷却与勋章
+                <svg class="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>7 天测绘防刷冷却与勋章</span>
               </div>
-              <p class="text-zinc-300 text-[11px] leading-relaxed">
+              <p class="text-zinc-300 text-xs leading-relaxed">
                 围度测绘每 7 天最多计入 1 次基础出勤积分（+20 FPS）；当真实形体改善达到 <strong>≥ 1.0 cm</strong> 时，将解锁专属形体蜕变勋章与丰厚声望加成！
               </p>
             </div>
@@ -493,18 +523,24 @@
           <div v-else-if="activeCategory === 'ai'" class="space-y-3.5">
             <div class="p-3.5 bg-zinc-900/80 border border-zinc-800 rounded-2xl space-y-2">
               <div class="text-emerald-400 font-black flex items-center gap-1.5 text-xs">
-                <span>🔒</span> 100% 本地离线隐私沙箱
+                <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                <span>100% 本地离线隐私沙箱</span>
               </div>
-              <p class="text-zinc-300 text-[11px] leading-relaxed">
+              <p class="text-zinc-300 text-xs leading-relaxed">
                 FitCycle 采用严格的离线优先架构。你的所有训练日志、形体围度以及配置的 AI API 密钥，全部<strong>仅保存在你当前手机浏览器的 LocalStorage 中</strong>，绝不上传至任何第三方服务器。
               </p>
             </div>
 
             <div class="p-3.5 bg-zinc-900/80 border border-zinc-800 rounded-2xl space-y-2">
               <div class="text-amber-400 font-black flex items-center gap-1.5 text-xs">
-                <span>💾</span> 数据备份与无损迁移
+                <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                </svg>
+                <span>数据备份与无损迁移</span>
               </div>
-              <p class="text-zinc-300 text-[11px] leading-relaxed">
+              <p class="text-zinc-300 text-xs leading-relaxed">
                 支持在【统计设置】一键导出完整 JSON 备份文件。更换新手机或浏览器时，一键导入即可秒级恢复 100% 历史战绩与排位！
               </p>
             </div>

@@ -5,11 +5,11 @@
         <h3 id="ai-settings-title" class="text-xs font-bold text-zinc-200 flex items-center gap-1.5">
           <span class="text-amber-400">✦</span> 智能教练设置 (Fitcycle AI)
         </h3>
-        <p class="mt-1 text-[11px] text-zinc-400 leading-relaxed">
+        <p class="mt-1 text-xs text-zinc-400 leading-normal">
           官方 API 直连。密钥仅加密存储在当前浏览器会话中，保障数据隐私。
         </p>
       </div>
-      <span class="text-[10px] px-2.5 py-1 rounded-full border font-mono font-medium flex-shrink-0"
+      <span class="text-xs px-2.5 py-1 rounded-full border font-mono font-medium flex-shrink-0"
             :class="connected ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-400' : 'border-zinc-700 bg-zinc-950 text-zinc-500'">
         {{ connected ? '● 已就绪' : '○ 未连接' }}
       </span>
@@ -29,7 +29,7 @@
             <span class="font-black text-xs text-white">{{ provider.name }}</span>
             <span v-if="aiSession.apiKeys[provider.id]" class="w-2 h-2 rounded-full bg-emerald-400" title="已配置 Key"></span>
           </div>
-          <span class="text-[10px] opacity-75 truncate leading-tight">{{ provider.tag || provider.id }}</span>
+          <span class="text-xs opacity-75 truncate leading-tight">{{ provider.tag || provider.id }}</span>
         </button>
       </div>
     </div>
@@ -39,7 +39,7 @@
       <div class="flex items-center justify-between text-xs">
         <label for="provider-key" class="font-bold text-zinc-200">2. 配置 {{ activeProvider.name }} API Key</label>
         <a :href="portalLink" target="_blank" rel="noopener noreferrer" 
-           class="text-[11px] text-amber-400 hover:text-amber-300 underline flex items-center gap-0.5">
+           class="text-xs text-amber-400 hover:text-amber-300 underline flex items-center gap-0.5">
           <span>获取 {{ activeProvider.name }} Key</span> <span>↗</span>
         </a>
       </div>
@@ -50,7 +50,7 @@
                class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3 py-2.5 pr-10 text-xs text-zinc-100 font-mono outline-none transition-colors" />
         <button type="button" @click="showKey = !showKey" 
                 class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 p-1 text-xs transition-colors">
-          {{ showKey ? '👁️' : '🔒' }}
+          {{ showKey ? '显示' : '隐藏' }}
         </button>
       </div>
 
@@ -70,7 +70,7 @@
       <div v-if="statusText" class="p-2.5 rounded-xl text-xs flex items-center gap-2 leading-relaxed" 
            :class="statusError ? 'bg-red-500/10 border border-red-500/30 text-red-400' : 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'" 
            role="status">
-        <span>{{ statusError ? '❌' : '✅' }}</span>
+        <span>{{ statusError ? '✕' : '✓' }}</span>
         <span>{{ statusText }}</span>
       </div>
     </div>
@@ -81,24 +81,24 @@
         <label for="model-search" class="block text-xs font-bold text-zinc-200">
           3. 选择生效对话模型 (共 {{ visibleModels.length }} 款可用)
         </label>
-        <span class="text-[10px] text-amber-400 font-mono">点击直接切换</span>
+        <span class="text-xs text-amber-400 font-mono">点击直接切换</span>
       </div>
 
       <!-- Quick Search Bar & Custom Model Input -->
       <div class="space-y-2">
         <div class="relative">
           <input id="model-search" v-model="modelSearch" type="search" 
-                 placeholder="🔍 搜索模型 ID (如 glm-4.5-air, glm-4.6v, deepseek-r1)..."
+                 placeholder="搜索模型 ID (如 glm-4.5-air, glm-4.6v, deepseek-r1)..."
                  class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3 py-2 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition-colors" />
         </div>
 
         <!-- Custom Model Input Row -->
         <div class="p-2.5 rounded-xl bg-zinc-900/70 border border-zinc-800/80 space-y-1.5">
-          <div class="flex items-center justify-between text-[11px]">
+          <div class="flex items-center justify-between text-xs">
             <span class="font-medium text-zinc-300 flex items-center gap-1">
-              <span class="text-amber-400">➕</span> 自定义添加/指定模型 ID
+              <span class="text-amber-400">✦</span> 自定义添加/指定模型 ID
             </span>
-            <span class="text-[10px] text-zinc-500 font-mono">支持输入任意新专享包/微调 ID</span>
+            <span class="text-xs text-zinc-500 font-mono">支持输入任意新专享包/微调 ID</span>
           </div>
           <div class="flex gap-1.5">
             <input v-model="customModelInput" type="text"
@@ -110,7 +110,7 @@
               选用
             </button>
           </div>
-          <div v-if="customSuccessMsg" class="text-[10px] text-emerald-400 flex items-center gap-1">
+          <div v-if="customSuccessMsg" class="text-xs text-emerald-400 flex items-center gap-1">
             <span>✓</span> <span>{{ customSuccessMsg }}</span>
           </div>
         </div>
@@ -130,18 +130,18 @@
               <span class="text-xs font-bold text-zinc-100 font-mono truncate">{{ model.name || model.id }}</span>
               <span v-if="selectedModelId === model.id" class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0 animate-pulse"></span>
             </div>
-            <div class="text-[9px] text-zinc-500 font-mono truncate mt-0.5">{{ model.id }}</div>
-            <div v-if="model.description" class="text-[9px] text-zinc-400/80 leading-tight line-clamp-2 mt-0.5" :title="model.description">
+            <div class="text-xs text-zinc-500 font-mono truncate mt-0.5">{{ model.id }}</div>
+            <div v-if="model.description" class="text-xs text-zinc-400/80 leading-normal line-clamp-2 mt-0.5" :title="model.description">
               {{ model.description }}
             </div>
           </div>
 
           <!-- Feature Pills in Grid Card -->
-          <div class="flex flex-wrap gap-1 text-[8px] font-mono">
-            <span v-if="model.capabilities.reasoning" class="px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">🧠 深度思考</span>
-            <span v-if="model.capabilities.image" class="px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 font-bold">👁️ 视觉识图</span>
-            <span v-if="model.capabilities.tools" class="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">🛠️ 感知</span>
-            <span v-if="!model.capabilities.image && !model.capabilities.reasoning" class="px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">⚡ 纯文本</span>
+          <div class="flex flex-wrap gap-1 text-xs font-mono">
+            <span v-if="model.capabilities.reasoning" class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">深度思考</span>
+            <span v-if="model.capabilities.image" class="px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 font-bold">视觉识图</span>
+            <span v-if="model.capabilities.tools" class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">感知</span>
+            <span v-if="!model.capabilities.image && !model.capabilities.reasoning" class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">纯文本</span>
           </div>
 
         </div>
@@ -151,15 +151,15 @@
       <select v-model="selectedModelId" class="hidden" aria-hidden="true">
         <option v-for="model in visibleModels" :key="model.id" :value="model.id">{{ formatModelLabel(model) }}</option>
       </select>
-      <p v-if="!visibleModels.length" class="text-[11px] text-zinc-500">没有匹配的对话模型。</p>
+      <p v-if="!visibleModels.length" class="text-xs text-zinc-500">没有匹配的对话模型。</p>
 
       <!-- Active Model Capability Overview Card -->
       <div v-if="selectedModel" class="rounded-2xl bg-zinc-950 border border-zinc-800/90 p-3.5 space-y-2.5">
         <div class="flex items-center justify-between">
           <div class="text-xs font-bold text-zinc-100 break-words">{{ selectedModel.name }}</div>
-          <span class="text-[10px] font-mono text-amber-400 font-bold">● 当前生效中</span>
+          <span class="text-xs font-mono text-amber-400 font-bold">● 当前生效中</span>
         </div>
-        <div class="text-[10px] text-zinc-500 font-mono break-all">{{ selectedModel.id }}</div>
+        <div class="text-xs text-zinc-500 font-mono break-all">{{ selectedModel.id }}</div>
         
         <div class="flex flex-wrap gap-1.5 pt-0.5">
           <span class="capability-badge capability-on">文字对话</span>
@@ -168,10 +168,10 @@
           <span class="capability-badge" :class="selectedModel.capabilities.streaming ? 'capability-on' : 'capability-off'">流式传输 {{ selectedModel.capabilities.streaming ? '✓' : '×' }}</span>
         </div>
         
-        <p v-if="!selectedModel.capabilities.tools" class="text-[10px] text-amber-400/90 leading-tight">
+        <p v-if="!selectedModel.capabilities.tools" class="text-xs text-amber-400/90 leading-normal">
           该模型可用于对话咨询，但不支持自动读取或修改 Fitcycle 训练数据。
         </p>
-        <p v-if="!selectedModel.capabilities.image" class="text-[10px] text-zinc-500 leading-tight">
+        <p v-if="!selectedModel.capabilities.image" class="text-xs text-zinc-500 leading-normal">
           当前选中的模型为纯文本对话模型；如需上传身材或动作图片分析，请选择带有「视觉识图」标识的模型（如 GLM-4V-Plus、Qwen-VL-Max）。
         </p>
       </div>

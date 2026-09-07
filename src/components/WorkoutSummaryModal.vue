@@ -32,21 +32,21 @@
       <!-- Stats Grid -->
       <div class="grid grid-cols-3 gap-2 my-4 relative z-10">
         <div class="bg-zinc-800/80 border border-zinc-700/50 rounded-xl p-2 min-w-0">
-          <div class="text-[10px] text-zinc-400 font-medium truncate">训练用时</div>
+          <div class="text-xs text-zinc-400 font-medium truncate">训练用时</div>
           <div class="text-base font-black text-zinc-100 font-mono mt-0.5 truncate">
             {{ Math.round((summary?.durationSeconds || 60) / 60) }}<span class="text-xs font-normal text-zinc-400 ml-0.5">分</span>
           </div>
         </div>
 
         <div class="bg-zinc-800/80 border border-zinc-700/50 rounded-xl p-2 min-w-0">
-          <div class="text-[10px] text-zinc-400 font-medium truncate">总容量</div>
+          <div class="text-xs text-zinc-400 font-medium truncate">总容量</div>
           <div class="text-base font-black text-emerald-400 font-mono mt-0.5 truncate">
             {{ summary?.totalVolume || 0 }}<span class="text-xs font-normal text-zinc-400 ml-0.5">kg</span>
           </div>
         </div>
 
         <div class="bg-zinc-800/80 border border-zinc-700/50 rounded-xl p-2 min-w-0">
-          <div class="text-[10px] text-zinc-400 font-medium truncate">完成组数</div>
+          <div class="text-xs text-zinc-400 font-medium truncate">完成组数</div>
           <div class="text-base font-black text-sky-400 font-mono mt-0.5 truncate">
             {{ summary?.totalSets || 0 }}<span class="text-xs font-normal text-zinc-400 ml-0.5">组</span>
           </div>
@@ -55,15 +55,15 @@
 
       <!-- Dopamine Total Tonnage Physical Metaphor -->
       <div class="bg-gradient-to-r from-amber-500/10 via-zinc-800/60 to-amber-500/10 border border-amber-500/30 rounded-2xl p-3 my-3 text-left relative z-10 flex items-center gap-3 shadow-sm">
-        <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl flex-shrink-0">
-          {{ tonnageMetaphor.icon }}
+        <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm font-bold flex-shrink-0">
+          ✦
         </div>
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-1.5 flex-wrap">
             <span class="text-xs font-black text-amber-400 font-mono">{{ tonnageMetaphor.formattedTonnage }}</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">物理做工换算</span>
+            <span class="text-xs px-2 py-0.5 rounded font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">物理做工换算</span>
           </div>
-          <p class="text-[11px] text-zinc-300 font-medium mt-0.5 leading-snug break-words">
+          <p class="text-xs text-zinc-300 font-medium mt-0.5 leading-normal break-words">
             {{ tonnageMetaphor.description }}
           </p>
         </div>
@@ -73,13 +73,13 @@
       <div class="bg-emerald-950/30 border border-emerald-500/30 rounded-2xl p-3 my-3 text-left relative z-10 space-y-1.5 shadow-sm">
         <div class="flex items-center justify-between gap-1">
           <span class="text-xs font-black text-emerald-400 flex items-center gap-1">
-            <span class="animate-pulse">⚡</span> 生理超量重组黄金时钟已启动 (00:00 / 72:00)
+            生理超量重组黄金时钟已启动 (00:00 / 72:00)
           </span>
-          <span class="text-[10px] px-1.5 py-0.5 rounded font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex-shrink-0">
+          <span class="text-xs px-2 py-0.5 rounded font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex-shrink-0">
             72h免责
           </span>
         </div>
-        <p class="text-[11px] text-emerald-200/90 leading-snug break-words">
+        <p class="text-xs text-emerald-200/90 leading-normal break-words">
           受宪法免责保护，0~72h 绝不扣分，肌纤维正在超量增生
         </p>
         <div class="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden mt-1">
@@ -94,8 +94,8 @@
           <div class="flex items-center gap-1.5 min-w-0">
             <span class="text-xs font-black text-zinc-200 truncate">战力天梯进阶</span>
             <span v-if="tierAdvancement.hasLeveledUp" 
-                  class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-zinc-950 shadow-md animate-bounce flex-shrink-0">
-              🎉 段位晋级！
+                  class="px-2 py-0.5 rounded-full text-xs font-black bg-amber-500 text-zinc-950 shadow-md animate-bounce flex-shrink-0">
+              段位晋级！
             </span>
           </div>
           <span class="text-xs font-mono font-bold text-amber-400 flex-shrink-0">
@@ -105,7 +105,7 @@
 
         <!-- Shimmer progress bar -->
         <div class="space-y-1">
-          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-400">
+          <div class="flex items-center justify-between text-xs font-mono text-zinc-400">
             <span>{{ tierAdvancement.currentTier.name }}</span>
             <span>{{ tierAdvancement.progressPercent }}%</span>
           </div>
@@ -115,7 +115,7 @@
               <div class="absolute inset-0 bg-white/30 animate-pulse"></div>
             </div>
           </div>
-          <div class="flex items-center justify-between text-[10px] font-mono text-zinc-500 pt-0.5">
+          <div class="flex items-center justify-between text-xs font-mono text-zinc-500 pt-0.5">
             <span>本阶积分: {{ tierAdvancement.currentPointsInTier }} PTS</span>
             <span v-if="tierAdvancement.pointsNeededForNextTier > 0">距下一阶: {{ tierAdvancement.pointsNeededForNextTier }} PTS</span>
             <span v-else class="text-amber-400 font-bold">已达巅峰天梯</span>
@@ -139,9 +139,9 @@
               </svg>
             </div>
             <div class="min-w-0 flex-1">
-              <span class="font-bold text-[11px] block truncate"
+              <span class="font-bold text-xs block truncate"
                     :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">本次获得 FPS 战力加分</span>
-              <span class="text-[9px] block truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+              <span class="text-xs block truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
                 基础: +{{ summary.honorPointsEarned.basePoints }}
                 <span v-if="summary.honorPointsEarned.overloadBonus"> | 超负荷: +{{ summary.honorPointsEarned.overloadBonus }}</span>
                 <span v-if="summary.honorPointsEarned.isRedemptionRebound" class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-purple-700' : 'text-purple-300'"> | 破冰 1.5x</span>
@@ -151,7 +151,7 @@
 
           <div class="text-right flex-shrink-0">
             <span class="text-base font-black text-amber-400">+{{ summary.honorPointsEarned.finalSessionPoints }}</span>
-            <span class="text-[9px] block" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">PTS</span>
+            <span class="text-xs block" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">PTS</span>
           </div>
         </div>
 
@@ -161,7 +161,7 @@
             <span class="animate-pulse flex-shrink-0">✦</span>
             <span class="truncate">AI 智能教练复盘</span>
           </div>
-          <span class="text-[10px] px-2 py-0.5 rounded-full font-bold font-mono flex-shrink-0"
+          <span class="text-xs px-2 py-0.5 rounded-full font-bold font-mono flex-shrink-0"
                 :class="[
                   aiAnalysis.intensityColor === 'amber' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40' :
                   aiAnalysis.intensityColor === 'sky' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/40' :
@@ -177,7 +177,7 @@
         </p>
 
         <!-- Progressive Overload Insight -->
-        <div class="p-2 rounded-xl bg-zinc-900/90 border border-zinc-800 text-[11px] space-y-1 overflow-hidden">
+        <div class="p-2 rounded-xl bg-zinc-900/90 border border-zinc-800 text-xs space-y-1 overflow-hidden">
           <div class="text-zinc-400 font-bold flex items-center gap-1.5 truncate">
             <svg class="w-3.5 h-3.5 text-amber-400 stroke-2 fill-none stroke-currentColor flex-shrink-0" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -190,7 +190,7 @@
         </div>
 
         <!-- Muscle & Nutrition Advice -->
-        <div class="space-y-1.5 text-[11px] text-zinc-400 pt-0.5 overflow-hidden">
+        <div class="space-y-1.5 text-xs text-zinc-400 pt-0.5 overflow-hidden">
           <div class="flex items-start gap-1.5">
             <span class="text-amber-400 font-bold flex-shrink-0 flex items-center gap-1">
               <span class="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block"></span>

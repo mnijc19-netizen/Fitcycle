@@ -18,19 +18,18 @@
         <div class="flex items-center justify-between pb-2 border-b"
              :class="store.settings.themeMode === 'light' ? 'border-slate-200' : 'border-zinc-800'">
           <div class="flex items-center gap-2">
-            <span class="text-base">🔥</span>
             <div>
               <div class="flex items-center gap-1.5">
                 <h3 class="text-sm font-black tracking-tight"
                     :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">
                   3 分钟动态热身流
                 </h3>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                <span class="px-2 py-0.5 rounded-full text-xs font-bold"
                       :class="store.settings.themeMode === 'light' ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'">
                   {{ routineTitle }}
                 </span>
               </div>
-              <p class="text-[11px] mt-0.5"
+              <p class="text-xs mt-0.5"
                  :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
                 激活关节滑液 · 预热肌群神经传导
               </p>
@@ -68,9 +67,9 @@
                   :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">
               动作 {{ currentStepIndex + 1 }} / {{ activeRoutine.length }}
             </span>
-            <span class="px-2 py-0.5 rounded-lg text-[11px] font-mono font-bold"
+            <span class="px-2 py-0.5 rounded-lg text-xs font-mono font-bold"
                   :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-700 border border-slate-200' : 'bg-zinc-800/80 text-zinc-300 border border-zinc-700/60'">
-              🎯 目标：{{ currentExercise?.targetCount || '12-15次' }}
+              目标：{{ currentExercise?.targetCount || '12-15次' }}
             </span>
           </div>
 
@@ -92,7 +91,7 @@
                    :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">
                 {{ currentExercise?.name }}
               </div>
-              <div class="text-[11px] font-mono text-zinc-400 mt-0.5">
+              <div class="text-xs font-mono text-zinc-400 mt-0.5">
                 {{ currentExercise?.englishName }}
               </div>
             </div>
@@ -102,10 +101,9 @@
           <div class="p-3 rounded-2xl border space-y-1.5 transition-colors"
                :class="store.settings.themeMode === 'light' ? 'bg-amber-50/70 border-amber-200/80 text-amber-950' : 'bg-amber-500/10 border-amber-500/25 text-amber-200'">
             <div class="flex items-center gap-1.5 text-xs font-black text-amber-500">
-              <span>🧠</span>
               <span>动作原理与激活目标</span>
             </div>
-            <p class="text-[11px] leading-relaxed"
+            <p class="text-xs leading-normal"
                :class="store.settings.themeMode === 'light' ? 'text-amber-900' : 'text-zinc-200'">
               {{ currentExercise?.scienceWhy }}
             </p>
@@ -115,19 +113,19 @@
           <div class="p-3 rounded-2xl border space-y-2 text-xs"
                :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-200 text-slate-800' : 'bg-zinc-950/60 border-zinc-800 text-zinc-300'">
             <div class="flex items-start gap-2">
-              <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex-shrink-0">
+              <span class="px-1.5 py-0.5 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex-shrink-0">
                 发力要点
               </span>
-              <span class="text-[11px] leading-tight">
+              <span class="text-xs leading-normal">
                 {{ currentExercise?.cues?.positive || currentExercise?.target }}
               </span>
             </div>
 
             <div class="flex items-start gap-2">
-              <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30 flex-shrink-0">
+              <span class="px-1.5 py-0.5 rounded text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30 flex-shrink-0">
                 避坑警示
               </span>
-              <span class="text-[11px] leading-tight text-rose-300/90"
+              <span class="text-xs leading-normal text-rose-300/90"
                     :class="store.settings.themeMode === 'light' ? 'text-rose-700' : 'text-rose-300'">
                 {{ currentExercise?.commonMistakes?.[0] || '禁止憋气，全程保持深长呼吸与关节活动度控制。' }}
               </span>

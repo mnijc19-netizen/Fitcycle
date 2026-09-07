@@ -22,19 +22,22 @@
           <div class="flex items-center gap-2">
             <span class="w-7 h-7 rounded-xl flex items-center justify-center text-sm shadow-sm"
                   :class="store.settings.themeMode === 'light' ? 'bg-amber-100 text-amber-800' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'">
-              📸
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
             </span>
             <div>
               <h3 class="text-sm font-black flex items-center gap-1.5"
                   :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">
                 <span>器械多模态智能识别</span>
                 <span v-if="replaceIndex >= 0" 
-                      class="text-[10px] px-1.5 py-0.2 rounded font-mono font-bold"
+                      class="text-xs px-2 py-0.5 rounded font-mono font-bold"
                       :class="store.settings.themeMode === 'light' ? 'bg-sky-100 text-sky-800 border border-sky-300' : 'bg-sky-950/80 text-sky-400 border border-sky-500/30'">
                   替换第 {{ replaceIndex + 1 }} 项
                 </span>
               </h3>
-              <p class="text-[11px]" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">
+              <p class="text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">
                 拍照、语音或口语描述，毫秒级定位 {{ store.exercises.length }} 款黄金动作
               </p>
             </div>
@@ -89,7 +92,10 @@
                       title="拍照/上传器械照片"
                       class="p-1.5 rounded-xl text-xs transition-all active:scale-95 cursor-pointer flex items-center justify-center"
                       :class="selectedImage ? 'bg-amber-500 text-zinc-950 font-black' : (store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-700' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300')">
-                <span class="text-xs">📸</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
               </button>
 
               <!-- Voice toggle button with audio pulse indicator -->
@@ -97,7 +103,9 @@
                       title="语音录音输入"
                       class="p-1.5 rounded-xl text-xs transition-all active:scale-95 cursor-pointer flex items-center justify-center relative"
                       :class="isListening ? 'bg-red-500 text-white animate-pulse shadow-md shadow-red-500/40' : (store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-700' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300')">
-                <span class="text-xs">🎙️</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
                 <span v-if="isListening" class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-400 animate-ping"></span>
               </button>
             </div>
@@ -110,7 +118,7 @@
               <span class="w-2 h-2 rounded-full bg-red-400 animate-ping"></span>
               <span>正在聆听中... 请说出器械外观或动作特点</span>
             </div>
-            <button @click="stopVoiceListening" class="px-2 py-0.5 rounded-lg bg-red-500 text-white font-black text-[10px]">
+            <button @click="stopVoiceListening" class="px-2 py-0.5 rounded-lg bg-red-500 text-white font-black text-xs">
               停止录音
             </button>
           </div>
@@ -125,7 +133,7 @@
                 <div class="text-xs font-bold truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-900' : 'text-amber-300'">
                   已加载照片: {{ selectedImage.name }}
                 </div>
-                <div class="text-[10px] opacity-80" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">
+                <div class="text-xs opacity-80" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">
                   已提取视觉特征并联动语义索引
                 </div>
               </div>
@@ -137,20 +145,20 @@
 
           <!-- 6 High-Frequency Colloquial Quick-Pills for 100% Fallback & Ergonomics -->
           <div class="space-y-1">
-            <div class="text-[11px] font-bold flex items-center justify-between"
+            <div class="text-xs font-bold flex items-center justify-between"
                  :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
               <span class="flex items-center gap-1">
-                <span>💬</span> 常用口语快捷秒查:
+                <span>常用口语快捷秒查:</span>
               </span>
-              <span class="text-[10px] opacity-70">点击立即识别</span>
+              <span class="text-xs opacity-70">点击立即识别</span>
             </div>
             <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar overscroll-x-contain touch-pan-x">
               <button v-for="pill in COLLOQUIAL_PILLS" :key="pill"
-                      @click="selectPill(pill)"
-                      class="px-2.5 py-1 rounded-xl text-xs font-medium whitespace-nowrap transition-all active:scale-95 cursor-pointer border flex-shrink-0"
-                      :class="searchQuery === pill 
-                        ? 'bg-amber-500 text-zinc-950 font-black border-amber-500 shadow-sm shadow-amber-500/20' 
-                        : (store.settings.themeMode === 'light' ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300 shadow-xs' : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border-zinc-800')">
+                       @click="selectPill(pill)"
+                       class="px-2.5 py-1 rounded-xl text-xs font-medium whitespace-nowrap transition-all active:scale-95 cursor-pointer border flex-shrink-0"
+                       :class="searchQuery === pill 
+                         ? 'bg-amber-500 text-zinc-950 font-black border-amber-500 shadow-sm shadow-amber-500/20' 
+                         : (store.settings.themeMode === 'light' ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300 shadow-xs' : 'bg-zinc-900 hover:bg-zinc-850 text-zinc-300 border-zinc-800')">
                 {{ pill }}
               </button>
             </div>
@@ -194,14 +202,14 @@
                       {{ match.exercise.name }}
                     </h4>
                     <!-- Confidence Badge -->
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-black flex items-center gap-1 border flex-shrink-0"
+                    <span class="px-2 py-0.5 rounded-full text-xs font-mono font-black flex items-center gap-1 border flex-shrink-0"
                           :class="getConfidenceBadgeClass(match.confidence)">
                       <span class="w-1.5 h-1.5 rounded-full" :class="match.confidence >= 0.85 ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'"></span>
                       {{ Math.round(match.confidence * 100) }}% {{ match.confidence >= 0.85 ? '精准匹配' : '高度匹配' }}
                     </span>
                   </div>
 
-                  <div class="text-[11px] mt-0.5 truncate"
+                  <div class="text-xs mt-0.5 truncate"
                        :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
                     <span>{{ match.exercise.category }} · </span>
                     <span class="font-medium" :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">{{ match.exercise.target }}</span>
@@ -210,7 +218,7 @@
                   <!-- Matched features tags -->
                   <div v-if="match.matchedFeatures && match.matchedFeatures.length" class="flex flex-wrap gap-1 mt-1">
                     <span v-for="feat in match.matchedFeatures.slice(0, 3)" :key="feat"
-                          class="text-[9px] px-1.5 py-0.2 rounded border truncate max-w-[150px]"
+                          class="text-xs px-2 py-0.5 rounded border truncate max-w-[150px]"
                           :class="store.settings.themeMode === 'light' ? 'bg-amber-50 text-amber-900 border-amber-200' : 'bg-zinc-900 text-amber-300/90 border-zinc-800'">
                       {{ feat }}
                     </span>
@@ -219,9 +227,9 @@
               </div>
 
               <!-- Scientific Reasoning Text -->
-              <div v-if="match.reasoning" class="p-2 rounded-xl text-[11px] leading-relaxed border"
+              <div v-if="match.reasoning" class="p-2 rounded-xl text-xs leading-normal border"
                    :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-zinc-900/60 border-zinc-800/60 text-zinc-300'">
-                <span class="font-bold text-amber-500">💡 识别依据: </span>
+                <span class="font-bold text-amber-500">识别依据: </span>
                 {{ match.reasoning }}
               </div>
 
@@ -229,15 +237,14 @@
               <div v-if="getEquipmentVisual(match.exercise.name)" class="pt-0.5">
                 <button type="button"
                         @click="toggleEquipmentVisual(match.exercise.name)"
-                        class="w-full py-1.5 px-3 rounded-xl border text-[11px] font-bold flex items-center justify-between transition-all cursor-pointer"
+                        class="w-full py-1.5 px-3 rounded-xl border text-xs font-bold flex items-center justify-between transition-all cursor-pointer"
                         :class="expandedVisuals[match.exercise.name]
                           ? (store.settings.themeMode === 'light' ? 'bg-amber-100/80 border-amber-300 text-amber-900 shadow-xs' : 'bg-amber-500/15 border-amber-500/40 text-amber-300')
                           : (store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200/80 border-slate-300 text-slate-700' : 'bg-zinc-900 hover:bg-zinc-850 border-zinc-800 text-zinc-300')">
                   <span class="flex items-center gap-1.5">
-                    <span>📸</span>
                     <span>查看商业健身房器械实物长相与插销调节</span>
                   </span>
-                  <span class="text-[10px] transform transition-transform duration-200" :class="{ 'rotate-180': expandedVisuals[match.exercise.name] }">▼</span>
+                  <span class="text-xs transform transition-transform duration-200" :class="{ 'rotate-180': expandedVisuals[match.exercise.name] }">▼</span>
                 </button>
 
                 <!-- Expanded Real Photo Body -->
@@ -248,17 +255,17 @@
                     <img :src="getEquipmentVisual(match.exercise.name).imageUrl" 
                          :alt="getEquipmentVisual(match.exercise.name).name" 
                          class="w-full h-48 object-cover" />
-                    <div class="absolute bottom-1 right-2 px-2 py-0.5 rounded-md bg-black/75 backdrop-blur-sm text-[9px] text-zinc-200 font-mono">
+                    <div class="absolute bottom-1 right-2 px-2 py-0.5 rounded-md bg-black/75 backdrop-blur-sm text-xs text-zinc-200 font-mono">
                       商用实机实拍
                     </div>
                   </div>
-                  <div class="text-[11px] leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
-                    <span class="font-bold text-amber-500">🔍 外观识别：</span>
+                  <div class="text-xs leading-normal" :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
+                    <span class="font-bold text-amber-500">外观识别：</span>
                     {{ getEquipmentVisual(match.exercise.name).appearanceFeature }}
                   </div>
-                  <div class="text-[11px] leading-relaxed p-2 rounded-xl"
+                  <div class="text-xs leading-normal p-2 rounded-xl"
                        :class="store.settings.themeMode === 'light' ? 'bg-amber-50 text-amber-900 border border-amber-200' : 'bg-amber-500/10 text-amber-200 border border-amber-500/20'">
-                    <span class="font-black">⚙️ 上机与插销调节：</span>
+                    <span class="font-black">上机与插销调节：</span>
                     <p class="whitespace-pre-line mt-0.5">{{ getEquipmentVisual(match.exercise.name).adjustmentTips }}</p>
                   </div>
                 </div>
@@ -272,7 +279,7 @@
                 <button v-if="replaceIndex >= 0"
                         @click="handleReplace(match.exercise)"
                         class="flex-1 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-zinc-950 font-black text-xs active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm">
-                  <span>🔄 替换当前动作</span>
+                  <span>替换当前动作</span>
                 </button>
 
                 <!-- Add to workout button -->
@@ -297,13 +304,12 @@
           <div v-else-if="!searchQuery.trim() && !selectedImage" 
                class="p-6 text-center space-y-3 border border-dashed rounded-3xl"
                :class="store.settings.themeMode === 'light' ? 'border-slate-300 bg-slate-50/50 text-slate-600' : 'border-zinc-800 bg-zinc-950/40 text-zinc-400'">
-            <div class="text-3xl">🦾</div>
             <div class="space-y-1">
               <div class="text-xs font-black" :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-200'">
                 健身房遇到不认识的器械？
               </div>
-              <p class="text-[11px] leading-relaxed max-w-xs mx-auto">
-                点击上方 📸 拍摄器械，或点击 🎙️ 说出动作（例如“手往前推的黄色杠杆”），FitCycle 将在毫秒内为您识别出正确动作与力学要领。
+              <p class="text-xs leading-normal max-w-xs mx-auto">
+                拍照或说出动作（例如“手往前推的黄色杠杆”），FitCycle 将在毫秒内为您识别出正确动作与力学要领。
               </p>
             </div>
           </div>
@@ -312,11 +318,10 @@
           <div v-else 
                class="p-6 text-center space-y-2 border border-dashed rounded-2xl"
                :class="store.settings.themeMode === 'light' ? 'border-slate-300 bg-slate-50 text-slate-600' : 'border-zinc-800 bg-zinc-950 text-zinc-400'">
-            <div class="text-2xl">🔍</div>
             <div class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-200'">
               未检索到高匹配器械
             </div>
-            <p class="text-[11px]">
+            <p class="text-xs">
               请尝试用更简单的口语描述（例如“坐着推”、“躺着蹬大腿”），或点击上方 6 大快捷胶囊。
             </p>
           </div>

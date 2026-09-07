@@ -39,7 +39,7 @@
             <span class="text-sm">📸</span>
             <span>拍照 / 语音秒找未知器械</span>
           </span>
-          <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500 text-zinc-950 flex items-center gap-1 shadow-sm">
+          <span class="text-xs px-2.5 py-0.5 rounded-full font-bold bg-amber-500 text-zinc-950 flex items-center gap-1 shadow-sm">
             <span>智能识别</span>
             <span>→</span>
           </span>
@@ -80,10 +80,9 @@
           <div class="flex items-center justify-between text-xs font-bold"
                :class="store.settings.themeMode === 'light' ? 'text-amber-900' : 'text-amber-300'">
             <span class="flex items-center gap-1.5">
-              <span>🔄</span>
               <span>针对「{{ replacingName || '当前动作' }}」的科学平替</span>
             </span>
-            <span class="text-[10px] opacity-75 font-mono">器械/哑铃同轨迹</span>
+            <span class="text-xs opacity-75 font-mono">器械/哑铃同轨迹</span>
           </div>
           <div class="space-y-1.5">
             <div v-for="sub in substitutes" :key="sub.name"
@@ -92,12 +91,12 @@
                  :class="store.settings.themeMode === 'light' ? 'bg-white hover:bg-amber-100/50 border-amber-200 text-slate-800' : 'bg-zinc-950/80 hover:bg-zinc-900 border-zinc-800 hover:border-amber-500/50 text-zinc-100'">
               <div class="min-w-0 flex-1">
                 <div class="text-xs font-bold truncate">{{ sub.name }}</div>
-                <div class="text-[10px] truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-medium' : 'text-amber-400/90'">
+                <div class="text-xs truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-medium' : 'text-amber-400/90'">
                   {{ sub.reason }}
                 </div>
               </div>
               <button type="button" 
-                      class="px-2.5 py-1 text-[11px] font-black rounded-lg transition-colors flex-shrink-0 cursor-pointer"
+                      class="px-2.5 py-1 text-xs font-black rounded-lg transition-colors flex-shrink-0 cursor-pointer"
                       :class="store.settings.themeMode === 'light' ? 'bg-amber-500 text-zinc-950 shadow-xs' : 'bg-amber-500 hover:bg-amber-400 text-zinc-950'">
                 一键替换
               </button>
@@ -111,9 +110,8 @@
           <div v-if="memoryPool.pinned && memoryPool.pinned.length > 0" class="space-y-1.5">
             <div class="flex items-center gap-1.5 text-xs font-bold"
                  :class="store.settings.themeMode === 'light' ? 'text-amber-900' : 'text-amber-400'">
-              <span>📌</span>
               <span>置顶动作 (Pinned)</span>
-              <span class="text-[10px] font-mono opacity-80">({{ memoryPool.pinned.length }})</span>
+              <span class="text-xs font-mono opacity-80">({{ memoryPool.pinned.length }})</span>
             </div>
             <div class="space-y-1.5">
               <div v-for="ex in memoryPool.pinned" :key="'pin-' + ex.id"
@@ -124,7 +122,7 @@
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2">
                     <span class="font-bold text-sm truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</span>
-                    <span class="text-[10px] px-1.5 py-0.5 rounded border flex-shrink-0"
+                    <span class="text-xs px-2 py-0.5 rounded border flex-shrink-0"
                           :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-zinc-800 text-amber-400 border-zinc-700/50'">{{ ex.category }}</span>
                   </div>
                   <div class="text-xs mt-0.5 flex items-center gap-1 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
@@ -142,9 +140,8 @@
           <div v-if="memoryPool.frequent && memoryPool.frequent.length > 0" class="space-y-1.5">
             <div class="flex items-center gap-1.5 text-xs font-bold"
                  :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
-              <span>🔥</span>
               <span>高频常练 (Frequent)</span>
-              <span class="text-[10px] font-mono opacity-80">({{ memoryPool.frequent.length }})</span>
+              <span class="text-xs font-mono opacity-80">({{ memoryPool.frequent.length }})</span>
             </div>
             <div class="space-y-1.5">
               <div v-for="ex in memoryPool.frequent" :key="'freq-' + ex.id"
@@ -155,7 +152,7 @@
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2">
                     <span class="font-bold text-sm truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</span>
-                    <span class="text-[10px] px-1.5 py-0.5 rounded border flex-shrink-0"
+                    <span class="text-xs px-2 py-0.5 rounded border flex-shrink-0"
                           :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-zinc-800 text-amber-400 border-zinc-700/50'">{{ ex.category }}</span>
                   </div>
                   <div class="text-xs mt-0.5 flex items-center gap-1 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
@@ -173,9 +170,8 @@
           <div v-if="memoryPool.recent && memoryPool.recent.length > 0" class="space-y-1.5">
             <div class="flex items-center gap-1.5 text-xs font-bold"
                  :class="store.settings.themeMode === 'light' ? 'text-slate-700' : 'text-zinc-300'">
-              <span>⏱️</span>
               <span>最近练过 (Recent)</span>
-              <span class="text-[10px] font-mono opacity-80">({{ memoryPool.recent.length }})</span>
+              <span class="text-xs font-mono opacity-80">({{ memoryPool.recent.length }})</span>
             </div>
             <div class="space-y-1.5">
               <div v-for="ex in memoryPool.recent" :key="'rec-' + ex.id"
@@ -186,7 +182,7 @@
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2">
                     <span class="font-bold text-sm truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</span>
-                    <span class="text-[10px] px-1.5 py-0.5 rounded border flex-shrink-0"
+                    <span class="text-xs px-2 py-0.5 rounded border flex-shrink-0"
                           :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-zinc-800 text-amber-400 border-zinc-700/50'">{{ ex.category }}</span>
                   </div>
                   <div class="text-xs mt-0.5 flex items-center gap-1 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
@@ -204,11 +200,10 @@
           <div v-if="(!memoryPool.pinned || memoryPool.pinned.length === 0) && (!memoryPool.frequent || memoryPool.frequent.length === 0) && (!memoryPool.recent || memoryPool.recent.length === 0)"
                class="p-6 text-center space-y-2 border border-dashed rounded-2xl"
                :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300 text-slate-600' : 'bg-zinc-950/60 border-zinc-800 text-zinc-400'">
-            <div class="text-2xl">⭐</div>
             <div class="font-bold text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-200'">
               尚无训练历史偏好
             </div>
-            <p class="text-[11px] leading-relaxed max-w-xs mx-auto">
+            <p class="text-xs leading-relaxed max-w-xs mx-auto">
               完成日常训练打卡或置顶动作后，系统将在此优先为您推荐；您也可以点击上方【⭐新手黄金】或【全部】直接挑选。
             </p>
           </div>
@@ -231,7 +226,7 @@
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2">
                 <span class="font-bold text-sm truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ ex.name }}</span>
-                <span class="text-[10px] px-1.5 py-0.5 rounded border flex-shrink-0"
+                <span class="text-xs px-2 py-0.5 rounded border flex-shrink-0"
                       :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-zinc-800 text-amber-400 border-zinc-700/50'">
                   {{ ex.category }}
                 </span>
@@ -240,7 +235,7 @@
                 <span :class="store.settings.themeMode === 'light' ? 'text-slate-500 font-bold' : 'text-zinc-500'">目标:</span>
                 <span class="truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">{{ ex.target }}</span>
               </div>
-              <div v-if="ex.substitutes?.length" class="text-[9px] mt-0.5 font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400/90'">
+              <div v-if="ex.substitutes?.length" class="text-xs mt-0.5 font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400/90'">
                 含 {{ ex.substitutes.length }} 个平替推荐
               </div>
             </div>

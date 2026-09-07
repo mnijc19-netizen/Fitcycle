@@ -22,7 +22,7 @@
             </div>
             <div>
               <h2 class="text-sm font-black tracking-wide" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">身体形体围度追踪板</h2>
-              <p class="text-[10px] text-zinc-400 font-mono">手臂、胸肌、大腿与 V 字腰身蜕变</p>
+              <p class="text-xs text-zinc-400 font-mono">手臂、胸肌、大腿与 V 字腰身蜕变</p>
             </div>
           </div>
           <button @click="$emit('close')" 
@@ -46,11 +46,11 @@
                   </svg>
                   <span class="text-xs font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-300'">黄金 V 身比例指数 (胸腰比)</span>
                 </div>
-                <span class="text-[10px] font-mono mt-0.5 block" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">自然健身理想区间: 1.25 ~ 1.40</span>
+                <span class="text-xs font-mono mt-0.5 block" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">自然健身理想区间: 1.25 ~ 1.40</span>
               </div>
               <div class="text-right">
                 <span class="text-xl font-black font-mono tracking-tight" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">{{ vTaperRatio }}</span>
-                <span class="text-[9px] px-2 py-0.5 rounded-full border font-bold ml-1.5 align-middle"
+                <span class="text-xs px-2 py-0.5 rounded-full border font-bold ml-1.5 align-middle"
                       :class="vTaperGradeClass">
                   {{ vTaperGradeText }}
                 </span>
@@ -60,21 +60,21 @@
             <!-- Delta Progress Counters -->
             <div class="grid grid-cols-3 gap-2 pt-1 text-center font-mono">
               <div class="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800">
-                <span class="text-[9px] text-zinc-500 block">臂围净增</span>
+                <span class="text-xs text-zinc-500 block">臂围净增</span>
                 <span class="text-xs font-bold" :class="armDelta >= 0 ? 'text-emerald-400' : 'text-zinc-400'">
                   {{ armDelta >= 0 ? `+${armDelta}` : armDelta }} cm
                 </span>
               </div>
 
               <div class="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800">
-                <span class="text-[9px] text-zinc-500 block">胸围净增</span>
+                <span class="text-xs text-zinc-500 block">胸围净增</span>
                 <span class="text-xs font-bold" :class="chestDelta >= 0 ? 'text-emerald-400' : 'text-zinc-400'">
                   {{ chestDelta >= 0 ? `+${chestDelta}` : chestDelta }} cm
                 </span>
               </div>
 
               <div class="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800">
-                <span class="text-[9px] text-zinc-500 block">腰围收紧</span>
+                <span class="text-xs text-zinc-500 block">腰围收紧</span>
                 <span class="text-xs font-bold" :class="waistDelta <= 0 ? 'text-emerald-400' : 'text-amber-400'">
                   {{ waistDelta <= 0 ? `${waistDelta}` : `+${waistDelta}` }} cm
                 </span>
@@ -93,41 +93,41 @@
                 <!-- Circular Exclamation Standards Button -->
                 <button @click="showStandardsModal = true" 
                         type="button"
-                        class="w-4 h-4 rounded-full bg-zinc-800 hover:bg-amber-500/20 text-zinc-400 hover:text-amber-400 border border-zinc-700 hover:border-amber-500/50 flex items-center justify-center text-[10px] font-black transition-all active:scale-95 cursor-pointer shadow-sm" 
+                        class="w-4 h-4 rounded-full bg-zinc-800 hover:bg-amber-500/20 text-zinc-400 hover:text-amber-400 border border-zinc-700 hover:border-amber-500/50 flex items-center justify-center text-xs font-black transition-all active:scale-95 cursor-pointer shadow-sm" 
                         title="点击查看各部位科学测量标准">
                   ?
                 </button>
               </div>
-              <span class="text-[10px] text-amber-400 font-mono">每周打卡+20分 (7天冷却)</span>
+              <span class="text-xs text-amber-400 font-mono">每周打卡+20分 (7天冷却)</span>
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
               <div>
-                <label class="text-[10px] text-zinc-400 block mb-1">手臂围 (Arm, cm)</label>
+                <label class="text-xs text-zinc-400 block mb-1">手臂围 (Arm, cm)</label>
                 <input v-model.number="form.arm" type="number" step="0.5" placeholder="如 35.5"
                        class="w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-xl px-2.5 py-1.5 text-xs text-white font-mono outline-none" />
               </div>
 
               <div>
-                <label class="text-[10px] text-zinc-400 block mb-1">胸围 (Chest, cm)</label>
+                <label class="text-xs text-zinc-400 block mb-1">胸围 (Chest, cm)</label>
                 <input v-model.number="form.chest" type="number" step="0.5" placeholder="如 102"
                        class="w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-xl px-2.5 py-1.5 text-xs text-white font-mono outline-none" />
               </div>
 
               <div>
-                <label class="text-[10px] text-zinc-400 block mb-1">腰围 (Waist, cm)</label>
+                <label class="text-xs text-zinc-400 block mb-1">腰围 (Waist, cm)</label>
                 <input v-model.number="form.waist" type="number" step="0.5" placeholder="如 79"
                        class="w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-xl px-2.5 py-1.5 text-xs text-white font-mono outline-none" />
               </div>
 
               <div>
-                <label class="text-[10px] text-zinc-400 block mb-1">大腿围 (Thigh, cm)</label>
+                <label class="text-xs text-zinc-400 block mb-1">大腿围 (Thigh, cm)</label>
                 <input v-model.number="form.thigh" type="number" step="0.5" placeholder="如 57"
                        class="w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-xl px-2.5 py-1.5 text-xs text-white font-mono outline-none" />
               </div>
 
               <div>
-                <label class="text-[10px] text-zinc-400 block mb-1">晨起体重 (Weight, kg)</label>
+                <label class="text-xs text-zinc-400 block mb-1">晨起体重 (Weight, kg)</label>
                 <input v-model.number="form.weight" type="number" step="0.5" placeholder="如 72"
                        class="w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-xl px-2.5 py-1.5 text-xs text-white font-mono outline-none" />
               </div>
@@ -150,15 +150,15 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 10h6M4 14h10M4 18h16"/>
               </svg>
               <p class="text-xs font-bold text-zinc-400">暂无历史围度记录</p>
-              <p class="text-[10px] text-zinc-500 font-mono">首次录入身体各部位数据后，将在此自动生成蜕变轨迹！</p>
+              <p class="text-xs text-zinc-500 font-mono">首次录入身体各部位数据后，将在此自动生成蜕变轨迹！</p>
             </div>
 
             <div v-else class="space-y-1.5 max-h-48 overflow-y-auto pr-1 scrollbar-thin">
               <div v-for="m in sortedHistory" :key="m.id"
                    class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80 flex items-center justify-between text-xs font-mono">
                 <div>
-                  <span class="text-amber-400 font-bold block text-[11px]">{{ m.date }}</span>
-                  <span class="text-[10px] text-zinc-400">
+                  <span class="text-amber-400 font-bold block text-xs">{{ m.date }}</span>
+                  <span class="text-xs text-zinc-400">
                     臂:{{ m.arm }}cm | 胸:{{ m.chest }}cm | 腰:{{ m.waist }}cm | 腿:{{ m.thigh }}cm | 重:{{ m.weight }}kg
                   </span>
                 </div>
@@ -187,7 +187,7 @@
                 </div>
                 <div>
                   <h3 class="text-sm font-black text-amber-400">身体围度科学测量标准指南</h3>
-                  <p class="text-[10px] text-zinc-400">统一测量基准，确保肌肉蜕变数据真实有效</p>
+                  <p class="text-xs text-zinc-400">统一测量基准，确保肌肉蜕变数据真实有效</p>
                 </div>
               </div>
               <button @click="showStandardsModal = false" 
@@ -201,55 +201,55 @@
               
               <!-- 1. Arm -->
               <div class="p-3 rounded-2xl bg-zinc-950/70 border border-zinc-800 space-y-1">
-                <div class="font-bold text-amber-300 flex items-center gap-1.5 font-mono text-[11px]">
-                  <span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold text-[9px]">ARM</span>
+                <div class="font-bold text-amber-300 flex items-center gap-1.5 font-mono text-xs">
+                  <span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold text-xs">ARM</span>
                   <span>手臂围 (Upper Arm)</span>
                 </div>
-                <p class="text-zinc-300 text-[11px]">
+                <p class="text-zinc-300 text-xs">
                   <strong class="text-white">测量标准：</strong>曲臂充分充血或自然曲臂90度紧绷，皮尺绕大臂二头肌与三头肌<strong class="text-amber-400">最饱满突出的肌峰最高点</strong>水平测量一周。
                 </p>
               </div>
 
               <!-- 2. Chest -->
               <div class="p-3 rounded-2xl bg-zinc-950/70 border border-zinc-800 space-y-1">
-                <div class="font-bold text-sky-400 flex items-center gap-1.5 font-mono text-[11px]">
-                  <span class="px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-400 font-bold text-[9px]">CHEST</span>
+                <div class="font-bold text-sky-400 flex items-center gap-1.5 font-mono text-xs">
+                  <span class="px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-400 font-bold text-xs">CHEST</span>
                   <span>胸围 (Chest)</span>
                 </div>
-                <p class="text-zinc-300 text-[11px]">
+                <p class="text-zinc-300 text-xs">
                   <strong class="text-white">测量标准：</strong>自然站立，双臂自然下垂放松，皮尺经过<strong class="text-sky-400">双侧乳头点及背阔肌下方</strong>，在正常呼气末测量水平周长。
                 </p>
               </div>
 
               <!-- 3. Waist -->
               <div class="p-3 rounded-2xl bg-zinc-950/70 border border-zinc-800 space-y-1">
-                <div class="font-bold text-emerald-400 flex items-center gap-1.5 font-mono text-[11px]">
-                  <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[9px]">WAIST</span>
+                <div class="font-bold text-emerald-400 flex items-center gap-1.5 font-mono text-xs">
+                  <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-xs">WAIST</span>
                   <span>腰围 (Waist)</span>
                 </div>
-                <p class="text-zinc-300 text-[11px]">
+                <p class="text-zinc-300 text-xs">
                   <strong class="text-white">测量标准：</strong>晨起空腹状态，身体直立放松，皮尺经过<strong class="text-emerald-400">肚脐上方最窄处或平脐处</strong>，正常呼气后测量水平周长。
                 </p>
               </div>
 
               <!-- 4. Thigh -->
               <div class="p-3 rounded-2xl bg-zinc-950/70 border border-zinc-800 space-y-1">
-                <div class="font-bold text-purple-400 flex items-center gap-1.5 font-mono text-[11px]">
-                  <span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 font-bold text-[9px]">THIGH</span>
+                <div class="font-bold text-purple-400 flex items-center gap-1.5 font-mono text-xs">
+                  <span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 font-bold text-xs">THIGH</span>
                   <span>大腿围 (Thigh)</span>
                 </div>
-                <p class="text-zinc-300 text-[11px]">
+                <p class="text-zinc-300 text-xs">
                   <strong class="text-white">测量标准：</strong>双腿分开与肩同宽，皮尺绕单侧大腿<strong class="text-purple-400">臀褶线下方约1~2厘米处（股四头肌根部最粗处）</strong>水平环绕测量。
                 </p>
               </div>
 
               <!-- 5. Weight -->
               <div class="p-3 rounded-2xl bg-zinc-950/70 border border-zinc-800 space-y-1">
-                <div class="font-bold text-pink-400 flex items-center gap-1.5 font-mono text-[11px]">
-                  <span class="px-1.5 py-0.5 rounded bg-pink-500/20 text-pink-400 font-bold text-[9px]">WEIGHT</span>
+                <div class="font-bold text-pink-400 flex items-center gap-1.5 font-mono text-xs">
+                  <span class="px-1.5 py-0.5 rounded bg-pink-500/20 text-pink-400 font-bold text-xs">WEIGHT</span>
                   <span>晨起净体重 (Weight)</span>
                 </div>
-                <p class="text-zinc-300 text-[11px]">
+                <p class="text-zinc-300 text-xs">
                   <strong class="text-white">测量标准：</strong>早晨起床如厕后、空腹状态下，着轻薄衣物使用同一台电子秤称量。
                 </p>
               </div>
@@ -317,11 +317,11 @@ const vTaperRatio = computed(() => {
 const vTaperGradeText = computed(() => {
   if (vTaperRatio.value === "--") return "待首次测量";
   const r = parseFloat(vTaperRatio.value);
-  if (r >= 1.35) return "👑 卓越倒三角";
-  if (r >= 1.26) return "🔥 战术倒三角";
-  if (r >= 1.18) return "⚡ 匀称精壮";
-  if (r >= 1.10) return "🌱 健康力量";
-  return "🛡️ 稳固体魄";
+  if (r >= 1.35) return "卓越倒三角";
+  if (r >= 1.26) return "战术倒三角";
+  if (r >= 1.18) return "匀称精壮";
+  if (r >= 1.10) return "健康力量";
+  return "稳固体魄";
 });
 
 const vTaperGradeClass = computed(() => {

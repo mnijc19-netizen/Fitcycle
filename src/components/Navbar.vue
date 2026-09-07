@@ -37,7 +37,7 @@
           <!-- Offline Indicator (Gym Basement Signal Resilient) -->
           <div v-if="!isOnline"
                title="网络已断开 · 离线打卡功能100%正常运行"
-               class="h-8 px-2 rounded-full bg-amber-500/15 border border-amber-500/30 text-[10px] font-bold text-amber-400 flex items-center gap-1 flex-shrink-0 animate-pulse">
+               class="h-8 px-2 rounded-full bg-amber-500/15 border border-amber-500/30 text-xs font-bold text-amber-400 flex items-center gap-1 flex-shrink-0 animate-pulse">
             <span>📶</span>
             <span class="hidden xs:inline">离线打卡</span>
           </div>
@@ -49,7 +49,7 @@
                   class="navbar-workout-capsule h-8 px-2 sm:px-2.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer shadow-sm flex-shrink-0"
                   :class="store.settings.themeMode === 'light' ? 'text-emerald-700' : 'text-emerald-400'">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
-            <span class="navbar-workout-text hidden xs:inline text-[11px] font-sans">训练中</span>
+            <span class="navbar-workout-text hidden xs:inline text-xs font-sans">训练中</span>
           </button>
 
           <!-- Light / Dark Mode Toggle (Apple / Linear Grade Vector SVG) -->

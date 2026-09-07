@@ -20,11 +20,10 @@
 
         <!-- Top Header: Micro Brand & Dismiss Cross -->
         <div class="flex items-center justify-between relative z-10">
-          <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[11px] font-bold"
+          <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-xs font-bold"
                :class="store.settings.themeMode === 'light' 
                  ? 'bg-amber-50 text-amber-900 border-amber-200' 
                  : 'bg-amber-500/10 text-amber-400 border-amber-500/20'">
-            <span class="animate-pulse">✨</span>
             <span>欢迎开启 FitCycle</span>
           </div>
 
@@ -67,15 +66,15 @@
                :class="store.settings.themeMode === 'light' 
                  ? 'bg-amber-50/60 border-amber-200/80' 
                  : 'bg-zinc-900/60 border-zinc-800/80'">
-            <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-500 flex items-center justify-center text-lg flex-shrink-0">
-              ⚡
+            <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-500 flex items-center justify-center text-sm font-bold flex-shrink-0">
+              ✦
             </div>
             <div class="min-w-0">
               <h3 class="text-xs font-black"
                   :class="store.settings.themeMode === 'light' ? 'text-amber-950' : 'text-amber-300'">
                 30秒力量定级 · 告别空杆重填
               </h3>
-              <p class="text-[11px] mt-0.5 leading-snug"
+              <p class="text-xs mt-0.5 leading-normal"
                  :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
                 输入身高体重与体能感知自适应测算，免记具体公斤数，一键对齐推拉腿开局黄金组重。
               </p>
@@ -87,15 +86,17 @@
                :class="store.settings.themeMode === 'light' 
                  ? 'bg-sky-50/60 border-sky-200/80' 
                  : 'bg-zinc-900/60 border-zinc-800/80'">
-            <div class="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-500 flex items-center justify-center text-lg flex-shrink-0">
-              🎯
+            <div class="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-500 flex items-center justify-center text-sm font-bold flex-shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </div>
             <div class="min-w-0">
               <h3 class="text-xs font-black"
                   :class="store.settings.themeMode === 'light' ? 'text-sky-950' : 'text-sky-300'">
                 推 / 拉 / 腿 黄金分化循环
               </h3>
-              <p class="text-[11px] mt-0.5 leading-snug"
+              <p class="text-xs mt-0.5 leading-normal"
                  :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
                 科学安排肌群轮转与神经超量恢复，今日练什么一目了然，无需费脑排期。
               </p>
@@ -107,15 +108,17 @@
                :class="store.settings.themeMode === 'light' 
                  ? 'bg-emerald-50/60 border-emerald-200/80' 
                  : 'bg-zinc-900/60 border-zinc-800/80'">
-            <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-500 flex items-center justify-center text-lg flex-shrink-0">
-              🏋️
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-500 flex items-center justify-center text-sm font-bold flex-shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
             </div>
             <div class="min-w-0">
               <h3 class="text-xs font-black"
                   :class="store.settings.themeMode === 'light' ? 'text-emerald-950' : 'text-emerald-300'">
                 健身房防抖大按键 · 极速加片
               </h3>
-              <p class="text-[11px] mt-0.5 leading-snug"
+              <p class="text-xs mt-0.5 leading-normal"
                  :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
                 大触控步进器、点击数字全选、杠铃片快捷胶囊，专注每一次肌肉收缩。
               </p>
@@ -129,7 +132,6 @@
           <!-- Primary CTA: 30s Placement -->
           <button @click="handleOpenStrength" 
                   class="w-full py-3.5 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-zinc-950 font-black rounded-2xl text-xs sm:text-sm shadow-xl shadow-amber-500/25 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer select-none">
-            <span>⚡</span>
             <span>30秒选定力量水平并开练</span>
           </button>
 

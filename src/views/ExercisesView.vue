@@ -32,7 +32,7 @@
           <span class="text-sm">📸</span>
           <span>拍照 / 语音智能识器械</span>
         </span>
-        <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500 text-zinc-950 flex items-center gap-1 shadow-sm">
+        <span class="text-xs px-2.5 py-0.5 rounded-full font-bold bg-amber-500 text-zinc-950 flex items-center gap-1 shadow-sm">
           <span>智能识别</span>
           <span>→</span>
         </span>
@@ -64,14 +64,14 @@
       <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar overscroll-x-contain touch-pan-x">
         <button v-for="cat in categoryOptions" :key="cat.name"
                 @click="selectCategory(cat.name)"
-                class="px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer flex items-center gap-1"
+                class="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer flex items-center gap-1"
                 :class="[
                   activeCategory === cat.name ? 
                   'bg-amber-500 text-zinc-950 font-black shadow-sm shadow-amber-500/20' : 
                   (store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold border border-slate-300/80 shadow-xs' : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800/80')
                 ]">
           <span>{{ cat.displayLabel }}</span>
-          <span class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'opacity-80'">({{ cat.count }})</span>
+          <span class="text-xs font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'opacity-80'">({{ cat.count }})</span>
         </button>
       </div>
 
@@ -80,7 +80,7 @@
            :class="store.settings.themeMode === 'light' ? 'border-slate-200' : 'border-zinc-800/80'">
         <button v-for="eq in equipmentOptionsWithCounts" :key="eq.key"
                 @click="selectEquipment(eq.key)"
-                class="px-2 py-0.8 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1"
+                class="px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1"
                 :class="[
                   activeEquipment === eq.key
                     ? 'bg-amber-500 text-zinc-950 font-black shadow-xs'
@@ -88,17 +88,17 @@
                 ]">
           <span>{{ eq.icon }}</span>
           <span>{{ eq.label }}</span>
-          <span class="text-[10px] font-mono opacity-80">({{ eq.count }})</span>
+          <span class="text-xs font-mono opacity-80">({{ eq.count }})</span>
         </button>
       </div>
 
       <!-- Level 3: Sub-Target Muscle Chips (Context-Aware) -->
-      <div v-if="subTargetOptions.length > 1" class="flex items-center gap-1 overflow-x-auto pb-0.5 no-scrollbar pt-0.5">
-        <span class="text-[10px] font-bold flex-shrink-0 mr-1"
-              :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">🎯 目标:</span>
+      <div v-if="subTargetOptions.length > 1" class="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar pt-0.5">
+        <span class="text-xs font-bold flex-shrink-0 mr-1"
+              :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">目标:</span>
         <button v-for="sub in subTargetOptions" :key="sub"
                 @click="selectSubTarget(sub)"
-                class="px-2 py-0.5 rounded-md text-[10px] font-bold whitespace-nowrap transition-all cursor-pointer"
+                class="px-2.5 py-1 rounded-md text-xs font-bold whitespace-nowrap transition-all cursor-pointer"
                 :class="[
                   activeSubTarget === sub
                     ? 'bg-amber-400/25 text-amber-500 border border-amber-400/50 font-black'
@@ -123,18 +123,18 @@
         <div class="flex items-center justify-between cursor-pointer select-none"
              @click="showScienceGuide = !showScienceGuide">
           <div class="flex items-center gap-2 min-w-0">
-            <span class="text-base">💡</span>
+            <span class="text-base font-bold text-amber-500">✦</span>
             <div class="min-w-0">
               <div class="flex items-center gap-1.5">
-                <h4 class="text-xs font-black truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-950 font-black' : 'text-amber-400'">
+                <h4 class="text-sm font-black truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-950 font-black' : 'text-amber-400'">
                   运动科学指南
                 </h4>
-                <span class="text-[10px] font-mono px-1.5 py-0.2 rounded border font-bold"
+                <span class="text-xs font-mono px-2 py-0.5 rounded border font-bold"
                       :class="store.settings.themeMode === 'light' ? 'bg-white border-amber-300 text-amber-900' : 'bg-zinc-800 text-amber-400 border-zinc-700'">
                   {{ showScienceGuide ? '收起 ▲' : '展开阅读 3 篇 ▼' }}
                 </span>
               </div>
-              <p class="text-[11px] mt-0.5 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+              <p class="text-xs mt-0.5 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
                 练前动态激活 · 练后静态伸展 · 72h 超量恢复原理
               </p>
             </div>
@@ -155,13 +155,12 @@
           <div class="p-2.5 rounded-xl border space-y-1.5"
                :class="store.settings.themeMode === 'light' ? 'bg-white/80 border-amber-200 text-slate-800' : 'bg-zinc-950/60 border-zinc-800 text-zinc-300'">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-amber-600 flex items-center gap-1">
-                <span>🔥</span>
-                <span>为什么大重量抗阻前严禁静态拉伸？</span>
+              <span class="text-xs font-bold text-amber-600">
+                为什么大重量抗阻前严禁静态拉伸？
               </span>
-              <span class="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-500 font-bold">练前激活</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-500 font-bold">练前激活</span>
             </div>
-            <p class="text-[11px] leading-relaxed">
+            <p class="text-xs leading-relaxed">
               抗阻训练前进行长时间（>30秒）静态拉伸，会钝化肌梭感受器并抑制中枢神经冲动，使肌肉刚度与瞬时爆发力下降 8%~15%，且破坏关节囊稳定性。正确的练前流程必须采用 RAMP 动态激活（关节绕环、胸椎灵活性、肩袖激活），通过主动做工提升体温与滑液分泌。
             </p>
           </div>
@@ -170,13 +169,12 @@
           <div class="p-2.5 rounded-xl border space-y-1.5"
                :class="store.settings.themeMode === 'light' ? 'bg-white/80 border-emerald-200 text-slate-800' : 'bg-zinc-950/60 border-zinc-800 text-zinc-300'">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-emerald-600 flex items-center gap-1">
-                <span>🧘</span>
-                <span>练后静态拉伸与副交感神经唤醒</span>
+              <span class="text-xs font-bold text-emerald-600">
+                练后静态拉伸与副交感神经唤醒
               </span>
-              <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-500 font-bold">练后拉伸</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-500 font-bold">练后拉伸</span>
             </div>
-            <p class="text-[11px] leading-relaxed">
+            <p class="text-xs leading-relaxed">
               训练结束、心率平复至 100bpm 以下后，方可进行静态伸展。保持每个部位 20~30 秒，牵拉感维持在 6~7 级舒适酸胀，避免过度拉扯至剧烈疼痛。配合鼻吸口呼的慢速腹式呼吸，能快速平抑交感神经、降低皮质醇，开启肌糖原重组。
             </p>
           </div>
@@ -185,13 +183,12 @@
           <div class="p-2.5 rounded-xl border space-y-1.5"
                :class="store.settings.themeMode === 'light' ? 'bg-white/80 border-sky-200 text-slate-800' : 'bg-zinc-950/60 border-zinc-800 text-zinc-300'">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-sky-600 flex items-center gap-1">
-                <span>⚡</span>
-                <span>0~72 小时超量恢复生理常识</span>
+              <span class="text-xs font-bold text-sky-600">
+                0~72 小时超量恢复生理常识
               </span>
-              <span class="text-[9px] px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400 font-bold">生理恢复</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 font-bold">生理恢复</span>
             </div>
-            <p class="text-[11px] leading-relaxed">
+            <p class="text-xs leading-relaxed">
               力量训练本质上是骨骼肌微损伤过程，真正的肌肉增长发生在睡眠修复期。肌纤维在微撕裂后需要 24~72 小时完成修复与超量重组。系统在 72 小时内不会产生任何怠惰衰减，保障科学的休息周期，避免过度训练与焦虑。
             </p>
           </div>
@@ -207,7 +204,7 @@
             <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
             <span>动作分类</span>
           </h3>
-          <span class="text-[11px] text-zinc-500 font-mono">共 {{ store.exercises.length }} 款动作</span>
+          <span class="text-xs text-zinc-500 font-mono">共 {{ store.exercises.length }} 款动作</span>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
@@ -220,19 +217,19 @@
             
             <div class="flex items-start justify-between">
               <div class="text-xl">{{ hub.icon }}</div>
-              <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full border"
+              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-full border"
                     :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-zinc-800 text-amber-400 border-zinc-700'">
                 {{ hub.count }} 款
               </span>
             </div>
 
             <div class="mt-2">
-              <div class="font-black text-xs flex items-center gap-1"
+              <div class="font-black text-sm flex items-center gap-1"
                    :class="store.settings.themeMode === 'light' ? 'text-slate-900 group-hover:text-amber-700' : 'text-zinc-100 group-hover:text-amber-400'">
                 <span>{{ hub.title }}</span>
-                <span class="text-[10px] opacity-60">❯</span>
+                <span class="text-xs opacity-60">❯</span>
               </div>
-              <p class="text-[10px] mt-0.5 line-clamp-1 leading-tight"
+              <p class="text-xs mt-0.5 line-clamp-1 leading-tight"
                  :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-400'">
                 {{ hub.desc }}
               </p>
@@ -241,12 +238,12 @@
         </div>
       </div>
 
-      <!-- 2. ⭐ 常用动作参考 (精选基石动作) -->
+      <!-- 2. 常用动作参考 (精选基石动作) -->
       <div class="space-y-2">
         <div class="flex items-center justify-between px-1">
           <h3 class="text-xs font-black uppercase tracking-wider flex items-center gap-1.5"
               :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">
-            <span class="text-amber-500">⭐</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
             <span>常用动作参考</span>
           </h3>
         </div>
@@ -264,7 +261,7 @@
               <div class="font-bold text-xs truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-100'">
                 {{ staple.name }}
               </div>
-              <div class="text-[10px] truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-medium' : 'text-amber-400'">
+              <div class="text-xs truncate" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-medium' : 'text-amber-400'">
                 {{ staple.target }}
               </div>
             </div>
@@ -286,31 +283,30 @@
             <span v-if="searchQuery.trim()">搜索："<span class="text-amber-500 font-black">{{ searchQuery }}</span>"</span>
             <span v-else>{{ activeCategory }} · {{ activeEquipment === '全部' ? '全部器械' : activeEquipment }}</span>
           </span>
-          <span v-if="activeSubTarget !== '全部'" class="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-500 font-bold border border-amber-500/30">
+          <span v-if="activeSubTarget !== '全部'" class="text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-500 font-bold border border-amber-500/30">
             {{ activeSubTarget }}
           </span>
-          <span class="font-mono text-[11px] opacity-70">({{ filteredExercises.length }}款)</span>
+          <span class="font-mono text-xs opacity-70">({{ filteredExercises.length }}款)</span>
         </div>
 
         <button @click="resetAllFilters" 
-                class="px-2 py-0.5 rounded-lg border text-[11px] font-medium transition-all cursor-pointer flex items-center gap-1 flex-shrink-0"
+                class="px-2.5 py-1 rounded-lg border text-xs font-medium transition-all cursor-pointer flex items-center gap-1 flex-shrink-0"
                 :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border-zinc-700'">
           <span>↩</span>
           <span>重置/返回分类</span>
         </button>
       </div>
 
-      <!-- 🎯 热身分化智能筛选器 -->
+      <!-- 热身分化智能筛选器 -->
       <div v-if="activeCategory === '热身' && !searchQuery.trim()" class="space-y-2">
         <div class="p-3 rounded-2xl border transition-all"
              :class="store.settings.themeMode === 'light' ? 'bg-amber-50/80 border-amber-200 text-slate-900' : 'bg-amber-500/10 border-amber-500/30 text-amber-200'">
           <div class="flex items-center justify-between">
             <div class="font-bold text-xs flex items-center gap-1.5">
-              <span>🎯</span>
               <span>今天练什么？按部位匹配热身：</span>
             </div>
             <button @click="openSplitWarmupFlow" 
-                    class="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-black text-[11px] rounded-lg shadow-sm cursor-pointer transition-all active:scale-95 flex items-center gap-1">
+                    class="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-black text-xs rounded-lg shadow-sm cursor-pointer transition-all active:scale-95 flex items-center gap-1">
               <span>▶ 3分钟跟练</span>
             </button>
           </div>
@@ -318,7 +314,7 @@
           <div class="grid grid-cols-4 gap-1.5 mt-2">
             <button v-for="sp in warmupSplits" :key="sp.key"
                     @click="activeWarmupSplit = sp.key"
-                    class="py-1.5 px-1 rounded-xl text-[11px] font-bold border transition-all cursor-pointer text-center"
+                    class="py-1.5 px-1 rounded-xl text-xs font-bold border transition-all cursor-pointer text-center"
                     :class="[
                       activeWarmupSplit === sp.key 
                         ? 'bg-amber-500 text-zinc-950 border-amber-500 shadow-xs' 
@@ -328,23 +324,22 @@
             </button>
           </div>
 
-          <p class="text-[11px] mt-2 leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-amber-900' : 'text-amber-300/90'">
+          <p class="text-xs mt-2 leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-amber-900' : 'text-amber-300/90'">
             {{ currentWarmupTip }}
           </p>
         </div>
       </div>
 
-      <!-- 🧘 拉伸分化智能筛选器 -->
+      <!-- 拉伸分化智能筛选器 -->
       <div v-if="activeCategory === '拉伸' && !searchQuery.trim()" class="space-y-2">
         <div class="p-3 rounded-2xl border transition-all"
              :class="store.settings.themeMode === 'light' ? 'bg-emerald-50/80 border-emerald-200 text-slate-900' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200'">
           <div class="flex items-center justify-between">
             <div class="font-bold text-xs flex items-center gap-1.5">
-              <span>🧘</span>
               <span>练后拉伸：按今日训练部位放松</span>
             </div>
             <button @click="openSplitStretchFlow" 
-                    class="px-2.5 py-1 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black text-[11px] rounded-lg shadow-sm cursor-pointer transition-all active:scale-95 flex items-center gap-1">
+                    class="px-2.5 py-1 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black text-xs rounded-lg shadow-sm cursor-pointer transition-all active:scale-95 flex items-center gap-1">
               <span>▶ 3分钟跟练</span>
             </button>
           </div>
@@ -352,7 +347,7 @@
           <div class="grid grid-cols-4 gap-1.5 mt-2">
             <button v-for="sp in stretchSplits" :key="sp.key"
                     @click="activeStretchSplit = sp.key"
-                    class="py-1.5 px-1 rounded-xl text-[11px] font-bold border transition-all cursor-pointer text-center"
+                    class="py-1.5 px-1 rounded-xl text-xs font-bold border transition-all cursor-pointer text-center"
                     :class="[
                       activeStretchSplit === sp.key 
                         ? 'bg-emerald-500 text-zinc-950 border-emerald-500 shadow-xs' 
@@ -362,7 +357,7 @@
             </button>
           </div>
 
-          <p class="text-[11px] mt-2 leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-emerald-900' : 'text-emerald-300/90'">
+          <p class="text-xs mt-2 leading-relaxed" :class="store.settings.themeMode === 'light' ? 'text-emerald-900' : 'text-emerald-300/90'">
             {{ currentStretchTip }}
           </p>
         </div>
@@ -385,33 +380,33 @@
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-1.5 flex-wrap">
               <span v-if="isStapleExercise(ex)" 
-                    class="text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-500 text-zinc-950 shadow-2xs">
-                ⭐ 基石
+                    class="text-xs font-black px-2 py-0.5 rounded bg-amber-500 text-zinc-950 shadow-2xs">
+                基石
               </span>
-              <h3 class="font-bold text-xs truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">
+              <h3 class="font-bold text-sm sm:text-base truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">
                 {{ ex.name }}
               </h3>
-              <span class="text-[9px] px-1.5 py-0.2 rounded border flex-shrink-0"
+              <span class="text-xs px-2 py-0.5 rounded border flex-shrink-0"
                     :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-zinc-800 text-amber-400 border-zinc-700/60 font-semibold'">
                 {{ ex.category }}
               </span>
             </div>
             
-            <div class="text-[11px] mt-0.5 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
-              🎯 <span :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">{{ ex.target }}</span>
+            <div class="text-xs mt-0.5 truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+              <span :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">{{ ex.target }}</span>
             </div>
 
             <!-- Tags, Equipment & Substitutes -->
-            <div class="flex flex-wrap items-center gap-1 mt-1">
-              <span class="text-[9px] px-1.5 py-0.2 rounded border font-mono font-medium"
+            <div class="flex flex-wrap items-center gap-1.5 mt-1.5">
+              <span class="text-xs px-2 py-0.5 rounded border font-mono font-medium"
                     :class="store.settings.themeMode === 'light' ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-zinc-950 text-zinc-400 border-zinc-800'">
                 {{ getExerciseEquipment(ex) }}
               </span>
-              <span v-if="getExerciseSubTarget(ex)" class="text-[9px] px-1.5 py-0.2 rounded border font-medium"
+              <span v-if="getExerciseSubTarget(ex)" class="text-xs px-2 py-0.5 rounded border font-medium"
                     :class="store.settings.themeMode === 'light' ? 'bg-amber-50 text-amber-900 border-amber-200' : 'bg-zinc-950 text-amber-400/90 border-zinc-800'">
                 #{{ getExerciseSubTarget(ex) }}
               </span>
-              <span v-if="ex.substitutes?.length" class="text-[9px] px-1.5 py-0.2 rounded border"
+              <span v-if="ex.substitutes?.length" class="text-xs px-2 py-0.5 rounded border"
                     :class="store.settings.themeMode === 'light' ? 'bg-amber-500/20 text-amber-800 border-amber-500/40 font-bold' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'">
                 {{ ex.substitutes.length }}个平替
               </span>
@@ -432,7 +427,7 @@
             <div class="text-sm font-bold" :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">
               未找到与当前筛选条件匹配的动作
             </div>
-            <p class="text-[11px] max-w-xs mx-auto">
+            <p class="text-xs max-w-xs mx-auto">
               遇到健身房的特定品牌、罕见器械或自创动作？支持 1 秒新建！
             </p>
           </div>
@@ -440,9 +435,9 @@
           <div class="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
             <button @click="openCreateExercise" 
                     class="w-full sm:w-auto px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-black rounded-xl text-xs active:scale-95 transition-all cursor-pointer shadow-sm">
-              ✨ 1秒以「{{ searchQuery.trim() || '新动作' }}」新建自定义动作 ❯
+              1秒以「{{ searchQuery.trim() || '新动作' }}」新建自定义动作 ❯
             </button>
-            <button @click="resetAllFilters"
+            <button @click="resetAllFilters" 
                     class="w-full sm:w-auto px-3.5 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer"
                     :class="store.settings.themeMode === 'light' ? 'border-slate-300 bg-white hover:bg-slate-100 text-slate-700' : 'border-zinc-700 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300'">
               ↺ 清空全部筛选

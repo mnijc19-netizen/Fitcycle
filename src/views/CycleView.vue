@@ -40,10 +40,10 @@
           <div class="text-xs font-black flex items-center gap-1.5"
                :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">
             <span>战术减载免战期生效中</span>
-            <span class="text-[10px] font-mono font-bold"
+            <span class="text-xs font-mono font-bold"
                   :class="store.settings.themeMode === 'light' ? 'text-sky-700' : 'text-sky-400'">剩余 {{ shieldDaysRemaining }} 天</span>
           </div>
-          <p class="text-[10px] truncate mt-0.5"
+          <p class="text-xs truncate mt-0.5"
              :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
             分化循环已进入休整保护模式，战力分 100% 冻结免扣
           </p>
@@ -60,7 +60,7 @@
     <div class="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-4 shadow-xl space-y-3">
       <div class="flex items-center justify-between">
         <div>
-          <span class="text-[11px] font-bold tracking-wide" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">当前执行架构</span>
+          <span class="text-xs font-bold tracking-wide" :class="store.settings.themeMode === 'light' ? 'text-amber-800' : 'text-amber-400'">当前执行架构</span>
           <h3 class="text-base font-black" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">{{ store.activeCycle.name }}</h3>
         </div>
         <span class="px-2.5 py-1 border rounded-full text-xs font-mono font-semibold"
@@ -80,7 +80,7 @@
                   (store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 shadow-xs' : 'bg-zinc-950/70 border-zinc-800 hover:bg-zinc-850')
                 ]">
           <!-- Day badge -->
-          <span class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'text-zinc-400'">Day {{ idx + 1 }}</span>
+          <span class="text-xs font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'text-zinc-400'">Day {{ idx + 1 }}</span>
           
           <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black my-0.5"
                 :class="[
@@ -92,7 +92,7 @@
             {{ day.shortName || (day.isRest ? '休' : '练') }}
           </span>
 
-          <span class="text-[11px] font-bold truncate w-full" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">
+          <span class="text-xs font-bold truncate w-full" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-zinc-200'">
             {{ day.name.split(' ')[0] }}
           </span>
 
@@ -107,7 +107,7 @@
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="text-xs font-black" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">Day {{ selectedPreviewDayIdx + 1 }}: {{ selectedPreviewDay.name }}</span>
-            <span class="text-[10px] font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'text-zinc-400'">
+            <span class="text-xs font-mono" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-bold' : 'text-zinc-400'">
               ({{ getPlanExerciseCount(selectedPreviewDay.planId) }})
             </span>
           </div>
@@ -122,8 +122,8 @@
         <div v-if="selectedPreviewPlan && selectedPreviewPlan.exercises?.length" class="flex flex-wrap gap-1.5 pt-0.5">
           <span v-for="(ex, exIdx) in selectedPreviewPlan.exercises" :key="exIdx"
                 @click="openExerciseDetailByName(ex.name)"
-                class="px-2 py-0.5 bg-zinc-900 border border-zinc-800 rounded-lg text-[11px] text-zinc-300 hover:text-amber-400 hover:border-amber-500/40 cursor-pointer transition-colors">
-            {{ ex.name }} <span class="text-zinc-500 font-mono text-[10px]">({{ ex.setsCount }}组)</span>
+                class="px-2 py-0.5 bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-zinc-300 hover:text-amber-400 hover:border-amber-500/40 cursor-pointer transition-colors">
+            {{ ex.name }} <span class="text-zinc-500 font-mono text-xs">({{ ex.setsCount }}组)</span>
           </span>
         </div>
         <div v-else class="text-xs text-zinc-500 py-1">
@@ -154,29 +154,29 @@
                       plan.color === 'purple' ? 'bg-purple-400' :
                       'bg-emerald-400'
                     ]"></span>
-              <h4 class="font-bold text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ plan.name }}</h4>
+              <h4 class="font-bold text-xs sm:text-sm" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ plan.name }}</h4>
             </div>
             <button @click="editPlan(plan)" 
-                    class="p-1 px-2 text-xs rounded-lg transition-colors cursor-pointer"
+                    class="p-1 px-2.5 text-xs rounded-lg transition-colors cursor-pointer"
                     :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold shadow-xs' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300'">
-              ✏️ 编辑
+              编辑
             </button>
           </div>
 
-          <p v-if="plan.coreTarget" class="text-[11px]" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-400'">
-            🎯 {{ plan.coreTarget }}
+          <p v-if="plan.coreTarget" class="text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-400'">
+            {{ plan.coreTarget }}
           </p>
 
           <!-- Exercise tag badges in this plan -->
           <div v-if="plan.exercises && plan.exercises.length" class="flex flex-wrap gap-1 pt-0.5">
             <span v-for="(ex, exIdx) in plan.exercises" :key="exIdx"
                   @click="openExerciseDetailByName(ex.name)"
-                  class="px-2 py-0.5 rounded-lg text-[10px] cursor-pointer transition-colors"
+                  class="px-2 py-0.5 rounded-lg text-xs cursor-pointer transition-colors"
                   :class="store.settings.themeMode === 'light' ? 'bg-slate-100 border border-slate-300 text-slate-800 font-medium hover:border-amber-500/50' : 'bg-zinc-950 border border-zinc-800/90 text-zinc-300 hover:text-amber-400 hover:border-amber-500/40'">
-              {{ ex.name }} <span class="font-mono text-[10px]" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">({{ ex.setsCount }}组)</span>
+              {{ ex.name }} <span class="font-mono text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">({{ ex.setsCount }}组)</span>
             </span>
           </div>
-          <div v-else class="text-[11px]" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">
+          <div v-else class="text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">
             休息与超量恢复计划
           </div>
 
@@ -189,7 +189,7 @@
       <button @click="showScienceCard = !showScienceCard" 
               class="w-full flex items-center justify-between text-xs font-bold text-zinc-300 hover:text-amber-400 transition-colors cursor-pointer">
         <span class="flex items-center gap-1.5">
-          <span>💡</span> 科学高效分化设计原理
+          <span class="text-amber-500 font-bold">✦</span> 科学高效分化设计原理
         </span>
         <span class="text-xs text-zinc-500 font-mono">{{ showScienceCard ? '收起 ▴' : '展开 ▾' }}</span>
       </button>
@@ -201,7 +201,7 @@
             <span class="text-amber-400 font-mono font-black">{{ idx + 1 }}.</span>
             <span>{{ sp.title }}</span>
           </div>
-          <p class="text-[11px] text-zinc-400 leading-relaxed pl-3.5">
+          <p class="text-xs text-zinc-400 leading-relaxed pl-3.5">
             {{ sp.desc }}
           </p>
         </div>

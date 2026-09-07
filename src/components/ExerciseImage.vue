@@ -31,7 +31,7 @@
       </div>
       
       <!-- 3D Badge: Only displayed when container is large enough (not micro) -->
-      <span v-if="!isMicro" class="absolute bottom-1 right-1 px-1.5 py-0.2 rounded bg-black/80 text-[8px] font-bold text-amber-400 border border-amber-500/30">
+      <span v-if="!isMicro" class="absolute bottom-1 right-1 px-2 py-0.5 rounded-md bg-black/85 text-xs font-bold text-amber-400 border border-amber-500/30">
         3D 动图
       </span>
     </div>

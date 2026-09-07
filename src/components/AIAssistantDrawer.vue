@@ -64,13 +64,13 @@
           <button type="button"
                   data-testid="toggle-quick-model-picker"
                   @click="showQuickModelPicker = !showQuickModelPicker"
-                  class="text-[10px] text-zinc-400 hover:text-amber-400 truncate flex items-center gap-1 mt-0.5 max-w-full group text-left transition-colors">
+                  class="text-xs text-zinc-400 hover:text-amber-400 truncate flex items-center gap-1 mt-0.5 max-w-full group text-left transition-colors">
             <span class="truncate font-mono">{{ selectedModel ? `${activeProvider.name} · ${selectedModel.name}` : '未选择模型（点击选择）' }}</span>
-            <span class="text-[9px] text-amber-400/80 group-hover:text-amber-300">▼</span>
+            <span class="text-xs text-amber-400/80 group-hover:text-amber-300">▼</span>
           </button>
         </div>
         <div class="flex items-center gap-1.5">
-          <button type="button" class="px-2.5 py-1 rounded-lg text-[10px] border border-zinc-700 text-zinc-400 hover:text-zinc-200 bg-zinc-900 transition-colors" @click="handleClear">清空对话</button>
+          <button type="button" class="px-2.5 py-1 rounded-lg text-xs border border-zinc-700 text-zinc-400 hover:text-zinc-200 bg-zinc-900 transition-colors" @click="handleClear">清空对话</button>
           <button type="button" class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center text-xs transition-colors" aria-label="收起 AI 助手" @click="aiSession.drawerOpen = false">✕</button>
         </div>
       </header>
@@ -81,7 +81,7 @@
            class="absolute top-14 left-3 right-3 z-40 bg-zinc-900/98 border border-zinc-700 rounded-2xl shadow-2xl p-3 space-y-2.5 backdrop-blur-xl">
         <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
           <div class="text-xs font-bold text-zinc-200 flex items-center gap-1.5">
-            <span class="text-amber-400">⚡</span> 快捷切换模型
+            <span class="text-amber-400 font-black">✦</span> 快捷切换模型
           </div>
           <button type="button" @click="showQuickModelPicker = false" class="text-zinc-500 hover:text-zinc-300 text-xs px-1">✕</button>
         </div>
@@ -90,7 +90,7 @@
         <div class="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           <button v-for="prov in AI_PROVIDERS" :key="prov.id" type="button"
                   @click="quickSwitchProvider(prov.id)"
-                  class="px-2.5 py-1 rounded-lg text-[10px] font-bold border whitespace-nowrap transition-all"
+                  class="px-2.5 py-1 rounded-lg text-xs font-bold border whitespace-nowrap transition-all"
                   :class="aiSession.activeProvider === prov.id ? 'bg-amber-500 text-zinc-950 border-amber-500' : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-zinc-200'">
             {{ prov.name }}
           </button>
@@ -103,18 +103,18 @@
                   class="w-full px-2.5 py-1.5 rounded-xl text-left text-xs transition-all flex items-center justify-between group"
                   :class="selectedModelId === m.id ? 'bg-amber-500/15 border border-amber-500/40 text-amber-300 font-bold' : 'hover:bg-zinc-800 text-zinc-300 border border-transparent'">
             <div class="min-w-0 flex-1 pr-2">
-              <div class="text-[11px] truncate">{{ m.name }}</div>
-              <div class="text-[9px] text-zinc-500 truncate">{{ m.id }}</div>
+              <div class="text-xs font-bold truncate">{{ m.name }}</div>
+              <div class="text-xs text-zinc-500 truncate">{{ m.id }}</div>
             </div>
             <div class="flex items-center gap-1 flex-shrink-0">
-              <span v-if="m.capabilities?.image" class="text-[9px] px-1 py-0.2 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30">识图</span>
-              <span v-if="m.capabilities?.reasoning" class="text-[9px] px-1 py-0.2 rounded bg-purple-500/20 text-purple-400 border border-purple-500/30">思考</span>
+              <span v-if="m.capabilities?.image" class="text-xs px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30">识图</span>
+              <span v-if="m.capabilities?.reasoning" class="text-xs px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 border border-purple-500/30">思考</span>
               <span v-if="selectedModelId === m.id" class="text-amber-400 text-xs">✓</span>
             </div>
           </button>
         </div>
 
-        <div class="pt-1 border-t border-zinc-800 flex items-center justify-between text-[10px]">
+        <div class="pt-1 border-t border-zinc-800 flex items-center justify-between text-xs">
           <span class="text-zinc-500">厂商: {{ activeProvider.name }}</span>
           <button type="button" @click="goToSettingsTab" class="text-amber-400 hover:text-amber-300 underline font-medium">管理 API 密钥 ↗</button>
         </div>
@@ -128,14 +128,14 @@
         <div v-if="!aiSession.conversation.length" class="h-full flex flex-col justify-end px-2 py-1">
           <!-- When Keyboard is Open: Sleek, compact single-line horizontal chips (avoids cluttered 2x2 cards above keyboard) -->
           <div v-if="isKeyboardOpen" class="space-y-1.5 pb-2">
-            <div class="text-[10px] text-zinc-400 flex items-center gap-1 px-1 font-medium">
-              <span class="text-amber-400">✦</span> 快捷提问
+            <div class="text-xs text-zinc-400 flex items-center gap-1 px-1 font-medium">
+              <span class="text-amber-400 font-bold">✦</span> 快捷提问
             </div>
             <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none overscroll-contain">
               <button v-for="(chip, idx) in defaultChips" :key="idx"
                       type="button"
                       @click="sendPrompt(chip.prompt)"
-                      class="flex-shrink-0 px-3 py-1.5 rounded-xl bg-zinc-900/95 hover:bg-zinc-800 border border-zinc-800 hover:border-amber-500/50 text-[11px] text-zinc-200 flex items-center gap-1.5 transition-all active:scale-95 shadow-sm">
+                      class="flex-shrink-0 px-3 py-1.5 rounded-xl bg-zinc-900/95 hover:bg-zinc-800 border border-zinc-800 hover:border-amber-500/50 text-xs text-zinc-200 flex items-center gap-1.5 transition-all active:scale-95 shadow-sm">
                 <span>{{ chip.icon }}</span>
                 <span class="font-medium whitespace-nowrap">{{ chip.title }}</span>
               </button>
@@ -147,7 +147,7 @@
             <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl shadow-lg shadow-amber-500/10">🤖</div>
             <div class="space-y-1">
               <p class="text-sm font-bold text-zinc-100">我是你的 FitCycle 智能教练</p>
-              <p class="text-[11px] text-zinc-400 max-w-xs mx-auto leading-relaxed">
+              <p class="text-xs text-zinc-400 max-w-xs mx-auto leading-relaxed">
                 已接入你的训练计划、近期容量与动作库，随时为你提供科学复盘与指导。
               </p>
             </div>
@@ -158,10 +158,10 @@
                       type="button"
                       @click="sendPrompt(chip.prompt)"
                       class="p-2.5 rounded-2xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 hover:border-amber-500/40 text-left transition-all space-y-1 group">
-                <div class="text-amber-400 font-bold text-[11px] flex items-center gap-1 group-hover:text-amber-300">
+                <div class="text-amber-400 font-bold text-xs flex items-center gap-1 group-hover:text-amber-300">
                   <span>{{ chip.icon }}</span> {{ chip.title }}
                 </div>
-                <div class="text-[10px] text-zinc-400 line-clamp-2">
+                <div class="text-xs text-zinc-400 line-clamp-2">
                   {{ chip.desc }}
                 </div>
               </button>
@@ -172,7 +172,7 @@
         <!-- Conversation Bubbles -->
         <article v-for="message in aiSession.conversation" :key="message.id" class="flex flex-col" :class="message.role === 'user' ? 'items-end' : 'items-start'">
           <!-- State-Modifying Tool Results (With Undo) -->
-          <div v-if="message.role === 'tool'" class="w-full rounded-2xl border px-3.5 py-2.5 text-[11px] shadow-sm"
+          <div v-if="message.role === 'tool'" class="w-full rounded-2xl border px-3.5 py-2.5 text-xs shadow-sm"
                :class="message.success ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300' : 'border-red-500/30 bg-red-500/10 text-red-300'">
             <div class="flex items-center justify-between gap-2">
               <span class="font-bold">{{ message.success ? '操作已生效' : '操作未执行' }} · {{ message.tool || 'Fitcycle' }}</span>
@@ -194,7 +194,7 @@
             
             <!-- 🧠 深度思考过程展示框 (Collapsible Thinking Process Box) -->
             <div v-if="message.reasoning || (message.streaming && message.isThinking)"
-                 class="rounded-xl border border-zinc-800 bg-zinc-950/80 overflow-hidden text-[11px] transition-all">
+                 class="rounded-xl border border-zinc-800 bg-zinc-950/80 overflow-hidden text-xs transition-all">
               <!-- Header with Toggle Button -->
               <button type="button" 
                       data-testid="toggle-reasoning"
@@ -206,7 +206,7 @@
                     {{ (message.streaming && message.isThinking) ? 'AI 正在深度思考…' : '已完成深度思考' }}
                   </span>
                 </span>
-                <span class="text-[10px] text-zinc-500 flex items-center gap-1">
+                <span class="text-xs text-zinc-500 flex items-center gap-1">
                   <span>{{ message.reasoningCollapsed ? '展开' : '收起' }}</span>
                   <span class="transform transition-transform duration-200" :class="{ 'rotate-180': !message.reasoningCollapsed }">▼</span>
                 </span>
@@ -214,14 +214,14 @@
 
               <!-- Thinking Text Body -->
               <div v-show="!message.reasoningCollapsed" 
-                   class="px-3 py-2.5 text-zinc-400 font-mono text-[11px] leading-relaxed border-t border-zinc-800/80 bg-zinc-950/60 whitespace-pre-wrap break-words max-h-48 overflow-y-auto">
+                   class="px-3 py-2.5 text-zinc-400 font-mono text-xs leading-relaxed border-t border-zinc-800/80 bg-zinc-950/60 whitespace-pre-wrap break-words max-h-48 overflow-y-auto">
                 {{ message.reasoning }}
                 <span v-if="message.streaming && message.isThinking" class="inline-block w-1.5 h-3 ml-0.5 bg-amber-400 animate-pulse align-middle"></span>
               </div>
             </div>
 
             <!-- Loading initial pulse if no text and no reasoning yet -->
-            <div v-if="message.streaming && !message.text && !message.reasoning" class="flex items-center gap-2 text-zinc-400 font-mono text-[11px] py-1">
+            <div v-if="message.streaming && !message.text && !message.reasoning" class="flex items-center gap-2 text-zinc-400 font-mono text-xs py-1">
               <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
               <span>正在连接模型并准备生成…</span>
             </div>
@@ -236,7 +236,7 @@
                   <span class="truncate">真实商用器械：{{ message.matchedEquipment.name }}</span>
                 </div>
                 <div class="flex items-center gap-1.5 flex-shrink-0">
-                  <span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20 font-mono whitespace-nowrap">
+                  <span class="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20 font-mono whitespace-nowrap">
                     {{ message.matchedEquipment.englishName }}
                   </span>
                   <span role="button" 
@@ -260,12 +260,12 @@
                      class="w-full h-full object-cover transition-transform duration-300 group-hover/photo:scale-105" />
                 
                 <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30 flex flex-col justify-between p-2.5 pointer-events-none">
-                  <span class="self-end text-[10px] px-2 py-1 rounded-lg bg-black/70 backdrop-blur-md text-zinc-200 border border-white/15 flex items-center gap-1">
+                  <span class="self-end text-xs px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-md text-zinc-200 border border-white/15 flex items-center gap-1">
                     <span>🔍</span> 点击放大全屏查看
                   </span>
                   <div>
-                    <div class="text-[11px] font-bold text-white drop-shadow">{{ message.matchedEquipment.categoryName }}</div>
-                    <div class="text-[10px] text-zinc-300 drop-shadow line-clamp-1 mt-0.5">{{ message.matchedEquipment.appearanceFeature }}</div>
+                    <div class="text-xs font-bold text-white drop-shadow">{{ message.matchedEquipment.categoryName }}</div>
+                    <div class="text-xs text-zinc-300 drop-shadow line-clamp-1 mt-0.5">{{ message.matchedEquipment.appearanceFeature }}</div>
                   </div>
                 </div>
               </div>
@@ -289,7 +289,7 @@
             <span v-if="message.streaming && !message.isThinking && message.text" class="inline-block w-2 h-3.5 bg-amber-400 animate-pulse align-middle ml-1"></span>
 
             <!-- Footer: Brand tag and Copy Button -->
-            <div v-if="!message.streaming && (message.text || message.reasoning)" class="flex items-center justify-between pt-1 border-t border-zinc-800/60 text-[10px] text-zinc-500 font-mono">
+            <div v-if="!message.streaming && (message.text || message.reasoning)" class="flex items-center justify-between pt-1 border-t border-zinc-800/60 text-xs text-zinc-500 font-mono">
               <span class="flex items-center gap-1 text-zinc-400">
                 <span>✦ Fitcycle AI</span>
               </span>
@@ -335,12 +335,12 @@
         <div v-if="attachments.length" class="flex gap-2 overflow-x-auto pb-2">
           <div v-for="(image, index) in attachments" :key="image.name + image.size" class="relative flex-shrink-0">
             <img :src="image.dataUrl" :alt="image.name" class="w-14 h-14 rounded-xl object-cover border border-zinc-700" />
-            <button type="button" class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center" :aria-label="`移除 ${image.name}`" @click="attachments.splice(index, 1)">✕</button>
+            <button type="button" class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center" :aria-label="`移除 ${image.name}`" @click="attachments.splice(index, 1)">✕</button>
           </div>
         </div>
 
         <!-- Clean Input Hint (Only shown for real errors, never distracting placeholder text) -->
-        <p v-if="inputHint" class="text-[10px] mb-2 leading-tight" :class="inputHintError ? 'text-red-400' : 'text-zinc-500'">{{ inputHint }}</p>
+        <p v-if="inputHint" class="text-xs mb-2 leading-tight" :class="inputHintError ? 'text-red-400' : 'text-zinc-500'">{{ inputHint }}</p>
 
         <!-- Input Bar Row -->
         <div class="flex items-end gap-2">
@@ -361,8 +361,8 @@
 
         <!-- Footer Shortcuts -->
         <div class="flex items-center justify-between mt-1.5 min-h-5">
-          <button v-if="retryAvailable && !generating" type="button" class="text-[10px] text-amber-400 hover:text-amber-300 font-medium" @click="retryGeneration">重试上次请求</button>
-          <button v-if="!activeApiKey" type="button" class="ml-auto text-[10px] text-amber-400 hover:text-amber-300 underline font-medium" @click="goToSettings">前往设置连接</button>
+          <button v-if="retryAvailable && !generating" type="button" class="text-xs text-amber-400 hover:text-amber-300 font-medium" @click="retryGeneration">重试上次请求</button>
+          <button v-if="!activeApiKey" type="button" class="ml-auto text-xs text-amber-400 hover:text-amber-300 underline font-medium" @click="goToSettings">前往设置连接</button>
         </div>
       </footer>
     </section>
@@ -392,9 +392,9 @@
             <div class="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-900/95 flex-shrink-0">
               <div class="min-w-0 flex-1 pr-2">
                 <div class="text-xs sm:text-sm font-bold text-zinc-100 flex items-center gap-1.5 truncate">
-                  <span class="text-amber-400">📸</span> {{ activeLightboxEquipment.name }}
+                  <span class="text-amber-400 font-black">✦</span> {{ activeLightboxEquipment.name }}
                 </div>
-                <div class="text-[10px] text-zinc-400 font-mono truncate">{{ activeLightboxEquipment.englishName }}</div>
+                <div class="text-xs text-zinc-400 font-mono truncate">{{ activeLightboxEquipment.englishName }}</div>
               </div>
               <button type="button" @click="closeLightbox"
                       class="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-sm transition-colors cursor-pointer flex-shrink-0"
@@ -414,24 +414,24 @@
               <!-- Features & Adjustments -->
               <div class="space-y-2.5 text-xs">
                 <div v-if="activeLightboxEquipment.appearanceFeature" class="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800/80 space-y-1">
-                  <div class="text-[11px] font-bold text-amber-400 flex items-center gap-1">
-                    <span>👁️</span> 外观一眼识别特征
+                  <div class="text-xs font-bold text-amber-400 flex items-center gap-1">
+                    <span>外观一眼识别特征</span>
                   </div>
-                  <p class="text-zinc-300 leading-relaxed text-[11px]">{{ activeLightboxEquipment.appearanceFeature }}</p>
+                  <p class="text-zinc-300 leading-relaxed text-xs">{{ activeLightboxEquipment.appearanceFeature }}</p>
                 </div>
 
                 <div v-if="activeLightboxEquipment.adjustmentTips" class="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800/80 space-y-1">
-                  <div class="text-[11px] font-bold text-emerald-400 flex items-center gap-1">
-                    <span>⚙️</span> 座椅与插销调节指南
+                  <div class="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                    <span>座椅与插销调节指南</span>
                   </div>
-                  <p class="text-zinc-300 leading-relaxed text-[11px] whitespace-pre-line">{{ activeLightboxEquipment.adjustmentTips }}</p>
+                  <p class="text-zinc-300 leading-relaxed text-xs whitespace-pre-line">{{ activeLightboxEquipment.adjustmentTips }}</p>
                 </div>
 
                 <div v-if="activeLightboxEquipment.commonMistakes" class="p-3 rounded-2xl bg-red-500/10 border border-red-500/20 space-y-1">
-                  <div class="text-[11px] font-bold text-red-400 flex items-center gap-1">
+                  <div class="text-xs font-bold text-red-400 flex items-center gap-1">
                     <span>⚠️</span> 新手上机避坑提示
                   </div>
-                  <p class="text-zinc-300 leading-relaxed text-[11px]">{{ activeLightboxEquipment.commonMistakes }}</p>
+                  <p class="text-zinc-300 leading-relaxed text-xs">{{ activeLightboxEquipment.commonMistakes }}</p>
                 </div>
               </div>
             </div>

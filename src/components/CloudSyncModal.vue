@@ -21,12 +21,12 @@
             <div>
               <h3 class="text-sm font-black text-zinc-100 flex items-center gap-2">
                 <span>云端跨端同步与备份</span>
-                <span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold"
+                <span class="text-xs px-2 py-0.5 rounded-full font-mono font-bold"
                       :class="isOnline ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'">
                   {{ isOnline ? '在线' : '离线保护' }}
                 </span>
               </h3>
-              <p class="text-[10px] text-zinc-400 font-mono">手机/电脑跨设备数据同步 · 永久防丢</p>
+              <p class="text-xs text-zinc-400 font-mono">手机/电脑跨设备数据同步 · 永久防丢</p>
             </div>
           </div>
           <button @click="$emit('close')" class="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-white rounded-full bg-zinc-800 hover:bg-zinc-700 active:scale-95 transition-all cursor-pointer">
@@ -60,7 +60,7 @@
                 <span class="text-zinc-400 font-medium">同步机制：</span>
                 <span class="text-amber-400 font-bold">私有 GitHub Gist (零成本·永久安全)</span>
               </div>
-              <div class="text-[11px] text-zinc-400 leading-relaxed">
+              <div class="text-xs text-zinc-400 leading-normal">
                 无需自建服务器。凭个人 GitHub Token，数据直接加密托管在你的私有 Gist 中，手机与电脑一键互通。
               </div>
             </div>
@@ -69,7 +69,7 @@
             <div class="space-y-1">
               <div class="flex items-center justify-between">
                 <label class="text-xs font-bold text-zinc-300">GitHub Personal Access Token (classic)</label>
-                <a href="https://github.com/settings/tokens" target="_blank" class="text-[11px] text-amber-400 hover:underline">去生成 Token ↗</a>
+                <a href="https://github.com/settings/tokens" target="_blank" class="text-xs text-amber-400 hover:underline">去生成 Token ↗</a>
               </div>
               <div class="relative">
                 <input :type="showToken ? 'text' : 'password'"
@@ -81,7 +81,7 @@
                   {{ showToken ? '隐藏' : '显示' }}
                 </button>
               </div>
-              <p class="text-[10px] text-zinc-500">仅需勾选 `gist` 权限即可，Token 仅保存在本地设备。</p>
+              <p class="text-xs text-zinc-500">仅需勾选 `gist` 权限即可，Token 仅保存在本地设备。</p>
             </div>
 
             <!-- Gist ID input (optional) -->
@@ -106,20 +106,20 @@
               <button @click="handleGistPush"
                       :disabled="isSyncing || !githubToken.trim()"
                       class="py-3 px-3 bg-amber-500 hover:bg-amber-400 active:scale-95 disabled:opacity-40 disabled:pointer-events-none text-zinc-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer">
-                <span>{{ isSyncing ? '同步中...' : '☁️ 一键上传至云端' }}</span>
+                <span>{{ isSyncing ? '同步中...' : '一键上传至云端' }}</span>
               </button>
 
               <button @click="handleGistPull"
                       :disabled="isSyncing || !githubToken.trim() || !gistId.trim()"
                       class="py-3 px-3 bg-zinc-800 hover:bg-zinc-700 active:scale-95 disabled:opacity-40 disabled:pointer-events-none text-zinc-100 font-black text-xs rounded-xl border border-zinc-700 flex items-center justify-center gap-1.5 transition-all cursor-pointer">
-                <span>{{ isSyncing ? '同步中...' : '📥 从云端拉取恢复' }}</span>
+                <span>{{ isSyncing ? '同步中...' : '从云端拉取恢复' }}</span>
               </button>
             </div>
           </div>
 
           <!-- Custom REST Section -->
           <div v-else class="space-y-3.5">
-            <div class="p-3 bg-zinc-950/60 border border-zinc-800/80 rounded-2xl text-[11px] text-zinc-400 leading-relaxed">
+            <div class="p-3 bg-zinc-950/60 border border-zinc-800/80 rounded-2xl text-xs text-zinc-400 leading-normal">
               支持将备份数据同步至自定义 Webhook、Serverless 函数或自建 Supabase 数据库。
             </div>
 

@@ -48,7 +48,7 @@
       </div>
 
       <!-- Weekday Headers -->
-      <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-mono font-bold py-1 border-b"
+      <div class="grid grid-cols-7 gap-1 text-center text-xs font-mono font-bold py-1.5 border-b"
            :class="store.settings.themeMode === 'light' ? 'text-slate-500 font-black border-slate-100' : 'text-zinc-500 border-zinc-800/80'">
         <span>日</span>
         <span>一</span>
@@ -80,7 +80,7 @@
              ]">
           
           <!-- Day number -->
-          <span class="text-[10px] sm:text-[11px] font-mono leading-none pt-0.5"
+          <span class="text-xs font-mono leading-none pt-0.5"
                 :class="[
                   selectedDateStr === cell.dateStr
                     ? (store.settings.themeMode === 'light' ? 'text-white font-black' : 'text-zinc-950 font-black')
@@ -95,7 +95,7 @@
           <div class="w-full flex items-center justify-center my-auto">
             <!-- If logged: Vibrant check-in badge -->
             <span v-if="cell.hasLog" 
-                  class="w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center text-[8px] sm:text-[9px] font-black shadow-sm"
+                  class="w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center text-xs font-black shadow-sm"
                   :class="[
                     selectedDateStr === cell.dateStr
                       ? (store.settings.themeMode === 'light' ? 'bg-amber-400 text-zinc-950' : 'bg-zinc-950 text-amber-400')
@@ -107,7 +107,7 @@
               {{ cell.logShortName || '✓' }}
             </span>
             <!-- If Deload Active on day -->
-            <span v-else-if="cell.isDeloadDay" class="text-[10px]" title="战术免战休整">
+            <span v-else-if="cell.isDeloadDay" class="text-xs" title="战术免战休整">
               🛡️
             </span>
           </div>
@@ -123,7 +123,7 @@
       </div>
 
       <!-- Minimalist Legend & Hint -->
-      <div class="flex items-center justify-between pt-2 border-t text-[10px]"
+      <div class="flex items-center justify-between pt-2 border-t text-xs"
            :class="store.settings.themeMode === 'light' ? 'border-slate-100 text-slate-500' : 'border-zinc-800/80 text-zinc-400'">
         <div class="flex items-center gap-2.5">
           <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500"></span> 推日</span>
@@ -175,8 +175,8 @@
                 {{ log.shortName || '练' }}
               </span>
               <div>
-                <h4 class="font-bold text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ log.planName }}</h4>
-                <div class="text-[10px] font-mono mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-400'">
+                <h4 class="font-bold text-xs sm:text-sm" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">{{ log.planName }}</h4>
+                <div class="text-xs font-mono mt-0.5" :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-400'">
                   时长: {{ Math.round((log.durationSeconds || 60) / 60) }}分钟 · 容量: {{ log.totalVolume }}kg · {{ log.totalSets }}组
                 </div>
               </div>
@@ -198,8 +198,8 @@
                    title="点击查看动作要领与3D轨迹"
                    class="flex-shrink-0 cursor-pointer active:scale-95">
                 <ExerciseImage :src="getExerciseGif(ex)" 
-                               :name="ex.name" 
-                               customClass="w-11 h-11 rounded-xl border border-zinc-800 flex-shrink-0" />
+                                :name="ex.name" 
+                                customClass="w-11 h-11 rounded-xl border border-zinc-800 flex-shrink-0" />
               </div>
 
               <div class="flex-1 min-w-0">
@@ -210,7 +210,7 @@
                 </div>
                 <div class="flex flex-wrap gap-1.5">
                   <span v-for="(s, sIdx) in (ex.sets || []).filter(x => x.completed)" :key="sIdx"
-                         class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-semibold"
+                         class="px-2 py-0.5 rounded-lg text-xs font-mono font-semibold"
                          :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border border-slate-300 text-emerald-800 font-bold' : 'bg-zinc-950 border border-zinc-800 text-emerald-400'">
                     {{ s.weight }}kg × {{ s.reps }}次
                   </span>
@@ -241,7 +241,7 @@
       <div v-else class="py-6 text-center text-xs space-y-1.5"
            :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">
         <p :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium' : 'text-zinc-400'">该日期暂无训练记录</p>
-        <p class="text-[11px]" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">
+        <p class="text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">
           按照分化循环预测，当天排期为：<span class="font-bold" :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">{{ selectedCycleDay.name }}</span>
         </p>
       </div>

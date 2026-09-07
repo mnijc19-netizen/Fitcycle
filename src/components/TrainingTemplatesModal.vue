@@ -21,11 +21,11 @@
             <div>
               <h3 class="text-sm font-black text-zinc-100 flex items-center gap-2">
                 <span>经典科学周期化模板库</span>
-                <span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40">
+                <span class="text-xs px-2 py-0.5 rounded-full font-mono font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40">
                   5大体系
                 </span>
               </h3>
-              <p class="text-[10px] text-zinc-400 font-mono">一键切换推拉腿、PHUL、阿诺德、5/3/1等经典体系</p>
+              <p class="text-xs text-zinc-400 font-mono">一键切换推拉腿、PHUL、阿诺德、5/3/1等经典体系</p>
             </div>
           </div>
           <button @click="$emit('close')" class="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-white rounded-full bg-zinc-800 hover:bg-zinc-700 active:scale-95 transition-all cursor-pointer">
@@ -51,11 +51,11 @@
               <div>
                 <div class="flex items-center gap-2 flex-wrap">
                   <h4 class="text-sm font-black text-zinc-100">{{ template.name }}</h4>
-                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                  <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
                     {{ template.badge }}
                   </span>
                 </div>
-                <div class="flex items-center gap-2 text-[11px] text-zinc-400 mt-1 font-mono">
+                <div class="flex items-center gap-2 text-xs text-zinc-400 mt-1 font-mono">
                   <span>{{ template.category }}</span>
                   <span>·</span>
                   <span class="text-zinc-300 font-bold">{{ template.frequency }}</span>
@@ -63,7 +63,7 @@
               </div>
 
               <span v-if="isTemplateActive(template)" 
-                    class="px-2 py-1 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex-shrink-0">
+                    class="px-2 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex-shrink-0">
                 ✓ 正在使用
               </span>
             </div>
@@ -76,7 +76,7 @@
             <!-- Highlights -->
             <div class="space-y-1 py-1">
               <div v-for="(h, hIdx) in template.highlights" :key="hIdx"
-                   class="text-[11px] text-zinc-400 flex items-start gap-1.5 leading-snug">
+                   class="text-xs text-zinc-400 flex items-start gap-1.5 leading-normal">
                 <span class="text-amber-400 text-xs">✦</span>
                 <span>{{ h }}</span>
               </div>
@@ -85,14 +85,14 @@
             <!-- Segmented day capsules preview -->
             <div class="flex flex-wrap gap-1.5 pt-1">
               <div v-for="(day, dIdx) in template.cycle.days" :key="day.id || dIdx"
-                   class="px-2 py-1 rounded-xl text-[10px] font-bold border flex items-center gap-1"
+                   class="px-2 py-1 rounded-xl text-xs font-bold border flex items-center gap-1"
                    :class="[
                      day.color === 'amber' ? 'bg-amber-500/15 border-amber-500/30 text-amber-300' :
                      day.color === 'sky' ? 'bg-sky-500/15 border-sky-500/30 text-sky-300' :
                      day.color === 'purple' ? 'bg-purple-500/15 border-purple-500/30 text-purple-300' :
                      'bg-emerald-500/15 border-emerald-500/30 text-emerald-300'
                    ]">
-                <span class="w-3.5 h-3.5 rounded-full bg-zinc-900/60 flex items-center justify-center text-[9px] font-mono">
+                <span class="w-4 h-4 rounded-full bg-zinc-900/60 flex items-center justify-center text-xs font-mono">
                   {{ dIdx + 1 }}
                 </span>
                 <span>{{ day.shortName || (day.isRest ? '休' : '练') }}</span>
@@ -109,7 +109,7 @@
                         'bg-zinc-800 text-zinc-500 border border-zinc-700/50 cursor-default' :
                         'bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-md shadow-amber-500/20'
                       ]">
-                <span>{{ isTemplateActive(template) ? '当前已加载此周期' : '⚡ 一键应用为此分化周期' }}</span>
+                <span>{{ isTemplateActive(template) ? '当前已加载此周期' : '一键应用为此分化周期' }}</span>
               </button>
             </div>
 

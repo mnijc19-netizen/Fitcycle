@@ -55,16 +55,16 @@
             </div>
             <div>
               <div class="text-xs font-bold text-zinc-300">3D 解剖动图加载中</div>
-              <div class="text-[11px] text-zinc-500 font-mono mt-0.5">{{ currentExercise?.name || '标准发力动作' }}</div>
+              <div class="text-xs text-zinc-500 font-mono mt-0.5">{{ currentExercise?.name || '标准发力动作' }}</div>
             </div>
           </div>
 
           <!-- 3D Badges -->
-          <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-[10px] font-bold text-amber-400 border border-amber-500/40 flex items-center gap-1">
+          <span class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md text-xs font-bold text-amber-400 border border-amber-500/40 flex items-center gap-1">
             <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
             3D 动作循环演示
           </span>
-          <span class="absolute bottom-2.5 right-2.5 px-2.5 py-0.5 rounded-lg bg-black/70 backdrop-blur-md text-[10px] font-mono font-bold text-zinc-300 border border-zinc-700/60">
+          <span class="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-md text-xs font-mono font-bold text-zinc-300 border border-zinc-700/60">
             标准发力轨迹
           </span>
         </div>
@@ -84,11 +84,11 @@
           <div class="flex flex-wrap items-center gap-1.5 mt-2.5">
             <span class="px-2.5 py-1 rounded-xl text-xs font-bold flex items-center gap-1 border"
                   :class="store.settings.themeMode === 'light' ? 'bg-amber-500/15 border-amber-500/30 text-amber-800' : 'bg-amber-500/20 border-amber-500/40 text-amber-300'">
-              <span>🎯 主目标:</span> {{ currentExercise?.target }}
+              <span>主目标:</span> {{ currentExercise?.target }}
             </span>
             <span class="px-2.5 py-1 rounded-xl text-xs font-bold flex items-center gap-1 border"
                   :class="store.settings.themeMode === 'light' ? 'bg-sky-100 text-sky-800 border-sky-300' : 'bg-sky-950/80 text-sky-400 border-sky-500/40'">
-              <span>📐 平面:</span> {{ movementPlaneInfo.name }}
+              <span>平面:</span> {{ movementPlaneInfo.name }}
             </span>
             <span v-for="sec in currentExercise?.secondaryMuscles || []" :key="sec"
                   class="px-2 py-1 rounded-xl text-xs border font-semibold"
@@ -112,7 +112,7 @@
                   class="py-2 relative transition-colors flex items-center gap-1"
                   :class="[activeTab === 'substitutes' ? (store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400 font-black') : (store.settings.themeMode === 'light' ? 'text-slate-600 hover:text-slate-900 font-bold' : 'text-zinc-400 hover:text-zinc-200')]">
             平替动作
-            <span v-if="currentExercise?.substitutes?.length" class="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold"
+            <span v-if="currentExercise?.substitutes?.length" class="px-1.5 py-0.2 rounded-full text-xs font-mono font-bold"
                   :class="store.settings.themeMode === 'light' ? 'bg-amber-100 text-amber-800 border border-amber-300' : 'bg-zinc-800 text-amber-400'">
               {{ currentExercise.substitutes.length }}
             </span>
@@ -194,9 +194,9 @@
             <div class="font-bold flex items-center justify-between"
                  :class="store.settings.themeMode === 'light' ? 'text-amber-900 font-black' : 'text-amber-300'">
               <span class="flex items-center gap-1.5">
-                <span>🎯</span> 力线避坑指南 (肌纤维走向与阻力方向同轴)
+                <span>力线避坑指南 (肌纤维走向与阻力方向同轴)</span>
               </span>
-              <span class="text-[10px] font-mono opacity-80 font-bold px-1.5 py-0.2 rounded"
+              <span class="text-xs font-mono opacity-80 font-bold px-2 py-0.5 rounded"
                     :class="store.settings.themeMode === 'light' ? 'bg-amber-200/80 text-amber-950' : 'bg-amber-500/20 text-amber-300'">
                 {{ movementPlaneInfo.action }}
               </span>
@@ -229,9 +229,9 @@
             <div class="font-bold flex items-center justify-between"
                  :class="store.settings.themeMode === 'light' ? 'text-rose-900 font-black' : 'text-rose-300'">
               <span class="flex items-center gap-1.5">
-                <span>🛡️</span> 常见代偿警示排查表 (Compensation Checklist)
+                <span>常见代偿警示排查表 (Compensation Checklist)</span>
               </span>
-              <span class="text-[10px] font-mono opacity-80">防伤保护</span>
+              <span class="text-xs font-mono opacity-80">防伤保护</span>
             </div>
             <ul class="space-y-1 text-xs"
                 :class="store.settings.themeMode === 'light' ? 'text-slate-800 font-medium' : 'text-zinc-300'">
@@ -248,14 +248,14 @@
             <div class="flex items-center justify-between">
               <div class="font-bold text-xs flex items-center gap-1.5"
                    :class="store.settings.themeMode === 'light' ? 'text-indigo-950 font-black' : 'text-indigo-300'">
-                <span>🤖</span> 随身 AI 运动生物力学教练
+                <span>随身 AI 运动生物力学教练</span>
               </div>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full"
+              <span class="text-xs font-bold px-2 py-0.5 rounded-full"
                     :class="store.settings.themeMode === 'light' ? 'bg-indigo-100 text-indigo-800 border border-indigo-200' : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'">
                 1-Click 直达答疑
               </span>
             </div>
-            <p class="text-[11px]" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+            <p class="text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
               点击快速向 AI 教练追问当前动作要领与生理调控：
             </p>
             <div class="flex flex-wrap gap-1.5 pt-0.5">
@@ -273,15 +273,15 @@
 
         <!-- TAB 2: 平替动作 (Substitutes) -->
         <div v-if="activeTab === 'substitutes'" class="space-y-2.5 text-xs">
-          <p :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium text-[11px]' : 'text-zinc-400 text-[11px]'">
-            💡 器械被占或想换刺激角度时，推荐以下高匹配平替：
+          <p :class="store.settings.themeMode === 'light' ? 'text-slate-600 font-medium text-xs' : 'text-zinc-400 text-xs'">
+            器械被占或想换刺激角度时，推荐以下高匹配平替：
           </p>
 
           <div v-if="currentExercise?.substitutes && currentExercise.substitutes.length" class="space-y-2">
             <div v-for="(sub, sIdx) in currentExercise.substitutes" :key="sIdx"
                  @click="handleSelectSubstitute(sub.name)"
                  class="p-3 border rounded-2xl cursor-pointer transition-all flex items-center justify-between gap-3"
-                 :class="store.settings.themeMode === 'light' ? 'bg-slate-50 hover:bg-slate-100 border-slate-300 shadow-xs' : 'bg-zinc-950/80 hover:bg-zinc-800 border-zinc-800 hover:border-amber-500/40'">
+                 :class="store.settings.themeMode === 'light' ? 'bg-slate-50 hover:bg-slate-100 border-slate-300 shadow-xs' : 'bg-zinc-950/80 hover:bg-zinc-850 border-zinc-800 hover:border-amber-500/40'">
               <div>
                 <div class="font-bold text-sm flex items-center gap-1.5"
                      :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">
@@ -308,7 +308,7 @@
                :class="store.settings.themeMode === 'light' ? 'bg-slate-50 border-slate-300 shadow-xs' : 'bg-zinc-950/80 border-zinc-800/80'">
             <div class="font-bold flex items-center gap-1.5"
                  :class="store.settings.themeMode === 'light' ? 'text-amber-800 font-black' : 'text-amber-400'">
-              <span>🔬</span> 动作美学目的与科学细节
+              <span>动作美学目的与科学细节</span>
             </div>
             <p class="leading-relaxed text-xs font-medium"
                :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-200'">
@@ -316,7 +316,7 @@
             </p>
             <div v-if="currentExercise?.tags && currentExercise.tags.length" class="flex flex-wrap gap-1.5 pt-1">
               <span v-for="tag in currentExercise.tags" :key="tag" 
-                    class="text-[10px] px-2.5 py-0.5 rounded-full border font-bold"
+                    class="text-xs px-2.5 py-0.5 rounded-full border font-bold"
                     :class="store.settings.themeMode === 'light' ? 'bg-slate-200 text-slate-800 border-slate-300' : 'bg-zinc-800 text-amber-300 border-zinc-700'">
                 #{{ tag }}
               </span>
@@ -329,7 +329,7 @@
           <div class="text-xs font-bold uppercase tracking-wider flex items-center justify-between pb-1"
                :class="store.settings.themeMode === 'light' ? 'text-slate-700 font-bold' : 'text-zinc-400'">
             <span>📈 个人历史打卡记录</span>
-            <span class="text-[10px]" :class="store.settings.themeMode === 'light' ? 'text-slate-500 font-bold' : 'text-zinc-500'">最近 {{ exerciseHistory.length }} 次</span>
+            <span class="text-xs" :class="store.settings.themeMode === 'light' ? 'text-slate-500 font-bold' : 'text-zinc-500'">最近 {{ exerciseHistory.length }} 次</span>
           </div>
 
           <div v-if="exerciseHistory.length" class="space-y-2">

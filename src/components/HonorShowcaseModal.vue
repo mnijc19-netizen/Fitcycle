@@ -22,7 +22,7 @@
             </div>
             <div>
               <h2 class="text-sm font-black tracking-wide" :class="store.settings.themeMode === 'light' ? 'text-slate-900' : 'text-white'">荣誉殿堂 · 战力天梯</h2>
-              <p class="text-[10px] text-zinc-400 font-mono">{{ honorData.presentation.skinName }}</p>
+              <p class="text-xs text-zinc-400 font-mono">{{ honorData.presentation.skinName }}</p>
             </div>
           </div>
           <button @click="$emit('close')" 
@@ -61,12 +61,12 @@
 
             <!-- Distinct Annual Prestige Badge Pill (Non-Overlapping) -->
             <div class="flex items-center justify-center gap-1.5 pt-1.5">
-              <div class="px-3 py-1 rounded-full text-[10px] font-black border tracking-wider flex items-center gap-1.5 shadow-sm"
+              <div class="px-3 py-1 rounded-full text-xs font-black border tracking-wider flex items-center gap-1.5 shadow-sm"
                    :style="{ backgroundColor: prestigeInfo.glow, borderColor: prestigeInfo.border, color: prestigeInfo.color }">
                 <img v-if="prestigeSvg" :src="prestigeSvg" alt="Prestige Star" class="w-3.5 h-3.5 object-contain inline-block" />
                 <span>{{ prestigeInfo.name }}</span>
               </div>
-              <div class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-zinc-900 border border-zinc-800 text-zinc-400">
+              <div class="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-zinc-900 border border-zinc-800 text-zinc-400">
                 {{ honorData.prestigeYear }} 年度
               </div>
             </div>
@@ -75,12 +75,12 @@
           <!-- FPS Score & Decay Notice -->
           <div class="bg-zinc-950/80 border border-zinc-800 rounded-xl p-2.5 flex items-center justify-between text-xs font-mono">
             <div class="text-left">
-              <span class="text-zinc-500 text-[10px] block">综合战力积分 (FPS)</span>
-              <span class="text-base font-black text-amber-400">{{ honorData.score }} <span class="text-[10px] text-zinc-500">PTS</span></span>
+              <span class="text-zinc-500 text-xs block">综合战力积分 (FPS)</span>
+              <span class="text-base font-black text-amber-400">{{ honorData.score }} <span class="text-xs text-zinc-500">PTS</span></span>
             </div>
             
             <div class="text-right">
-              <span class="text-zinc-500 text-[10px] block">历史最高</span>
+              <span class="text-zinc-500 text-xs block">历史最高</span>
               <span class="text-xs font-bold text-zinc-300">{{ honorData.highestScore }} PTS</span>
             </div>
           </div>
@@ -89,10 +89,12 @@
           <div class="p-3 rounded-2xl bg-zinc-950/90 border border-zinc-800 space-y-2.5 text-left">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-1.5 text-xs font-bold text-sky-400">
-                <span>🛡️</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
                 <span>战术减载免战盾牌</span>
               </div>
-              <span class="text-[10px] font-mono font-black px-2 py-0.5 rounded-full border"
+              <span class="text-xs font-mono font-black px-2.5 py-0.5 rounded-full border"
                     :class="honorData.shieldInventory.available > 0 ? 'bg-sky-500/15 border-sky-500/40 text-sky-300' : 'bg-zinc-900 border-zinc-800 text-zinc-500'">
                 储备: {{ honorData.shieldInventory.available }}/{{ honorData.shieldInventory.maxCapacity }} 枚
               </span>
@@ -100,10 +102,10 @@
 
             <!-- Shield Charging Progress Bar (1 Shield per 16 Unique Training Days) -->
             <div class="space-y-1">
-              <div class="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
-                <span v-if="honorData.shieldInventory.isNoviceProbation" class="text-amber-400 font-bold">🌱 新兵筑基期 ({{ honorData.shieldInventory.currentChargeWorkouts }}/16 天)</span>
-                <span v-else>下一枚充能: {{ honorData.shieldInventory.currentChargeWorkouts }}/16 天训练 (每日计1天)</span>
-                <span class="text-sky-300 font-bold">还需 {{ honorData.shieldInventory.nextShieldRemaining }} 天打卡</span>
+              <div class="flex items-center justify-between text-xs text-zinc-400 font-mono">
+                <span v-if="honorData.shieldInventory.isNoviceProbation" class="text-amber-400 font-bold">新兵筑基期 ({{ honorData.shieldInventory.currentChargeWorkouts }}/16 天)</span>
+                <span v-else>下一枚充能: {{ honorData.shieldInventory.currentChargeWorkouts }}/16 天打卡</span>
+                <span class="text-sky-300 font-bold">还需 {{ honorData.shieldInventory.nextShieldRemaining }} 天</span>
               </div>
               <div class="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden border border-zinc-800">
                 <div class="h-full bg-gradient-to-r from-sky-500 to-indigo-500 transition-all duration-500 rounded-full"
@@ -112,53 +114,59 @@
             </div>
 
             <!-- Scientific Periodization Rationale & Physiological Reason -->
-            <div class="p-2.5 rounded-xl bg-zinc-950 border border-sky-500/20 text-[10px] space-y-1 text-zinc-400">
-              <div class="flex items-center gap-1 text-sky-300 font-bold">
-                <span>🧬</span>
+            <div class="p-2.5 rounded-xl bg-zinc-950 border border-sky-500/20 text-xs space-y-1 text-zinc-400">
+              <div class="flex items-center gap-1.5 text-sky-300 font-bold">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
                 <span>运动生理减载原理 (Deload Science)</span>
               </div>
-              <p class="leading-relaxed text-zinc-300">
+              <p class="leading-relaxed text-zinc-300 text-xs">
                 连续规律特训 4~6 周（16天+，同日多次打卡仅计1天）后，中枢神经与肌腱劳损达临界值，需 7 天主动减载以消解疲劳、促发超量恢复。
               </p>
-              <div class="flex items-center justify-between text-[9px] text-zinc-400 pt-0.5 border-t border-zinc-800/80 font-mono">
-                <span>⚡ 门槛：每 16 天特训铸造 1 枚</span>
-                <span>⏳ 冷却：使用后享 21 天自适应期</span>
+              <div class="flex items-center justify-between text-xs text-zinc-400 pt-1 border-t border-zinc-800/80 font-mono">
+                <span>门槛：每 16 天特训铸造 1 枚</span>
+                <span>冷却：使用后享 21 天自适应期</span>
               </div>
             </div>
 
             <!-- Shield Dynamic Status Banner & Action Button -->
             <!-- 1. Active State -->
             <div v-if="honorData.isDeloadActive"
-                 class="p-2.5 rounded-xl bg-sky-950/60 border border-sky-500/50 text-[11px] text-sky-300 flex items-center justify-between gap-2 shadow-sm shadow-sky-500/20">
+                 class="p-2.5 rounded-xl bg-sky-950/60 border border-sky-500/50 text-xs text-sky-300 flex items-center justify-between gap-2 shadow-sm shadow-sky-500/20">
               <div class="flex items-center gap-2">
-                <span class="text-base">🛡️</span>
+                <svg class="w-4 h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
                 <span class="leading-tight font-medium">免战盾生效中 (剩余 {{ honorData.shieldDaysRemaining }} 天免扣分)</span>
               </div>
-              <button @click="handleToggleDeload(false)" class="text-[10px] px-2.5 py-1 rounded-lg bg-sky-900 hover:bg-sky-800 text-sky-200 border border-sky-600/50 font-bold whitespace-nowrap active:scale-95 transition-all">
+              <button @click="handleToggleDeload(false)" class="text-xs px-2.5 py-1 rounded-lg bg-sky-900 hover:bg-sky-800 text-sky-200 border border-sky-600/50 font-bold whitespace-nowrap active:scale-95 transition-all">
                 提前归队
               </button>
             </div>
 
             <!-- 2. Cooldown State -->
             <div v-else-if="honorData.isCooldownActive"
-                 class="p-2 rounded-xl bg-zinc-900/90 border border-zinc-800 text-[10px] text-zinc-400 flex items-center justify-between gap-1.5">
-              <span>⏳ 周期化自适应冷却中 (还需 {{ honorData.cooldownDaysRemaining }} 天)</span>
-              <span class="text-zinc-600 font-mono text-[9px]">规律训练中</span>
+                 class="p-2 rounded-xl bg-zinc-900/90 border border-zinc-800 text-xs text-zinc-400 flex items-center justify-between gap-1.5">
+              <span>周期化自适应冷却中 (还需 {{ honorData.cooldownDaysRemaining }} 天)</span>
+              <span class="text-zinc-500 font-mono text-xs">规律训练中</span>
             </div>
 
             <!-- 3. Ready to Activate -->
             <div v-else-if="honorData.shieldInventory.available > 0"
                  class="flex items-center justify-between gap-2 pt-0.5">
-              <span class="text-[10px] text-zinc-400">消耗 1 枚盾牌，冻结 7 天战力衰减</span>
+              <span class="text-xs text-zinc-400">消耗 1 枚盾牌，冻结 7 天战力衰减</span>
               <button @click="handleToggleDeload(true)" 
-                      class="text-xs px-3 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold shadow-md shadow-sky-500/20 active:scale-95 transition-all whitespace-nowrap flex items-center gap-1">
-                <span>🛡️</span>
+                      class="text-xs px-3 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold shadow-md shadow-sky-500/20 active:scale-95 transition-all whitespace-nowrap flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
                 <span>激活 7 天免战盾</span>
               </button>
             </div>
 
             <!-- 4. No Shields Available (Novice vs Veteran) -->
-            <div v-else class="p-2 rounded-xl bg-zinc-900/60 border border-zinc-800/80 text-[10px] text-zinc-400 flex items-center justify-between">
+            <div v-else class="p-2 rounded-xl bg-zinc-900/60 border border-zinc-800/80 text-xs text-zinc-400 flex items-center justify-between">
               <span v-if="honorData.shieldInventory.isNoviceProbation" class="text-zinc-400">新兵筑基中，完成 16 次打卡自动解锁首枚</span>
               <span v-else>暂无可用盾牌，完成 16 次特训即可自动铸造</span>
               <span class="font-mono text-sky-400 font-bold">做工充能</span>
@@ -167,7 +175,7 @@
 
           <!-- Progression Bar to Next Tier -->
           <div v-if="!honorData.tier.isApex" class="space-y-1 text-left">
-            <div class="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
+            <div class="flex items-center justify-between text-xs text-zinc-400 font-mono">
               <span>下一阶晋级进度</span>
               <span class="text-amber-400 font-bold">{{ honorData.tier.progressPercent }}% ({{ honorData.score }} / {{ honorData.tier.nextTierScore }})</span>
             </div>
@@ -180,8 +188,8 @@
           <div v-else class="pt-1">
             <button v-if="honorData.score >= 2900 && honorData.prestigeLevel < 6" 
                     @click="handlePrestigeReset"
-                    class="w-full py-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-xs font-black shadow-lg shadow-purple-500/30 transition-all active:scale-95">
-              👑 开启年度荣誉转生 (升阶至 {{ honorData.prestigeLevel + 1 }} 阶服役勋章)
+                    class="w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-xs font-black shadow-lg shadow-purple-500/30 transition-all active:scale-95">
+              开启年度荣誉转生 (升阶至 {{ honorData.prestigeLevel + 1 }} 阶服役勋章)
             </button>
           </div>
 
@@ -191,11 +199,11 @@
         <div class="space-y-2.5">
           <div class="flex items-center justify-between">
             <h3 class="text-xs font-black text-zinc-200">三大专精荣誉勋章 (已解锁 {{ unlockedCount }} 枚)</h3>
-            <span class="text-[10px] font-mono text-zinc-500">点击查看达成条件</span>
+            <span class="text-xs font-mono text-zinc-500">点击查看达成条件</span>
           </div>
 
           <!-- Badges Filter Tabs -->
-          <div class="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none text-[10px] font-mono">
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs font-mono">
             <button v-for="tab in filterTabs" :key="tab.key"
                     @click="activeBadgeTab = tab.key"
                     class="px-2.5 py-1 rounded-lg border whitespace-nowrap transition-all"
@@ -229,7 +237,7 @@
                   </span>
                   <span v-if="badge.unlocked" class="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0"></span>
                 </div>
-                <p class="text-[10px] text-zinc-500 leading-tight line-clamp-2 mt-0.5">{{ badge.desc }}</p>
+                <p class="text-xs text-zinc-400 leading-tight line-clamp-2 mt-0.5">{{ badge.desc }}</p>
               </div>
 
             </div>
@@ -240,11 +248,11 @@
       </div>
 
       <!-- Modal Footer -->
-      <div class="p-3 border-t border-zinc-800/80 bg-zinc-950/80 flex items-center justify-between text-[11px] text-zinc-400 flex-shrink-0">
+      <div class="p-3 border-t border-zinc-800/80 bg-zinc-950/80 flex items-center justify-between text-xs text-zinc-400 flex-shrink-0">
         <button @click="$emit('open-rules')" 
-                class="hover:text-amber-400 active:scale-95 cursor-pointer flex items-center gap-1 transition-all text-[11px] text-zinc-400">
-          <span>📜 排位与衰减规则法典</span>
-          <span class="text-[10px] text-amber-500">❯</span>
+                class="hover:text-amber-400 active:scale-95 cursor-pointer flex items-center gap-1.5 transition-all text-xs text-zinc-400">
+          <span>排位与衰减规则法典</span>
+          <span class="text-xs text-amber-500">❯</span>
         </button>
         <button @click="$emit('close')" class="px-4 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-bold transition-all cursor-pointer">
           关闭
