@@ -159,9 +159,10 @@ describe("Mobile Ergonomics & Scroll Lock Suite", () => {
 
     // Must NOT contain raw "1 - ⬇️" pattern
     expect(html).not.toContain("⬇️");
-    // Action button should use book instead of microscope
-    expect(html).toContain("📖");
+    // Exercise header does not have redundant microscope or book icons (thumbnail click opens details directly)
     expect(html).not.toContain("🔬");
+    expect(wrapper.find('button[title*="查看动作要领与演示"]').exists()).toBe(false);
+    expect(wrapper.find('button[title*="器械拍照/语音识别替换"]').exists()).toBe(false);
 
     discardActiveWorkout();
   });

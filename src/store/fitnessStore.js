@@ -332,7 +332,19 @@ export function getExerciseDetails(exerciseIdOrName) {
   if (!exerciseIdOrName) return null;
   if (typeof exerciseIdOrName === "object" && exerciseIdOrName !== null) {
     if (exerciseIdOrName.gifUrl) return exerciseIdOrName;
-    return getExerciseDetails(exerciseIdOrName.exerciseId || exerciseIdOrName.id || exerciseIdOrName.name);
+    if (exerciseIdOrName.exerciseId) {
+      const match = getExerciseDetails(exerciseIdOrName.exerciseId);
+      if (match) return match;
+    }
+    if (exerciseIdOrName.name) {
+      const match = getExerciseDetails(exerciseIdOrName.name);
+      if (match) return match;
+    }
+    if (exerciseIdOrName.id) {
+      const match = getExerciseDetails(exerciseIdOrName.id);
+      if (match) return match;
+    }
+    return null;
   }
   const target = typeof exerciseIdOrName === "string" ? exerciseIdOrName.trim().toLowerCase() : "";
   if (!target) return null;

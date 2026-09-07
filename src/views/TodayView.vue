@@ -250,7 +250,7 @@
               </div>
             </div>
 
-            <!-- Action buttons: Pin, Reorder, Book details, Swap, Camera finder, Delete -->
+            <!-- Action buttons: Pin, Reorder, Swap, Delete (点击左侧缩略图查看3D要领，拍照识器械在底部与替换弹窗中提供) -->
             <div class="flex items-center gap-1 flex-shrink-0">
               <button @click="pinActiveWorkoutExercise(exIdx)" 
                       title="置顶动作"
@@ -269,20 +269,10 @@
                       class="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-zinc-200 rounded-lg text-xs font-bold transition-all active:scale-95 cursor-pointer">
                 ↓
               </button>
-              <button @click="openExerciseDetail(ex)" 
-                      title="查看动作要领与演示"
-                      class="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-amber-400 rounded-lg text-xs font-bold transition-all active:scale-95 cursor-pointer">
-                📖
-              </button>
               <button @click="openSwapModal(exIdx)" 
                       title="替换动作"
                       class="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg text-xs transition-all active:scale-95 cursor-pointer">
                 🔄
-              </button>
-              <button @click="openMachineFinder(exIdx)" 
-                      title="器械拍照/语音识别替换"
-                      class="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-amber-400 rounded-lg text-xs font-bold transition-all active:scale-95 cursor-pointer">
-                📸
               </button>
               <button @click="removeExercise(exIdx)" 
                       title="移除动作"

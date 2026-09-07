@@ -6,7 +6,7 @@ export const ARM_EXERCISES = [
     category: "手臂",
     target: "肱三头肌外侧头与长头 / 马蹄铁",
     secondaryMuscles: ["三角肌前束", "胸大肌下部"],
-    aliases: ["器械三头下压", "绳索下压", "直杠下压", "V把下压", "三头下压", "站姿下压", "肱三头肌下压", "臂屈伸", "马蹄铁", "Triceps Pushdown", "Pushdown"],
+    aliases: ["器械三头下压", "绳索下压", "直杠下压", "V把下压", "三头下压", "站姿下压", "坐姿三头下压", "坐姿器械三头下压", "坐姿绳索三头下压", "肱三头肌下压", "臂屈伸", "马蹄铁", "Triceps Pushdown", "Pushdown"],
     gifUrl: "./exercises/machine-triceps-pressdown.gif",
     defaultSets: 3,
     defaultReps: "12-15",

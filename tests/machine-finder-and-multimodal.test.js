@@ -458,7 +458,7 @@ describe("Milestone 2: Multimodal Gym Machine Finder & Scientific Anatomy UI", (
       wrapper.unmount();
     });
 
-    it("TodayView active workout renders 📸 拍照/语音识器械 quick entry and row action", async () => {
+    it("TodayView active workout renders 📸 拍照/语音识器械 quick entry without redundant row action buttons", async () => {
       startWorkout("plan-push");
       const wrapper = mount(TodayView, {
         global: {
@@ -477,14 +477,9 @@ describe("Milestone 2: Multimodal Gym Machine Finder & Scientific Anatomy UI", (
       expect(finderModal.props("visible")).toBe(true);
       expect(finderModal.props("replaceIndex")).toBe(-1);
 
-      // Row action for replacing
+      // Redundant row camera button has been removed from card header to keep UI minimal
       const rowCameraBtn = wrapper.find('button[title*="器械拍照/语音识别替换"]');
-      expect(rowCameraBtn.exists()).toBe(true);
-
-      await rowCameraBtn.trigger("click");
-      await nextTick();
-
-      expect(finderModal.props("replaceIndex")).toBe(0);
+      expect(rowCameraBtn.exists()).toBe(false);
 
       wrapper.unmount();
     });

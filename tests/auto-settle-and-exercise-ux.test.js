@@ -1,4 +1,4 @@
-﻿import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { 
   store, 
   startWorkout, 
@@ -107,10 +107,30 @@ describe('Workout Inactivity Auto-Settlement & UX Improvements', () => {
     expect(details.gifUrl).toBeTruthy();
   });
 
-  it('getExerciseDetails resolves seated triceps pushdown variations', () => {
-    const details = getExerciseDetails('坐姿三头下压');
-    expect(details).toBeTruthy();
-    expect(details.gifUrl).toBeTruthy();
+  it('getExerciseDetails resolves seated triceps pushdown variations and custom id objects', () => {
+    // 1. By string name
+    const detailsByName = getExerciseDetails('坐姿三头下压');
+    expect(detailsByName).toBeTruthy();
+    expect(detailsByName.gifUrl).toBe('./exercises/machine-triceps-pressdown.gif');
+
+    // 2. By alias variations
+    const detailsByMachine = getExerciseDetails('坐姿器械三头下压');
+    expect(detailsByMachine).toBeTruthy();
+    expect(detailsByMachine.gifUrl).toBe('./exercises/machine-triceps-pressdown.gif');
+
+    const detailsByCable = getExerciseDetails('坐姿绳索三头下压');
+    expect(detailsByCable).toBeTruthy();
+    expect(detailsByCable.gifUrl).toBe('./exercises/machine-triceps-pressdown.gif');
+
+    // 3. By object with custom exerciseId fallback to name
+    const detailsByCustomExId = getExerciseDetails({ exerciseId: 'custom-1788800640', name: '坐姿三头下压' });
+    expect(detailsByCustomExId).toBeTruthy();
+    expect(detailsByCustomExId.gifUrl).toBe('./exercises/machine-triceps-pressdown.gif');
+
+    // 4. By object with custom id fallback to name
+    const detailsByCustomId = getExerciseDetails({ id: 'custom-1788800640', name: '坐姿三头下压' });
+    expect(detailsByCustomId).toBeTruthy();
+    expect(detailsByCustomId.gifUrl).toBe('./exercises/machine-triceps-pressdown.gif');
   });
 
   it('workout review prompt does not match equipment visual card in AI assistant', () => {
