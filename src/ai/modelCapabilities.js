@@ -116,7 +116,11 @@ const FRIENDLY_NAMES = {
 export function formatModelDisplayName(id, fallbackName = "") {
   const cleanId = String(id || "");
   if (FRIENDLY_NAMES[cleanId]) return FRIENDLY_NAMES[cleanId];
-  if (fallbackName && fallbackName !== cleanId) return fallbackName;
+  if (fallbackName && fallbackName !== cleanId) {
+    const dePrefixed = fallbackName.replace(/^[A-Za-z0-9_\-\.\s]+:\s*/, "").trim();
+    if (dePrefixed) return dePrefixed;
+    return fallbackName;
+  }
   return cleanId;
 }
 

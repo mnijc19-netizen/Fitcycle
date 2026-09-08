@@ -55,7 +55,7 @@
              :class="store.settings.themeMode === 'light' ? 'bg-gradient-to-t from-[#F9F8F5] via-[#F9F8F5]/50 to-[#F9F8F5]/90' : 'bg-gradient-to-t from-[#070B14] via-[#070B14]/40 to-[#070B14]/80'"></div>
       </div>
 
-      <header class="relative z-10 flex items-center justify-between gap-3 px-4 py-3 border-b border-zinc-800 bg-zinc-900/95 flex-shrink-0">
+      <header class="relative z-10 flex items-center justify-between gap-2.5 px-4 py-2.5 border-b border-zinc-800 bg-zinc-900/95 flex-shrink-0">
         <div class="min-w-0 flex-1">
           <div class="text-base font-black text-zinc-100 flex items-center gap-2">
             <span class="text-amber-400 font-black">✦</span> Fitcycle AI
@@ -64,13 +64,14 @@
           <button type="button"
                   data-testid="toggle-quick-model-picker"
                   @click="showQuickModelPicker = !showQuickModelPicker"
-                  class="text-xs sm:text-sm text-zinc-300 hover:text-amber-300 truncate flex items-center gap-1 mt-0.5 max-w-full group text-left transition-colors font-medium">
-            <span class="truncate font-mono">{{ selectedModel ? `${activeProvider.name} · ${selectedModel.name}` : '未选择模型（点击选择）' }}</span>
-            <span class="text-xs text-amber-400/80 group-hover:text-amber-300">▼</span>
+                  class="inline-flex items-center gap-1.5 px-2.5 py-1 mt-1 rounded-lg bg-zinc-800/80 hover:bg-zinc-800 border border-zinc-700/80 hover:border-amber-500/50 text-xs sm:text-sm text-zinc-200 hover:text-amber-300 transition-all font-mono max-w-full group text-left shadow-sm">
+            <span class="text-[11px] font-bold text-amber-400 bg-amber-500/15 px-1.5 py-0.5 rounded border border-amber-500/30 flex-shrink-0 leading-none">{{ activeProvider.name }}</span>
+            <span class="truncate font-semibold tracking-tight text-zinc-100 group-hover:text-amber-200">{{ cleanModelTitle(selectedModel) }}</span>
+            <span class="text-[10px] text-amber-400/80 group-hover:text-amber-300 ml-0.5 flex-shrink-0">▼</span>
           </button>
         </div>
-        <div class="flex items-center gap-2">
-          <button type="button" class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold border border-zinc-700 text-zinc-300 hover:text-white bg-zinc-900 active:scale-95 transition-all" @click="handleClear">清空对话</button>
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <button type="button" class="px-2.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold border border-zinc-700 text-zinc-300 hover:text-white bg-zinc-900 active:scale-95 transition-all" title="清空当前对话" @click="handleClear">清空</button>
           <button type="button" class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center text-sm transition-colors" 
                   :title="isFullScreen ? '退出全屏' : '全屏显示'" 
                   @click="isFullScreen = !isFullScreen">
@@ -118,8 +119,8 @@
                   class="w-full px-3 py-2 rounded-xl text-left text-sm transition-all flex items-center justify-between group"
                   :class="selectedModelId === m.id ? 'bg-amber-500/15 border border-amber-500/40 text-amber-300 font-bold' : 'hover:bg-zinc-800 text-zinc-200 border border-transparent'">
             <div class="min-w-0 flex-1 pr-2">
-              <div class="text-sm font-bold truncate">{{ m.name }}</div>
-              <div class="text-xs text-zinc-400 truncate mt-0.5">{{ m.id }}</div>
+              <div class="text-sm font-bold leading-snug break-words">{{ m.name }}</div>
+              <div class="text-xs text-zinc-400 break-all mt-0.5">{{ m.id }}</div>
             </div>
             <div class="flex items-center gap-1.5 flex-shrink-0">
               <span class="text-xs px-2 py-0.5 rounded border font-bold flex items-center gap-0.5"
@@ -539,6 +540,7 @@ import { buildUserMessage, resumeAssistantAfterDecision, runAssistantLoop } from
 import { createFitcycleToolRuntime } from "../ai/fitcycleTools.js";
 import { processImageFile } from "../ai/imageProcessor.js";
 import {
+  formatModelDisplayName,
   getMessageBlockReason,
   MODEL_STRATEGIES,
   filterModelsByStrategy,
@@ -877,6 +879,21 @@ const defaultChips = [
 const activeProvider = computed(getActiveProvider);
 const activeApiKey = computed(getActiveApiKey);
 const selectedModel = computed(() => getActiveModels().find((model) => model.id === getActiveModelId()) || null);
+
+function cleanModelTitle(model) {
+  if (!model) {
+    const fallbackId = getActiveModelId();
+    if (fallbackId) {
+      const fName = formatModelDisplayName(fallbackId);
+      return fName.replace(/\s*\([^)]*\)$/, "").trim();
+    }
+    return "点击选择模型";
+  }
+  let name = String(model.name || model.id || "").trim();
+  name = name.replace(/^[A-Za-z0-9_\-\.\s]+:\s*/, "").trim();
+  name = name.replace(/\s*\([^)]*\)$/, "").trim();
+  return name || model.id;
+}
 const sendDisabledReason = computed(() => getMessageBlockReason({
   apiKey: activeApiKey.value,
   model: selectedModel.value,

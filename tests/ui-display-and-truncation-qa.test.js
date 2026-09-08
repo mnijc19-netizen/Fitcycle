@@ -3,6 +3,15 @@ import { mount } from "@vue/test-utils";
 import { store } from "../src/store/fitnessStore.js";
 import TodayView from "../src/views/TodayView.vue";
 import WorkoutSummaryModal from "../src/components/WorkoutSummaryModal.vue";
+import AIAssistantDrawer from "../src/components/AIAssistantDrawer.vue";
+import { formatModelDisplayName } from "../src/ai/modelCapabilities.js";
+import {
+  aiSession,
+  clearAIConnection,
+  setActiveProvider,
+  setProviderModels,
+  setSelectedModel
+} from "../src/ai/aiSession.js";
 import fs from "fs";
 import path from "path";
 
@@ -21,6 +30,7 @@ describe("FitCycle Master UI Display and Anti-Truncation Quality Assurance Suite
       wrapper = null;
     }
     document.body.innerHTML = "";
+    clearAIConnection();
   });
 
   it("TodayView Telemetry: Dual Pods render zero-truncation punchy metrics and full-width insight banner", async () => {
@@ -199,5 +209,38 @@ describe("FitCycle Master UI Display and Anti-Truncation Quality Assurance Suite
     });
 
     expect(violations).toEqual([]);
+  });
+
+  it("formatModelDisplayName: de-prefixes vendor catalog strings to prevent stuttering", () => {
+    expect(formatModelDisplayName("qwen/qwen3-235b-a22b", "Qwen: Qwen3 235B A22B")).toBe("Qwen3 235B A22B");
+    expect(formatModelDisplayName("deepseek/deepseek-chat", "DeepSeek: DeepSeek-V3")).toBe("DeepSeek-V3 (极速纯文本)");
+    expect(formatModelDisplayName("custom/deepseek-v3", "DeepSeek: DeepSeek-V3")).toBe("DeepSeek-V3");
+    expect(formatModelDisplayName("google/gemini-2.5-flash", "Google: Gemini 2.5 Flash")).toBe("Gemini 2.5 Flash");
+    expect(formatModelDisplayName("meta-llama/llama-3.3-70b-instruct", "Meta: Llama 3.3 70B Instruct")).toBe("Llama 3.3 70B (开源顶级)");
+    expect(formatModelDisplayName("meta-llama/llama-custom", "Meta: Llama Custom")).toBe("Llama Custom");
+  });
+
+  it("AIAssistantDrawer Header: renders sleek capsule trigger with clean model name and multi-line popover", async () => {
+    setActiveProvider("openrouter");
+    setProviderModels([
+      { id: "qwen/qwen3-235b-a22b", name: "Qwen: Qwen3 235B A22B" }
+    ], "openrouter");
+    setSelectedModel("qwen/qwen3-235b-a22b", "openrouter");
+    aiSession.drawerOpen = true;
+
+    wrapper = mount(AIAssistantDrawer, { attachTo: document.body });
+    const triggerBtn = wrapper.find('[data-testid="toggle-quick-model-picker"]');
+    expect(triggerBtn.exists()).toBe(true);
+
+    const triggerText = triggerBtn.text();
+    expect(triggerText).toContain("OpenRouter");
+    expect(triggerText).toContain("Qwen3 235B A22B");
+    expect(triggerText).not.toContain("Qwen: Qwen3");
+
+    // Open popover and verify model list uses break-words instead of truncate
+    await triggerBtn.trigger("click");
+    const popover = wrapper.find('[data-testid="quick-model-picker-modal"]');
+    expect(popover.exists()).toBe(true);
+    expect(popover.html()).toContain("break-words");
   });
 });
