@@ -386,7 +386,12 @@
 
     <!-- AI Coach Entry (Clean Inset Group) -->
     <div class="space-y-1.5">
-      <div class="text-xs font-bold text-zinc-400 px-1">智能教练</div>
+      <div class="text-xs font-bold text-zinc-400 px-1 flex items-center justify-between">
+        <span>智能教练</span>
+        <span class="text-[10px] font-mono text-zinc-500">大模型物理审计</span>
+      </div>
+
+      <!-- Main AI Settings Button -->
       <div class="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl p-3.5 flex items-center justify-between cursor-pointer hover:border-amber-500/40 active:scale-98 transition-all group shadow-sm"
            @click="showAISettingsModal = true"
            data-testid="open-ai-settings-modal">
@@ -403,12 +408,38 @@
               </span>
             </div>
             <p class="text-xs text-zinc-400 truncate mt-0.5">
-              {{ aiConnected ? `${activeAIProvider.name} · ${activeAIModel?.name || getActiveModelId()}` : '点击配置 DeepSeek / 智谱 / 通义千问' }}
+              {{ aiConnected ? `${activeAIProvider.name} · ${activeAIModel?.name || getActiveModelId()}` : '点击配置 OpenRouter / DeepSeek / 智谱' }}
             </p>
           </div>
         </div>
         <div class="text-zinc-500 group-hover:text-zinc-300 text-xs transition-colors pl-2">
           ❯
+        </div>
+      </div>
+
+      <!-- Outer Token & Cost Usage Summary Bar (Directly below AI coach option) -->
+      <div class="bg-zinc-900/60 border border-zinc-800/70 hover:border-zinc-700/90 rounded-xl p-2.5 flex items-center justify-between gap-2 cursor-pointer transition-all text-xs"
+           @click="showAISettingsModal = true"
+           data-testid="outer-token-audit-summary"
+           title="点击查看详细 Token 用量与消费大盘">
+        <div class="flex items-center gap-2 min-w-0 font-mono">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>
+          <span class="text-[11px] text-zinc-400 truncate">
+            大模型消耗:
+            <strong class="text-zinc-200 font-bold ml-1">{{ tokenAuditState.totalTokens.toLocaleString() }}</strong>
+            <span class="text-[10px] text-zinc-500 ml-0.5">Tokens</span>
+          </span>
+        </div>
+        
+        <div class="flex items-center gap-1.5 shrink-0 font-mono text-[11px]">
+          <span v-if="tokenAuditState.totalCostUSD > 0 || activeAIProvider.id === 'openrouter'" 
+                class="text-emerald-400 font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[10px]">
+            ${{ formatCostUSD(tokenAuditState.totalCostUSD) }}
+          </span>
+          <span v-else class="text-zinc-500 text-[10px] px-1.5 py-0.5 rounded bg-zinc-800/80">
+            {{ activeAIProvider.name }} Token 审计
+          </span>
+          <span class="text-zinc-500 text-[10px] hover:text-amber-400 transition-colors">详细大盘 ❯</span>
         </div>
       </div>
     </div>
@@ -677,6 +708,10 @@ import {
   getActiveModelId,
   getActiveModels
 } from "../ai/aiSession.js";
+import {
+  tokenAuditState,
+  formatCostUSD
+} from "../ai/tokenTracker.js";
 import { 
   store, 
   exportBackupJSON, 

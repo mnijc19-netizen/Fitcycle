@@ -19,6 +19,7 @@ import {
 } from "../src/ai/aiSession.js";
 import AISettingsPanel from "../src/components/AISettingsPanel.vue";
 import AIAssistantDrawer from "../src/components/AIAssistantDrawer.vue";
+import StatsView from "../src/views/StatsView.vue";
 
 beforeEach(() => {
   resetTokenAudit();
@@ -199,6 +200,47 @@ describe("Token and Cost Audit Engine", () => {
     // OpenRouter message: tokens AND cost
     expect(badges[1].text()).toContain("600 Tokens");
     expect(badges[1].text()).toContain("$0.0012");
+
+    wrapper.unmount();
+  });
+
+  it("places the currently active provider at index 0 so user immediately sees OpenRouter without scrolling", async () => {
+    setActiveProvider("openrouter");
+    const wrapper = mount(AISettingsPanel);
+
+    const buttons = wrapper.findAll('[data-testid^="provider-btn-"]');
+    expect(buttons.length).toBeGreaterThan(0);
+    // OpenRouter MUST be the very first button
+    expect(buttons[0].attributes("data-testid")).toBe("provider-btn-openrouter");
+    expect(buttons[0].text()).toContain("OpenRouter");
+
+    // Switching active provider re-orders so that active is always first
+    setActiveProvider("zhipu");
+    await nextTick();
+    const updatedButtons = wrapper.findAll('[data-testid^="provider-btn-"]');
+    expect(updatedButtons[0].attributes("data-testid")).toBe("provider-btn-zhipu");
+    expect(updatedButtons[0].text()).toContain("智谱 GLM");
+
+    wrapper.unmount();
+  });
+
+  it("renders outer token audit summary bar directly on the outer settings page (StatsView)", async () => {
+    recordTokenUsage({
+      provider: "openrouter",
+      modelId: "openai/gpt-4o",
+      usage: { prompt_tokens: 2500, completion_tokens: 656, total_tokens: 3156 },
+      pricing: { prompt: "0.0000025", completion: "0.00001" }
+    });
+
+    setActiveProvider("openrouter");
+    const wrapper = mount(StatsView);
+
+    const summaryBar = wrapper.find('[data-testid="outer-token-audit-summary"]');
+    expect(summaryBar.exists()).toBe(true);
+    expect(summaryBar.text()).toContain("3,156");
+    expect(summaryBar.text()).toContain("Tokens");
+    expect(summaryBar.text()).toContain("$0.0128"); // 2500*0.0000025 + 656*0.00001 = 0.00625 + 0.00656 = 0.01281 -> 0.0128
+    expect(summaryBar.text()).toContain("详细大盘 ❯");
 
     wrapper.unmount();
   });

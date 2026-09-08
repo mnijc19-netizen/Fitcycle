@@ -30,9 +30,10 @@
         </a>
       </div>
 
-      <!-- Horizontal Scrollable Compact Pills (Height: only ~34px, saves ~160px space!) -->
-      <div class="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none" aria-label="AI 提供商">
-        <button v-for="provider in AI_PROVIDERS" :key="provider.id" type="button"
+      <!-- Horizontal Scrollable Compact Pills (Active provider is placed 1st for instant recognition) -->
+      <div ref="providersScrollRef" class="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none" aria-label="AI 提供商">
+        <button v-for="provider in displayedProviders" :key="provider.id" type="button"
+                :data-testid="`provider-btn-${provider.id}`"
                 class="px-3 py-1.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 flex-shrink-0 active:scale-95 cursor-pointer"
                 :class="aiSession.activeProvider === provider.id 
                   ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-sm ring-1 ring-amber-500/40' 
@@ -43,22 +44,26 @@
         </button>
       </div>
 
-      <!-- Provider Billing Capability Callout -->
-      <div class="px-2.5 py-1.5 rounded-xl border flex items-center justify-between gap-2 text-xs transition-colors"
+      <!-- Provider Billing Capability Callout (Zero Truncation Guaranteed) -->
+      <div class="p-2.5 rounded-xl border space-y-1.5 text-xs transition-colors"
            :class="activeProvider.billingType === 'tokens_and_cost' 
              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' 
              : 'bg-zinc-900/60 border-zinc-800 text-zinc-400'"
            data-testid="provider-billing-notice">
-        <div class="flex items-center gap-1.5 truncate">
-          <span class="font-bold shrink-0 px-1.5 py-0.5 rounded text-[10px]"
+        <div class="flex items-center justify-between gap-2">
+          <span class="font-bold shrink-0 px-1.5 py-0.5 rounded text-[10px] flex items-center gap-1"
                 :class="activeProvider.billingType === 'tokens_and_cost' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-zinc-800 text-zinc-400'">
-            {{ activeProvider.billingBadge }}
+            <span class="w-1.5 h-1.5 rounded-full" :class="activeProvider.billingType === 'tokens_and_cost' ? 'bg-emerald-400' : 'bg-zinc-500'"></span>
+            <span>{{ activeProvider.billingBadge }}</span>
           </span>
-          <span class="text-[11px] truncate">{{ activeProvider.billingDesc }}</span>
+          <span class="text-[10px] font-mono opacity-80 shrink-0">
+            {{ activeProvider.billingType === 'tokens_and_cost' ? '实时计费: Token + 金额' : '实时计费: 仅回传 Token' }}
+          </span>
         </div>
-        <span class="text-[10px] shrink-0 font-mono opacity-80">
-          {{ activeProvider.billingType === 'tokens_and_cost' ? '实时计费: Token + 金额' : '实时计费: 仅回传 Token' }}
-        </span>
+        <p class="text-[11px] leading-relaxed break-words m-0"
+           :class="activeProvider.billingType === 'tokens_and_cost' ? 'text-emerald-400/90' : 'text-zinc-400'">
+          {{ activeProvider.billingDesc }}
+        </p>
       </div>
     </div>
 
@@ -436,7 +441,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 
 const emit = defineEmits(["open-chat"]);
 
@@ -444,6 +449,21 @@ function handleOpenChat() {
   aiSession.drawerOpen = true;
   emit("open-chat");
 }
+
+const providersScrollRef = ref(null);
+
+const displayedProviders = computed(() => {
+  const activeId = aiSession.activeProvider;
+  const activeItem = AI_PROVIDERS.find((p) => p.id === activeId);
+  const others = AI_PROVIDERS.filter((p) => p.id !== activeId);
+  return activeItem ? [activeItem, ...others] : AI_PROVIDERS;
+});
+
+onMounted(() => {
+  nextTick(() => {
+    providersScrollRef.value?.scrollTo({ left: 0, behavior: "instant" });
+  });
+});
 import {
   AI_PROVIDERS,
   DEFAULT_PRESET_MODELS,
@@ -616,6 +636,9 @@ watch(selectedModelId, () => {
 
 function selectProvider(providerId) {
   setActiveProvider(providerId);
+  nextTick(() => {
+    providersScrollRef.value?.scrollTo({ left: 0, behavior: "smooth" });
+  });
 }
 
 function processKeyAutoDetection(rawKey) {

@@ -14,6 +14,16 @@ export const AI_PROVIDERS = [
     billingDesc: "官方服务端物理回传 Token 消耗，单价与充值余额请参照官方控制台"
   },
   {
+    id: "openrouter",
+    name: "OpenRouter",
+    keyLabel: "OpenRouter API Key",
+    portal: "https://openrouter.ai/keys",
+    tag: "全网模型汇聚 · 自由路由",
+    billingType: "tokens_and_cost",
+    billingBadge: "Token + 实时金额",
+    billingDesc: "官方原生提供实时模型定价，支持按 Token 真实精确换算消费金额"
+  },
+  {
     id: "zhipu",
     name: "智谱 GLM",
     keyLabel: "智谱 API Key",
@@ -62,16 +72,6 @@ export const AI_PROVIDERS = [
     billingType: "tokens_only",
     billingBadge: "精确 Token 审计",
     billingDesc: "官方服务端物理回传 Token 消耗，单价与充值余额请参照官方控制台"
-  },
-  {
-    id: "openrouter",
-    name: "OpenRouter",
-    keyLabel: "OpenRouter API Key",
-    portal: "https://openrouter.ai/keys",
-    tag: "全网模型汇聚 · 自由路由",
-    billingType: "tokens_and_cost",
-    billingBadge: "Token + 实时金额",
-    billingDesc: "官方原生提供实时模型定价，支持按 Token 真实精确换算消费金额"
   }
 ];
 
