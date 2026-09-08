@@ -413,30 +413,32 @@
       </div>
     </div>
 
-    <!-- Full AI Settings Modal Sheet -->
+    <!-- Full AI Settings Modal Sheet (100% Fullscreen on Mobile) -->
     <Teleport to="body">
       <div v-if="showAISettingsModal" 
-           class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200"
-           style="padding-top: max(env(safe-area-inset-top, 0px), 12px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);">
+           class="fixed inset-0 z-[100] flex items-stretch sm:items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200"
+           style="padding-top: max(env(safe-area-inset-top, 0px), 0px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 0px);">
         <!-- Backdrop -->
         <div class="absolute inset-0" @click="showAISettingsModal = false"></div>
         
-        <!-- Modal Container with Fixed Header and Scrollable Body -->
-        <section class="relative w-full max-w-lg h-[min(88dvh,720px)] bg-zinc-950 border border-zinc-700 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in fade-in slide-in-from-bottom-6 duration-200">
-          <!-- Top Ergonomic Grabber Pill -->
-          <div class="w-10 h-1 rounded-full bg-zinc-700/80 mx-auto mt-2 -mb-1 flex-shrink-0 z-20"></div>
-
-          <!-- Fixed Header -->
-          <header class="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-900/95 flex-shrink-0">
+        <!-- Modal Container: Fullscreen on Mobile, Elegantly Centered on Desktop -->
+        <section class="relative w-full sm:max-w-2xl h-full sm:h-[92dvh] bg-zinc-950 sm:border border-zinc-700 rounded-none sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in fade-in slide-in-from-bottom-6 duration-200"
+                 style="overscroll-behavior: none;">
+          <!-- Top Header with Safe Area Inset Top for iPhone Dynamic Island -->
+          <header class="flex items-center justify-between px-4 py-3.5 border-b border-zinc-800 bg-zinc-900/98 backdrop-blur-md flex-shrink-0 z-20"
+                  style="padding-top: max(env(safe-area-inset-top, 0px), 14px);">
             <div class="flex items-center gap-2">
               <span class="text-amber-400 font-bold text-sm">✦</span>
-              <h2 class="text-xs font-bold text-zinc-100 uppercase tracking-wider">AI 智能教练配置</h2>
+              <h2 class="text-xs sm:text-sm font-bold text-zinc-100 uppercase tracking-wider">AI 智能教练配置</h2>
             </div>
-            <button type="button" @click="showAISettingsModal = false" class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer">✕</button>
+            <button type="button" @click="showAISettingsModal = false" 
+                    class="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer"
+                    aria-label="关闭 AI 配置">✕</button>
           </header>
 
           <!-- Scrollable Content Area with Generous Bottom Padding -->
-          <div class="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4" style="padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 6rem), 5rem);">
+          <div class="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4 scrollbar-thin" 
+               style="padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 3.5rem), 3.5rem);">
             <AISettingsPanel @open-chat="handleOpenChatFromSettings" />
           </div>
         </section>

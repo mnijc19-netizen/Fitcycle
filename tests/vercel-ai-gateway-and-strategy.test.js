@@ -11,7 +11,9 @@ import {
   filterModelsByStrategy,
   findRecommendedVisionModel,
   getModelCapabilities,
+  getModelCreator,
   getModelStrategy,
+  matchesModelSearch,
   normalizeProviderModel
 } from "../src/ai/modelCapabilities.js";
 import {
@@ -437,5 +439,85 @@ describe("Dynamic API model identification and capability precision", () => {
 
     wrapper.unmount();
   });
+
+  it("smart fuzzy model search matches hyphenated, spaced, and dotted model IDs", () => {
+    const gpt4o = { id: "openai/gpt-4o", name: "GPT-4o (多模态旗舰)" };
+    const gemini = { id: "google/gemini-2.0-flash", name: "Gemini 2.0 Flash" };
+    const claude = { id: "anthropic/claude-3-5-sonnet", name: "Claude 3.5 Sonnet" };
+    const qwen3 = { id: "alibaba/qwen3-vl-235b-a22b-instruct", name: "Qwen3 VL 235B" };
+
+    // Matches with spaces or missing hyphens
+    expect(matchesModelSearch(gpt4o, "gpt4")).toBe(true);
+    expect(matchesModelSearch(gpt4o, "gpt 4")).toBe(true);
+    expect(matchesModelSearch(gpt4o, "openai gpt")).toBe(true);
+
+    expect(matchesModelSearch(gemini, "gemini2")).toBe(true);
+    expect(matchesModelSearch(gemini, "gemini 2")).toBe(true);
+    expect(matchesModelSearch(gemini, "google flash")).toBe(true);
+
+    expect(matchesModelSearch(claude, "claude35")).toBe(true);
+    expect(matchesModelSearch(claude, "claude 3.5")).toBe(true);
+
+    expect(matchesModelSearch(qwen3, "qwen3")).toBe(true);
+    expect(matchesModelSearch(qwen3, "alibaba qwen")).toBe(true);
+  });
+
+  it("getModelCreator correctly extracts recognized creator names", () => {
+    expect(getModelCreator({ id: "openai/gpt-4o" })).toBe("OpenAI");
+    expect(getModelCreator({ id: "google/gemini-2.0-flash" })).toBe("Google");
+    expect(getModelCreator({ id: "anthropic/claude-3-5-sonnet" })).toBe("Anthropic");
+    expect(getModelCreator({ id: "alibaba/qwen3-vl-235b" })).toBe("Alibaba 阿里");
+    expect(getModelCreator({ id: "deepseek/deepseek-chat" })).toBe("DeepSeek");
+    expect(getModelCreator({ provider: "zhipu", id: "glm-4.6v" })).toBe("智谱 GLM");
+  });
+
+  it("AISettingsPanel omits raw English descriptions from cards to keep UI clean and focused", async () => {
+    setActiveProvider("vercel_ai_gateway");
+    setSessionApiKey("test-key", "vercel_ai_gateway");
+    setProviderModels([
+      {
+        id: "alibaba/qwen3-vl-235b",
+        name: "Qwen3 VL 235B",
+        description: "The Qwen3 series VL models has been comprehensively upgraded in visual coding and spatial perception."
+      }
+    ], "vercel_ai_gateway");
+
+    const wrapper = mount(AISettingsPanel);
+    const cardText = wrapper.find('[data-testid="models-grid"]').text();
+
+    // Model name and ID are present
+    expect(cardText).toContain("Qwen3 VL 235B");
+    expect(cardText).toContain("alibaba/qwen3-vl-235b");
+    
+    // Raw English description is omitted from the card to prevent clutter
+    expect(cardText).not.toContain("The Qwen3 series VL models has been comprehensively upgraded");
+
+    wrapper.unmount();
+  });
+
+  it("AISettingsPanel provides smart fallback recommendations and clear button on unmatched search", async () => {
+    setActiveProvider("vercel_ai_gateway");
+    setSessionApiKey("test-key", "vercel_ai_gateway");
+
+    const wrapper = mount(AISettingsPanel);
+    const searchInput = wrapper.find('input[type="search"]');
+    await searchInput.setValue("gpt6");
+    await nextTick();
+
+    // Shows friendly unmatched message
+    expect(wrapper.text()).toContain("没有找到与「gpt6」完全匹配的模型");
+    // Provides recommendation for related GPT models
+    expect(wrapper.text()).toContain("为您推荐以下相关模型");
+    // Provides clear button
+    const clearBtn = wrapper.findAll("button").find((b) => b.text().includes("清空搜索"));
+    expect(clearBtn).toBeDefined();
+
+    await clearBtn.trigger("click");
+    await nextTick();
+    expect(wrapper.find('input[type="search"]').element.value).toBe("");
+
+    wrapper.unmount();
+  });
 });
+
 

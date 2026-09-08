@@ -157,12 +157,84 @@ export function isSupportedChatModel(provider, model) {
   return !isNonChat;
 }
 
+export function normalizeSearchToken(str) {
+  return String(str || "")
+    .toLowerCase()
+    .replace(/[-_/. ]+/g, "");
+}
+
+export function getModelCreator(model) {
+  const id = String(model?.id || "");
+  if (id.includes("/")) {
+    const prefix = id.split("/")[0].toLowerCase();
+    const map = {
+      openai: "OpenAI",
+      google: "Google",
+      anthropic: "Anthropic",
+      deepseek: "DeepSeek",
+      alibaba: "Alibaba 阿里",
+      "deepseek-ai": "DeepSeek",
+      "meta-llama": "Meta LLaMA",
+      mistralai: "Mistral",
+      openbmb: "OpenBMB",
+      opengvlab: "OpenGVLab",
+      moonshot: "Moonshot",
+      zhipu: "智谱 GLM",
+      qwen: "通义千问"
+    };
+    return map[prefix] || prefix;
+  }
+  const prov = String(model?.provider || "");
+  if (prov === "deepseek") return "DeepSeek";
+  if (prov === "zhipu") return "智谱 GLM";
+  if (prov === "qwen") return "通义千问";
+  if (prov === "moonshot") return "月之暗面 Kimi";
+  if (prov === "siliconflow") return "硅基流动";
+  return "";
+}
+
+export function matchesModelSearch(model, searchText) {
+  const rawQuery = String(searchText || "").trim().toLowerCase();
+  if (!rawQuery) return true;
+
+  const id = String(model?.id || "").toLowerCase();
+  const name = String(model?.name || "").toLowerCase();
+  const creator = getModelCreator(model).toLowerCase();
+
+  // 1. Direct substring match
+  if (id.includes(rawQuery) || name.includes(rawQuery) || creator.includes(rawQuery)) {
+    return true;
+  }
+
+  // 2. Normalized alphanumeric match (stripping -, _, /, ., spaces)
+  const normQuery = normalizeSearchToken(rawQuery);
+  if (!normQuery) return true;
+
+  const normId = normalizeSearchToken(id);
+  const normName = normalizeSearchToken(name);
+
+  if (normId.includes(normQuery) || normName.includes(normQuery)) {
+    return true;
+  }
+
+  // 3. Multi-word search (e.g. "openai gpt", "gemini flash", "deepseek r1")
+  const words = rawQuery.split(/\s+/).filter(Boolean);
+  if (words.length > 1) {
+    const allWordsMatch = words.every((w) => {
+      const nw = normalizeSearchToken(w);
+      return id.includes(w) || name.includes(w) || creator.includes(w) || normId.includes(nw) || normName.includes(nw);
+    });
+    if (allWordsMatch) return true;
+  }
+
+  return false;
+}
+
 export function filterModels(models, searchText) {
-  const query = String(searchText || "").trim().toLowerCase();
+  if (!Array.isArray(models)) return [];
+  const query = String(searchText || "").trim();
   if (!query) return models;
-  return models.filter((model) =>
-    `${model.name} ${model.id} ${model.description}`.toLowerCase().includes(query)
-  );
+  return models.filter((model) => matchesModelSearch(model, query));
 }
 
 export function getMessageBlockReason({ apiKey, model, text, imageCount = 0 }) {

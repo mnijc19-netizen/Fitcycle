@@ -97,21 +97,37 @@
         </button>
       </div>
 
-      <!-- Quick Search Bar & Custom Model Input -->
+      <!-- Quick Search Bar & Collapsible Custom Model Input -->
       <div class="space-y-2">
         <div class="relative">
           <input id="model-search" v-model="modelSearch" type="search" 
-                 placeholder="搜索模型 ID (如 glm-4.5-air, glm-4.6v, deepseek-r1)..."
-                 class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3 py-2 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition-colors" />
+                 placeholder="搜索任意大模型 (如 gpt, gemini, claude, deepseek, qwen, glm)..."
+                 class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3.5 py-2.5 pr-8 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition-colors" />
+          <button v-if="modelSearch" type="button" @click="modelSearch = ''"
+                  class="absolute right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-[10px] transition-colors"
+                  aria-label="清空搜索">✕</button>
         </div>
 
-        <!-- Custom Model Input Row -->
-        <div class="p-2.5 rounded-xl bg-zinc-900/70 border border-zinc-800/80 space-y-1.5">
+        <!-- Collapsible Custom Model Input Trigger -->
+        <div class="flex items-center justify-between px-0.5">
+          <button type="button" @click="showCustomInput = !showCustomInput"
+                  class="text-[11px] text-zinc-400 hover:text-amber-300 flex items-center gap-1.5 transition-colors font-medium cursor-pointer">
+            <span class="text-amber-400">✦</span>
+            <span>{{ showCustomInput ? '收起自定义模型' : '找不到所需模型？自定义指定模型 ID' }}</span>
+            <span class="text-[10px] text-zinc-500">{{ showCustomInput ? '▲' : '▼' }}</span>
+          </button>
+          <span v-if="modelSearch && visibleModels.length" class="text-[11px] text-amber-400/90 font-mono">
+            搜索到 {{ visibleModels.length }} 款
+          </span>
+        </div>
+
+        <!-- Custom Model Input Row (Collapsible) -->
+        <div v-show="showCustomInput" class="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800/90 space-y-1.5 animate-in fade-in duration-150">
           <div class="flex items-center justify-between text-xs">
             <span class="font-medium text-zinc-300 flex items-center gap-1">
-              <span class="text-amber-400">✦</span> 自定义添加/指定模型 ID
+              <span>自定义指定模型 ID</span>
             </span>
-            <span class="text-xs text-zinc-500 font-mono">支持输入任意新专享包/微调 ID</span>
+            <span class="text-[10px] text-zinc-500 font-mono">输入后将自动加入模型池</span>
           </div>
           <div class="flex gap-1.5">
             <input v-model="customModelInput" type="text"
@@ -154,34 +170,35 @@
         </p>
       </div>
 
-      <!-- 宫格卡片式模型选择列表 (2-Column Grid Layout) -->
-      <div class="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1 scrollbar-thin">
+      <!-- 宫格卡片式模型选择列表 (2-Column Grid Layout - Clean, No English Descriptions) -->
+      <div v-if="visibleModels.length" data-testid="models-grid" class="grid grid-cols-2 gap-2 max-h-[50vh] sm:max-h-[440px] min-h-[240px] overflow-y-auto pr-1 scrollbar-thin">
         <div v-for="model in visibleModels" :key="model.id"
              @click="selectedModelId = model.id"
-             class="p-2.5 rounded-2xl border text-left cursor-pointer transition-all flex flex-col justify-between gap-2 relative overflow-hidden active:scale-95"
+             class="p-3 rounded-2xl border text-left cursor-pointer transition-all flex flex-col justify-between gap-2.5 relative overflow-hidden active:scale-95"
              :class="selectedModelId === model.id 
                ? 'bg-amber-500/15 border-amber-500 text-white shadow-md ring-1 ring-amber-500/50' 
                : 'bg-zinc-950/80 border-zinc-800 hover:border-zinc-700 text-zinc-300'">
           
-          <div>
-            <div class="flex items-center justify-between gap-1">
-              <span class="text-xs font-bold text-zinc-100 font-mono truncate">{{ model.name || model.id }}</span>
-              <span v-if="selectedModelId === model.id" class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0 animate-pulse"></span>
+          <div class="space-y-1">
+            <div class="flex items-start justify-between gap-1.5">
+              <span class="text-xs font-bold text-zinc-100 font-mono line-clamp-2 leading-snug">{{ model.name || model.id }}</span>
+              <span v-if="selectedModelId === model.id" class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0 animate-pulse mt-0.5"></span>
             </div>
-            <div class="text-xs text-zinc-500 font-mono truncate mt-0.5">{{ model.id }}</div>
-            <div v-if="model.description" class="text-xs text-zinc-400/80 leading-normal line-clamp-2 mt-0.5" :title="model.description">
-              {{ model.description }}
+            <div class="flex items-center gap-1 text-[10px] text-zinc-500 font-mono truncate">
+              <span v-if="getModelCreator(model)" class="px-1 py-0.2 rounded bg-zinc-800/80 text-zinc-400 text-[9px] font-sans">{{ getModelCreator(model) }}</span>
+              <span class="truncate">{{ model.id }}</span>
             </div>
           </div>
 
-          <!-- Feature & Strategy Badges in Grid Card -->
-          <div class="flex flex-wrap items-center gap-1 text-xs font-mono">
+          <!-- Feature & Strategy Badges in Grid Card (Clean Chinese Badges, NO English Text) -->
+          <div class="flex flex-wrap items-center gap-1 text-xs font-mono pt-1 border-t border-zinc-800/50">
             <span class="px-1.5 py-0.5 rounded border text-[10px] font-bold flex items-center gap-0.5"
                   :class="getModelStrategy(model, aiSession.activeProvider).badgeClass">
               <span>{{ getModelStrategy(model, aiSession.activeProvider).icon }}</span>
               <span>{{ getModelStrategy(model, aiSession.activeProvider).name }}</span>
             </span>
-            <span v-if="model.capabilities.tools" class="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300/90 border border-emerald-500/20 text-[10px]">感知</span>
+            <span v-if="model.capabilities?.tools" class="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300/90 border border-emerald-500/20 text-[10px]">感知</span>
+            <span v-if="!model.capabilities?.image" class="px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-500 border border-zinc-800 text-[10px]">纯文本</span>
           </div>
 
         </div>
@@ -191,7 +208,36 @@
       <select v-model="selectedModelId" class="hidden" aria-hidden="true">
         <option v-for="model in visibleModels" :key="model.id" :value="model.id">{{ formatModelLabel(model) }}</option>
       </select>
-      <p v-if="!visibleModels.length" class="text-xs text-zinc-500">没有匹配的对话模型。</p>
+
+      <!-- Friendly Empty Search State with Recommendations -->
+      <div v-if="!visibleModels.length" class="py-6 px-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 text-center space-y-3">
+        <div class="text-2xl">🔍</div>
+        <div class="space-y-1">
+          <div class="text-xs font-bold text-zinc-200">没有找到与「{{ modelSearch }}」完全匹配的模型</div>
+          <p class="text-[11px] text-zinc-400 leading-normal">
+            支持输入模型名或厂商，如 <code class="text-amber-400 font-mono">gpt</code>、<code class="text-amber-400 font-mono">gemini</code>、<code class="text-amber-400 font-mono">claude</code>、<code class="text-amber-400 font-mono">deepseek</code>、<code class="text-amber-400 font-mono">qwen</code>。
+          </p>
+        </div>
+
+        <div v-if="recommendedFallbackModels.length" class="space-y-1.5 pt-1">
+          <div class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">为您推荐以下相关模型：</div>
+          <div class="flex flex-wrap justify-center gap-1.5">
+            <button v-for="rec in recommendedFallbackModels" :key="rec.id" type="button"
+                    @click="selectedModelId = rec.id; modelSearch = ''"
+                    class="px-2.5 py-1 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-200 border border-zinc-700 font-mono flex items-center gap-1 active:scale-95 transition-all cursor-pointer">
+              <span>✦</span>
+              <span>{{ rec.name || rec.id }}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-center">
+          <button type="button" @click="modelSearch = ''; selectedStrategy = 'all'"
+                  class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold shadow-md shadow-amber-500/10 active:scale-95 transition-all cursor-pointer">
+            清空搜索，浏览全部 {{ activeModels.length }} 款可用模型
+          </button>
+        </div>
+      </div>
 
       <!-- Active Model Capability Overview Card -->
       <div v-if="selectedModel" class="rounded-2xl bg-zinc-950 border border-zinc-800/90 p-3.5 space-y-2.5">
@@ -206,9 +252,9 @@
             {{ getModelStrategy(selectedModel, aiSession.activeProvider).icon }} {{ getModelStrategy(selectedModel, aiSession.activeProvider).name }}
           </span>
           <span class="capability-badge capability-on">文字对话</span>
-          <span class="capability-badge" :class="selectedModel.capabilities.image ? 'capability-on' : 'capability-off'">图片识别 {{ selectedModel.capabilities.image ? '✓' : '×' }}</span>
-          <span class="capability-badge" :class="selectedModel.capabilities.tools ? 'capability-on' : 'capability-off'">数据感知 {{ selectedModel.capabilities.tools ? '✓' : '×' }}</span>
-          <span class="capability-badge" :class="selectedModel.capabilities.streaming ? 'capability-on' : 'capability-off'">流式传输 {{ selectedModel.capabilities.streaming ? '✓' : '×' }}</span>
+          <span class="capability-badge" :class="selectedModel.capabilities?.image ? 'capability-on' : 'capability-off'">图片识别 {{ selectedModel.capabilities?.image ? '✓' : '×' }}</span>
+          <span class="capability-badge" :class="selectedModel.capabilities?.tools ? 'capability-on' : 'capability-off'">数据感知 {{ selectedModel.capabilities?.tools ? '✓' : '×' }}</span>
+          <span class="capability-badge" :class="selectedModel.capabilities?.streaming ? 'capability-on' : 'capability-off'">流式传输 {{ selectedModel.capabilities?.streaming ? '✓' : '×' }}</span>
         </div>
 
         <div class="text-xs text-zinc-300 leading-normal bg-zinc-900/70 p-2.5 rounded-xl border border-zinc-800/70 flex items-start gap-1.5">
@@ -216,10 +262,10 @@
           <span>{{ getModelStrategy(selectedModel, aiSession.activeProvider).hint }}</span>
         </div>
         
-        <p v-if="!selectedModel.capabilities.tools" class="text-xs text-amber-400/90 leading-normal">
+        <p v-if="!selectedModel.capabilities?.tools" class="text-xs text-amber-400/90 leading-normal">
           该模型可用于对话咨询，但不支持自动读取或修改 Fitcycle 训练数据。
         </p>
-        <p v-if="!selectedModel.capabilities.image" class="text-xs text-zinc-500 leading-normal">
+        <p v-if="!selectedModel.capabilities?.image" class="text-xs text-zinc-500 leading-normal">
           当前选中的模型为纯文本对话模型；如需上传身材或动作图片分析，请选择带有「视觉识图」标识的模型（如 Gemini 2.0 Flash、GLM-4.6V、Qwen-VL-Max）。
         </p>
       </div>
@@ -261,7 +307,9 @@ import { fetchProviderModels } from "../ai/providerClient.js";
 import {
   MODEL_STRATEGIES,
   filterModelsByStrategy,
+  getModelCreator,
   getModelStrategy,
+  matchesModelSearch,
   normalizeProviderModel
 } from "../ai/modelCapabilities.js";
 
@@ -274,6 +322,7 @@ const modelSearch = ref("");
 const customModelInput = ref("");
 const customSuccessMsg = ref("");
 const selectedStrategy = ref("all");
+const showCustomInput = ref(false);
 
 const activeProvider = computed(getActiveProvider);
 const connected = computed(() => Boolean(getActiveApiKey()));
@@ -325,14 +374,43 @@ const selectedModelId = computed({
 const selectedModel = computed(() => activeModels.value.find((m) => m.id === selectedModelId.value) || null);
 
 const visibleModels = computed(() => {
-  let list = filterModelsByStrategy(activeModels.value, selectedStrategy.value);
+  const query = modelSearch.value.trim();
+  if (!query) {
+    return filterModelsByStrategy(activeModels.value, selectedStrategy.value);
+  }
+
+  // When search query is entered, first try searching inside current selected strategy
+  if (selectedStrategy.value !== "all") {
+    const strategyMatches = filterModelsByStrategy(activeModels.value, selectedStrategy.value)
+      .filter((m) => matchesModelSearch(m, query));
+    if (strategyMatches.length > 0) {
+      return strategyMatches;
+    }
+  }
+
+  // Fallback to searching globally across all models so user is never trapped in 0 results
+  return activeModels.value.filter((m) => matchesModelSearch(m, query));
+});
+
+const recommendedFallbackModels = computed(() => {
   const query = modelSearch.value.trim().toLowerCase();
-  if (!query) return list;
-  return list.filter((model) => {
-    const id = model.id.toLowerCase();
-    const name = (model.name || "").toLowerCase();
-    return id.includes(query) || name.includes(query);
-  });
+  if (!query) return [];
+  if (query.includes("gpt")) {
+    return activeModels.value.filter((m) => m.id.toLowerCase().includes("gpt")).slice(0, 4);
+  }
+  if (query.includes("gemini")) {
+    return activeModels.value.filter((m) => m.id.toLowerCase().includes("gemini")).slice(0, 4);
+  }
+  if (query.includes("claude")) {
+    return activeModels.value.filter((m) => m.id.toLowerCase().includes("claude")).slice(0, 4);
+  }
+  if (query.includes("deepseek")) {
+    return activeModels.value.filter((m) => m.id.toLowerCase().includes("deepseek")).slice(0, 4);
+  }
+  if (query.includes("qwen")) {
+    return activeModels.value.filter((m) => m.id.toLowerCase().includes("qwen")).slice(0, 4);
+  }
+  return activeModels.value.slice(0, 4);
 });
 
 watch(

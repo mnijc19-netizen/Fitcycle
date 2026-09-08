@@ -71,6 +71,11 @@
         </div>
         <div class="flex items-center gap-1.5">
           <button type="button" class="px-2.5 py-1 rounded-lg text-xs border border-zinc-700 text-zinc-400 hover:text-zinc-200 bg-zinc-900 transition-colors" @click="handleClear">清空对话</button>
+          <button type="button" class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center text-xs transition-colors" 
+                  :title="isFullScreen ? '退出全屏' : '全屏显示'" 
+                  @click="isFullScreen = !isFullScreen">
+            {{ isFullScreen ? '⊡' : '⛶' }}
+          </button>
           <button type="button" class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center text-xs transition-colors" aria-label="收起 AI 助手" @click="aiSession.drawerOpen = false">✕</button>
         </div>
       </header>
@@ -637,21 +642,23 @@ const containerDynamicStyle = computed(() => {
   };
 });
 
+const isFullScreen = ref(typeof window !== "undefined" && window.innerWidth < 640);
+
 const drawerDynamicStyle = computed(() => {
   if (isTest) return {};
 
-  if (isKeyboardOpen.value) {
+  if (isKeyboardOpen.value || isFullScreen.value) {
     return {
       height: "100%",
       maxHeight: "100%",
-      borderTopLeftRadius: "1rem",
-      borderTopRightRadius: "1rem"
+      borderTopLeftRadius: isFullScreen.value ? "0px" : "1rem",
+      borderTopRightRadius: isFullScreen.value ? "0px" : "1rem"
     };
   }
 
   return {
-    height: "min(85dvh, 760px)",
-    maxHeight: "85dvh",
+    height: "min(90dvh, 800px)",
+    maxHeight: "90dvh",
     borderTopLeftRadius: "1.5rem",
     borderTopRightRadius: "1.5rem"
   };
