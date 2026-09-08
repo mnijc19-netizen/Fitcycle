@@ -41,10 +41,11 @@
                 (如小腿围、颈围、7天冷却)       ├── 2. `src/components/BodyMetricsModal.vue` (输入表单与标准)
                                                 └── 3. `src/views/StatsView.vue` (V 身比与摘要展示)
 
-[OP-AI-MODELS]  接入新 AI 厂商/大模型与策略分级 ├── 1. `src/ai/providerClient.js` (API Key 与网关路由)   npm run test tests/ai-core.test.js
-                (Vercel AI Gateway/Gemini/GPT/  ├── 2. `src/ai/modelCapabilities.js` (策略分类/识图/思考) npm test -- tests/vercel-ai-gateway-and-strategy.test.js
-                 DeepSeek/GLM/Qwen三大策略矩阵) ├── 3. `src/components/AISettingsPanel.vue` (策略分段器)
-                                                └── 4. `src/components/AIAssistantDrawer.vue` (抽屉弹窗/一键识图)
+[OP-AI-MODELS]  官方 API 动态识别/新模型更新/策略分级 ├── 1. `src/ai/providerClient.js` (API 动态识别/Key/网关) npm test -- tests/vercel-ai-gateway-and-strategy.test.js
+                (彻底告别硬编码滞后/再次获取最新模型/ ├── 2. `src/ai/modelCapabilities.js` (识图/思考/工具阻断/友好名) npm run test tests/ai-core.test.js
+                 DeepSeek/Gemini/GLM/Qwen/Vercel)     ├── 3. `src/ai/aiSession.js` (API 模型一等公民权威缓存)
+                                                      ├── 4. `src/components/AISettingsPanel.vue` (实时识别与再次获取)
+                                                      └── 5. `src/components/AIAssistantDrawer.vue` (抽屉内快捷同步/一键识图)
 
 [OP-AI-COACH]   调整训练结算 AI 战绩评价        ├── 1. `src/ai/workoutAnalyzer.js` (S~D 级评价与恢复池) npm run test tests/rest-and-ux-upgrades.test.js
                 (如渐进超负荷、补给/恢复语录)   └── 2. `src/components/WorkoutSummaryModal.vue` (卡片排版)

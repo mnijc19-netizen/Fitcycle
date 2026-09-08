@@ -131,8 +131,19 @@
           </div>
         </div>
 
-        <div class="pt-1 border-t border-zinc-800 flex items-center justify-between text-xs">
-          <span class="text-zinc-500">厂商: {{ activeProvider.name }}</span>
+        <div class="pt-1.5 border-t border-zinc-800 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="text-zinc-500">厂商: {{ activeProvider.name }}</span>
+            <button v-if="activeApiKey" type="button" 
+                    @click="refreshModelsInDrawer" :disabled="isRefreshingModels"
+                    class="text-amber-400 hover:text-amber-300 flex items-center gap-1 font-mono text-[11px] active:scale-95 transition-all cursor-pointer"
+                    data-testid="drawer-refresh-models-btn"
+                    title="从当前服务商重新获取最新模型">
+              <span v-if="isRefreshingModels" class="w-2.5 h-2.5 rounded-full border border-amber-400 border-t-transparent animate-spin"></span>
+              <span v-else>🔄</span>
+              <span>{{ isRefreshingModels ? '同步中…' : (refreshStatusMsg || '同步最新模型') }}</span>
+            </button>
+          </div>
           <button type="button" @click="goToSettingsTab" class="text-amber-400 hover:text-amber-300 underline font-medium">管理 API 密钥 ↗</button>
         </div>
       </div>
@@ -478,6 +489,7 @@ import { computed, nextTick, reactive, ref, watch, onMounted, onUnmounted } from
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import {
   AI_PROVIDERS,
+  DEFAULT_PRESET_MODELS,
   aiSession,
   clearConversation,
   getActiveApiKey,
@@ -485,8 +497,10 @@ import {
   getActiveModels,
   getActiveProvider,
   setActiveProvider,
+  setProviderModels,
   setSelectedModel
 } from "../ai/aiSession.js";
+import { fetchProviderModels } from "../ai/providerClient.js";
 import { buildUserMessage, resumeAssistantAfterDecision, runAssistantLoop } from "../ai/assistantRuntime.js";
 import { createFitcycleToolRuntime } from "../ai/fitcycleTools.js";
 import { processImageFile } from "../ai/imageProcessor.js";
@@ -495,7 +509,8 @@ import {
   MODEL_STRATEGIES,
   filterModelsByStrategy,
   findRecommendedVisionModel,
-  getModelStrategy
+  getModelStrategy,
+  normalizeProviderModel
 } from "../ai/modelCapabilities.js";
 import { store } from "../store/fitnessStore.js";
 import { renderMarkdown, cleanAIMessage, extractReasoningAndContent } from "../utils/aiService.js";
@@ -746,6 +761,43 @@ function goToSettingsTab() {
   showQuickModelPicker.value = false;
   aiSession.drawerOpen = false;
   store.activeTab = "stats";
+}
+
+const isRefreshingModels = ref(false);
+const refreshStatusMsg = ref("");
+
+async function refreshModelsInDrawer() {
+  const key = activeApiKey.value;
+  const prov = aiSession.activeProvider;
+  if (!key || isRefreshingModels.value) return;
+
+  isRefreshingModels.value = true;
+  refreshStatusMsg.value = "";
+  try {
+    const models = await fetchProviderModels(prov, key);
+    const existingIds = new Set(models.map((m) => m.id.toLowerCase()));
+    const defaults = DEFAULT_PRESET_MODELS[prov] || [];
+    const merged = [...models];
+    for (const d of defaults) {
+      if (!existingIds.has(d.id.toLowerCase())) {
+        merged.push(d);
+      }
+    }
+    const normalizedMerged = merged.map((m) => normalizeProviderModel(prov, m));
+    setProviderModels(normalizedMerged, prov);
+
+    refreshStatusMsg.value = `已同步 ${normalizedMerged.length} 个最新模型`;
+    setTimeout(() => {
+      refreshStatusMsg.value = "";
+    }, 3000);
+  } catch (err) {
+    refreshStatusMsg.value = err.message || "同步失败";
+    setTimeout(() => {
+      refreshStatusMsg.value = "";
+    }, 4000);
+  } finally {
+    isRefreshingModels.value = false;
+  }
 }
 
 const csAiBg = "./themes/cs/background.jpg";

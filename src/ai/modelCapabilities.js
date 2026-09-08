@@ -5,76 +5,68 @@ function asArray(value) {
 function familyCapabilities(provider, modelId) {
   const id = String(modelId || "").toLowerCase();
   
+  // ==========================================
+  // A. 深度思考判定 (Reasoning / Thinking Mode)
+  // ==========================================
+  // Accurate token-level boundary matching for R1, o1/o3, QwQ/QvR, GLM-Zero, thinking models
+  const isDeepSeekR1 = /(?:^|[\/_\-.])(?:deepseek-)?r1(?:[\/_\-.]|$)/i.test(id) || id.includes("reasoner");
+  const isOpenAIReasoning = /(?:^|[\/_\-.])o[13](?:-mini|-preview)?(?:[\/_\-.]|$)/i.test(id);
+  const isQwenReasoning = id.includes("qwq") || id.includes("qvr");
+  const isZhipuReasoning = id.includes("zero-preview") || id.includes("glm-zero") || (provider === "zhipu" && id.includes("4.5-air"));
+  const isGenericReasoning = id.includes("reasoning") || id.includes("thinking") || id.includes("thought");
+
+  const isReasoning = isDeepSeekR1 || isOpenAIReasoning || isQwenReasoning || isZhipuReasoning || isGenericReasoning;
+
+  // ==========================================
+  // B. 多模态视觉识图判定 (Vision / Image Modality)
+  // ==========================================
+  let isImage = false;
+
   if (provider === "zhipu") {
-    // Strictly Zhipu Vision series (GLM-4V / GLM-4.5V / GLM-4.6V / GLM-4V-Plus / GLM-4V-Flash) support image recognition
-    // Pure text models (GLM-4-Flash, GLM-4-Plus, GLM-4-Air, GLM-4-Long, GLM-Zero) DO NOT support image
-    const isImageSupported = /\d+(?:\.\d+)?v/i.test(id) || id.includes("visual") || id.includes("vision");
-    const isToolsSupported = !id.includes("zero") && !id.includes("embedding");
-    const isReasoning = id.includes("zero") || id.includes("4.5-air") || id.includes("reason");
-    return { image: isImageSupported, tools: isToolsSupported, reasoning: isReasoning };
-  }
-  
-  if (provider === "qwen") {
-    // Qwen vision: qwen-vl-*, qwen2.5-vl-*, qwen-omni-*
-    const isImageSupported = id.includes("-vl") || id.includes("omni") || id.includes("vision");
-    const isToolsSupported = !id.includes("qwq");
-    const isReasoning = id.includes("qwq");
-    return { image: isImageSupported, tools: isToolsSupported, reasoning: isReasoning };
-  }
-  
-  if (provider === "siliconflow") {
-    const isImageSupported = id.includes("-vl") || id.includes("vision") || id.includes("4v");
-    const isToolsSupported = !id.includes("r1") && !id.includes("reasoner") && !id.includes("qwq");
-    const isReasoning = id.includes("r1") || id.includes("reasoner") || id.includes("qwq");
-    return { image: isImageSupported, tools: isToolsSupported, reasoning: isReasoning };
-  }
-  
-  if (provider === "deepseek") {
-    return { image: false, tools: id === "deepseek-chat", reasoning: id === "deepseek-reasoner" };
-  }
-  
-  if (provider === "moonshot") {
-    return { image: false, tools: true, reasoning: false };
-  }
-  
-  if (provider === "vercel_ai_gateway") {
-    // Vercel AI Gateway format: <creator>/<model-name>
-    // e.g. google/gemini-2.0-flash, openai/gpt-4o-mini, anthropic/claude-3-5-sonnet, deepseek/deepseek-reasoner
-    const isImageSupported =
-      id.includes("gemini") ||
-      id.includes("gpt-4o") ||
-      id.includes("gpt-4-turbo") ||
-      id.includes("claude-3") ||
-      id.includes("-vl") ||
-      id.includes("vision") ||
-      /\d+(?:\.\d+)?v/i.test(id) ||
-      id.includes("multimodal");
+    // Strictly Zhipu Vision series: GLM-4V / GLM-4.5V / GLM-4.6V / GLM-4V-Plus / GLM-4V-Flash
+    // Pure text models: GLM-4-Flash, GLM-4-Plus, GLM-4-Air, GLM-4.5, GLM-4.5-Air, GLM-Zero DO NOT support image
+    isImage = /\d+(?:\.\d+)?v(?:[\/_\-.]|$)/i.test(id) || id.includes("visual") || id.includes("vision");
+  } else if (provider === "qwen") {
+    // Qwen vision: qwen-vl-*, qwen2-vl-*, qwen2.5-vl-*, qwen-omni-*
+    isImage = id.includes("-vl") || id.includes("_vl") || id.includes("vl-") || id.includes("vision") || id.includes("omni");
+  } else if (provider === "deepseek") {
+    // DeepSeek official API models (deepseek-chat V3, deepseek-reasoner R1) are pure text
+    isImage = id.includes("deepseek-vl");
+  } else if (provider === "moonshot") {
+    // Moonshot Kimi text models
+    isImage = false;
+  } else {
+    // Vercel AI Gateway, SiliconFlow, and universal providers
+    const isGemini = id.includes("gemini");
+    const isGPT4Vision = id.includes("gpt-4o") || id.includes("gpt-4-turbo") || id.includes("chatgpt-4o");
+    // Full OpenAI o1 has vision, while o1-mini and o1-preview do NOT have vision
+    const isO1FullVision = /(?:^|[\/_\-.])o1(?:[\/_\-.]|$)/i.test(id) && !id.includes("mini") && !id.includes("preview");
+    const isClaude3Vision = id.includes("claude-3") || id.includes("claude-4");
+    const isVLSuffix = id.includes("-vl") || id.includes("_vl") || id.includes("vl-") || id.includes("internvl") || id.includes("minicpm-v");
+    const isExplicitVision = id.includes("vision") || id.includes("visual") || id.includes("multimodal") || id.includes("pixtral");
+    const isGLMV = /\d+(?:\.\d+)?v(?:[\/_\-.]|$)/i.test(id);
 
-    const isReasoning =
-      id.includes("reasoner") ||
-      id.includes("r1") ||
-      id.includes("/o1") ||
-      id.includes("/o3") ||
-      id.includes("qwq") ||
-      id.includes("thinking") ||
-      id.includes("thought");
-
-    const isToolsSupported =
-      !id.includes("reasoner") &&
-      !id.includes("r1") &&
-      !id.includes("o1-preview") &&
-      !id.includes("o1-mini") &&
-      !id.includes("embedding");
-
-    return { image: isImageSupported, tools: isToolsSupported, reasoning: isReasoning };
+    isImage = isGemini || isGPT4Vision || isO1FullVision || isClaude3Vision || isVLSuffix || isExplicitVision || isGLMV;
   }
-  
-  return { image: false, tools: true, reasoning: false };
+
+  // ==========================================
+  // C. 数据感知与工具调用 (Tools / Function Calling)
+  // ==========================================
+  // Pure reasoning models explicitly reject the tools parameter in Chat Completions (causes HTTP 400)
+  const toolsBlocked = isDeepSeekR1 || isQwenReasoning || id.includes("o1-preview") || id.includes("o1-mini") || id.includes("zero-preview");
+  const isTools = !toolsBlocked && !id.includes("embedding");
+
+  return {
+    image: isImage,
+    tools: isTools,
+    toolsBlocked,
+    reasoning: isReasoning
+  };
 }
 
 export function getModelCapabilities(model, provider = "") {
   const architecture = model?.architecture || {};
-  const input = asArray(architecture.input_modalities || model?.input_modalities).map(String);
+  const input = asArray(architecture.input_modalities || model?.input_modalities || model?.modalities).map(String);
   const output = asArray(architecture.output_modalities || model?.output_modalities).map(String);
   const parameters = asArray(model?.supported_parameters || model?.features).map(String);
   const modality = typeof architecture.modality === "string" ? architecture.modality : "";
@@ -86,18 +78,52 @@ export function getModelCapabilities(model, provider = "") {
   return {
     text: input.includes("text") || modality.startsWith("text") || input.length === 0,
     image: isArchitectureImage || family.image,
-    tools: parameters.includes("tools") || parameters.includes("function_calling") || family.tools,
+    tools: (parameters.includes("tools") || parameters.includes("function_calling") || family.tools) && !family.toolsBlocked,
     reasoning: family.reasoning,
     streaming: model?.supports_streaming !== false && (output.includes("text") || modality.endsWith("text") || output.length === 0)
   };
 }
 
+const FRIENDLY_NAMES = {
+  "deepseek-chat": "DeepSeek-V3 (通用对话)",
+  "deepseek-reasoner": "DeepSeek-R1 (深度思考)",
+  "google/gemini-2.0-flash": "Gemini 2.0 Flash (极速识图全能)",
+  "openai/gpt-4o-mini": "GPT-4o mini (高性价比主力)",
+  "openai/gpt-4o": "GPT-4o (多模态旗舰)",
+  "anthropic/claude-3-5-sonnet": "Claude 3.5 Sonnet (高智能图文)",
+  "deepseek/deepseek-chat": "DeepSeek-V3 (极速纯文本)",
+  "deepseek/deepseek-reasoner": "DeepSeek-R1 (深度思维链)",
+  "glm-4.5-air": "GLM-4.5-Air (智能体与深度思考)",
+  "glm-4.6v": "GLM-4.6V (多模态视觉旗舰 · 106B)",
+  "glm-4.6v-flash": "GLM-4.6V-Flash (极速多模态)",
+  "glm-4-flash": "GLM-4-Flash (免费极速纯文本)",
+  "glm-4-plus": "GLM-4-Plus (高智能旗舰)",
+  "glm-4v-plus": "GLM-4V-Plus (视觉识图旗舰)",
+  "glm-zero-preview": "GLM-Zero-Preview (深度思考推理)",
+  "qwen-max": "通义千问 Max (旗舰推理)",
+  "qwen-plus": "通义千问 Plus (主力均衡)",
+  "qwen-turbo": "通义千问 Turbo (极速轻量)",
+  "qwen-vl-max": "Qwen-VL-Max (视觉识图旗舰)",
+  "qwen-vl-plus": "Qwen-VL-Plus (视觉识图通用)",
+  "qwq-32b-preview": "QwQ-32B-Preview (深度思考推理)",
+  "moonshot-v1-auto": "Kimi Auto (智能上下文)"
+};
+
+export function formatModelDisplayName(id, fallbackName = "") {
+  const cleanId = String(id || "");
+  if (FRIENDLY_NAMES[cleanId]) return FRIENDLY_NAMES[cleanId];
+  if (fallbackName && fallbackName !== cleanId) return fallbackName;
+  return cleanId;
+}
+
 export function normalizeProviderModel(provider, model) {
+  const id = String(model?.id || "");
   const capabilities = getModelCapabilities(model, provider);
+  const name = formatModelDisplayName(id, model?.name);
   
   return {
-    id: String(model?.id || ""),
-    name: String(model?.name || model?.id || "未命名模型"),
+    id,
+    name,
     description: String(model?.description || `${provider} 官方模型`),
     contextLength: Number(model?.context_length) || null,
     pricing: model?.pricing || null,
@@ -110,8 +136,25 @@ export function normalizeProviderModel(provider, model) {
 export function isSupportedChatModel(provider, model) {
   const id = String(model?.id || "").toLowerCase();
   if (!id) return false;
-  if (id.includes("embedding") || id.includes("tts") || id.includes("asr") || id.includes("rerank") || id.includes("ocr") || id.includes("image") || id.includes("dall-e") || id.startsWith("cogview")) return false;
-  return true;
+  // Exclude non-chat models (embeddings, audio/tts, image/video generation, rerankers)
+  const isNonChat =
+    id.includes("embedding") ||
+    id.includes("bge-") ||
+    id.includes("tts") ||
+    id.includes("asr") ||
+    id.includes("whisper") ||
+    id.includes("rerank") ||
+    id.includes("ocr") ||
+    id.includes("dall-e") ||
+    id.startsWith("cogview") ||
+    id.includes("cogvideox") ||
+    id.includes("stable-diffusion") ||
+    id.includes("flux") ||
+    id.includes("midjourney") ||
+    id.includes("imagen-") ||
+    id.includes("glm-image");
+
+  return !isNonChat;
 }
 
 export function filterModels(models, searchText) {

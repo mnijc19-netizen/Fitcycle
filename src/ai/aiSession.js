@@ -1,5 +1,6 @@
 import { reactive } from "vue";
 import { store } from "../store/fitnessStore.js";
+import { normalizeProviderModel } from "./modelCapabilities.js";
 
 export const AI_PROVIDERS = [
   { id: "deepseek", name: "DeepSeek", keyLabel: "DeepSeek API Key", portal: "https://platform.deepseek.com", tag: "高性价比 · 深度思考" },
@@ -325,21 +326,31 @@ function writeStorageValue(key, value) {
   }
 }
 
-function readCachedModels(provider) {
-  const defaults = DEFAULT_PRESET_MODELS[provider] ? JSON.parse(JSON.stringify(DEFAULT_PRESET_MODELS[provider])) : [];
+export function isProviderSyncedFromAPI(provider) {
+  try {
+    const raw = readStorageValue(CACHED_MODELS_KEYS[provider]);
+    return Boolean(raw && JSON.parse(raw)?.length > 0);
+  } catch {
+    return false;
+  }
+}
+
+export function readCachedModels(provider) {
   try {
     const raw = readStorageValue(CACHED_MODELS_KEYS[provider]);
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        // Retain curated defaults first (with latest order & capabilities), followed by any custom models user added
-        const defaultIds = new Set(defaults.map((m) => m.id.toLowerCase()));
-        const customModels = parsed.filter((m) => !defaultIds.has(String(m.id || "").toLowerCase()));
-        return [...defaults, ...customModels];
+        // API dynamically recognized models take authoritative precedence!
+        // Always re-evaluate capabilities with the latest engine so any updates apply immediately:
+        return parsed.map((m) => normalizeProviderModel(provider, m));
       }
     }
   } catch {}
-  return defaults;
+  
+  // Fallback defaults only when user has never fetched from API
+  const defaults = DEFAULT_PRESET_MODELS[provider] ? JSON.parse(JSON.stringify(DEFAULT_PRESET_MODELS[provider])) : [];
+  return defaults.map((m) => normalizeProviderModel(provider, m));
 }
 
 const initActiveProvider = AI_PROVIDERS.some((item) => item.id === readStorageValue(PROVIDER_SESSION_KEY))
@@ -436,20 +447,12 @@ export function addCustomModel(modelId, modelName = "", provider = aiSession.act
   const currentModels = [...getActiveModels()];
   let existing = currentModels.find((m) => m.id.toLowerCase() === cleanId.toLowerCase());
   if (!existing) {
-    const isImage = /\d+(?:\.\d+)?v/i.test(cleanId) || cleanId.toLowerCase().includes("vision") || cleanId.toLowerCase().includes("vl");
-    const isReasoning = cleanId.toLowerCase().includes("reason") || cleanId.toLowerCase().includes("r1") || cleanId.toLowerCase().includes("zero") || cleanId.toLowerCase().includes("air");
-    const newModel = {
+    const rawModel = {
       id: cleanId,
       name: (typeof modelName === "string" && modelName.trim()) ? modelName.trim() : cleanId,
-      description: "用户自定义添加模型",
-      capabilities: {
-        text: true,
-        image: isImage,
-        tools: true,
-        streaming: true,
-        reasoning: isReasoning
-      }
+      description: "用户自定义添加模型"
     };
+    const newModel = normalizeProviderModel(provider, rawModel);
     currentModels.unshift(newModel);
     setProviderModels(currentModels, provider);
     existing = newModel;

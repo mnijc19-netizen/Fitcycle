@@ -24,6 +24,8 @@ import {
   getActiveModelId,
   getActiveModels,
   getActiveProvider,
+  isProviderSyncedFromAPI,
+  readCachedModels,
   setActiveProvider,
   setProviderModels,
   setSelectedModel,
@@ -324,3 +326,116 @@ describe("UI Integration: AISettingsPanel and AIAssistantDrawer with Vercel Gate
     wrapper.unmount();
   });
 });
+
+describe("Dynamic API model identification and capability precision", () => {
+  it("authoritatively prioritizes dynamically fetched API models over static defaults", () => {
+    // Before syncing, isProviderSyncedFromAPI is false
+    expect(isProviderSyncedFromAPI("deepseek")).toBe(false);
+
+    // Simulate API dynamically returning latest models including newly released DeepSeek V4
+    const remoteModels = [
+      { id: "deepseek-chat", name: "DeepSeek-V3 (官方最新)" },
+      { id: "deepseek-reasoner", name: "DeepSeek-R1 (官方最新)" },
+      { id: "deepseek-v4", name: "DeepSeek-V4 (极速下一代旗舰)" }
+    ];
+
+    setProviderModels(remoteModels, "deepseek");
+
+    expect(isProviderSyncedFromAPI("deepseek")).toBe(true);
+
+    const cached = readCachedModels("deepseek");
+    expect(cached.length).toBe(3);
+    expect(cached.map((m) => m.id)).toEqual(["deepseek-chat", "deepseek-reasoner", "deepseek-v4"]);
+    expect(cached.find((m) => m.id === "deepseek-v4").name).toBe("DeepSeek-V4 (极速下一代旗舰)");
+  });
+
+  it("dynamically computes accurate modalities and reasoning for newly released models without code changes", () => {
+    // Future vision model
+    const newVision = normalizeProviderModel("siliconflow", { id: "openbmb/MiniCPM-V-3" });
+    expect(newVision.capabilities.image).toBe(true);
+    expect(newVision.capabilities.reasoning).toBe(false);
+
+    // Future reasoning model
+    const newReasoning = normalizeProviderModel("qwen", { id: "qwq-plus-preview" });
+    expect(newReasoning.capabilities.reasoning).toBe(true);
+    expect(newReasoning.capabilities.tools).toBe(false); // pure reasoning model blocks tools
+
+    // Future pure text model
+    const newText = normalizeProviderModel("deepseek", { id: "deepseek-v4" });
+    expect(newText.capabilities.image).toBe(false);
+    expect(newText.capabilities.tools).toBe(true);
+    expect(newText.capabilities.reasoning).toBe(false);
+  });
+
+  it("strictly blocks tools parameter for pure reasoning models to eliminate HTTP 400 errors", () => {
+    const pureReasoningModels = [
+      { provider: "deepseek", id: "deepseek-reasoner" },
+      { provider: "qwen", id: "qwq-32b-preview" },
+      { provider: "zhipu", id: "glm-zero-preview" },
+      { provider: "vercel_ai_gateway", id: "deepseek/deepseek-reasoner" },
+      { provider: "vercel_ai_gateway", id: "openai/o1-mini" },
+      { provider: "vercel_ai_gateway", id: "openai/o1-preview" }
+    ];
+
+    for (const testCase of pureReasoningModels) {
+      const normalized = normalizeProviderModel(testCase.provider, { id: testCase.id });
+      expect(normalized.capabilities.reasoning).toBe(true);
+      expect(normalized.capabilities.tools).toBe(false);
+    }
+  });
+
+  it("ensures 100% precision for vision vs pure-text models across all providers", () => {
+    // Zhipu: 4.6v, 4v-plus are vision; flash, plus, air are text
+    expect(normalizeProviderModel("zhipu", { id: "glm-4.6v" }).capabilities.image).toBe(true);
+    expect(normalizeProviderModel("zhipu", { id: "glm-4v-plus" }).capabilities.image).toBe(true);
+    expect(normalizeProviderModel("zhipu", { id: "glm-4-flash" }).capabilities.image).toBe(false);
+    expect(normalizeProviderModel("zhipu", { id: "glm-4-plus" }).capabilities.image).toBe(false);
+    expect(normalizeProviderModel("zhipu", { id: "glm-4.5-air" }).capabilities.image).toBe(false);
+
+    // Qwen: vl models are vision; max, plus, qwq are text
+    expect(normalizeProviderModel("qwen", { id: "qwen-vl-max" }).capabilities.image).toBe(true);
+    expect(normalizeProviderModel("qwen", { id: "qwen2.5-vl-72b-instruct" }).capabilities.image).toBe(true);
+    expect(normalizeProviderModel("qwen", { id: "qwen-max" }).capabilities.image).toBe(false);
+    expect(normalizeProviderModel("qwen", { id: "qwen-plus" }).capabilities.image).toBe(false);
+    expect(normalizeProviderModel("qwen", { id: "qwq-32b-preview" }).capabilities.image).toBe(false);
+
+    // DeepSeek: official chat/reasoner are pure text
+    expect(normalizeProviderModel("deepseek", { id: "deepseek-chat" }).capabilities.image).toBe(false);
+    expect(normalizeProviderModel("deepseek", { id: "deepseek-reasoner" }).capabilities.image).toBe(false);
+
+    // Moonshot: text
+    expect(normalizeProviderModel("moonshot", { id: "moonshot-v1-auto" }).capabilities.image).toBe(false);
+  });
+
+  it("renders dynamic API sync badge and refresh button in AISettingsPanel", async () => {
+    setActiveProvider("deepseek");
+    setSessionApiKey("sk-test-key", "deepseek");
+    
+    // Initially not synced from API
+    const wrapper = mount(AISettingsPanel);
+    expect(wrapper.text()).toContain("离线预设");
+
+    const refreshBtn = wrapper.find('[data-testid="refresh-api-models-btn"]');
+    expect(refreshBtn.exists()).toBe(true);
+    expect(refreshBtn.text()).toContain("再次获取官方最新模型");
+
+    wrapper.unmount();
+  });
+
+  it("renders quick refresh models button in AIAssistantDrawer popover", async () => {
+    setActiveProvider("deepseek");
+    setSessionApiKey("sk-test-key", "deepseek");
+    aiSession.drawerOpen = true;
+
+    const wrapper = mount(AIAssistantDrawer, { attachTo: document.body });
+    await wrapper.get('[data-testid="toggle-quick-model-picker"]').trigger("click");
+    await nextTick();
+
+    const drawerRefreshBtn = wrapper.find('[data-testid="drawer-refresh-models-btn"]');
+    expect(drawerRefreshBtn.exists()).toBe(true);
+    expect(drawerRefreshBtn.text()).toContain("同步最新模型");
+
+    wrapper.unmount();
+  });
+});
+

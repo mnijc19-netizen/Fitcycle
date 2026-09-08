@@ -77,11 +77,24 @@
 
     <!-- 3. High-Visibility Model Selection Section -->
     <div v-if="connected" class="space-y-3 pt-2 border-t border-zinc-800/80">
-      <div class="flex items-center justify-between">
-        <label for="model-search" class="block text-xs font-bold text-zinc-200">
-          3. 选择生效对话模型 (共 {{ visibleModels.length }} 款可用)
-        </label>
-        <span class="text-xs text-amber-400 font-mono">点击直接切换</span>
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div class="flex items-center gap-2">
+          <label for="model-search" class="block text-xs font-bold text-zinc-200">
+            3. 选择生效对话模型 (共 {{ visibleModels.length }} 款可用)
+          </label>
+          <span class="text-[10px] px-2 py-0.5 rounded-full border font-mono font-medium"
+                :class="isSyncedFromAPI ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-400' : 'border-zinc-700 bg-zinc-900 text-zinc-400'">
+            {{ isSyncedFromAPI ? '● API 实时动态识别' : '○ 基础离线预设' }}
+          </span>
+        </div>
+        <button type="button" @click="testConnection" :disabled="loading || !draftKey.trim()"
+                class="px-2.5 py-1 rounded-xl text-xs font-bold border border-amber-500/40 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 active:scale-95 transition-all flex items-center gap-1 shadow-sm"
+                data-testid="refresh-api-models-btn"
+                title="重新向官方接口发送请求，获取最新发布的大模型">
+          <span v-if="loading" class="w-3 h-3 rounded-full border-2 border-amber-400 border-t-transparent animate-spin"></span>
+          <span v-else>🔄</span>
+          <span>{{ loading ? '正在获取…' : '再次获取官方最新模型' }}</span>
+        </button>
       </div>
 
       <!-- Quick Search Bar & Custom Model Input -->
@@ -238,6 +251,7 @@ import {
   getActiveModelId,
   getActiveModels,
   getActiveProvider,
+  isProviderSyncedFromAPI,
   setActiveProvider,
   setProviderModels,
   setSelectedModel,
@@ -247,7 +261,8 @@ import { fetchProviderModels } from "../ai/providerClient.js";
 import {
   MODEL_STRATEGIES,
   filterModelsByStrategy,
-  getModelStrategy
+  getModelStrategy,
+  normalizeProviderModel
 } from "../ai/modelCapabilities.js";
 
 const draftKey = ref(getActiveApiKey());
@@ -264,6 +279,7 @@ const activeProvider = computed(getActiveProvider);
 const connected = computed(() => Boolean(getActiveApiKey()));
 const portalLink = computed(() => activeProvider.value.portal);
 const activeModels = computed(getActiveModels);
+const isSyncedFromAPI = computed(() => isProviderSyncedFromAPI(aiSession.activeProvider));
 
 const activeStrategyObj = computed(() => {
   return MODEL_STRATEGIES.find((s) => s.id === selectedStrategy.value) || MODEL_STRATEGIES[0];
@@ -372,18 +388,20 @@ async function testConnection() {
       }
     }
 
-    setSessionApiKey(key, targetProvider);
-    setProviderModels(merged, targetProvider);
+    const normalizedMerged = merged.map((m) => normalizeProviderModel(targetProvider, m));
 
-    if (merged.length > 0) {
+    setSessionApiKey(key, targetProvider);
+    setProviderModels(normalizedMerged, targetProvider);
+
+    if (normalizedMerged.length > 0) {
       const current = getActiveModelId();
-      const stillValid = merged.some((m) => m.id === current);
+      const stillValid = normalizedMerged.some((m) => m.id === current);
       if (!stillValid) {
-        setSelectedModel(merged[0].id, targetProvider);
+        setSelectedModel(normalizedMerged[0].id, targetProvider);
       }
     }
 
-    statusText.value = `${activeProvider.value.name} 连接成功，已获取 ${merged.length} 个可用对话模型。`;
+    statusText.value = `${activeProvider.value.name} 连接成功，已动态识别并同步 ${normalizedMerged.length} 款官方可用对话模型。`;
     statusError.value = false;
   } catch (err) {
     statusText.value = err.message || "连接失败，请检查 API Key 是否有效。";
