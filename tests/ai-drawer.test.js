@@ -4,7 +4,8 @@ import { nextTick } from "vue";
 
 vi.mock("../src/ai/providerClient.js", () => ({
   fetchProviderModels: vi.fn(),
-  streamProviderChatCompletion: vi.fn()
+  streamProviderChatCompletion: vi.fn(),
+  testProviderConnection: vi.fn(async () => ({ success: true, latencyMs: 120, reply: "OK" }))
 }));
 
 import AIAssistantDrawer from "../src/components/AIAssistantDrawer.vue";

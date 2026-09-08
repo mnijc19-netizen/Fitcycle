@@ -4,7 +4,8 @@ import { nextTick } from "vue";
 import {
   PROVIDER_CONFIGS,
   fetchProviderModels,
-  streamProviderChatCompletion
+  streamProviderChatCompletion,
+  testProviderConnection
 } from "../src/ai/providerClient.js";
 import {
   MODEL_STRATEGIES,
@@ -517,6 +518,174 @@ describe("Dynamic API model identification and capability precision", () => {
     expect(wrapper.find('input[type="search"]').element.value).toBe("");
 
     wrapper.unmount();
+  });
+
+  it("testProviderConnection sends 5-token ping to /chat/completions when model is provided", async () => {
+    const mockFetch = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        choices: [{ message: { content: "Hello there!" } }]
+      })
+    }));
+
+    const res = await testProviderConnection(
+      { provider: "vercel_ai_gateway", apiKey: "test-v-key", model: "google/gemini-2.0-flash" },
+      { fetchImpl: mockFetch }
+    );
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      "https://ai-gateway.vercel.sh/v1/chat/completions",
+      expect.objectContaining({
+        method: "POST",
+        headers: {
+          Authorization: "Bearer test-v-key",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.0-flash",
+          messages: [{ role: "user", content: "Hi" }],
+          max_tokens: 5,
+          stream: false
+        })
+      })
+    );
+    expect(res.success).toBe(true);
+    expect(res.latencyMs).toBeGreaterThan(0);
+    expect(res.reply).toBe("Hello there!");
+  });
+
+  it("testProviderConnection disables thinking when testing deepseek", async () => {
+    const mockFetch = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      json: async () => ({ choices: [{ message: { content: "DeepSeek OK" } }] })
+    }));
+
+    await testProviderConnection(
+      { provider: "deepseek", apiKey: "ds-key", model: "deepseek-chat" },
+      { fetchImpl: mockFetch }
+    );
+
+    const requestBody = JSON.parse(mockFetch.mock.calls[0][1].body);
+    expect(requestBody.thinking).toEqual({ type: "disabled" });
+  });
+
+  it("testProviderConnection without model sends GET to /models", async () => {
+    const mockFetch = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      json: async () => ({ data: [] })
+    }));
+
+    const res = await testProviderConnection(
+      { provider: "vercel_ai_gateway", apiKey: "test-v-key" },
+      { fetchImpl: mockFetch }
+    );
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      "https://ai-gateway.vercel.sh/v1/models",
+      expect.objectContaining({
+        headers: {
+          Authorization: "Bearer test-v-key",
+          "Content-Type": "application/json"
+        }
+      })
+    );
+    expect(res.success).toBe(true);
+    expect(res.latencyMs).toBeGreaterThan(0);
+  });
+
+  it("testProviderConnection handles HTTP 401 error correctly", async () => {
+    const mockFetch = vi.fn(async () => ({
+      ok: false,
+      status: 401
+    }));
+
+    await expect(
+      testProviderConnection(
+        { provider: "vercel_ai_gateway", apiKey: "bad-key" },
+        { fetchImpl: mockFetch }
+      )
+    ).rejects.toThrow("API Key 无效或没有访问权限");
+  });
+
+  it("AISettingsPanel performs active model ping and displays latency result", async () => {
+    setActiveProvider("vercel_ai_gateway");
+    setSessionApiKey("v-gw-test-key", "vercel_ai_gateway");
+    setSelectedModel("google/gemini-2.0-flash", "vercel_ai_gateway");
+
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = vi.fn(async (url) => {
+      if (typeof url === "string" && url.includes("/chat/completions")) {
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({
+            choices: [{ message: { content: "Hello from Gemini" } }]
+          })
+        };
+      }
+      return { ok: true, status: 200, json: async () => ({ data: [] }) };
+    });
+
+    try {
+      const wrapper = mount(AISettingsPanel);
+      const pingBtn = wrapper.find('[data-testid="test-active-model-btn"]');
+      expect(pingBtn.exists()).toBe(true);
+      expect(pingBtn.text()).toContain("测试此模型连通性");
+
+      await pingBtn.trigger("click");
+      await flushPromises();
+
+      const pingMsg = wrapper.find('[data-testid="ping-result-msg"]');
+      expect(pingMsg.exists()).toBe(true);
+      expect(pingMsg.text()).toContain("连通正常");
+      expect(pingMsg.text()).toContain("Hello from Gemini");
+
+      // Switching selected model clears the ping result
+      setSelectedModel("openai/gpt-4o", "vercel_ai_gateway");
+      await nextTick();
+      expect(wrapper.find('[data-testid="ping-result-msg"]').exists()).toBe(false);
+
+      wrapper.unmount();
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  it("AISettingsPanel test connection button executes testProviderConnection with latency display", async () => {
+    setActiveProvider("vercel_ai_gateway");
+
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        data: [
+          { id: "google/gemini-2.0-flash" },
+          { id: "openai/gpt-4o" }
+        ]
+      })
+    }));
+
+    try {
+      const wrapper = mount(AISettingsPanel);
+      const input = wrapper.find('input[type="password"]');
+      await input.setValue("test-key-abc");
+      const testBtn = wrapper.find('[data-testid="test-connection-btn"]');
+      expect(testBtn.text()).toContain("测试连接并保存");
+
+      await testBtn.trigger("click");
+      await flushPromises();
+
+      expect(wrapper.text()).toContain("连接测试成功");
+      expect(wrapper.text()).toContain("延迟");
+
+      wrapper.unmount();
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 });
 

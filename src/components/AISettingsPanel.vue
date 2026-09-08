@@ -56,12 +56,14 @@
 
       <div class="grid grid-cols-2 gap-2 pt-0.5">
         <button type="button" @click="testConnection" :disabled="loading || !draftKey.trim()"
-                class="py-2.5 rounded-xl bg-amber-500 disabled:bg-zinc-800 disabled:text-zinc-600 text-zinc-950 text-xs font-bold active:scale-95 shadow-md shadow-amber-500/10 transition-all flex items-center justify-center gap-1.5">
+                class="py-2.5 rounded-xl bg-amber-500 disabled:bg-zinc-800 disabled:text-zinc-600 text-zinc-950 text-xs font-bold active:scale-95 shadow-md shadow-amber-500/10 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                data-testid="test-connection-btn">
           <span v-if="loading" class="w-3 h-3 rounded-full border-2 border-zinc-950 border-t-transparent animate-spin"></span>
-          <span>{{ loading ? '连接中…' : (connected ? '刷新并获取模型' : '验证并获取模型') }}</span>
+          <span v-else>⚡</span>
+          <span>{{ loading ? '正在测试连接…' : (connected ? '测试连接并刷新' : '测试连接并保存') }}</span>
         </button>
         <button type="button" @click="clearConnection" :disabled="loading || !hasAnyConnection"
-                class="py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:bg-zinc-900 disabled:text-zinc-700 text-zinc-300 text-xs font-bold active:scale-95 transition-all">
+                class="py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:bg-zinc-900 disabled:text-zinc-700 text-zinc-300 text-xs font-bold active:scale-95 transition-all cursor-pointer">
           清除全部连接
         </button>
       </div>
@@ -268,6 +270,25 @@
         <p v-if="!selectedModel.capabilities?.image" class="text-xs text-zinc-500 leading-normal">
           当前选中的模型为纯文本对话模型；如需上传身材或动作图片分析，请选择带有「视觉识图」标识的模型（如 Gemini 2.0 Flash、GLM-4.6V、Qwen-VL-Max）。
         </p>
+
+        <!-- Model Diagnostic & Connectivity Ping Section -->
+        <div class="pt-2 border-t border-zinc-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <button type="button" @click="testActiveModelPing" :disabled="pingingModel || !connected"
+                  class="px-3 py-1.5 rounded-xl border border-zinc-700 hover:border-amber-500/60 bg-zinc-900 hover:bg-zinc-850 text-zinc-300 hover:text-amber-300 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer shadow-sm w-fit"
+                  data-testid="test-active-model-btn"
+                  title="向当前生效模型发送极简测试指令，测量实际延迟与连通状态">
+            <span v-if="pingingModel" class="w-3 h-3 rounded-full border-2 border-amber-400 border-t-transparent animate-spin"></span>
+            <span v-else>⚡</span>
+            <span>{{ pingingModel ? '正在测试连通性…' : '测试此模型连通性' }}</span>
+          </button>
+          
+          <div v-if="pingResult" class="text-xs font-mono flex items-center gap-1.5 px-2.5 py-1 rounded-lg border w-fit animate-in fade-in duration-150"
+               :class="pingResult.success ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' : 'border-red-500/30 bg-red-500/10 text-red-400'"
+               data-testid="ping-result-msg">
+            <span>{{ pingResult.success ? '✓' : '✕' }}</span>
+            <span>{{ pingResult.text }}</span>
+          </div>
+        </div>
       </div>
 
       <button type="button" data-testid="open-ai-assistant" @click="handleOpenChat"
@@ -303,7 +324,7 @@ import {
   setSelectedModel,
   setSessionApiKey
 } from "../ai/aiSession.js";
-import { fetchProviderModels } from "../ai/providerClient.js";
+import { fetchProviderModels, testProviderConnection } from "../ai/providerClient.js";
 import {
   MODEL_STRATEGIES,
   filterModelsByStrategy,
@@ -323,6 +344,9 @@ const customModelInput = ref("");
 const customSuccessMsg = ref("");
 const selectedStrategy = ref("all");
 const showCustomInput = ref(false);
+
+const pingingModel = ref(false);
+const pingResult = ref(null);
 
 const activeProvider = computed(getActiveProvider);
 const connected = computed(() => Boolean(getActiveApiKey()));
@@ -423,8 +447,13 @@ watch(
     customModelInput.value = "";
     customSuccessMsg.value = "";
     selectedStrategy.value = "all";
+    pingResult.value = null;
   }
 );
+
+watch(selectedModelId, () => {
+  pingResult.value = null;
+});
 
 function selectProvider(providerId) {
   setActiveProvider(providerId);
@@ -436,6 +465,36 @@ function formatModelLabel(model) {
     return `${model.name} (${model.id})`;
   }
   return model.name || model.id;
+}
+
+async function testActiveModelPing() {
+  if (!selectedModel.value || pingingModel.value) return;
+  const key = getActiveApiKey();
+  const prov = aiSession.activeProvider;
+  if (!key) {
+    pingResult.value = { success: false, text: "请先保存有效的 API Key" };
+    return;
+  }
+  pingingModel.value = true;
+  pingResult.value = null;
+  try {
+    const res = await testProviderConnection({
+      provider: prov,
+      apiKey: key,
+      model: selectedModel.value.id
+    });
+    pingResult.value = {
+      success: true,
+      text: `连通正常 (${res.latencyMs}ms) · 响应:「${res.reply || 'OK'}」`
+    };
+  } catch (err) {
+    pingResult.value = {
+      success: false,
+      text: `连通失败: ${err.message || '网络请求超时'}`
+    };
+  } finally {
+    pingingModel.value = false;
+  }
 }
 
 async function testConnection() {
@@ -454,6 +513,7 @@ async function testConnection() {
   }
 
   try {
+    const ping = await testProviderConnection({ provider: targetProvider, apiKey: key });
     const models = await fetchProviderModels(targetProvider, key);
 
     // Merge defaults so promo models like glm-4.5-air / glm-4.6v aren't lost if remote /models endpoint omits them
@@ -479,7 +539,8 @@ async function testConnection() {
       }
     }
 
-    statusText.value = `${activeProvider.value.name} 连接成功，已动态识别并同步 ${normalizedMerged.length} 款官方可用对话模型。`;
+    const latencyText = ping?.latencyMs ? ` (延迟 ${ping.latencyMs}ms)` : "";
+    statusText.value = `${activeProvider.value.name} 连接测试成功${latencyText}，已动态识别并同步 ${normalizedMerged.length} 款官方可用对话模型。`;
     statusError.value = false;
   } catch (err) {
     statusText.value = err.message || "连接失败，请检查 API Key 是否有效。";
@@ -492,6 +553,7 @@ async function testConnection() {
 function clearConnection() {
   clearAIConnection();
   draftKey.value = "";
+  pingResult.value = null;
   statusText.value = "已清除全部 AI 连接与本地密钥。";
   statusError.value = false;
 }

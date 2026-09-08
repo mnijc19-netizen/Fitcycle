@@ -195,4 +195,84 @@ export async function streamProviderChatCompletion(request, options = {}) {
   return { content, reasoningContent, toolCalls: toolCalls.filter(Boolean), finishReason };
 }
 
+export async function testProviderConnection(request, options = {}) {
+  const { provider, apiKey, model } = request;
+  const config = getProviderConfig(provider, options.apiBase);
+  if (!apiKey) throw new AIProviderError(`请先输入${config.name} API Key`, 0, "missing_key");
+
+  const startTime = Date.now();
+  const fetchImpl = options.fetchImpl || fetch;
+
+  // 1. If a specific model is targeted, verify with a lightweight completion ping
+  if (model) {
+    const body = {
+      model,
+      messages: [{ role: "user", content: "Hi" }],
+      max_tokens: 5,
+      stream: false
+    };
+    if (provider === "deepseek") body.thinking = { type: "disabled" };
+
+    let response;
+    try {
+      response = await fetchImpl(`${config.apiBase}/chat/completions`, {
+        method: "POST",
+        headers: requestHeaders(apiKey),
+        body: JSON.stringify(body),
+        signal: options.signal
+      });
+    } catch (error) {
+      if (error?.name === "AbortError") throw error;
+      throw new AIProviderError(`无法连接${config.name}，网络请求失败`, 0, "network_error");
+    }
+
+    const latencyMs = Math.max(1, Date.now() - startTime);
+
+    if (!response.ok) {
+      throw new AIProviderError(safeFailure(config.name, response.status), response.status);
+    }
+
+    let payload;
+    try {
+      payload = await response.json();
+    } catch {
+      return { success: true, latencyMs, reply: "OK", model, provider: config.name };
+    }
+
+    const reply = payload?.choices?.[0]?.message?.content || "OK";
+    return {
+      success: true,
+      latencyMs,
+      reply: String(reply).trim().slice(0, 40),
+      model,
+      provider: config.name
+    };
+  }
+
+  // 2. Otherwise verify connection through the models list endpoint
+  let response;
+  try {
+    response = await fetchImpl(`${config.apiBase}/models`, {
+      headers: requestHeaders(apiKey),
+      signal: options.signal
+    });
+  } catch (error) {
+    if (error?.name === "AbortError") throw error;
+    throw new AIProviderError(`无法连接${config.name}，网络请求失败`, 0, "network_error");
+  }
+
+  const latencyMs = Math.max(1, Date.now() - startTime);
+
+  if (!response.ok) {
+    throw new AIProviderError(safeFailure(config.name, response.status), response.status);
+  }
+
+  return {
+    success: true,
+    latencyMs,
+    reply: "已成功联通官方接口",
+    provider: config.name
+  };
+}
+
 
