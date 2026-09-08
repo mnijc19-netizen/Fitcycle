@@ -302,98 +302,26 @@
       </button>
     </div>
 
-    <!-- 4. 大模型 Token 与消费数据审计大盘 (Token & Cost Audit Dashboard) -->
-    <div class="rounded-2xl bg-zinc-950 border border-zinc-800/90 p-4 space-y-3.5" data-testid="token-audit-dashboard">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span class="font-bold text-sm sm:text-base text-zinc-100">4. 用量与消费数据审计大盘</span>
-          <span class="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">官方物理统计</span>
+      <!-- Shortcut to Token & Cost Audit Dashboard -->
+      <div class="pt-2 border-t border-zinc-800/60 flex items-center justify-between text-xs sm:text-sm text-zinc-400">
+        <div class="flex items-center gap-1.5">
+          <span>📊</span>
+          <span>Token 用量与消费数据已独立建档</span>
         </div>
-        <button type="button" @click="handleResetAudit" 
-                class="text-xs sm:text-sm text-zinc-400 hover:text-amber-400 active:scale-95 transition-colors cursor-pointer font-mono font-medium"
-                title="重置当前所有用量与消费统计记录"
-                data-testid="reset-audit-btn">
-          重置统计
+        <button type="button" @click="emit('open-audit')" 
+                class="text-amber-400 hover:text-amber-300 font-medium active:scale-95 transition-all cursor-pointer flex items-center gap-0.5"
+                data-testid="goto-audit-btn">
+          <span>查看用量审计大盘</span>
+          <span>❯</span>
         </button>
       </div>
-
-      <!-- Global & Current Provider Highlights -->
-      <div class="grid grid-cols-2 gap-2.5">
-        <!-- Total Tokens Card -->
-        <div class="p-3 rounded-xl bg-zinc-900/70 border border-zinc-800/80 space-y-1.5">
-          <div class="text-xs text-zinc-400 font-medium">全平台累计消耗 Token</div>
-          <div class="text-lg sm:text-xl font-black font-mono text-zinc-100 flex items-baseline gap-1">
-            <span data-testid="audit-total-tokens">{{ tokenAuditState.totalTokens.toLocaleString() }}</span>
-            <span class="text-xs font-normal text-zinc-400">Tokens</span>
-          </div>
-          <div class="text-xs text-zinc-400 font-mono flex items-center justify-between">
-            <span>输入: {{ tokenAuditState.totalPromptTokens.toLocaleString() }}</span>
-            <span>输出: {{ tokenAuditState.totalCompletionTokens.toLocaleString() }}</span>
-          </div>
-        </div>
-
-        <!-- Cost Card (or Current Provider Card) -->
-        <div class="p-3 rounded-xl bg-zinc-900/70 border border-zinc-800/80 space-y-1.5">
-          <div class="text-xs text-zinc-400 font-medium flex items-center justify-between">
-            <span>{{ activeProvider.name }} 累计用量</span>
-            <span v-if="activeProvider.id === 'openrouter'" class="text-emerald-400 font-bold font-mono text-sm" data-testid="openrouter-total-cost">
-              ${{ formatCostUSD(currentProviderStats.totalCostUSD) }}
-            </span>
-          </div>
-          <div class="text-lg sm:text-xl font-black font-mono text-amber-300 flex items-baseline gap-1">
-            <span data-testid="provider-total-tokens">{{ (currentProviderStats.totalTokens || 0).toLocaleString() }}</span>
-            <span class="text-xs font-normal text-zinc-400">Tokens</span>
-          </div>
-          <div class="text-xs text-zinc-300 font-mono flex items-center justify-between">
-            <span>调用: {{ currentProviderStats.callCount || 0 }} 次</span>
-            <span v-if="activeProvider.id === 'openrouter'" class="text-emerald-400 text-xs font-medium">官方实时计费</span>
-            <span v-else class="text-zinc-400 text-xs">仅 Token 审计</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Collapsible Detailed Per-Provider Breakdown Table -->
-      <div class="space-y-2">
-        <button type="button" @click="showProviderBreakdown = !showProviderBreakdown"
-                class="w-full py-1.5 text-xs sm:text-sm text-zinc-300 hover:text-white flex items-center justify-between px-1 cursor-pointer transition-colors font-medium"
-                data-testid="toggle-breakdown-btn">
-          <span>各服务商详细调用与 Token 分布</span>
-          <span class="font-mono text-xs">{{ showProviderBreakdown ? '收起 ▲' : '展开 ▼' }}</span>
-        </button>
-        
-        <div v-if="showProviderBreakdown" class="space-y-1.5 pt-1 border-t border-zinc-800/60 font-mono text-xs sm:text-sm animate-in fade-in duration-150" data-testid="provider-breakdown-list">
-          <div v-for="prov in AI_PROVIDERS" :key="prov.id"
-               class="p-2.5 rounded-xl bg-zinc-900/40 border border-zinc-800/80 flex items-center justify-between text-xs sm:text-sm">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-zinc-200">{{ prov.name }}</span>
-              <span class="text-xs px-2 py-0.5 rounded font-sans" 
-                    :class="prov.billingType === 'tokens_and_cost' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-zinc-800 text-zinc-400'">
-                {{ prov.billingBadge }}
-              </span>
-            </div>
-            <div class="text-right">
-              <span class="font-bold text-zinc-100">{{ (tokenAuditState.providers[prov.id]?.totalTokens || 0).toLocaleString() }} T</span>
-              <span v-if="prov.id === 'openrouter' && tokenAuditState.providers[prov.id]?.totalCostUSD" class="text-emerald-400 ml-1.5 font-bold">
-                (${{ formatCostUSD(tokenAuditState.providers[prov.id]?.totalCostUSD) }})
-              </span>
-              <span class="text-zinc-400 text-xs ml-1.5">({{ tokenAuditState.providers[prov.id]?.callCount || 0 }} 次)</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Explanatory note -->
-      <p class="text-xs text-zinc-400 leading-relaxed bg-zinc-900/40 p-3 rounded-xl border border-zinc-800/50">
-        注：Token 数据直接来源于官方 API 每次生成的 usage 统计回执，绝对物理级真实。金额计算严格仅在服务商提供官方实时定价接口时展示（如 OpenRouter），其余国内及直接调用厂商仅记录真实 Token 审计，避免金额偏差。
-      </p>
     </div>
-  </div>
 </template>
 
 <script setup>
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 
-const emit = defineEmits(["open-chat"]);
+const emit = defineEmits(["open-chat", "open-audit"]);
 
 function handleOpenChat() {
   aiSession.drawerOpen = true;
@@ -444,19 +372,6 @@ import {
   matchesModelSearch,
   normalizeProviderModel
 } from "../ai/modelCapabilities.js";
-import {
-  tokenAuditState,
-  formatCostUSD,
-  getProviderAudit,
-  resetTokenAudit
-} from "../ai/tokenTracker.js";
-
-const showProviderBreakdown = ref(false);
-const currentProviderStats = computed(() => getProviderAudit(aiSession.activeProvider));
-
-function handleResetAudit() {
-  resetTokenAudit();
-}
 
 const draftKey = ref(getActiveApiKey());
 const showKey = ref(false);

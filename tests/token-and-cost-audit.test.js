@@ -18,6 +18,7 @@ import {
   setSelectedModel
 } from "../src/ai/aiSession.js";
 import AISettingsPanel from "../src/components/AISettingsPanel.vue";
+import AITokenAuditPanel from "../src/components/AITokenAuditPanel.vue";
 import AIAssistantDrawer from "../src/components/AIAssistantDrawer.vue";
 import StatsView from "../src/views/StatsView.vue";
 
@@ -132,7 +133,7 @@ describe("Token and Cost Audit Engine", () => {
     wrapper.unmount();
   });
 
-  it("renders the full token & cost audit dashboard and supports reset in AISettingsPanel", async () => {
+  it("renders the full token & cost audit dashboard and supports reset in AITokenAuditPanel", async () => {
     recordTokenUsage({
       provider: "deepseek",
       modelId: "deepseek-chat",
@@ -141,7 +142,7 @@ describe("Token and Cost Audit Engine", () => {
     });
 
     setActiveProvider("deepseek");
-    const wrapper = mount(AISettingsPanel);
+    const wrapper = mount(AITokenAuditPanel);
 
     const dashboard = wrapper.find('[data-testid="token-audit-dashboard"]');
     expect(dashboard.exists()).toBe(true);
@@ -241,6 +242,45 @@ describe("Token and Cost Audit Engine", () => {
     expect(summaryBar.text()).toContain("Tokens");
     expect(summaryBar.text()).toContain("$0.0128"); // 2500*0.0000025 + 656*0.00001 = 0.00625 + 0.00656 = 0.01281 -> 0.0128
     expect(summaryBar.text()).toContain("详细大盘 ❯");
+
+    wrapper.unmount();
+  });
+
+  it("StatsView: clicking outer token audit opens dedicated AITokenAuditPanel modal and switches display per active provider", async () => {
+    recordTokenUsage({
+      provider: "openrouter",
+      modelId: "openai/gpt-4o",
+      usage: { prompt_tokens: 2000, completion_tokens: 1000, total_tokens: 3000 },
+      pricing: { prompt: "0.0000025", completion: "0.00001" }
+    });
+    recordTokenUsage({
+      provider: "deepseek",
+      modelId: "deepseek-chat",
+      usage: { prompt_tokens: 4000, completion_tokens: 1000, total_tokens: 5000 },
+      pricing: null
+    });
+
+    // 1. When OpenRouter is active: shows OpenRouter's 3,000 tokens and real-time cost $0.015
+    setActiveProvider("openrouter");
+    const wrapper = mount(StatsView, { attachTo: document.body });
+    const summaryBar = wrapper.find('[data-testid="outer-token-audit-summary"]');
+    expect(summaryBar.text()).toContain("OpenRouter");
+    expect(summaryBar.text()).toContain("3,000");
+    expect(summaryBar.text()).toContain("$0.015");
+
+    // Click outer bar -> opens dedicated AITokenAuditPanel modal
+    await summaryBar.trigger("click");
+    await nextTick();
+    const modal = wrapper.findComponent(AITokenAuditPanel);
+    expect(modal.exists()).toBe(true);
+
+    // 2. When DeepSeek is active: shows DeepSeek's 5,000 tokens and '官方 Token 审计', NOT a frozen dollar amount
+    setActiveProvider("deepseek");
+    await nextTick();
+    expect(summaryBar.text()).toContain("DeepSeek");
+    expect(summaryBar.text()).toContain("5,000");
+    expect(summaryBar.text()).toContain("官方 Token 审计");
+    expect(summaryBar.find('.text-emerald-400').exists()).toBe(false);
 
     wrapper.unmount();
   });

@@ -419,25 +419,29 @@
 
       <!-- Outer Token & Cost Usage Summary Bar (Directly below AI coach option) -->
       <div class="bg-zinc-900/60 border border-zinc-800/70 hover:border-zinc-700/90 rounded-xl p-3 flex items-center justify-between gap-2.5 cursor-pointer transition-all text-xs sm:text-sm"
-           @click="showAISettingsModal = true"
+           @click="showTokenAuditModal = true"
            data-testid="outer-token-audit-summary"
-           title="点击查看详细 Token 用量与消费大盘">
+           title="点击查看详细 Token 用量与消费审计大盘">
         <div class="flex items-center gap-2 min-w-0 font-mono">
           <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
           <span class="text-xs sm:text-sm text-zinc-300 truncate">
             大模型消耗:
-            <strong class="text-zinc-100 font-bold ml-1">{{ tokenAuditState.totalTokens.toLocaleString() }}</strong>
+            <span class="text-zinc-400 font-sans font-medium">[{{ activeAIProvider.name }}]</span>
+            <strong class="text-zinc-100 font-bold ml-1">{{ currentProviderTokens.toLocaleString() }}</strong>
             <span class="text-xs text-zinc-400 ml-0.5">Tokens</span>
+            <span v-if="tokenAuditState.totalTokens > currentProviderTokens" class="text-xs text-zinc-500 font-sans ml-1">
+              (总计 {{ tokenAuditState.totalTokens.toLocaleString() }})
+            </span>
           </span>
         </div>
         
         <div class="flex items-center gap-2 shrink-0 font-mono text-xs sm:text-sm">
-          <span v-if="tokenAuditState.totalCostUSD > 0 || activeAIProvider.id === 'openrouter'" 
+          <span v-if="activeAIProvider.id === 'openrouter'" 
                 class="text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-xs">
-            ${{ formatCostUSD(tokenAuditState.totalCostUSD) }}
+            ${{ formatCostUSD(currentProviderCostUSD) }}
           </span>
           <span v-else class="text-zinc-400 text-xs px-2 py-0.5 rounded bg-zinc-800/80">
-            {{ activeAIProvider.name }} Token 审计
+            官方 Token 审计
           </span>
           <span class="text-zinc-400 hover:text-amber-400 transition-colors text-xs sm:text-sm font-medium">详细大盘 ❯</span>
         </div>
@@ -470,7 +474,42 @@
           <!-- Scrollable Content Area with Generous Bottom Padding -->
           <div class="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4 scrollbar-thin" 
                style="padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 3.5rem), 3.5rem);">
-            <AISettingsPanel @open-chat="handleOpenChatFromSettings" />
+            <AISettingsPanel 
+              @open-chat="handleOpenChatFromSettings" 
+              @open-audit="showAISettingsModal = false; showTokenAuditModal = true"
+            />
+          </div>
+        </section>
+      </div>
+    </Teleport>
+
+    <!-- Dedicated AI Token & Cost Audit Modal Sheet (100% Fullscreen on Mobile) -->
+    <Teleport to="body">
+      <div v-if="showTokenAuditModal" 
+           class="fixed inset-0 z-[100] flex items-stretch sm:items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200"
+           style="padding-top: max(env(safe-area-inset-top, 0px), 0px); padding-bottom: max(env(safe-area-inset-bottom, 0px), 0px);">
+        <!-- Backdrop -->
+        <div class="absolute inset-0" @click="showTokenAuditModal = false"></div>
+        
+        <!-- Modal Container: Fullscreen on Mobile, Elegantly Centered on Desktop -->
+        <section class="relative w-full sm:max-w-2xl h-full sm:h-[92dvh] bg-zinc-950 sm:border border-zinc-700 rounded-none sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in fade-in slide-in-from-bottom-6 duration-200"
+                 style="overscroll-behavior: none;">
+          <!-- Top Header with Safe Area Inset Top for iPhone Dynamic Island -->
+          <header class="flex items-center justify-between px-4 py-3.5 border-b border-zinc-800 bg-zinc-900/98 backdrop-blur-md flex-shrink-0 z-20"
+                  style="padding-top: max(env(safe-area-inset-top, 0px), 14px);">
+            <div class="flex items-center gap-2">
+              <span class="text-amber-400 font-bold text-base">📊</span>
+              <h2 class="text-sm sm:text-base font-bold text-zinc-100 uppercase tracking-wider">大模型 Token 用量与消费审计大盘</h2>
+            </div>
+            <button type="button" @click="showTokenAuditModal = false" 
+                    class="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white flex items-center justify-center text-sm transition-colors cursor-pointer"
+                    aria-label="关闭用量审计">✕</button>
+          </header>
+
+          <!-- Scrollable Content Area with Generous Bottom Padding -->
+          <div class="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4 scrollbar-thin" 
+               style="padding-bottom: max(calc(env(safe-area-inset-bottom, 0px) + 3.5rem), 3.5rem);">
+            <AITokenAuditPanel @close="showTokenAuditModal = false" />
           </div>
         </section>
       </div>
@@ -694,6 +733,7 @@
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 import AISettingsPanel from "../components/AISettingsPanel.vue";
+import AITokenAuditPanel from "../components/AITokenAuditPanel.vue";
 import HonorShowcaseModal from "../components/HonorShowcaseModal.vue";
 import BodyMetricsModal from "../components/BodyMetricsModal.vue";
 import RulesCodexModal from "../components/RulesCodexModal.vue";
@@ -710,13 +750,14 @@ import {
 } from "../ai/aiSession.js";
 import {
   tokenAuditState,
-  formatCostUSD
+  formatCostUSD,
+  getProviderAudit
 } from "../ai/tokenTracker.js";
 import { 
   store, 
   exportBackupJSON, 
   importBackupJSON, 
-  clearWorkoutHistory,
+  clearWorkoutHistory, 
   resetAllDataToDefault,
   unlockSkin,
   setUISkin,
@@ -751,26 +792,26 @@ const vTaperRatio = computed(() => {
 });
 
 const showAISettingsModal = ref(false);
+const showTokenAuditModal = ref(false);
 const showCloudSyncModal = ref(false);
 
-watch(showAISettingsModal, (val) => {
-  if (val) lockBodyScroll();
-  else unlockBodyScroll();
-});
-
-watch(showCloudSyncModal, (val) => {
-  if (val) lockBodyScroll();
+watch([showAISettingsModal, showTokenAuditModal, showCloudSyncModal], ([ai, audit, cloud]) => {
+  if (ai || audit || cloud) lockBodyScroll();
   else unlockBodyScroll();
 });
 
 onUnmounted(() => {
-  if (showAISettingsModal.value || showCloudSyncModal.value) unlockBodyScroll();
+  if (showAISettingsModal.value || showTokenAuditModal.value || showCloudSyncModal.value) unlockBodyScroll();
 });
 
 const activeAIProvider = computed(getActiveProvider);
 const activeAIModels = computed(getActiveModels);
 const aiConnected = computed(() => Boolean(getActiveApiKey() && activeAIModels.value.length));
 const activeAIModel = computed(() => activeAIModels.value.find((m) => m.id === getActiveModelId()));
+
+const currentProviderAudit = computed(() => getProviderAudit(activeAIProvider.value.id));
+const currentProviderTokens = computed(() => currentProviderAudit.value?.totalTokens || 0);
+const currentProviderCostUSD = computed(() => currentProviderAudit.value?.totalCostUSD || 0);
 
 function handleOpenChatFromSettings() {
   showAISettingsModal.value = false;
