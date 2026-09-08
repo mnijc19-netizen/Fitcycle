@@ -241,10 +241,12 @@ export async function streamProviderChatCompletion(request, options = {}) {
     }
 
     if (payload?.usage) {
+      const pCost = payload.usage.cost ?? payload.usage.total_cost;
       usage = {
         prompt_tokens: Number(payload.usage.prompt_tokens) || 0,
         completion_tokens: Number(payload.usage.completion_tokens) || 0,
-        total_tokens: Number(payload.usage.total_tokens) || ((Number(payload.usage.prompt_tokens) || 0) + (Number(payload.usage.completion_tokens) || 0))
+        total_tokens: Number(payload.usage.total_tokens) || ((Number(payload.usage.prompt_tokens) || 0) + (Number(payload.usage.completion_tokens) || 0)),
+        cost: (pCost !== undefined && pCost !== null && Number.isFinite(Number(pCost))) ? Number(pCost) : undefined
       };
     }
 
@@ -278,16 +280,7 @@ export async function streamProviderChatCompletion(request, options = {}) {
   }
   if (buffer.trim()) processLine(buffer);
 
-  if (!usage) {
-    const estPrompt = Math.max(1, messages.reduce((acc, m) => acc + String(m.content || "").length, 0));
-    const estCompletion = Math.max(1, content.length + reasoningContent.length);
-    usage = {
-      prompt_tokens: Math.ceil(estPrompt / 2.5),
-      completion_tokens: Math.ceil(estCompletion / 2.5),
-      total_tokens: Math.ceil((estPrompt + estCompletion) / 2.5),
-      estimated: true
-    };
-  }
+  // If provider API did not return usage, strictly keep usage null to avoid hallucinated token estimations
 
   return {
     content,

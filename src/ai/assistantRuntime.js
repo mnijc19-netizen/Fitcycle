@@ -99,6 +99,9 @@ export async function runAssistantLoop(options) {
       accumulatedUsage.prompt_tokens += Number(response.usage.prompt_tokens) || 0;
       accumulatedUsage.completion_tokens += Number(response.usage.completion_tokens) || 0;
       accumulatedUsage.total_tokens += Number(response.usage.total_tokens) || 0;
+      if (response.usage.cost !== undefined && response.usage.cost !== null) {
+        accumulatedUsage.cost = Number(((accumulatedUsage.cost || 0) + Number(response.usage.cost)).toFixed(6));
+      }
     }
 
     const assistantMessage = {
@@ -108,21 +111,23 @@ export async function runAssistantLoop(options) {
     };
     history.push(assistantMessage);
 
+    const finalUsage = accumulatedUsage.total_tokens > 0 ? accumulatedUsage : null;
+
     if (!response.toolCalls.length) {
-      return { status: "completed", content: response.content, history, toolRounds, usage: accumulatedUsage };
+      return { status: "completed", content: response.content, history, toolRounds, usage: finalUsage };
     }
     if (!capabilities.tools) {
-      return { status: "tools_unsupported", content: response.content, history, toolRounds, usage: accumulatedUsage };
+      return { status: "tools_unsupported", content: response.content, history, toolRounds, usage: finalUsage };
     }
     if (toolRounds >= MAX_TOOL_ROUNDS) {
-      return { status: "tool_limit", content: "已达到单次请求最多 4 轮工具调用的限制。", history, toolRounds, usage: accumulatedUsage };
+      return { status: "tool_limit", content: "已达到单次请求最多 4 轮工具调用的限制。", history, toolRounds, usage: finalUsage };
     }
     toolRounds += 1;
 
     for (const toolCall of response.toolCalls) {
       const result = toolRuntime.request(toolCall, { modelSupportsTools: capabilities.tools });
       if (result.status === "confirmation_required") {
-        return { status: "confirmation_required", pending: result, toolCall, history, toolRounds, usage: accumulatedUsage };
+        return { status: "confirmation_required", pending: result, toolCall, history, toolRounds, usage: finalUsage };
       }
       history.push(toolResultMessage(toolCall, result));
       onToolResult?.(result);

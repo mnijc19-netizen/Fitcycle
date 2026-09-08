@@ -68,14 +68,27 @@ export const tokenAuditState = reactive(loadStoredState());
  * @returns {number} Cost in USD, or 0 if pricing is absent
  */
 export function calculateCostUSD(usage, pricing) {
-  if (!usage || !pricing) return 0;
+  if (!usage) return 0;
+  if (usage.estimated) return 0;
+
+  // 1. Direct authoritative billing returned by provider API (e.g. OpenRouter stream usage.cost)
+  if (usage.cost !== undefined && usage.cost !== null) {
+    const c = Number(usage.cost);
+    if (Number.isFinite(c) && c >= 0) {
+      return Number(c.toFixed(6));
+    }
+  }
+
+  // 2. Authoritative pricing formula based on official per-token rates
+  if (!pricing) return 0;
   const promptTokens = Number(usage.prompt_tokens || 0);
   const completionTokens = Number(usage.completion_tokens || 0);
 
   const promptRate = Number(pricing.prompt || 0);
   const completionRate = Number(pricing.completion || 0);
+  const requestFee = Number(pricing.request || 0);
 
-  const cost = promptTokens * promptRate + completionTokens * completionRate;
+  const cost = promptTokens * promptRate + completionTokens * completionRate + requestFee;
   return Number.isFinite(cost) && cost > 0 ? Number(cost.toFixed(6)) : 0;
 }
 
@@ -104,15 +117,15 @@ export function formatCostUSD(cost) {
  * @returns {object} { promptTokens, completionTokens, totalTokens, costUSD }
  */
 export function recordTokenUsage({ provider, modelId, usage, pricing }) {
-  if (!usage) return null;
+  if (!usage || usage.estimated) return null;
 
   const promptTokens = Math.max(0, Number(usage.prompt_tokens) || 0);
   const completionTokens = Math.max(0, Number(usage.completion_tokens) || 0);
   const totalTokens = Math.max(0, Number(usage.total_tokens) || (promptTokens + completionTokens));
 
   let costUSD = 0;
-  if (provider === "openrouter" && pricing) {
-    costUSD = calculateCostUSD({ prompt_tokens: promptTokens, completion_tokens: completionTokens }, pricing);
+  if (provider === "openrouter") {
+    costUSD = calculateCostUSD(usage, pricing);
   }
 
   // Update global totals

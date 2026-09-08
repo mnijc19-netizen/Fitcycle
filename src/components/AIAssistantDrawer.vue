@@ -1096,12 +1096,12 @@ async function runCurrentHistory(runOptions = {}) {
     assistantBubble.text = finalParsed.content || (result.status === "confirmation_required" ? "这个变更需要你确认后才会执行。" : "已为你处理完成。");
     
     // Process and record authoritative usage and cost
-    if (result.usage) {
+    if (result.usage && result.usage.total_tokens > 0) {
       assistantBubble.usage = result.usage;
       const provId = aiSession.activeProvider;
       const modelObj = selectedModel.value;
       const pricing = modelObj?.pricing || null;
-      if (provId === "openrouter" && pricing) {
+      if (provId === "openrouter") {
         assistantBubble.costUSD = calculateCostUSD(result.usage, pricing);
       }
       recordTokenUsage({

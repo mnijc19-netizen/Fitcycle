@@ -44,6 +44,20 @@ describe("Token and Cost Audit Engine", () => {
     expect(cost).toBe(0.0075);
     expect(formatCostUSD(cost)).toBe("0.0075");
 
+    // Direct server-reported cost from OpenRouter stream usage takes absolute priority
+    const directUsage = { prompt_tokens: 1000, completion_tokens: 500, total_tokens: 1500, cost: 0.0042 };
+    expect(calculateCostUSD(directUsage, pricing)).toBe(0.0042);
+    expect(formatCostUSD(calculateCostUSD(directUsage, pricing))).toBe("0.0042");
+
+    // Support request fees if specified by model pricing
+    const pricingWithRequest = { prompt: "0.000001", completion: "0.000002", request: "0.001" };
+    expect(calculateCostUSD({ prompt_tokens: 1000, completion_tokens: 1000 }, pricingWithRequest)).toBe(0.004);
+
+    // Estimated usage must NEVER be charged or calculated into money (zero hallucination)
+    const estimatedUsage = { prompt_tokens: 1000, completion_tokens: 500, total_tokens: 1500, estimated: true };
+    expect(calculateCostUSD(estimatedUsage, pricing)).toBe(0);
+    expect(recordTokenUsage({ provider: "openrouter", modelId: "test", usage: estimatedUsage, pricing })).toBe(null);
+
     // Missing pricing returns 0 (no hallucinated cost)
     expect(calculateCostUSD(usage, null)).toBe(0);
     expect(formatCostUSD(0)).toBe("0.00");
