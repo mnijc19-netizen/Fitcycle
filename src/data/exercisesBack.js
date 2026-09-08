@@ -82,7 +82,7 @@ export const BACK_EXERCISES = [
     category: "背部",
     target: "上背部 (斜方肌中下束/菱形肌)",
     secondaryMuscles: ["背阔肌", "三角肌后束", "肱二头肌"],
-    aliases: ["胸垫划船", "T杠划船", "T-Bar", "T板划船", "器械划船", "上背划船", "斜板划船", "Chest Supported Row"],
+    aliases: ["胸垫划船", "T杠划船", "T-Bar", "T板划船", "器械划船", "上背划船", "斜板划船", "Chest Supported Row", "挂片划船", "胸托划船", "挂片T杠划船"],
     gifUrl: "./exercises/chest-supported-row.gif",
     defaultSets: 3,
     defaultReps: "8-10",
@@ -96,6 +96,7 @@ export const BACK_EXERCISES = [
     },
     commonMistakes: ["胸口离开胸垫用腰部反弓借力", "只用手臂向后拉，肩胛骨完全不动"],
     substitutes: [
+      { name: "坐姿胸托划船机", reason: "杠杆分动轨迹，下背零剪切力" },
       { name: "坐姿绳索划船", reason: "轨迹平顺，泵感十足" },
       { name: "单臂哑铃划船", reason: "单侧长行程拉伸" }
     ]
@@ -800,20 +801,41 @@ export const BACK_EXERCISES = [
     subTarget: "上背/斜方 (厚度)",
     target: "菱形肌、斜方肌中束、背阔肌",
     secondaryMuscles: ["背部协同稳定肌群"],
-    aliases: ["坐姿胸托划船机","Lever Seated Row","胸托划船","器械坐姿划船","Chest Supported Row"],
+    aliases: [
+      "坐姿胸托划船机",
+      "Lever Seated Row",
+      "胸托划船",
+      "器械坐姿划船",
+      "Chest Supported Row",
+      "挂片划船",
+      "挂片坐姿划船",
+      "挂片胸托划船",
+      "Matrix划船",
+      "矩阵划船",
+      "分动划船",
+      "分动划船机",
+      "挂片机划船",
+      "胸垫划船机",
+      "挂片划船机",
+      "杠杆划船"
+    ],
     gifUrl: "./exercises/lever-seated-row.gif",
     defaultSets: 3,
     defaultReps: "10-12",
-    scienceDetail: "胸前支撑垫彻底保护下背，让注意力100%集中在挤压肩胛骨上。",
-    tags: ["固定器械","上背/斜方 (厚度)","精选变式"],
+    scienceDetail: "胸前支撑垫彻底隔绝腰椎剪切力，让神经系统100%集中在挤压菱形肌与背阔肌上，大重量安全边际极高。",
+    tags: ["固定器械","上背/斜方 (厚度)","精选变式","挂片分动"],
     tips: {
-      "prep": "调整器械至适合身高体态，脊柱保持中立，核心收紧蓄力。",
-      "execution": "顺应关节解剖自然运动平面做工，主动控制负荷，避免惯性晃荡借力。",
-      "peak": "向心终点充分挤压目标肌群1-2秒，感受峰值做工肌电收缩。",
-      "negative": "离心慢速对抗阻力下放2-3秒，给予肌纤维充分离心刺激拉伸。"
-},
-    commonMistakes: ["借力甩动身体破坏动作结构","关节超伸锁死或过度下潜伤及韧带"],
-    substitutes: [{"name":"杠铃标准复合动作","reason":"基础力量全面进阶"}]
+      "prep": "调节坐垫高度使胸托上沿正对胸骨正中，双脚踏实，胸口完全贴牢前支撑垫，下沉双肩锁死锁骨。",
+      "execution": "选择合适握位（高位横握主攻上背与斜方肌，对握把手贴肋后拉主攻背阔肌），以肘关节为导向主动向后驱动划动。",
+      "peak": "动作向心顶点两片肩胛骨强力内收挤压1-2秒，体会背肌深层聚拢收缩，胸骨严禁离开胸垫。",
+      "negative": "离心阶段慢速对抗2-3秒送回手臂，让肩胛骨自然向前延展充分拉伸肌纤维，切忌任由配重下坠撞击。"
+    },
+    commonMistakes: ["胸部离开胸垫靠后仰或腰椎反弓借力（丧失器械保护腰椎的核心优势）","只用手臂拉拽而肩胛骨锁死不收缩","还原离心过快导致杠铃片猛烈撞击"],
+    substitutes: [
+      {"name":"胸垫胸前划船 (T-Bar)","reason":"同属胸垫支撑零腰椎负荷的黄金大重量动作"},
+      {"name":"坐姿绳索划船","reason":"滑轮张力平顺，手柄更换自由度高"},
+      {"name":"单臂哑铃划船","reason":"自由重量单侧长行程孤立刺激"}
+    ]
   },
   {
     id: "ex-weighted-pull-up",

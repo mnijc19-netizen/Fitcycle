@@ -94,7 +94,7 @@ const LEXICON_ENTRIES = [
     tag: "action:pull_back",
     label: "水平划船/向后拉",
     keywords: [
-      "向后拉", "往后拉", "划船", "水平拉", "拉向腹部", "后拉", "往后拽", "拉手柄"
+      "向后拉", "往后拉", "划船", "水平拉", "拉向腹部", "后拉", "往后拽", "拉手柄", "胸托划船", "胸垫划船", "挂片划船"
     ]
   },
   {
@@ -243,7 +243,11 @@ const LEXICON_ENTRIES = [
     category: FEATURE_CATEGORIES.EQUIPMENT,
     tag: "equipment:rowing_machine",
     label: "器械划船机",
-    keywords: ["划船机", "划船器", "器械划船", "悍马划船", "坐姿绳索划船"]
+    keywords: [
+      "划船机", "划船器", "器械划船", "悍马划船", "坐姿绳索划船",
+      "挂片划船", "挂片划船机", "胸托划船", "坐姿胸托划船", "胸垫划船",
+      "Matrix划船", "矩阵划船", "分动划船"
+    ]
   },
   {
     category: FEATURE_CATEGORIES.EQUIPMENT,
@@ -329,7 +333,7 @@ const LEXICON_ENTRIES = [
     category: FEATURE_CATEGORIES.VISUAL,
     tag: "visual:plate_loaded",
     label: "挂片式",
-    keywords: ["挂片", "加杠铃片", "自己加片", "挂铃片"]
+    keywords: ["挂片", "加杠铃片", "自己加片", "挂铃片", "挂杠铃片", "挂片机", "挂片式", "奥片"]
   },
   {
     category: FEATURE_CATEGORIES.VISUAL,
@@ -504,6 +508,25 @@ const EXERCISE_SPECIFIC_FEATURE_MAP = {
     "equipment:general_machine",
     "muscle:back"
   ],
+  "ex-lever-seated-row": [
+    "posture:seated",
+    "action:pull_back",
+    "equipment:rowing_machine",
+    "equipment:lever_hammer_machine",
+    "equipment:general_machine",
+    "visual:plate_loaded",
+    "muscle:back"
+  ],
+  "ex-chest-supported-row": [
+    "posture:seated",
+    "posture:prone",
+    "action:pull_back",
+    "equipment:rowing_machine",
+    "equipment:lever_hammer_machine",
+    "equipment:general_machine",
+    "visual:plate_loaded",
+    "muscle:back"
+  ],
   "ex-machine-shoulder-press": [
     "posture:seated",
     "action:push_up",
@@ -620,14 +643,12 @@ function getExerciseFeatureSet(exercise) {
     if (exercise.target?.includes("三头") || exercise.name?.includes("下压") || exercise.name?.includes("臂屈伸")) tags.add("muscle:triceps");
   }
 
-  // Derive posture & action from name and aliases
+  // Derive posture & action from name, aliases, and tags
   const textBlob = [
     exercise.name,
     exercise.englishName,
     ...(exercise.aliases || []),
-    exercise.scienceDetail || "",
-    exercise.tips?.prep || "",
-    exercise.tips?.execution || ""
+    ...(exercise.tags || [])
   ].join(" ").toLowerCase();
 
   if (textBlob.includes("坐姿") || textBlob.includes("坐着") || textBlob.includes("座椅")) {
@@ -754,7 +775,7 @@ export function recognizeMachineByQuery(queryText, allExercises = DEFAULT_EXERCI
     if (exercise.aliases && exercise.aliases.length > 0) {
       for (const alias of exercise.aliases) {
         const aLower = alias.toLowerCase();
-        if (cleanNoPunctuation.length >= 2 && aLower.length >= 2 && cleanNoPunctuation.includes(aLower)) {
+        if (cleanNoPunctuation.length >= 2 && aLower.length >= 2 && (cleanNoPunctuation.includes(aLower) || aLower.includes(cleanNoPunctuation))) {
           score += 0.92;
           matchedFeatures.push(`别名命中: ${alias}`);
           break;

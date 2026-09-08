@@ -104,6 +104,36 @@ export const GYM_EQUIPMENT_VISUALS = [
     relatedExerciseIds: ["ex-seated-cable-row", "ex-barbell-bent-over-row", "ex-chest-supported-row"]
   },
   {
+    id: "eq-plate-loaded-row",
+    name: "挂片式胸托坐姿划船机 / Matrix分动划船机",
+    englishName: "Plate-Loaded Seated Row / Matrix Row",
+    aliases: [
+      "挂片划船",
+      "挂片坐姿划船",
+      "挂片划船机",
+      "胸托划船",
+      "胸垫划船",
+      "胸托划船机",
+      "Matrix划船",
+      "矩阵划船",
+      "分动划船",
+      "分动划船机",
+      "杠杆划船机",
+      "plate loaded row",
+      "chest supported row machine",
+      "坐姿胸托划船",
+      "胸托挂片机"
+    ],
+    category: "back",
+    categoryName: "背部 / 斜方肌中下部·菱形肌·背阔肌厚度",
+    imageUrl: "./machines/plate-loaded-row.jpg",
+    tags: ["垂直胸托支撑垫", "两侧独立挂片杠杆臂", "多角度抓握把手", "圆弧发散轨迹"],
+    appearanceFeature: "机身正前方配备一块厚实的竖直皮质胸托支撑垫与可调节高低的座椅。左右两侧各有一根独立旋转的杠杆摆臂，摆臂外侧伸出粗壮的奥林匹克挂片杆（用于加挂大孔杠铃片）。转轴通常有 MATRIX 等高端商用标志，握把提供高位横握、倾斜握与垂直对握多把位，拉动时轨迹向外微发散，高度贴合背肌解剖走向。",
+    adjustmentTips: "1. 拔出座椅下方的黄色调节销，调整坐垫高度，使胸托垫上沿位于胸骨正中（避免胸垫卡住锁骨或横膈膜影响呼吸）；\n2. 双脚平踩踏实，胸口完全贴紧前支撑胸托，收紧核心；\n3. 握法与目标肌群：\n   - 高位/横向握把（手肘外展约 60°-75°）：主攻上背、斜方肌中下束、大/小菱形肌，打造背部立体厚度；\n   - 垂直/对握把手（手肘紧贴肋侧后拉）：主攻背阔肌下延及躯干侧向展开；\n4. 动作全程胸骨紧贴胸垫，切忌靠腰部反弓后仰甩动，终点挤压背胛 1 秒，缓慢对抗离心还原。",
+    commonMistakes: "身体后仰离开胸垫用腰椎借力（彻底失去器械保护腰椎的核心优势）、只用手臂拉拽而肩胛骨锁死不收缩、下放时松懈任由杠铃片撞击底架。",
+    relatedExerciseIds: ["ex-lever-seated-row", "ex-chest-supported-row", "ex-seated-cable-row"]
+  },
+  {
     id: "eq-leg-extension",
     name: "坐姿腿屈伸机",
     englishName: "Leg Extension Machine",

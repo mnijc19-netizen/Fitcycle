@@ -75,6 +75,21 @@ describe("machineRecognitionEngine (Offline Colloquial Gym Machine Recognition)"
     expect(matches[0].confidence).toBeGreaterThanOrEqual(0.80);
   });
 
+  it("recognizes plate-loaded chest-supported row machine '挂片划船' and '坐着胸口顶住垫子往后拉的挂片器械'", () => {
+    const query1 = "挂片划船";
+    const matches1 = recognizeMachineByQuery(query1, DEFAULT_EXERCISES);
+    expect(matches1.length).toBeGreaterThan(0);
+    const rowIds = ["ex-lever-seated-row", "ex-chest-supported-row"];
+    expect(rowIds).toContain(matches1[0].exercise.id);
+    expect(matches1[0].confidence).toBeGreaterThanOrEqual(0.90);
+
+    const query2 = "坐着胸口顶住垫子往后拉的挂片器械";
+    const matches2 = recognizeMachineByQuery(query2, DEFAULT_EXERCISES);
+    expect(matches2.length).toBeGreaterThan(0);
+    expect(rowIds).toContain(matches2[0].exercise.id);
+    expect(matches2[0].confidence).toBeGreaterThanOrEqual(0.70);
+  });
+
   it("gives >= 0.95 confidence for exact exercise name and alias matches", () => {
     const benchMatch = recognizeMachineByQuery("平板杠铃卧推", DEFAULT_EXERCISES);
     expect(benchMatch[0].exercise.id).toBe("ex-barbell-bench-press");

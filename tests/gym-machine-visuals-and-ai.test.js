@@ -61,6 +61,16 @@ describe("Commercial Gym Machine Real-World Visuals & AI Image Tooling", () => {
     // 5. Smith Machine
     const smith = findGymEquipmentVisual("史密斯架");
     expect(smith?.id).toBe("eq-smith-machine");
+
+    // 6. Plate-Loaded Row / Matrix Seated Row
+    const row1 = findGymEquipmentVisual("挂片划船");
+    const row2 = findGymEquipmentVisual("Matrix划船");
+    const row3 = findGymEquipmentVisual("胸托划船机");
+    expect(row1?.id).toBe("eq-plate-loaded-row");
+    expect(row2?.id).toBe("eq-plate-loaded-row");
+    expect(row3?.id).toBe("eq-plate-loaded-row");
+    expect(row1.imageUrl).toBe("./machines/plate-loaded-row.jpg");
+    expect(row1.relatedExerciseIds).toContain("ex-lever-seated-row");
   });
 
   it("handles get_gym_machine_appearance tool execution and formats markdown image output", () => {
