@@ -294,6 +294,55 @@ describe("mobile AI drawer", () => {
 
     wrapper.unmount();
   });
+
+  it("smoothly transitions copy button to checkmark with timer reset on click", async () => {
+    vi.useFakeTimers();
+    const writeTextMock = vi.fn().mockResolvedValue();
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: writeTextMock },
+      configurable: true,
+      writable: true
+    });
+
+    aiSession.drawerOpen = true;
+    aiSession.conversation = [{
+      id: "assistant_copy_test_1",
+      role: "assistant",
+      text: "这是针对您力量训练的专业建议与动作规划。",
+      streaming: false
+    }];
+
+    const wrapper = mount(AIAssistantDrawer, { attachTo: document.body });
+    await nextTick();
+
+    const copyBtn = wrapper.find('[data-testid="copy-ai-response-btn"]');
+    expect(copyBtn.exists()).toBe(true);
+    expect(copyBtn.text()).toContain("复制");
+    expect(copyBtn.text()).not.toContain("已复制");
+
+    // Click copy button
+    await copyBtn.trigger("click");
+    await nextTick();
+
+    // Verify clipboard API was called with message text
+    expect(writeTextMock).toHaveBeenCalledWith("这是针对您力量训练的专业建议与动作规划。");
+
+    // Verify UI dynamically morphed to checked state
+    expect(copyBtn.text()).toContain("已复制");
+    expect(copyBtn.find(".check-icon").exists()).toBe(true);
+    expect(copyBtn.classes()).toContain("text-emerald-400");
+
+    // Advance timers by 2000ms
+    await vi.advanceTimersByTimeAsync(2000);
+    await nextTick();
+
+    // Reverts back to standard copy icon and text
+    expect(copyBtn.text()).toContain("复制");
+    expect(copyBtn.text()).not.toContain("已复制");
+    expect(copyBtn.find(".check-icon").exists()).toBe(false);
+
+    wrapper.unmount();
+  });
 });
 
 

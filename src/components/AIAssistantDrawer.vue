@@ -319,14 +319,34 @@
                  v-html="renderMarkdown(formatAssistantMessageText(message))"></div>
             <span v-if="message.streaming && !message.isThinking && message.text" class="inline-block w-2 h-3.5 bg-amber-400 animate-pulse align-middle ml-1"></span>
 
-            <!-- Footer: Brand tag and Copy Button -->
-            <div v-if="!message.streaming && (message.text || message.reasoning)" class="flex items-center justify-between pt-1 border-t border-zinc-800/60 text-xs text-zinc-500 font-mono">
+            <!-- Footer: Brand tag and Animated Copy Button -->
+            <div v-if="!message.streaming && (message.text || message.reasoning)" class="flex items-center justify-between pt-1.5 border-t border-zinc-800/60 text-xs text-zinc-500 font-mono">
               <span class="flex items-center gap-1 text-zinc-400">
                 <span>✦ Fitcycle AI</span>
               </span>
-              <button type="button" @click="copyText(message.text)" 
-                      class="hover:text-zinc-200 transition-colors flex items-center gap-1 px-1.5 py-0.5 rounded bg-zinc-800/60 hover:bg-zinc-800">
-                <span>📋 复制</span>
+              <button type="button" 
+                      @click="copyText(message)" 
+                      class="copy-btn relative overflow-hidden flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-xs transition-all duration-300 active:scale-95 cursor-pointer font-sans border"
+                      :class="copiedMessageId === (message.id || message.text)
+                        ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400 shadow-sm shadow-emerald-500/10' 
+                        : 'bg-zinc-800/60 hover:bg-zinc-800 border-zinc-700/50 hover:border-zinc-700 text-zinc-400 hover:text-zinc-200'"
+                      :title="copiedMessageId === (message.id || message.text) ? '已复制到剪贴板' : '复制回答内容'"
+                      data-testid="copy-ai-response-btn">
+                <transition name="copy-morph" mode="out-in">
+                  <span v-if="copiedMessageId === (message.id || message.text)" key="copied" class="flex items-center gap-1 leading-none">
+                    <svg class="w-3.5 h-3.5 check-icon text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path class="check-path" d="M20 6 9 17l-5-5"/>
+                    </svg>
+                    <span class="text-[11px] font-bold">已复制</span>
+                  </span>
+                  <span v-else key="copy" class="flex items-center gap-1 leading-none">
+                    <svg class="w-3.5 h-3.5 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                    </svg>
+                    <span class="text-[11px]">复制</span>
+                  </span>
+                </transition>
               </button>
             </div>
           </div>
@@ -730,6 +750,7 @@ watch(() => aiSession.drawerOpen, (val) => {
 }, { immediate: true });
 
 onUnmounted(() => {
+  if (copyResetTimeout) clearTimeout(copyResetTimeout);
   detachViewportListeners();
   if (aiSession.drawerOpen) unlockBodyScroll();
 });
@@ -923,10 +944,51 @@ function makeMessage(role, text, extra = {}) {
   return reactive({ id: `${role}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, role, text, ...extra });
 }
 
-function copyText(text) {
-  if (!text) return;
-  const clean = cleanAIMessage(text);
-  navigator.clipboard?.writeText(clean).catch(() => {});
+const copiedMessageId = ref(null);
+let copyResetTimeout = null;
+
+async function copyText(target, maybeMsg) {
+  const message = (typeof target === "object" && target !== null) ? target : maybeMsg;
+  const rawText = typeof target === "string" ? target : (message?.text || "");
+  if (!rawText) return;
+  const clean = cleanAIMessage(rawText);
+
+  try {
+    if (typeof navigator !== "undefined" && navigator?.clipboard?.writeText) {
+      await navigator.clipboard.writeText(clean);
+    } else if (typeof document !== "undefined") {
+      const textarea = document.createElement("textarea");
+      textarea.value = clean;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+    }
+  } catch (_e) {
+    try {
+      if (typeof document !== "undefined") {
+        const textarea = document.createElement("textarea");
+        textarea.value = clean;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+    } catch (_err) {}
+  }
+
+  const msgKey = message?.id || (typeof target === "object" && target?.id) || rawText;
+  if (msgKey) {
+    copiedMessageId.value = msgKey;
+    if (copyResetTimeout) clearTimeout(copyResetTimeout);
+    copyResetTimeout = setTimeout(() => {
+      copiedMessageId.value = null;
+    }, 2000);
+  }
 }
 
 // Only push state-changing mutations with undo support into conversation (hide read-only queries)
@@ -1154,6 +1216,53 @@ function goToSettings() {
 
 .animate-drawer-slide-up {
   animation: drawerSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 丝滑复制打勾微动效 (Silky Smooth Copy-to-Check Morph Transition) */
+.copy-morph-enter-active,
+.copy-morph-leave-active {
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.copy-morph-enter-from {
+  opacity: 0;
+  transform: scale(0.7) translateY(2px);
+}
+
+.copy-morph-leave-to {
+  opacity: 0;
+  transform: scale(0.7) translateY(-2px);
+}
+
+/* 物理弹簧打勾徽标与笔画动态绘制 */
+.check-icon {
+  animation: checkSpringPop 0.36s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes checkSpringPop {
+  0% {
+    transform: scale(0.5) rotate(-12deg);
+    opacity: 0;
+  }
+  65% {
+    transform: scale(1.2) rotate(0deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.check-path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: checkStrokeDraw 0.28s cubic-bezier(0.65, 0, 0.45, 1) 0.04s forwards;
+}
+
+@keyframes checkStrokeDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 </style>
 
