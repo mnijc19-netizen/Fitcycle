@@ -119,7 +119,7 @@
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold flex items-center gap-1.5"
                   :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">
-              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
               <span>分化刺激实时诊断</span>
             </span>
             <span class="text-xs font-mono font-semibold"
@@ -128,55 +128,117 @@
             </span>
           </div>
 
-          <!-- Muscle Coverage Progress Grid -->
+          <!-- Muscle Coverage Progress Grid (点击卡片可即时筛选缺口与专属动作推荐) -->
           <div class="grid grid-cols-3 gap-1.5">
-            <div v-for="m in splitIntelligence.muscles" :key="m.key"
-                 class="p-2.5 rounded-xl border flex flex-col justify-between transition-all"
-                 :class="[
-                   m.status === 'optimal' 
-                     ? (store.settings.themeMode === 'light' ? 'bg-emerald-50 border-emerald-300 text-emerald-900' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400')
-                     : m.status === 'insufficient'
-                       ? (store.settings.themeMode === 'light' ? 'bg-amber-50 border-amber-300 text-amber-900' : 'bg-amber-500/10 border-amber-500/30 text-amber-300')
-                       : (store.settings.themeMode === 'light' ? 'bg-slate-100 border-slate-200 text-slate-600' : 'bg-zinc-900 border-zinc-800 text-zinc-400')
-                 ]">
-              <div class="flex items-center justify-between text-xs font-bold">
-                <span class="truncate">{{ m.name }}</span>
-                <span class="font-mono text-sm font-black">{{ m.completedSets }}/{{ m.minSets }}</span>
+            <button v-for="m in splitIntelligence.muscles" :key="m.key"
+                    @click="handleSelectMuscle(m.key)"
+                    type="button"
+                    :title="'点击查看【' + m.name + '】科学诊断与推荐动作'"
+                    class="p-2.5 rounded-xl border flex flex-col justify-between transition-all cursor-pointer text-left select-none active:scale-95"
+                    :class="[
+                      activeSelectedMuscle?.key === m.key
+                        ? (store.settings.themeMode === 'light'
+                            ? 'ring-2 ring-amber-500 bg-amber-50/90 border-amber-400 shadow-sm'
+                            : 'ring-2 ring-amber-400 bg-amber-500/15 border-amber-400/80 shadow-md shadow-amber-500/20')
+                        : (m.status === 'optimal' 
+                            ? (store.settings.themeMode === 'light' ? 'bg-emerald-50 border-emerald-300 text-emerald-900' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400')
+                            : m.status === 'insufficient'
+                              ? (store.settings.themeMode === 'light' ? 'bg-amber-50 border-amber-300 text-amber-900' : 'bg-amber-500/10 border-amber-500/30 text-amber-300')
+                              : (store.settings.themeMode === 'light' ? 'bg-slate-100 border-slate-200 text-slate-600' : 'bg-zinc-900 border-zinc-800 text-zinc-400'))
+                    ]">
+              <div class="flex items-center justify-between text-xs font-bold gap-1">
+                <span class="truncate flex items-center gap-1">
+                  <span v-if="activeSelectedMuscle?.key === m.key" class="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0"></span>
+                  {{ m.name }}
+                </span>
+                <span class="font-mono text-sm font-black flex-shrink-0">{{ m.completedSets }}/{{ m.minSets }}</span>
               </div>
               <div class="flex items-center justify-between text-xs mt-1.5 pt-1.5 border-t border-current/15">
-                <span class="text-xs font-semibold">{{ m.statusText }}</span>
-                <div class="w-8 h-1.5 rounded-full bg-current/20 overflow-hidden">
+                <span class="text-xs font-semibold flex items-center gap-1">
+                  <span>{{ m.statusText }}</span>
+                  <span v-if="m.synergySets > 0" class="text-[10px] opacity-70 font-mono">(+{{ m.synergySets }}协同)</span>
+                </span>
+                <div class="w-8 h-1.5 rounded-full bg-current/20 overflow-hidden flex-shrink-0">
                   <div class="h-full bg-current transition-all duration-300" :style="{ width: m.percentage + '%' }"></div>
                 </div>
               </div>
-            </div>
+            </button>
           </div>
 
-          <!-- Diagnostic Insight & Quick-Add Recommended Chips -->
-          <div v-if="splitIntelligence.recommendedAddons && splitIntelligence.recommendedAddons.length > 0"
-               class="p-2.5 rounded-xl border space-y-2"
-               :class="store.settings.themeMode === 'light' ? 'bg-amber-50/70 border-amber-200' : 'bg-zinc-950/80 border-amber-500/25'">
-            <div class="text-xs font-medium leading-normal flex items-center gap-1.5"
-                 :class="store.settings.themeMode === 'light' ? 'text-amber-900' : 'text-amber-300/90'">
-              <span class="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0"></span>
-              <span>{{ splitIntelligence.headline }}</span>
-            </div>
+          <!-- Dynamic Interactive Muscle Deficit & Action Suggestion Board -->
+          <div v-if="activeSelectedMuscle"
+               class="p-3 rounded-2xl border space-y-2.5 transition-all"
+               :class="store.settings.themeMode === 'light' ? 'bg-amber-50/70 border-amber-200 shadow-sm' : 'bg-zinc-950/90 border-amber-500/30 shadow-md'">
             
-            <!-- 1-Click Recommended Quick Add Pills -->
-            <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar overscroll-x-contain touch-pan-x">
-              <button v-for="addon in splitIntelligence.recommendedAddons" :key="addon.exerciseId || addon.name"
-                      @click="handleAddRecommendedAddon(addon)"
+            <!-- Focused Target & Biomechanical Advice Header -->
+            <div class="flex items-center justify-between gap-2 border-b pb-2"
+                 :class="store.settings.themeMode === 'light' ? 'border-amber-200/80' : 'border-zinc-800/80'">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="w-2 h-2 rounded-full flex-shrink-0"
+                      :class="activeSelectedMuscle.status === 'optimal' ? 'bg-emerald-400' : 'bg-amber-400'"></span>
+                <span class="text-xs font-black truncate"
+                      :class="store.settings.themeMode === 'light' ? 'text-amber-950' : 'text-zinc-100'">
+                  聚焦诊断：{{ activeSelectedMuscle.name }}
+                </span>
+                <span class="text-[11px] px-2 py-0.5 rounded-full font-bold font-mono flex-shrink-0"
+                      :class="activeSelectedMuscle.status === 'optimal' 
+                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
+                        : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'">
+                  {{ activeSelectedMuscle.statusText }} ({{ activeSelectedMuscle.completedSets }}/{{ activeSelectedMuscle.minSets }}组)
+                </span>
+              </div>
+
+              <!-- Quick action to open exercise picker filtered to this category -->
+              <button @click="openPickerForTargetMuscle(activeSelectedMuscle)"
                       type="button"
-                      :title="'一键加入今日训练：' + addon.name"
-                      class="px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 whitespace-nowrap active:scale-95 transition-all cursor-pointer flex-shrink-0"
-                      :class="store.settings.themeMode === 'light' ? 'bg-white hover:bg-amber-100 border-amber-300 text-amber-950' : 'bg-amber-500/15 hover:bg-amber-500/25 border-amber-500/40 text-amber-300'">
-                <span class="text-amber-500 font-black text-sm">+</span>
-                <span>{{ addon.name }}</span>
-                <span class="text-xs px-1.5 py-0.5 rounded font-mono font-medium"
-                      :class="store.settings.themeMode === 'light' ? 'bg-amber-100 text-amber-800' : 'bg-amber-500/20 text-amber-200 opacity-90'">{{ addon.tag }}</span>
+                      class="text-[11px] font-bold transition-colors flex items-center gap-0.5 flex-shrink-0 cursor-pointer"
+                      :class="store.settings.themeMode === 'light' ? 'text-amber-800 hover:text-amber-900' : 'text-amber-400 hover:text-amber-300'">
+                <span>更多动作</span>
+                <span class="text-xs">❯</span>
               </button>
             </div>
+
+            <!-- Biomechanical Diagnostic Reason -->
+            <p class="text-xs leading-relaxed"
+               :class="store.settings.themeMode === 'light' ? 'text-amber-950' : 'text-zinc-300'">
+              <span class="font-bold text-amber-500 mr-1">💡 运动解剖诊断:</span>{{ activeSelectedMuscle.deficitReason }}
+            </p>
+
+            <!-- Specific Recommended Addon Pills for this Selected Muscle -->
+            <div v-if="activeSelectedMuscle.specificAddons && activeSelectedMuscle.specificAddons.length > 0"
+                 class="space-y-1.5 pt-0.5">
+              <div class="text-[11px] font-bold flex items-center justify-between"
+                   :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
+                <span>推荐添加动作 (点击 1 键加入)：</span>
+                <span class="text-[10px] font-mono text-zinc-500">点击即刻插入并更新诊断</span>
+              </div>
+
+              <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar overscroll-x-contain touch-pan-x">
+                <button v-for="addon in activeSelectedMuscle.specificAddons" :key="addon.exerciseId || addon.name"
+                        @click="handleAddRecommendedAddon(addon)"
+                        type="button"
+                        :title="'一键加入今日训练：' + addon.name"
+                        class="px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 whitespace-nowrap active:scale-95 transition-all cursor-pointer flex-shrink-0 shadow-xs"
+                        :class="store.settings.themeMode === 'light' 
+                          ? 'bg-white hover:bg-amber-100 border-amber-300 text-amber-950' 
+                          : 'bg-amber-500/15 hover:bg-amber-500/25 border-amber-500/40 text-amber-300'">
+                  <span class="text-amber-500 font-black text-sm">+</span>
+                  <span>{{ addon.name }}</span>
+                  <span class="text-xs px-1.5 py-0.5 rounded font-mono font-medium"
+                        :class="store.settings.themeMode === 'light' ? 'bg-amber-100 text-amber-800' : 'bg-amber-500/20 text-amber-200 opacity-90'">
+                    {{ addon.tag || addon.targetReps }}
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            <div v-else-if="activeSelectedMuscle.status === 'optimal'"
+                 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5 pt-1">
+              <span>✅ 该部位有效容量已完全拉满，肌肉超量恢复信号已确立！可继续保持或挑选其他落后肌群。</span>
+            </div>
+
           </div>
+
           <div v-else-if="splitIntelligence.overallStatus === 'success'"
                class="p-2.5 rounded-xl text-xs font-bold flex items-center gap-2"
                :class="store.settings.themeMode === 'light' ? 'bg-emerald-50 border border-emerald-300 text-emerald-800' : 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'">
@@ -185,6 +247,7 @@
           </div>
 
         </div>
+
       </div>
 
       <!-- Exercises In Workout -->
@@ -1084,7 +1147,8 @@
       :visible="showAddExerciseModal" 
       title="添加动作到当前训练" 
       actionLabel="添加"
-      @close="showAddExerciseModal = false" 
+      :initial-category="pickerInitialCategory"
+      @close="showAddExerciseModal = false; pickerInitialCategory = '';" 
       @select="handleAddExerciseSelected" 
     />
 
@@ -1417,6 +1481,36 @@ const splitIntelligence = computed(() => {
   return analyzeActiveWorkoutCoverage(store.activeWorkout, DEFAULT_EXERCISES);
 });
 
+// 用户手动选中的缺口诊断肌群键值与动作选择器分类传递
+const selectedDeficitKey = ref(null);
+const pickerInitialCategory = ref("");
+
+// 当前聚焦诊断的肌群对象（优先用户点选，其次默认首个缺口肌群）
+const activeSelectedMuscle = computed(() => {
+  if (!splitIntelligence.value || !Array.isArray(splitIntelligence.value.muscles) || splitIntelligence.value.muscles.length === 0) {
+    return null;
+  }
+  const list = splitIntelligence.value.muscles;
+  if (selectedDeficitKey.value) {
+    const found = list.find(m => m.key === selectedDeficitKey.value);
+    if (found) return found;
+  }
+  // 自动聚焦首个有缺口（未练或不足）的肌群
+  const firstDeficit = list.find(m => m.status === "missing" || m.status === "insufficient");
+  return firstDeficit || list[0];
+});
+
+function handleSelectMuscle(mKey) {
+  selectedDeficitKey.value = mKey;
+  triggerHaptic(10);
+}
+
+function openPickerForTargetMuscle(muscle) {
+  if (!muscle) return;
+  pickerInitialCategory.value = muscle.category || "";
+  showAddExerciseModal.value = true;
+}
+
 // 统计当前未开动（0完成组）的动作数量
 const untouchedExercisesCount = computed(() => {
   if (!store.activeWorkout || !Array.isArray(store.activeWorkout.exercises)) return 0;
@@ -1442,7 +1536,9 @@ const currentSwapSubstitutes = computed(() => {
 
 function handleAddRecommendedAddon(addon) {
   addExerciseToActiveWorkout(addon);
+  triggerHaptic(15);
 }
+
 
 function handlePruneUntouched() {
   pruneUntouchedExercisesFromActiveWorkout();

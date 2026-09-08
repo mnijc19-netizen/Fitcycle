@@ -331,14 +331,24 @@ const props = defineProps({
   substitutes: {
     type: Array,
     default: () => []
+  },
+  initialCategory: {
+    type: String,
+    default: ""
   }
 });
 
 const emit = defineEmits(["close", "select"]);
 
 watch(() => props.visible, (val) => {
-  if (val) lockBodyScroll();
-  else unlockBodyScroll();
+  if (val) {
+    lockBodyScroll();
+    if (props.initialCategory && categories.includes(props.initialCategory)) {
+      activeCategory.value = props.initialCategory;
+    }
+  } else {
+    unlockBodyScroll();
+  }
 }, { immediate: true });
 
 onUnmounted(() => {

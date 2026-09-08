@@ -205,4 +205,47 @@ describe('Split Muscle Intelligence Engine & Frictionless Customization', () => 
       expect(subs[0].reason).toBeTruthy();
     });
   });
+
+  describe('5. Extended Scientific Splits & Interactive Deficit Target Selection', () => {
+    it('accurately identifies advanced splits: Arnold, Full Body, Chest Focus, Back Focus', () => {
+      expect(detectSplitType('阿诺德胸背超级组', '胸背')).toBe('arnold_chest_back');
+      expect(detectSplitType('阿诺德肩臂雕刻日', '肩臂')).toBe('arnold_shoulders_arms');
+      expect(detectSplitType('全身力量与代谢综合日', '全身')).toBe('full_body');
+      expect(detectSplitType('大重量纯胸突破日', '纯胸')).toBe('chest_focus');
+      expect(detectSplitType('大重量纯背增厚日', '纯背')).toBe('back_focus');
+    });
+
+    it('generates biomechanical deficit diagnosis and targeted addons for each selectable muscle', () => {
+      startWorkout('plan-pull'); // Exercises: 高位下拉 (3 sets), 坐姿划船 (3 sets), 哑铃锤式弯举 (3 sets)
+      // User completes all 3 sets of 高位下拉
+      toggleSetCompletion(0, 0);
+      toggleSetCompletion(0, 1);
+      toggleSetCompletion(0, 2);
+
+      const analysis = analyzeActiveWorkoutCoverage(store.activeWorkout, DEFAULT_EXERCISES);
+      expect(analysis.splitKey).toBe('pull');
+
+      // 1. Back has 3 completed sets, still needs 3 sets
+      const back = analysis.muscles.find(m => m.key === 'back');
+      expect(back.completedSets).toBe(3);
+      expect(back.status).toBe('insufficient');
+      expect(back.deficitReason).toContain('划船');
+      expect(back.specificAddons.length).toBeGreaterThan(0);
+
+      // 2. Rear delts has 0 sets
+      const rearDelts = analysis.muscles.find(m => m.key === 'rear_delts');
+      expect(rearDelts.completedSets).toBe(0);
+      expect(rearDelts.status).toBe('missing');
+      expect(rearDelts.deficitReason).toContain('水平外展');
+      expect(rearDelts.specificAddons.some(a => a.name.includes('面拉') || a.name.includes('飞鸟'))).toBe(true);
+
+      // 3. Biceps has 0 sets
+      const biceps = analysis.muscles.find(m => m.key === 'biceps');
+      expect(biceps.completedSets).toBe(0);
+      expect(biceps.status).toBe('missing');
+      expect(biceps.deficitReason).toContain('弯举');
+      expect(biceps.specificAddons.some(a => a.name.includes('弯举'))).toBe(true);
+    });
+  });
 });
+

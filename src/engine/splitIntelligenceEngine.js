@@ -22,6 +22,7 @@ export const SPLIT_DEFINITIONS = {
     ],
     defaultAddons: [
       { exerciseId: "ex-pec-deck-fly", name: "蝴蝶机夹胸 (Pec Deck)", targetReps: "12-15次", defaultWeight: 35, defaultSets: 3, category: "胸部", tag: "胸肌孤立", targetMuscleKey: "chest" },
+      { exerciseId: "ex-incline-db-bench", name: "上斜哑铃卧推", targetReps: "8-10次", defaultWeight: 20, defaultSets: 3, category: "胸部", tag: "上胸饱满", targetMuscleKey: "chest" },
       { exerciseId: "ex-cable-lateral-raise", name: "绳索侧平举", targetReps: "12-15次", defaultWeight: 7.5, defaultSets: 3, category: "肩部", tag: "肩宽中束", targetMuscleKey: "shoulders" },
       { exerciseId: "ex-seated-dumbbell-shoulder-press", name: "坐姿哑铃推肩", targetReps: "10-12次", defaultWeight: 18, defaultSets: 3, category: "肩部", tag: "前束增厚", targetMuscleKey: "shoulders" },
       { exerciseId: "ex-overhead-cable-ext", name: "过头绳索臂屈伸", targetReps: "12-15次", defaultWeight: 15, defaultSets: 3, category: "手臂", tag: "三头长头", targetMuscleKey: "triceps" },
@@ -95,19 +96,111 @@ export const SPLIT_DEFINITIONS = {
       { exerciseId: "ex-rdl", name: "罗马尼亚硬拉 (RDL)", targetReps: "10-12次", defaultWeight: 50, defaultSets: 3, category: "腿部", tag: "后链拉力", targetMuscleKey: "posterior" },
       { exerciseId: "ex-calf-raise", name: "站姿/坐姿提踵", targetReps: "15-20次", defaultWeight: 40, defaultSets: 3, category: "腿部", tag: "小腿抗阻", targetMuscleKey: "calves" }
     ]
+  },
+  arnold_chest_back: {
+    key: "arnold_chest_back",
+    name: "阿诺德胸背日 (Chest & Back)",
+    keywords: ["胸背", "arnold a", "阿诺德a", "arnold 1", "胸与背"],
+    targetMuscles: [
+      { key: "chest", name: "胸大肌 (上/中下胸)", minSets: 6, maxSets: 10, role: "primary", category: "胸部" },
+      { key: "back", name: "背部肌群 (背阔与上背)", minSets: 6, maxSets: 10, role: "primary", category: "背部" }
+    ],
+    defaultAddons: [
+      { exerciseId: "ex-incline-db-bench", name: "上斜哑铃卧推", targetReps: "8-10次", defaultWeight: 20, defaultSets: 3, category: "胸部", tag: "上胸强化", targetMuscleKey: "chest" },
+      { exerciseId: "ex-pec-deck-fly", name: "蝴蝶机夹胸 (Pec Deck)", targetReps: "12-15次", defaultWeight: 35, defaultSets: 3, category: "胸部", tag: "胸肌孤立", targetMuscleKey: "chest" },
+      { exerciseId: "ex-lat-pulldown", name: "对握/宽握高位下拉", targetReps: "10-12次", defaultWeight: 45, defaultSets: 3, category: "背部", tag: "垂直拉宽", targetMuscleKey: "back" },
+      { exerciseId: "ex-seated-cable-row", name: "坐姿绳索划船", targetReps: "10-12次", defaultWeight: 40, defaultSets: 3, category: "背部", tag: "水平增厚", targetMuscleKey: "back" }
+    ]
+  },
+  arnold_shoulders_arms: {
+    key: "arnold_shoulders_arms",
+    name: "阿诺德肩臂日 (Shoulders & Arms)",
+    keywords: ["肩臂", "arnold b", "阿诺德b", "arnold 2", "肩与臂"],
+    targetMuscles: [
+      { key: "shoulders", name: "三角肌前/中束", minSets: 5, maxSets: 9, role: "primary", category: "肩部" },
+      { key: "rear_delts", name: "三角肌后束", minSets: 3, maxSets: 6, role: "primary", category: "肩部" },
+      { key: "biceps", name: "肱二头肌", minSets: 4, maxSets: 8, role: "secondary", category: "手臂" },
+      { key: "triceps", name: "肱三头肌", minSets: 4, maxSets: 8, role: "secondary", category: "手臂" }
+    ],
+    defaultAddons: [
+      { exerciseId: "ex-cable-lateral-raise", name: "绳索侧平举", targetReps: "12-15次", defaultWeight: 7.5, defaultSets: 3, category: "肩部", tag: "肩宽中束", targetMuscleKey: "shoulders" },
+      { exerciseId: "ex-face-pull", name: "绳索面拉 (Face Pull)", targetReps: "12-15次", defaultWeight: 15, defaultSets: 3, category: "肩部", tag: "后束防圆肩", targetMuscleKey: "rear_delts" },
+      { exerciseId: "ex-incline-db-curl", name: "上斜哑铃弯举", targetReps: "10-12次", defaultWeight: 10, defaultSets: 3, category: "手臂", tag: "二头长头", targetMuscleKey: "biceps" },
+      { exerciseId: "ex-overhead-cable-ext", name: "过头绳索臂屈伸", targetReps: "12-15次", defaultWeight: 15, defaultSets: 3, category: "手臂", tag: "三头长头", targetMuscleKey: "triceps" }
+    ]
+  },
+  full_body: {
+    key: "full_body",
+    name: "全身分化 (Full Body)",
+    keywords: ["全身", "full body", "全身综合", "全身分化"],
+    targetMuscles: [
+      { key: "quads", name: "股四头肌 (下肢推)", minSets: 3, maxSets: 6, role: "primary", category: "腿部" },
+      { key: "posterior", name: "腘绳肌/臀 (下肢拉)", minSets: 3, maxSets: 6, role: "primary", category: "腿部" },
+      { key: "chest", name: "胸大肌 (上肢推)", minSets: 3, maxSets: 6, role: "primary", category: "胸部" },
+      { key: "back", name: "背部肌群 (上肢拉)", minSets: 3, maxSets: 6, role: "primary", category: "背部" }
+    ],
+    defaultAddons: [
+      { exerciseId: "ex-hack-squat", name: "哈克深蹲 / 倒蹬腿举", targetReps: "8-12次", defaultWeight: 60, defaultSets: 3, category: "腿部", tag: "下肢复合", targetMuscleKey: "quads" },
+      { exerciseId: "ex-rdl", name: "罗马尼亚硬拉 (RDL)", targetReps: "10-12次", defaultWeight: 50, defaultSets: 3, category: "腿部", tag: "后链做工", targetMuscleKey: "posterior" },
+      { exerciseId: "ex-incline-db-bench", name: "上斜哑铃卧推", targetReps: "8-10次", defaultWeight: 20, defaultSets: 3, category: "胸部", tag: "上肢推力", targetMuscleKey: "chest" },
+      { exerciseId: "ex-seated-cable-row", name: "坐姿绳索划船", targetReps: "10-12次", defaultWeight: 40, defaultSets: 3, category: "背部", tag: "上肢拉力", targetMuscleKey: "back" }
+    ]
+  },
+  chest_focus: {
+    key: "chest_focus",
+    name: "胸部专项 (Chest Focus)",
+    keywords: ["纯胸", "胸部专项", "胸部训练", "练胸日", "chest focus"],
+    targetMuscles: [
+      { key: "chest", name: "胸大肌 (复合推力与孤立)", minSets: 8, maxSets: 12, role: "primary", category: "胸部" },
+      { key: "triceps", name: "肱三头肌", minSets: 4, maxSets: 8, role: "secondary", category: "手臂" },
+      { key: "shoulders", name: "三角肌前/中束", minSets: 3, maxSets: 6, role: "secondary", category: "肩部" }
+    ],
+    defaultAddons: [
+      { exerciseId: "ex-incline-db-bench", name: "上斜哑铃卧推", targetReps: "8-10次", defaultWeight: 20, defaultSets: 3, category: "胸部", tag: "上胸饱满", targetMuscleKey: "chest" },
+      { exerciseId: "ex-pec-deck-fly", name: "蝴蝶机夹胸 (Pec Deck)", targetReps: "12-15次", defaultWeight: 35, defaultSets: 3, category: "胸部", tag: "胸肌孤立", targetMuscleKey: "chest" },
+      { exerciseId: "ex-tricep-pushdown", name: "站姿绳索三头下压", targetReps: "10-12次", defaultWeight: 20, defaultSets: 3, category: "手臂", tag: "三头外侧", targetMuscleKey: "triceps" }
+    ]
+  },
+  back_focus: {
+    key: "back_focus",
+    name: "背部专项 (Back Focus)",
+    keywords: ["纯背", "背部专项", "背部训练", "练背日", "back focus"],
+    targetMuscles: [
+      { key: "back", name: "背部肌群 (垂直+水平)", minSets: 8, maxSets: 12, role: "primary", category: "背部" },
+      { key: "rear_delts", name: "三角肌后束", minSets: 3, maxSets: 6, role: "secondary", category: "肩部" },
+      { key: "biceps", name: "肱二头肌", minSets: 4, maxSets: 8, role: "secondary", category: "手臂" }
+    ],
+    defaultAddons: [
+      { exerciseId: "ex-lat-pulldown", name: "对握/宽握高位下拉", targetReps: "10-12次", defaultWeight: 45, defaultSets: 3, category: "背部", tag: "背阔拉宽", targetMuscleKey: "back" },
+      { exerciseId: "ex-seated-cable-row", name: "坐姿绳索划船", targetReps: "10-12次", defaultWeight: 40, defaultSets: 3, category: "背部", tag: "上背增厚", targetMuscleKey: "back" },
+      { exerciseId: "ex-face-pull", name: "绳索面拉 (Face Pull)", targetReps: "12-15次", defaultWeight: 15, defaultSets: 3, category: "肩部", tag: "后束防圆肩", targetMuscleKey: "rear_delts" },
+      { exerciseId: "ex-hammer-curl", name: "哑铃锤式弯举", targetReps: "10-12次", defaultWeight: 12, defaultSets: 3, category: "手臂", tag: "肱二头肌", targetMuscleKey: "biceps" }
+    ]
   }
 };
+
 
 /**
  * 智能识别训练计划对应的分化类型
  * @param {string} planName 计划名称
  * @param {string} planCategory 计划分类
- * @returns {string} 'push' | 'pull' | 'legs' | 'upper' | 'lower' | 'custom'
+ * @returns {string} 'push' | 'pull' | 'legs' | 'upper' | 'lower' | 'arnold_chest_back' | 'arnold_shoulders_arms' | 'full_body' | 'chest_focus' | 'back_focus' | 'custom'
  */
 export function detectSplitType(planName = "", planCategory = "") {
   const text = `${planName || ""} ${planCategory || ""}`.toLowerCase();
-  // Check compound splits ('upper', 'lower') first to avoid partial overlap with single-target splits
-  const priorityKeys = ["upper", "lower", "push", "pull", "legs"];
+  // Check compound / multi-word splits first to avoid partial overlap with single-target splits
+  const priorityKeys = [
+    "arnold_chest_back",
+    "arnold_shoulders_arms",
+    "full_body",
+    "chest_focus",
+    "back_focus",
+    "upper",
+    "lower",
+    "push",
+    "pull",
+    "legs"
+  ];
   for (const key of priorityKeys) {
     const def = SPLIT_DEFINITIONS[key];
     if (def && def.keywords.some(kw => text.includes(kw.toLowerCase()))) {
@@ -115,6 +208,62 @@ export function detectSplitType(planName = "", planCategory = "") {
     }
   }
   return "custom";
+}
+
+/**
+ * 运动科学与生物力学部位刺激诊断建议
+ * @param {string} muscleKey 部位键值
+ * @param {number} doneSets 已完成组数
+ * @param {number} neededSets 尚欠缺组数
+ * @returns {string} 生物力学科学诊断文案
+ */
+export function getMuscleBiomechanicalAdvice(muscleKey, doneSets, neededSets) {
+  const advices = {
+    back: {
+      deficit: "背部由背阔肌、中下斜方肌与菱形肌构成。高位下拉主攻正面V字宽度，划船主攻上背厚度。当前背部容量未达标，建议结合下拉与划船双轨迹。",
+      optimal: "背部大肌群做工充分！背阔肌外侧与上背厚度肌纤维已获高强度张力激活。"
+    },
+    rear_delts: {
+      deficit: "复合拉动作中后束极易被背阔肌与大圆肌代偿。后束需要肩水平外展孤立轨迹（如反向飞鸟、高位绳索面拉），防止圆肩体态。",
+      optimal: "三角肌后束孤立做工达标！肩部后侧立体饱满度与肩袖稳定性得到有效强化。"
+    },
+    biceps: {
+      deficit: "引体或下拉虽有屈肘做工，但二头肌长短头无法在复合动作中达到力竭。建议补充孤立弯举（如上斜哑铃弯举、锤式弯举）直击肌腹与小臂。",
+      optimal: "肱二头肌泵感做工充足！长头肌峰与肱肌均获得充分机械张力刺激。"
+    },
+    chest: {
+      deficit: "胸大肌包含锁骨头上胸与胸肋头中下胸。上胸是视觉饱满关键，建议平板卧推后搭配上斜推胸或夹胸飞鸟补齐多角度刺激。",
+      optimal: "胸大肌容量已进入黄金区间！上胸与中缝肌纤维撕裂刺激充分。"
+    },
+    shoulders: {
+      deficit: "推胸已深度协同前束，肩部最易落后的是三角肌中束。必须依赖侧平举类动作向外孤立展开，才能拓宽头肩比打造球形肩。",
+      optimal: "肩部三角肌做工充分！中束外展与推力刺激已达最佳平衡。"
+    },
+    triceps: {
+      deficit: "肱三头肌占大臂体积 60%，其中长头必须在大臂过头拉伸位（过头臂屈伸）才能充分激活。建议补充绳索臂屈伸或下压。",
+      optimal: "肱三头肌做工已达标！三头三大肌头均已受到充足离心拉伸与向心收缩。"
+    },
+    quads: {
+      deficit: "股四头肌需要深蹲/倒蹬大重量闭链复合动作提供机械张力，辅以单关节器械腿屈伸直击股直肌。",
+      optimal: "股四头肌做工达到超量恢复标准！下肢推力肌群全面充血激活。"
+    },
+    posterior: {
+      deficit: "腘绳肌跨髋与跨膝双关节。需兼顾伸髋（罗马尼亚硬拉 RDL）与屈膝（器械腿弯举），才能完整刺激后链与臀大肌。",
+      optimal: "腘绳肌与臀部后链做工达标！伸髋与屈膝双维度刺激圆满完成。"
+    },
+    calves: {
+      deficit: "小腿腓肠肌与比目鱼肌具有高耐力红肌纤维，需要全行程深度拉伸与高次数顶峰收缩（提踵）。",
+      optimal: "小腿肌群已充分激活，足踝离心支撑与耐力做工达标。"
+    },
+    core: {
+      deficit: "核心肌群负责抗伸展与骨盆中立。建议搭配脊柱屈曲（悬垂举腿/卷腹）与抗伸展动作（平板支撑）。",
+      optimal: "核心肌群做工达标！腹直肌与深层腹横肌已建立牢固稳定支撑。"
+    }
+  };
+
+  const item = advices[muscleKey];
+  if (!item) return neededSets > 0 ? `当前仍差 ${neededSets} 组做工，建议挑选对应动作补齐刺激。` : "该部位做工已达标！";
+  return neededSets > 0 ? item.deficit : item.optimal;
 }
 
 /**
@@ -242,14 +391,16 @@ export function analyzeActiveWorkoutCoverage(activeWorkout, libraryExercises = [
     };
   }
 
-  // 1. 统计每个目标肌群的已完成组数 (仅严格统计已打勾 completed 的组)
+  // 1. 统计每个目标肌群的已完成组数 (严格统计已打勾 completed 的组)
   const completedSetsMap = {};
+  const synergySetsMap = {};
   const presentExerciseNames = new Set(
     activeWorkout.exercises.map(e => (e.name || "").trim().toLowerCase())
   );
 
   splitDef.targetMuscles.forEach(m => {
     completedSetsMap[m.key] = 0;
+    synergySetsMap[m.key] = 0;
   });
 
   activeWorkout.exercises.forEach(ex => {
@@ -264,12 +415,24 @@ export function analyzeActiveWorkoutCoverage(activeWorkout, libraryExercises = [
         completedSetsMap.arms = (completedSetsMap.arms || 0) + completedSets;
       }
     }
+
+    // 统计复合动作的次要协同做工 (用于辅助提示，避免用户误解完全没刺激)
+    if (completedSets > 0) {
+      if (muscleKey === "back") {
+        if (synergySetsMap.biceps !== undefined) synergySetsMap.biceps += completedSets;
+        if (synergySetsMap.rear_delts !== undefined) synergySetsMap.rear_delts += Math.round(completedSets * 0.5);
+      } else if (muscleKey === "chest") {
+        if (synergySetsMap.triceps !== undefined) synergySetsMap.triceps += completedSets;
+        if (synergySetsMap.shoulders !== undefined) synergySetsMap.shoulders += Math.round(completedSets * 0.5);
+      }
+    }
   });
 
-  // 2. 评定各肌群刺激饱和度
+  // 2. 评定各肌群刺激饱和度，并附带部位专属精准动作推荐池与解剖科学理由
   const deficits = [];
   const muscleResults = splitDef.targetMuscles.map(tm => {
     const done = completedSetsMap[tm.key] || 0;
+    const synergy = synergySetsMap[tm.key] || 0;
     let status = "missing"; // missing | insufficient | optimal | surplus
     let statusText = "尚未练习";
     let color = "zinc";
@@ -278,13 +441,11 @@ export function analyzeActiveWorkoutCoverage(activeWorkout, libraryExercises = [
       status = "missing";
       statusText = "未练";
       color = "rose";
-      deficits.push({ ...tm, done, needed: tm.minSets, reason: "尚未覆盖" });
     } else if (done < tm.minSets) {
       status = "insufficient";
       const diff = tm.minSets - done;
       statusText = `缺 ${diff} 组`;
       color = "amber";
-      deficits.push({ ...tm, done, needed: diff, reason: `仅 ${done} 组 (偏低)` });
     } else if (done <= tm.maxSets) {
       status = "optimal";
       statusText = "已达标";
@@ -295,20 +456,74 @@ export function analyzeActiveWorkoutCoverage(activeWorkout, libraryExercises = [
       color = "sky";
     }
 
+    const needed = Math.max(0, tm.minSets - done);
     const percentage = Math.min(100, Math.round((done / tm.minSets) * 100));
 
-    return {
+    // 生成该部位的专属生物力学缺口诊断理由
+    const deficitReason = getMuscleBiomechanicalAdvice(tm.key, done, needed);
+
+    // 构建该部位专属的高质量候选补充动作 (剔除当前训练中已有的动作)
+    const specificAddons = [];
+    
+    // a. 首先从分化推荐池中筛选目标匹配的动作
+    (splitDef.defaultAddons || []).forEach(addon => {
+      const isPresent = presentExerciseNames.has(addon.name.toLowerCase());
+      if (!isPresent && addon.targetMuscleKey === tm.key) {
+        if (!specificAddons.some(a => a.name === addon.name)) {
+          specificAddons.push({
+            ...addon,
+            reason: `强化${addon.tag || tm.name}`
+          });
+        }
+      }
+    });
+
+    // b. 从全局库动态提取同部位高价值动作
+    if (specificAddons.length < 4 && Array.isArray(libraryExercises) && libraryExercises.length > 0) {
+      for (const ex of libraryExercises) {
+        if (specificAddons.length >= 4) break;
+        const mKey = classifyExerciseMuscle(ex);
+        const isPresent = presentExerciseNames.has((ex.name || "").toLowerCase());
+        if (mKey === tm.key && !isPresent && !specificAddons.some(a => a.name === ex.name)) {
+          specificAddons.push({
+            exerciseId: ex.id,
+            name: ex.name,
+            category: ex.category,
+            targetReps: `${ex.defaultReps || "10-12"}次`,
+            defaultWeight: 20,
+            defaultSets: 3,
+            tag: ex.tags?.[0] || "增肌平替",
+            reason: `精准刺激${ex.target || tm.name}`
+          });
+        }
+      }
+    }
+
+    const muscleObj = {
       key: tm.key,
       name: tm.name,
       role: tm.role,
+      category: tm.category,
       completedSets: done,
+      synergySets: synergy,
       minSets: tm.minSets,
       maxSets: tm.maxSets,
+      needed,
       status,
       statusText,
       color,
-      percentage
+      percentage,
+      deficitReason,
+      specificAddons
     };
+
+    if (status === "missing") {
+      deficits.push({ ...muscleObj, reason: "尚未覆盖" });
+    } else if (status === "insufficient") {
+      deficits.push({ ...muscleObj, reason: `仅 ${done} 组 (偏低)` });
+    }
+
+    return muscleObj;
   });
 
   // 3. 组织诊断标题与人性化文案 (精简、清晰、无废话)
@@ -323,14 +538,14 @@ export function analyzeActiveWorkoutCoverage(activeWorkout, libraryExercises = [
     overallStatus = "neutral";
   } else {
     const deficitSummaries = deficits.map(d => {
-      if (d.done === 0) return `${d.name} (未练)`;
+      if (d.completedSets === 0) return `${d.name} (未练)`;
       return `${d.name} (差${d.needed}组)`;
     });
     headline = `建议补充：${deficitSummaries.join(" · ")}`;
     overallStatus = "warning";
   }
 
-  // 4. 精准生成推荐补充动作 (排除当前训练已有的动作)
+  // 4. 精准生成全局推荐补充动作 (排除当前训练已有的动作)
   const recommendedAddons = [];
   const deficitKeys = new Set(deficits.map(d => d.key));
 
@@ -380,6 +595,7 @@ export function analyzeActiveWorkoutCoverage(activeWorkout, libraryExercises = [
     recommendedAddons: recommendedAddons.slice(0, 3) // 最多展示 3 个精选推荐胶囊
   };
 }
+
 
 /**
  * 获取指定动作的同部位器械/自由重量秒级科学平替
