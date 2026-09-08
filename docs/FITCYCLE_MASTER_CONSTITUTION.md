@@ -65,10 +65,12 @@ Fitcycle 采用严格单向依赖的 5 层洋葱架构，**严禁跨层反向污
                                           ├── 6.3 `src/views/StatsView.vue` & `TodayView.vue` (入口胶囊与数据摘要)
                                           └── 6.4 `tests/honor-system.test.js` (断言冷却逻辑与数据持久化)
 
-7. 修改 AI 大模型网关/协议 (AI Gateway)  ├── 7.1 `src/ai/providerClient.js` (厂商 API 请求适配器与参数转换)
-                                          ├── 7.2 `src/ai/aiSession.js` (全局会话状态、多模态 Token 管理与流式调度)
-                                          ├── 7.3 `src/components/AISettingsPanel.vue` (厂商选择、宫格模型卡片与 Key 验证)
-                                          └── 7.4 `tests/ai-core.test.js` (断言多厂商鉴权与多模态识图兼容性)
+7. 修改 AI 大模型网关/协议与策略选型 (AI Gateway) ├── 7.1 `src/ai/providerClient.js` (Vercel AI Gateway 及各大厂商 API 适配与路由)
+                                                  ├── 7.2 `src/ai/modelCapabilities.js` (四大模型策略分类器、跨厂商识图与思考识别)
+                                                  ├── 7.3 `src/ai/aiSession.js` (全局会话状态、多模态 Token 管理、流式调度与预设矩阵)
+                                                  ├── 7.4 `src/components/AISettingsPanel.vue` (策略分段器、宫格卡片与 Key 验证)
+                                                  ├── 7.5 `src/components/AIAssistantDrawer.vue` (抽屉快捷弹窗、一键升级视觉识图)
+                                                  └── 7.6 `tests/vercel-ai-gateway-and-strategy.test.js` & `ai-core.test.js` (全方位断言)
 
 8. 移动端工学与滚动穿透 (Ergonomics)       ├── 8.1 `src/utils/scrollLock.js` (统一引用计数锁定与释放宿主滚动)
                                           ├── 8.2 `src/style.css` (注入 .scrollbar-none, .overscroll-contain, overscroll-behavior-y)

@@ -20,6 +20,10 @@ export const PROVIDER_CONFIGS = {
   moonshot: {
     name: "月之暗面 Kimi",
     apiBase: "https://api.moonshot.cn/v1"
+  },
+  vercel_ai_gateway: {
+    name: "Vercel AI Gateway",
+    apiBase: "https://ai-gateway.vercel.sh/v1"
   }
 };
 

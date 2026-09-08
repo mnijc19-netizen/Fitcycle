@@ -96,9 +96,20 @@
           </button>
         </div>
 
+        <!-- Strategy Filter Pills in Drawer Popover -->
+        <div class="flex gap-1 overflow-x-auto pb-1 scrollbar-none">
+          <button v-for="strat in MODEL_STRATEGIES" :key="strat.id" type="button"
+                  @click="quickDrawerStrategy = strat.id"
+                  class="px-2 py-0.5 rounded-lg text-[11px] font-bold border whitespace-nowrap transition-all flex items-center gap-1"
+                  :class="quickDrawerStrategy === strat.id ? 'bg-amber-500/25 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-zinc-200'">
+            <span>{{ strat.icon }}</span>
+            <span>{{ strat.name }}</span>
+          </button>
+        </div>
+
         <!-- Model List -->
         <div class="max-h-52 overflow-y-auto space-y-1 pr-1 font-mono">
-          <button v-for="m in activeModels" :key="m.id" type="button"
+          <button v-for="m in filteredQuickModels" :key="m.id" type="button"
                   @click="quickSelectModel(m.id)"
                   class="w-full px-2.5 py-1.5 rounded-xl text-left text-xs transition-all flex items-center justify-between group"
                   :class="selectedModelId === m.id ? 'bg-amber-500/15 border border-amber-500/40 text-amber-300 font-bold' : 'hover:bg-zinc-800 text-zinc-300 border border-transparent'">
@@ -107,11 +118,17 @@
               <div class="text-xs text-zinc-500 truncate">{{ m.id }}</div>
             </div>
             <div class="flex items-center gap-1 flex-shrink-0">
-              <span v-if="m.capabilities?.image" class="text-xs px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30">识图</span>
-              <span v-if="m.capabilities?.reasoning" class="text-xs px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 border border-purple-500/30">思考</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded border font-bold flex items-center gap-0.5"
+                    :class="getModelStrategy(m, aiSession.activeProvider).badgeClass">
+                <span>{{ getModelStrategy(m, aiSession.activeProvider).icon }}</span>
+                <span>{{ getModelStrategy(m, aiSession.activeProvider).name }}</span>
+              </span>
               <span v-if="selectedModelId === m.id" class="text-amber-400 text-xs">✓</span>
             </div>
           </button>
+          <div v-if="!filteredQuickModels.length" class="text-xs text-zinc-500 py-3 text-center">
+            当前分类暂无模型
+          </div>
         </div>
 
         <div class="pt-1 border-t border-zinc-800 flex items-center justify-between text-xs">
@@ -339,8 +356,23 @@
           </div>
         </div>
 
+        <!-- Intelligent Vision Upgrade Banner when user uploads images but model is text-only -->
+        <div v-if="attachments.length && !selectedModel?.capabilities.image"
+             class="mb-2 p-2 rounded-xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-between gap-2 text-xs text-amber-300 animate-in fade-in duration-150">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <span>📸</span>
+            <span class="truncate">当前模型不支持图片识别</span>
+          </div>
+          <button v-if="recommendedVisionModel" 
+                  type="button" 
+                  @click="switchToVisionModel"
+                  class="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold whitespace-nowrap active:scale-95 transition-all flex-shrink-0 shadow-sm">
+            一键切至 {{ recommendedVisionModel.name }} ↗
+          </button>
+        </div>
+
         <!-- Clean Input Hint (Only shown for real errors, never distracting placeholder text) -->
-        <p v-if="inputHint" class="text-xs mb-2 leading-tight" :class="inputHintError ? 'text-red-400' : 'text-zinc-500'">{{ inputHint }}</p>
+        <p v-if="inputHint && !(attachments.length && !selectedModel?.capabilities.image)" class="text-xs mb-2 leading-tight" :class="inputHintError ? 'text-red-400' : 'text-zinc-500'">{{ inputHint }}</p>
 
         <!-- Input Bar Row -->
         <div class="flex items-end gap-2">
@@ -458,7 +490,13 @@ import {
 import { buildUserMessage, resumeAssistantAfterDecision, runAssistantLoop } from "../ai/assistantRuntime.js";
 import { createFitcycleToolRuntime } from "../ai/fitcycleTools.js";
 import { processImageFile } from "../ai/imageProcessor.js";
-import { getMessageBlockReason } from "../ai/modelCapabilities.js";
+import {
+  getMessageBlockReason,
+  MODEL_STRATEGIES,
+  filterModelsByStrategy,
+  findRecommendedVisionModel,
+  getModelStrategy
+} from "../ai/modelCapabilities.js";
 import { store } from "../store/fitnessStore.js";
 import { renderMarkdown, cleanAIMessage, extractReasoningAndContent } from "../utils/aiService.js";
 import { findGymEquipmentVisual, GYM_EQUIPMENT_VISUALS } from "../data/gymEquipmentVisuals.js";
@@ -678,9 +716,25 @@ onUnmounted(() => {
 
 const activeModels = computed(getActiveModels);
 const selectedModelId = computed({ get: getActiveModelId, set: (val) => setSelectedModel(val) });
+const quickDrawerStrategy = ref("all");
+
+const filteredQuickModels = computed(() => {
+  return filterModelsByStrategy(activeModels.value, quickDrawerStrategy.value);
+});
+
+const recommendedVisionModel = computed(() => {
+  return findRecommendedVisionModel(activeModels.value);
+});
+
+function switchToVisionModel() {
+  if (recommendedVisionModel.value) {
+    setSelectedModel(recommendedVisionModel.value.id);
+  }
+}
 
 function quickSwitchProvider(providerId) {
   setActiveProvider(providerId);
+  quickDrawerStrategy.value = "all";
 }
 
 function quickSelectModel(modelId) {

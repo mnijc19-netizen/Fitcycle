@@ -116,6 +116,31 @@
         </div>
       </div>
 
+      <!-- 策略筛选分段标签 (Model Strategy Category Selector) -->
+      <div class="space-y-1.5 pt-1">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-bold text-zinc-300 flex items-center gap-1">
+            <span>🎯</span> 按训练场景策略筛选
+          </span>
+          <span class="text-[11px] text-zinc-500 font-mono">{{ visibleModels.length }} 款符合</span>
+        </div>
+        <div class="flex gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
+          <button v-for="strat in MODEL_STRATEGIES" :key="strat.id" type="button"
+                  @click="selectedStrategy = strat.id"
+                  class="px-2.5 py-1 rounded-xl text-xs font-bold border transition-all flex items-center gap-1 flex-shrink-0 active:scale-95"
+                  :class="selectedStrategy === strat.id
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-sm'
+                    : 'bg-zinc-950/80 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'">
+            <span>{{ strat.icon }}</span>
+            <span>{{ strat.name }}</span>
+            <span class="text-[10px] opacity-75 font-mono">({{ getStrategyCount(strat.id) }})</span>
+          </button>
+        </div>
+        <p class="text-[11px] text-zinc-400 leading-normal bg-zinc-900/50 px-2.5 py-1.5 rounded-xl border border-zinc-800/60">
+          {{ activeStrategyObj.description }}
+        </p>
+      </div>
+
       <!-- 宫格卡片式模型选择列表 (2-Column Grid Layout) -->
       <div class="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1 scrollbar-thin">
         <div v-for="model in visibleModels" :key="model.id"
@@ -136,12 +161,14 @@
             </div>
           </div>
 
-          <!-- Feature Pills in Grid Card -->
-          <div class="flex flex-wrap gap-1 text-xs font-mono">
-            <span v-if="model.capabilities.reasoning" class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">深度思考</span>
-            <span v-if="model.capabilities.image" class="px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 font-bold">视觉识图</span>
-            <span v-if="model.capabilities.tools" class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold">感知</span>
-            <span v-if="!model.capabilities.image && !model.capabilities.reasoning" class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">纯文本</span>
+          <!-- Feature & Strategy Badges in Grid Card -->
+          <div class="flex flex-wrap items-center gap-1 text-xs font-mono">
+            <span class="px-1.5 py-0.5 rounded border text-[10px] font-bold flex items-center gap-0.5"
+                  :class="getModelStrategy(model, aiSession.activeProvider).badgeClass">
+              <span>{{ getModelStrategy(model, aiSession.activeProvider).icon }}</span>
+              <span>{{ getModelStrategy(model, aiSession.activeProvider).name }}</span>
+            </span>
+            <span v-if="model.capabilities.tools" class="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300/90 border border-emerald-500/20 text-[10px]">感知</span>
           </div>
 
         </div>
@@ -162,17 +189,25 @@
         <div class="text-xs text-zinc-500 font-mono break-all">{{ selectedModel.id }}</div>
         
         <div class="flex flex-wrap gap-1.5 pt-0.5">
+          <span class="capability-badge" :class="getModelStrategy(selectedModel, aiSession.activeProvider).badgeClass">
+            {{ getModelStrategy(selectedModel, aiSession.activeProvider).icon }} {{ getModelStrategy(selectedModel, aiSession.activeProvider).name }}
+          </span>
           <span class="capability-badge capability-on">文字对话</span>
           <span class="capability-badge" :class="selectedModel.capabilities.image ? 'capability-on' : 'capability-off'">图片识别 {{ selectedModel.capabilities.image ? '✓' : '×' }}</span>
           <span class="capability-badge" :class="selectedModel.capabilities.tools ? 'capability-on' : 'capability-off'">数据感知 {{ selectedModel.capabilities.tools ? '✓' : '×' }}</span>
           <span class="capability-badge" :class="selectedModel.capabilities.streaming ? 'capability-on' : 'capability-off'">流式传输 {{ selectedModel.capabilities.streaming ? '✓' : '×' }}</span>
+        </div>
+
+        <div class="text-xs text-zinc-300 leading-normal bg-zinc-900/70 p-2.5 rounded-xl border border-zinc-800/70 flex items-start gap-1.5">
+          <span class="text-amber-400 font-bold">💡 策略指引:</span>
+          <span>{{ getModelStrategy(selectedModel, aiSession.activeProvider).hint }}</span>
         </div>
         
         <p v-if="!selectedModel.capabilities.tools" class="text-xs text-amber-400/90 leading-normal">
           该模型可用于对话咨询，但不支持自动读取或修改 Fitcycle 训练数据。
         </p>
         <p v-if="!selectedModel.capabilities.image" class="text-xs text-zinc-500 leading-normal">
-          当前选中的模型为纯文本对话模型；如需上传身材或动作图片分析，请选择带有「视觉识图」标识的模型（如 GLM-4V-Plus、Qwen-VL-Max）。
+          当前选中的模型为纯文本对话模型；如需上传身材或动作图片分析，请选择带有「视觉识图」标识的模型（如 Gemini 2.0 Flash、GLM-4.6V、Qwen-VL-Max）。
         </p>
       </div>
 
@@ -209,6 +244,11 @@ import {
   setSessionApiKey
 } from "../ai/aiSession.js";
 import { fetchProviderModels } from "../ai/providerClient.js";
+import {
+  MODEL_STRATEGIES,
+  filterModelsByStrategy,
+  getModelStrategy
+} from "../ai/modelCapabilities.js";
 
 const draftKey = ref(getActiveApiKey());
 const showKey = ref(false);
@@ -218,16 +258,27 @@ const statusError = ref(false);
 const modelSearch = ref("");
 const customModelInput = ref("");
 const customSuccessMsg = ref("");
+const selectedStrategy = ref("all");
 
 const activeProvider = computed(getActiveProvider);
 const connected = computed(() => Boolean(getActiveApiKey()));
 const portalLink = computed(() => activeProvider.value.portal);
 const activeModels = computed(getActiveModels);
 
+const activeStrategyObj = computed(() => {
+  return MODEL_STRATEGIES.find((s) => s.id === selectedStrategy.value) || MODEL_STRATEGIES[0];
+});
+
+function getStrategyCount(stratId) {
+  if (stratId === "all") return activeModels.value.length;
+  return filterModelsByStrategy(activeModels.value, stratId).length;
+}
+
 const customModelPlaceholder = computed(() => {
   if (aiSession.activeProvider === "zhipu") return "如 glm-4.5-air 或 glm-4.6v";
   if (aiSession.activeProvider === "deepseek") return "如 deepseek-chat 或 deepseek-reasoner";
   if (aiSession.activeProvider === "qwen") return "如 qwen2.5-72b-instruct";
+  if (aiSession.activeProvider === "vercel_ai_gateway") return "如 google/gemini-2.0-flash 或 openai/gpt-4o";
   return "输入模型 ID (如 custom-model-id)";
 });
 
@@ -258,9 +309,10 @@ const selectedModelId = computed({
 const selectedModel = computed(() => activeModels.value.find((m) => m.id === selectedModelId.value) || null);
 
 const visibleModels = computed(() => {
+  let list = filterModelsByStrategy(activeModels.value, selectedStrategy.value);
   const query = modelSearch.value.trim().toLowerCase();
-  if (!query) return activeModels.value;
-  return activeModels.value.filter((model) => {
+  if (!query) return list;
+  return list.filter((model) => {
     const id = model.id.toLowerCase();
     const name = (model.name || "").toLowerCase();
     return id.includes(query) || name.includes(query);
@@ -276,6 +328,7 @@ watch(
     modelSearch.value = "";
     customModelInput.value = "";
     customSuccessMsg.value = "";
+    selectedStrategy.value = "all";
   }
 );
 

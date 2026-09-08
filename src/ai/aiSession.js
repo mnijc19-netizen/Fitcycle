@@ -6,7 +6,8 @@ export const AI_PROVIDERS = [
   { id: "zhipu", name: "智谱 GLM", keyLabel: "智谱 API Key", portal: "https://open.bigmodel.cn", tag: "GLM-4V · 支持识图" },
   { id: "qwen", name: "通义千问", keyLabel: "阿里云百炼 API Key", portal: "https://bailian.console.aliyun.com", tag: "千问大模型 · 视觉/推理" },
   { id: "siliconflow", name: "硅基流动", keyLabel: "SiliconFlow API Key", portal: "https://cloud.siliconflow.cn", tag: "满血 R1/V3 · 多模型" },
-  { id: "moonshot", name: "月之暗面", keyLabel: "Moonshot API Key", portal: "https://platform.moonshot.cn", tag: "Kimi · 超长上下文" }
+  { id: "moonshot", name: "月之暗面", keyLabel: "Moonshot API Key", portal: "https://platform.moonshot.cn", tag: "Kimi · 超长上下文" },
+  { id: "vercel_ai_gateway", name: "Vercel AI Gateway", keyLabel: "AI Gateway API Key", portal: "https://vercel.com/docs/ai-gateway", tag: "全球聚合 · 多模型极速网关" }
 ];
 
 export const AI_KEY_SESSION_KEYS = {
@@ -14,7 +15,8 @@ export const AI_KEY_SESSION_KEYS = {
   zhipu: "fitcycle_zhipu_session_key",
   qwen: "fitcycle_qwen_session_key",
   siliconflow: "fitcycle_siliconflow_session_key",
-  moonshot: "fitcycle_moonshot_session_key"
+  moonshot: "fitcycle_moonshot_session_key",
+  vercel_ai_gateway: "fitcycle_vercel_ai_gateway_session_key"
 };
 
 const MODEL_SESSION_KEYS = {
@@ -22,7 +24,8 @@ const MODEL_SESSION_KEYS = {
   zhipu: "fitcycle_zhipu_model",
   qwen: "fitcycle_qwen_model",
   siliconflow: "fitcycle_siliconflow_model",
-  moonshot: "fitcycle_moonshot_model"
+  moonshot: "fitcycle_moonshot_model",
+  vercel_ai_gateway: "fitcycle_vercel_ai_gateway_model"
 };
 
 const CACHED_MODELS_KEYS = {
@@ -30,7 +33,8 @@ const CACHED_MODELS_KEYS = {
   zhipu: "fitcycle_zhipu_models_cache",
   qwen: "fitcycle_qwen_models_cache",
   siliconflow: "fitcycle_siliconflow_models_cache",
-  moonshot: "fitcycle_moonshot_models_cache"
+  moonshot: "fitcycle_moonshot_models_cache",
+  vercel_ai_gateway: "fitcycle_vercel_ai_gateway_models_cache"
 };
 
 const PROVIDER_SESSION_KEY = "fitcycle_ai_provider";
@@ -249,6 +253,44 @@ export const DEFAULT_PRESET_MODELS = {
       name: "Kimi 128K",
       description: "128K 超长上下文大模型",
       capabilities: { text: true, image: false, tools: true, streaming: true, reasoning: false }
+    }
+  ],
+  vercel_ai_gateway: [
+    {
+      id: "google/gemini-2.0-flash",
+      name: "Gemini 2.0 Flash (极速识图全能)",
+      description: "超快响应延迟，原生支持高精器械识图与训练数据感知",
+      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false }
+    },
+    {
+      id: "openai/gpt-4o-mini",
+      name: "GPT-4o mini (高性价比主力)",
+      description: "极速且经济，支持图文理解与日常动作记录",
+      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false }
+    },
+    {
+      id: "openai/gpt-4o",
+      name: "GPT-4o (多模态旗舰)",
+      description: "顶级全能多模态旗舰，复杂器械结构与动作高精解析",
+      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false }
+    },
+    {
+      id: "anthropic/claude-3-5-sonnet",
+      name: "Claude 3.5 Sonnet (高智能图文)",
+      description: "卓越的逻辑推演与视觉图表解析",
+      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false }
+    },
+    {
+      id: "deepseek/deepseek-chat",
+      name: "DeepSeek-V3 (极速纯文本)",
+      description: "极高性价比纯文本通用模型，支持工具感知",
+      capabilities: { text: true, image: false, tools: true, streaming: true, reasoning: false }
+    },
+    {
+      id: "deepseek/deepseek-reasoner",
+      name: "DeepSeek-R1 (深度思维链)",
+      description: "满血思维链推理，周期瓶颈与复杂动作力线深度推演",
+      capabilities: { text: true, image: false, tools: false, streaming: true, reasoning: true }
     }
   ]
 };
