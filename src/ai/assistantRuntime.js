@@ -77,6 +77,11 @@ export async function runAssistantLoop(options) {
 
   const history = messages.map((message) => ({ ...message }));
   let toolRounds = initialToolRounds;
+  const accumulatedUsage = {
+    prompt_tokens: 0,
+    completion_tokens: 0,
+    total_tokens: 0
+  };
 
   while (true) {
     const response = await streamImpl({
@@ -90,6 +95,11 @@ export async function runAssistantLoop(options) {
       onReasoning
     });
 
+    if (response?.usage) {
+      accumulatedUsage.prompt_tokens += Number(response.usage.prompt_tokens) || 0;
+      accumulatedUsage.completion_tokens += Number(response.usage.completion_tokens) || 0;
+      accumulatedUsage.total_tokens += Number(response.usage.total_tokens) || 0;
+    }
 
     const assistantMessage = {
       role: "assistant",
@@ -99,20 +109,20 @@ export async function runAssistantLoop(options) {
     history.push(assistantMessage);
 
     if (!response.toolCalls.length) {
-      return { status: "completed", content: response.content, history, toolRounds };
+      return { status: "completed", content: response.content, history, toolRounds, usage: accumulatedUsage };
     }
     if (!capabilities.tools) {
-      return { status: "tools_unsupported", content: response.content, history, toolRounds };
+      return { status: "tools_unsupported", content: response.content, history, toolRounds, usage: accumulatedUsage };
     }
     if (toolRounds >= MAX_TOOL_ROUNDS) {
-      return { status: "tool_limit", content: "已达到单次请求最多 4 轮工具调用的限制。", history, toolRounds };
+      return { status: "tool_limit", content: "已达到单次请求最多 4 轮工具调用的限制。", history, toolRounds, usage: accumulatedUsage };
     }
     toolRounds += 1;
 
     for (const toolCall of response.toolCalls) {
       const result = toolRuntime.request(toolCall, { modelSupportsTools: capabilities.tools });
       if (result.status === "confirmation_required") {
-        return { status: "confirmation_required", pending: result, toolCall, history, toolRounds };
+        return { status: "confirmation_required", pending: result, toolCall, history, toolRounds, usage: accumulatedUsage };
       }
       history.push(toolResultMessage(toolCall, result));
       onToolResult?.(result);

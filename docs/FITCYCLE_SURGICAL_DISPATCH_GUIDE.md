@@ -103,6 +103,12 @@
                 (0额度损耗/肌群缺口/未做动作自动脱水)├── 2. `src/views/TodayView.vue` (刺激看板/空白起手/一键清空)
                                                 ├── 3. `src/components/ExercisePickerModal.vue` (同部位平替卡片)
                                                 └── 4. `src/store/fitnessStore.js` (pruneUntouched/blank模式)
+
+[OP-TOKEN-AUDIT] 大模型 Token 与实时金额审计大盘  ├── 1. `src/ai/tokenTracker.js` (物理Token累计/实时USD折算/持久化) npm test -- tests/token-and-cost-audit.test.js
+                (零虚构/OpenRouter实时算费/全厂商Token ├── 2. `src/ai/providerClient.js` (Stream usage物理抓取)
+                 大盘审计看板/单条消息徽标/一键重置)   ├── 3. `src/components/AISettingsPanel.vue` (审计大盘/计费模式标识)
+                                                ├── 4. `src/components/AIAssistantDrawer.vue` (单条消息徽标/即时记录)
+                                                └── 5. `src/ai/aiSession.js` (厂商计费元数据/模型定价结构)
 =====================================================================================================================================
 ```
 

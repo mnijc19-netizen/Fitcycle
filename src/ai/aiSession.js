@@ -3,13 +3,76 @@ import { store } from "../store/fitnessStore.js";
 import { normalizeProviderModel } from "./modelCapabilities.js";
 
 export const AI_PROVIDERS = [
-  { id: "deepseek", name: "DeepSeek", keyLabel: "DeepSeek API Key", portal: "https://platform.deepseek.com", tag: "高性价比 · 深度思考" },
-  { id: "zhipu", name: "智谱 GLM", keyLabel: "智谱 API Key", portal: "https://open.bigmodel.cn", tag: "GLM-4V · 支持识图" },
-  { id: "qwen", name: "通义千问", keyLabel: "阿里云百炼 API Key", portal: "https://bailian.console.aliyun.com", tag: "千问大模型 · 视觉/推理" },
-  { id: "siliconflow", name: "硅基流动", keyLabel: "SiliconFlow API Key", portal: "https://cloud.siliconflow.cn", tag: "满血 R1/V3 · 多模型" },
-  { id: "moonshot", name: "月之暗面", keyLabel: "Moonshot API Key", portal: "https://platform.moonshot.cn", tag: "Kimi · 超长上下文" },
-  { id: "vercel_ai_gateway", name: "Vercel AI Gateway", keyLabel: "AI Gateway API Key", portal: "https://vercel.com/docs/ai-gateway", tag: "全球聚合 · 多模型极速网关" },
-  { id: "openrouter", name: "OpenRouter", keyLabel: "OpenRouter API Key", portal: "https://openrouter.ai/keys", tag: "全网模型汇聚 · 自由路由" }
+  {
+    id: "deepseek",
+    name: "DeepSeek",
+    keyLabel: "DeepSeek API Key",
+    portal: "https://platform.deepseek.com",
+    tag: "高性价比 · 深度思考",
+    billingType: "tokens_only",
+    billingBadge: "精确 Token 审计",
+    billingDesc: "官方服务端物理回传 Token 消耗，单价与充值余额请参照官方控制台"
+  },
+  {
+    id: "zhipu",
+    name: "智谱 GLM",
+    keyLabel: "智谱 API Key",
+    portal: "https://open.bigmodel.cn",
+    tag: "GLM-4V · 支持识图",
+    billingType: "tokens_only",
+    billingBadge: "精确 Token 审计",
+    billingDesc: "官方服务端物理回传 Token 消耗，单价与充值余额请参照官方控制台"
+  },
+  {
+    id: "qwen",
+    name: "通义千问",
+    keyLabel: "阿里云百炼 API Key",
+    portal: "https://bailian.console.aliyun.com",
+    tag: "千问大模型 · 视觉/推理",
+    billingType: "tokens_only",
+    billingBadge: "精确 Token 审计",
+    billingDesc: "官方服务端物理回传 Token 消耗，单价与充值余额请参照官方控制台"
+  },
+  {
+    id: "siliconflow",
+    name: "硅基流动",
+    keyLabel: "SiliconFlow API Key",
+    portal: "https://cloud.siliconflow.cn",
+    tag: "满血 R1/V3 · 多模型",
+    billingType: "tokens_only",
+    billingBadge: "精确 Token 审计",
+    billingDesc: "官方服务端物理回传 Token 消耗，单价与充值余额请参照官方控制台"
+  },
+  {
+    id: "moonshot",
+    name: "月之暗面",
+    keyLabel: "Moonshot API Key",
+    portal: "https://platform.moonshot.cn",
+    tag: "Kimi · 超长上下文",
+    billingType: "tokens_only",
+    billingBadge: "精确 Token 审计",
+    billingDesc: "官方服务端物理回传 Token 消耗，单价与充值余额请参照官方控制台"
+  },
+  {
+    id: "vercel_ai_gateway",
+    name: "Vercel AI Gateway",
+    keyLabel: "AI Gateway API Key",
+    portal: "https://vercel.com/docs/ai-gateway",
+    tag: "全球聚合 · 多模型极速网关",
+    billingType: "tokens_only",
+    billingBadge: "精确 Token 审计",
+    billingDesc: "官方服务端物理回传 Token 消耗，单价与充值余额请参照官方控制台"
+  },
+  {
+    id: "openrouter",
+    name: "OpenRouter",
+    keyLabel: "OpenRouter API Key",
+    portal: "https://openrouter.ai/keys",
+    tag: "全网模型汇聚 · 自由路由",
+    billingType: "tokens_and_cost",
+    billingBadge: "Token + 实时金额",
+    billingDesc: "官方原生提供实时模型定价，支持按 Token 真实精确换算消费金额"
+  }
 ];
 
 export const AI_KEY_SESSION_KEYS = {
@@ -302,37 +365,43 @@ export const DEFAULT_PRESET_MODELS = {
       id: "google/gemini-2.0-flash-001",
       name: "Gemini 2.0 Flash (极速识图全能)",
       description: "超快响应延迟，原生支持高精器械识图与训练数据感知",
-      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false }
+      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false },
+      pricing: { prompt: "0.0000001", completion: "0.0000004" }
     },
     {
       id: "anthropic/claude-3.5-sonnet",
       name: "Claude 3.5 Sonnet (高智能图文)",
       description: "卓越的逻辑推演与视觉图表解析",
-      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false }
+      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false },
+      pricing: { prompt: "0.000003", completion: "0.000015" }
     },
     {
       id: "deepseek/deepseek-chat",
       name: "DeepSeek-V3 (极速纯文本)",
       description: "极高性价比纯文本通用模型，支持工具感知",
-      capabilities: { text: true, image: false, tools: true, streaming: true, reasoning: false }
+      capabilities: { text: true, image: false, tools: true, streaming: true, reasoning: false },
+      pricing: { prompt: "0.00000014", completion: "0.00000028" }
     },
     {
       id: "deepseek/deepseek-r1",
       name: "DeepSeek-R1 (深度思维链)",
       description: "满血思维链推理，周期瓶颈与复杂动作力线深度推演",
-      capabilities: { text: true, image: false, tools: false, streaming: true, reasoning: true }
+      capabilities: { text: true, image: false, tools: false, streaming: true, reasoning: true },
+      pricing: { prompt: "0.00000055", completion: "0.00000219" }
     },
     {
       id: "openai/gpt-4o",
       name: "GPT-4o (多模态旗舰)",
       description: "顶级全能多模态旗舰，复杂器械结构与动作高精解析",
-      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false }
+      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false },
+      pricing: { prompt: "0.0000025", completion: "0.00001" }
     },
     {
       id: "openai/gpt-4o-mini",
       name: "GPT-4o mini (高性价比主力)",
       description: "极速且经济，支持图文理解与日常动作记录",
-      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false }
+      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false },
+      pricing: { prompt: "0.00000015", completion: "0.0000006" }
     }
   ]
 };

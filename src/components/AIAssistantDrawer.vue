@@ -319,11 +319,22 @@
                  v-html="renderMarkdown(formatAssistantMessageText(message))"></div>
             <span v-if="message.streaming && !message.isThinking && message.text" class="inline-block w-2 h-3.5 bg-amber-400 animate-pulse align-middle ml-1"></span>
 
-            <!-- Footer: Brand tag and Animated Copy Button -->
+            <!-- Footer: Brand tag, Token/Cost Audit Badge, and Animated Copy Button -->
             <div v-if="!message.streaming && (message.text || message.reasoning)" class="flex items-center justify-between pt-1.5 border-t border-zinc-800/60 text-xs text-zinc-500 font-mono">
-              <span class="flex items-center gap-1 text-zinc-400">
-                <span>✦ Fitcycle AI</span>
-              </span>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="flex items-center gap-1 text-zinc-400">
+                  <span>✦ Fitcycle AI</span>
+                </span>
+                <!-- Official Token & Cost Audit Badge -->
+                <span v-if="message.usage" 
+                      class="px-1.5 py-0.5 rounded border text-[10px] flex items-center gap-1 font-mono transition-colors"
+                      :class="message.costUSD ? 'bg-amber-500/10 text-amber-300 border-amber-500/30' : 'bg-zinc-850 text-zinc-400 border-zinc-700/60'"
+                      :title="`输入: ${message.usage.prompt_tokens || 0} Tokens · 输出: ${message.usage.completion_tokens || 0} Tokens`"
+                      data-testid="message-token-badge">
+                  <span>{{ message.usage.total_tokens || 0 }} Tokens</span>
+                  <span v-if="message.costUSD" class="text-emerald-400 font-bold">· ${{ formatCostUSD(message.costUSD) }}</span>
+                </span>
+              </div>
               <button type="button" 
                       @click="copyText(message)" 
                       class="copy-btn relative overflow-hidden flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-xs transition-all duration-300 active:scale-95 cursor-pointer font-sans border"
@@ -538,6 +549,7 @@ import {
 import { store } from "../store/fitnessStore.js";
 import { renderMarkdown, cleanAIMessage, extractReasoningAndContent } from "../utils/aiService.js";
 import { findGymEquipmentVisual, GYM_EQUIPMENT_VISUALS } from "../data/gymEquipmentVisuals.js";
+import { calculateCostUSD, formatCostUSD, recordTokenUsage } from "../ai/tokenTracker.js";
 
 const isTest = typeof process !== "undefined" && (process.env?.NODE_ENV === "test" || Boolean(process.env?.VITEST));
 
@@ -1083,6 +1095,23 @@ async function runCurrentHistory(runOptions = {}) {
     }
     assistantBubble.text = finalParsed.content || (result.status === "confirmation_required" ? "这个变更需要你确认后才会执行。" : "已为你处理完成。");
     
+    // Process and record authoritative usage and cost
+    if (result.usage) {
+      assistantBubble.usage = result.usage;
+      const provId = aiSession.activeProvider;
+      const modelObj = selectedModel.value;
+      const pricing = modelObj?.pricing || null;
+      if (provId === "openrouter" && pricing) {
+        assistantBubble.costUSD = calculateCostUSD(result.usage, pricing);
+      }
+      recordTokenUsage({
+        provider: provId,
+        modelId: modelObj?.id || "",
+        usage: result.usage,
+        pricing
+      });
+    }
+
     // Auto-collapse reasoning after thinking finishes to keep answer prominent
     if (assistantBubble.reasoning) {
       assistantBubble.reasoningCollapsed = true;

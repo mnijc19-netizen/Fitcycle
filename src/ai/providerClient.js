@@ -195,7 +195,7 @@ export async function streamProviderChatCompletion(request, options = {}) {
   if (!apiKey) throw new AIProviderError(`请先连接${config.name}`, 0, "missing_key");
   if (!model) throw new AIProviderError("请先选择模型", 0, "missing_model");
 
-  const body = { model, messages, stream: true };
+  const body = { model, messages, stream: true, stream_options: { include_usage: true } };
   if (provider === "deepseek") body.thinking = { type: "disabled" };
   if (Array.isArray(tools) && tools.length) {
     body.tools = tools;
@@ -226,6 +226,7 @@ export async function streamProviderChatCompletion(request, options = {}) {
   let content = "";
   let reasoningContent = "";
   let finishReason = null;
+  let usage = null;
 
   const processLine = (line) => {
     const trimmed = line.trim();
@@ -238,6 +239,15 @@ export async function streamProviderChatCompletion(request, options = {}) {
     } catch {
       return;
     }
+
+    if (payload?.usage) {
+      usage = {
+        prompt_tokens: Number(payload.usage.prompt_tokens) || 0,
+        completion_tokens: Number(payload.usage.completion_tokens) || 0,
+        total_tokens: Number(payload.usage.total_tokens) || ((Number(payload.usage.prompt_tokens) || 0) + (Number(payload.usage.completion_tokens) || 0))
+      };
+    }
+
     const choice = payload?.choices?.[0];
     const delta = choice?.delta || {};
 
@@ -268,11 +278,23 @@ export async function streamProviderChatCompletion(request, options = {}) {
   }
   if (buffer.trim()) processLine(buffer);
 
+  if (!usage) {
+    const estPrompt = Math.max(1, messages.reduce((acc, m) => acc + String(m.content || "").length, 0));
+    const estCompletion = Math.max(1, content.length + reasoningContent.length);
+    usage = {
+      prompt_tokens: Math.ceil(estPrompt / 2.5),
+      completion_tokens: Math.ceil(estCompletion / 2.5),
+      total_tokens: Math.ceil((estPrompt + estCompletion) / 2.5),
+      estimated: true
+    };
+  }
+
   return {
     content,
     reasoningContent,
     toolCalls: toolCalls.filter((c) => c && c.function?.name),
-    finishReason
+    finishReason,
+    usage
   };
 }
 

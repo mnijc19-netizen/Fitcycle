@@ -100,6 +100,12 @@ Fitcycle 采用严格单向依赖的 5 层洋葱架构，**严禁跨层反向污
                                           ├── 12.3 `src/store/fitnessStore.js` (`finishWorkout` 生理极限校验)
                                           ├── 12.4 `src/views/TodayView.vue` (打卡界面生理极值平滑告警胶囊)
                                           └── 12.5 `tests/anti-cheat-and-boundary.test.js` (断言世界纪录阈值与防刷分保护)
+
+13. 大模型 Token 与实时金额审计大盘 (Token & Cost Audit) ├── 13.1 `src/ai/tokenTracker.js` (物理Token累计/实时USD折算/持久化)
+                                                          ├── 13.2 `src/ai/providerClient.js` (Stream usage物理抓取)
+                                                          ├── 13.3 `src/components/AISettingsPanel.vue` (审计大盘/计费模式标识)
+                                                          ├── 13.4 `src/components/AIAssistantDrawer.vue` (单条消息徽标/即时记录)
+                                                          └── 13.5 `tests/token-and-cost-audit.test.js` (零虚构与精确算费断言)
 ========================================================================================================================
 ```
 
@@ -180,6 +186,11 @@ Fitcycle 采用严格单向依赖的 5 层洋葱架构，**严禁跨层反向污
 *   **公理 4.5（Key 指纹智能识别与单行极简工效学公理 Key Fingerprint Auto-Detection & Ergonomic Compactness Axiom）**：
     * **双层指纹快筛与探针发现**：用户粘贴或输入 Key 时，系统在 0ms 内通过正则指纹进行格式判别（`sk-or-` 命中 OpenRouter、`id.secret` 命中智谱 GLM、`v-gw-` 命中 Vercel Gateway），实现无需手动切换的自动命中；针对通用 `sk-` Key 遇到鉴权失败时，启动轻量多路候选探针并发自愈匹配；
     * **垂直空间极致瘦身**：严禁采用占用 4 行 200px+ 垂直空间的庞大卡片死平铺，统一采用 34px 极致轻量的单行横滑药丸胶囊栏，高度立减 75%，将首屏黄金空间全额释放给模型策略与对话交互。
+*   **公理 4.6（Token 与资费权威真实审计公理 Authoritative Token & Cost Audit Axiom）**：
+    * **零虚构原则（Zero-Hallucination Pricing）**：严禁在未接入官方动态单价查询接口的厂商（DeepSeek、智谱 GLM、阿里通义千问、硅基流动、月之暗面 Moonshot、Vercel AI Gateway 等）上凭空捏造或假想任何法币金额（USD/CNY），杜绝误导用户。
+    * **物理真实 Token 审计**：所有厂商统一通过 API 标准 Stream Usage（`stream_options: { include_usage: true }`）如实提取并持久化累计物理 Token（prompt_tokens、completion_tokens、total_tokens），数据直接来源于官方底层计费回执。
+    * **实时精准折算（OpenRouter）**：仅当厂商 API 具备权威 pricing 计费元数据（如 OpenRouter 的 `/api/v1/models` 物理回传的 `pricing: { prompt, completion }`）时，系统才动态计算精确到小数点后 4~5 位的实时美元消耗。
+    * **全盘透明看板与用户自主权**：在设置面板提供 4 号审计大盘，清晰标注各服务商的审计模式（`Token + 实时金额` vs `精确 Token 审计`），并支持随时重置用量统计与查看各服务商调用分布。
 
 ### 卷五：【数据持久化、迁移与测试质量宪法】
 *   **公理 5.1**：所有新功能必须包含自动化 Vitest 单元测试，测试通过率必须保持 100%。

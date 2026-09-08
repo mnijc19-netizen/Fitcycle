@@ -42,6 +42,24 @@
           <span>{{ provider.name }}</span>
         </button>
       </div>
+
+      <!-- Provider Billing Capability Callout -->
+      <div class="px-2.5 py-1.5 rounded-xl border flex items-center justify-between gap-2 text-xs transition-colors"
+           :class="activeProvider.billingType === 'tokens_and_cost' 
+             ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' 
+             : 'bg-zinc-900/60 border-zinc-800 text-zinc-400'"
+           data-testid="provider-billing-notice">
+        <div class="flex items-center gap-1.5 truncate">
+          <span class="font-bold shrink-0 px-1.5 py-0.5 rounded text-[10px]"
+                :class="activeProvider.billingType === 'tokens_and_cost' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-zinc-800 text-zinc-400'">
+            {{ activeProvider.billingBadge }}
+          </span>
+          <span class="text-[11px] truncate">{{ activeProvider.billingDesc }}</span>
+        </div>
+        <span class="text-[10px] shrink-0 font-mono opacity-80">
+          {{ activeProvider.billingType === 'tokens_and_cost' ? '实时计费: Token + 金额' : '实时计费: 仅回传 Token' }}
+        </span>
+      </div>
     </div>
 
     <!-- 2. Smart API Key Input with Show/Hide Toggle & Proactive Auto-Detection -->
@@ -277,6 +295,32 @@
           当前选中的模型为纯文本对话模型；如需上传身材或动作图片分析，请选择带有「视觉识图」标识的模型（如 Gemini 2.0 Flash、GLM-4.6V、Qwen-VL-Max）。
         </p>
 
+        <!-- Model Billing Transparency Box -->
+        <div class="p-2.5 rounded-xl border text-xs flex flex-col gap-1 font-mono"
+             :class="activeProvider.billingType === 'tokens_and_cost' 
+               ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' 
+               : 'bg-zinc-900/60 border-zinc-800 text-zinc-400'"
+             data-testid="model-billing-transparency">
+          <div class="flex items-center justify-between">
+            <span class="font-bold flex items-center gap-1.5 text-[11px]">
+              <span class="w-1.5 h-1.5 rounded-full" :class="activeProvider.billingType === 'tokens_and_cost' ? 'bg-emerald-400' : 'bg-zinc-500'"></span>
+              <span>计费审计模式: {{ activeProvider.billingBadge }}</span>
+            </span>
+            <span v-if="selectedModel.pricing" class="text-[10px] text-emerald-400">
+              入: ${{ (Number(selectedModel.pricing.prompt || 0) * 1000000).toFixed(2) }}/1M · 出: ${{ (Number(selectedModel.pricing.completion || 0) * 1000000).toFixed(2) }}/1M
+            </span>
+            <span v-else class="text-[10px] text-zinc-500 font-sans">
+              物理回传 Token 审计
+            </span>
+          </div>
+          <p class="text-[10px] font-sans leading-normal"
+             :class="activeProvider.billingType === 'tokens_and_cost' ? 'text-emerald-400/90' : 'text-zinc-400'">
+            {{ activeProvider.billingType === 'tokens_and_cost' 
+              ? '已接入 OpenRouter 官方实时计费接口，对话将实时统计 Token 并精确折算扣费金额（USD）。' 
+              : `当前服务商（${activeProvider.name}）官方接口仅回传物理 Token 消耗，不提供第三方实时单价查询。系统真实记录消耗的 Token 总量，具体扣费请参照官方控制台。` }}
+          </p>
+        </div>
+
         <!-- Model Diagnostic & Connectivity Ping Section -->
         <div class="pt-2 border-t border-zinc-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <button type="button" @click="testActiveModelPing" :disabled="pingingModel || !connected"
@@ -301,6 +345,92 @@
               class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-black shadow-md shadow-amber-500/20 active:scale-95 transition-all">
         ✦ 打开 AI 教练对话
       </button>
+    </div>
+
+    <!-- 4. 大模型 Token 与消费数据审计大盘 (Token & Cost Audit Dashboard) -->
+    <div class="rounded-2xl bg-zinc-950 border border-zinc-800/90 p-3.5 space-y-3" data-testid="token-audit-dashboard">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-1.5">
+          <span class="font-bold text-xs text-zinc-100">4. 用量与消费数据审计大盘</span>
+          <span class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono">官方物理统计</span>
+        </div>
+        <button type="button" @click="handleResetAudit" 
+                class="text-[11px] text-zinc-500 hover:text-amber-400 active:scale-95 transition-colors cursor-pointer font-mono"
+                title="重置当前所有用量与消费统计记录"
+                data-testid="reset-audit-btn">
+          重置统计
+        </button>
+      </div>
+
+      <!-- Global & Current Provider Highlights -->
+      <div class="grid grid-cols-2 gap-2">
+        <!-- Total Tokens Card -->
+        <div class="p-2.5 rounded-xl bg-zinc-900/70 border border-zinc-800/80 space-y-1">
+          <div class="text-[10px] text-zinc-500 font-medium">全平台累计消耗 Token</div>
+          <div class="text-base font-bold font-mono text-zinc-100 flex items-baseline gap-1">
+            <span data-testid="audit-total-tokens">{{ tokenAuditState.totalTokens.toLocaleString() }}</span>
+            <span class="text-[10px] font-normal text-zinc-500">Tokens</span>
+          </div>
+          <div class="text-[10px] text-zinc-500 font-mono flex items-center justify-between">
+            <span>输入: {{ tokenAuditState.totalPromptTokens.toLocaleString() }}</span>
+            <span>输出: {{ tokenAuditState.totalCompletionTokens.toLocaleString() }}</span>
+          </div>
+        </div>
+
+        <!-- Cost Card (or Current Provider Card) -->
+        <div class="p-2.5 rounded-xl bg-zinc-900/70 border border-zinc-800/80 space-y-1">
+          <div class="text-[10px] text-zinc-500 font-medium flex items-center justify-between">
+            <span>{{ activeProvider.name }} 累计用量</span>
+            <span v-if="activeProvider.id === 'openrouter'" class="text-emerald-400 font-bold font-mono" data-testid="openrouter-total-cost">
+              ${{ formatCostUSD(currentProviderStats.totalCostUSD) }}
+            </span>
+          </div>
+          <div class="text-base font-bold font-mono text-amber-300 flex items-baseline gap-1">
+            <span data-testid="provider-total-tokens">{{ (currentProviderStats.totalTokens || 0).toLocaleString() }}</span>
+            <span class="text-[10px] font-normal text-zinc-500">Tokens</span>
+          </div>
+          <div class="text-[10px] text-zinc-400 font-mono flex items-center justify-between">
+            <span>调用: {{ currentProviderStats.callCount || 0 }} 次</span>
+            <span v-if="activeProvider.id === 'openrouter'" class="text-emerald-400 text-[10px]">官方实时计费</span>
+            <span v-else class="text-zinc-500 text-[10px]">仅 Token 审计</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsible Detailed Per-Provider Breakdown Table -->
+      <div class="space-y-1.5">
+        <button type="button" @click="showProviderBreakdown = !showProviderBreakdown"
+                class="w-full py-1 text-[11px] text-zinc-400 hover:text-zinc-200 flex items-center justify-between px-1 cursor-pointer transition-colors"
+                data-testid="toggle-breakdown-btn">
+          <span>各服务商详细调用与 Token 分布</span>
+          <span class="font-mono text-[10px]">{{ showProviderBreakdown ? '收起 ▲' : '展开 ▼' }}</span>
+        </button>
+        
+        <div v-if="showProviderBreakdown" class="space-y-1 pt-1 border-t border-zinc-800/60 font-mono text-xs animate-in fade-in duration-150" data-testid="provider-breakdown-list">
+          <div v-for="prov in AI_PROVIDERS" :key="prov.id"
+               class="p-2 rounded-lg bg-zinc-900/40 border border-zinc-800/80 flex items-center justify-between text-[11px]">
+            <div class="flex items-center gap-1.5">
+              <span class="font-bold text-zinc-300">{{ prov.name }}</span>
+              <span class="text-[9px] px-1 py-0.2 rounded" 
+                    :class="prov.billingType === 'tokens_and_cost' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-zinc-800 text-zinc-500'">
+                {{ prov.billingBadge }}
+              </span>
+            </div>
+            <div class="text-right">
+              <span class="font-bold text-zinc-200">{{ (tokenAuditState.providers[prov.id]?.totalTokens || 0).toLocaleString() }} T</span>
+              <span v-if="prov.id === 'openrouter' && tokenAuditState.providers[prov.id]?.totalCostUSD" class="text-emerald-400 ml-1.5 font-bold">
+                (${{ formatCostUSD(tokenAuditState.providers[prov.id]?.totalCostUSD) }})
+              </span>
+              <span class="text-zinc-500 text-[10px] ml-1.5">({{ tokenAuditState.providers[prov.id]?.callCount || 0 }} 次)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Explanatory note -->
+      <p class="text-[10px] text-zinc-500 leading-normal bg-zinc-900/40 p-2 rounded-xl border border-zinc-800/50">
+        注：Token 数据直接来源于官方 API 每次生成的 usage 统计回执，绝对物理级真实。金额计算严格仅在服务商提供官方实时定价接口时展示（如 OpenRouter），其余国内及直接调用厂商仅记录真实 Token 审计，避免金额偏差。
+      </p>
     </div>
   </div>
 </template>
@@ -344,6 +474,19 @@ import {
   matchesModelSearch,
   normalizeProviderModel
 } from "../ai/modelCapabilities.js";
+import {
+  tokenAuditState,
+  formatCostUSD,
+  getProviderAudit,
+  resetTokenAudit
+} from "../ai/tokenTracker.js";
+
+const showProviderBreakdown = ref(false);
+const currentProviderStats = computed(() => getProviderAudit(aiSession.activeProvider));
+
+function handleResetAudit() {
+  resetTokenAudit();
+}
 
 const draftKey = ref(getActiveApiKey());
 const showKey = ref(false);
