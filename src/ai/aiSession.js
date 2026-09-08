@@ -8,7 +8,8 @@ export const AI_PROVIDERS = [
   { id: "qwen", name: "通义千问", keyLabel: "阿里云百炼 API Key", portal: "https://bailian.console.aliyun.com", tag: "千问大模型 · 视觉/推理" },
   { id: "siliconflow", name: "硅基流动", keyLabel: "SiliconFlow API Key", portal: "https://cloud.siliconflow.cn", tag: "满血 R1/V3 · 多模型" },
   { id: "moonshot", name: "月之暗面", keyLabel: "Moonshot API Key", portal: "https://platform.moonshot.cn", tag: "Kimi · 超长上下文" },
-  { id: "vercel_ai_gateway", name: "Vercel AI Gateway", keyLabel: "AI Gateway API Key", portal: "https://vercel.com/docs/ai-gateway", tag: "全球聚合 · 多模型极速网关" }
+  { id: "vercel_ai_gateway", name: "Vercel AI Gateway", keyLabel: "AI Gateway API Key", portal: "https://vercel.com/docs/ai-gateway", tag: "全球聚合 · 多模型极速网关" },
+  { id: "openrouter", name: "OpenRouter", keyLabel: "OpenRouter API Key", portal: "https://openrouter.ai/keys", tag: "全网模型汇聚 · 自由路由" }
 ];
 
 export const AI_KEY_SESSION_KEYS = {
@@ -17,7 +18,8 @@ export const AI_KEY_SESSION_KEYS = {
   qwen: "fitcycle_qwen_session_key",
   siliconflow: "fitcycle_siliconflow_session_key",
   moonshot: "fitcycle_moonshot_session_key",
-  vercel_ai_gateway: "fitcycle_vercel_ai_gateway_session_key"
+  vercel_ai_gateway: "fitcycle_vercel_ai_gateway_session_key",
+  openrouter: "fitcycle_openrouter_session_key"
 };
 
 const MODEL_SESSION_KEYS = {
@@ -26,7 +28,8 @@ const MODEL_SESSION_KEYS = {
   qwen: "fitcycle_qwen_model",
   siliconflow: "fitcycle_siliconflow_model",
   moonshot: "fitcycle_moonshot_model",
-  vercel_ai_gateway: "fitcycle_vercel_ai_gateway_model"
+  vercel_ai_gateway: "fitcycle_vercel_ai_gateway_model",
+  openrouter: "fitcycle_openrouter_model"
 };
 
 const CACHED_MODELS_KEYS = {
@@ -35,11 +38,11 @@ const CACHED_MODELS_KEYS = {
   qwen: "fitcycle_qwen_models_cache",
   siliconflow: "fitcycle_siliconflow_models_cache",
   moonshot: "fitcycle_moonshot_models_cache",
-  vercel_ai_gateway: "fitcycle_vercel_ai_gateway_models_cache"
+  vercel_ai_gateway: "fitcycle_vercel_ai_gateway_models_cache",
+  openrouter: "fitcycle_openrouter_models_cache"
 };
 
 const PROVIDER_SESSION_KEY = "fitcycle_ai_provider";
-const LEGACY_OPENROUTER_KEYS = ["fitcycle_openrouter_session_key", "fitcycle_openrouter_model"];
 
 export const DEFAULT_PRESET_MODELS = {
   deepseek: [
@@ -293,6 +296,44 @@ export const DEFAULT_PRESET_MODELS = {
       description: "满血思维链推理，周期瓶颈与复杂动作力线深度推演",
       capabilities: { text: true, image: false, tools: false, streaming: true, reasoning: true }
     }
+  ],
+  openrouter: [
+    {
+      id: "google/gemini-2.0-flash-001",
+      name: "Gemini 2.0 Flash (极速识图全能)",
+      description: "超快响应延迟，原生支持高精器械识图与训练数据感知",
+      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false }
+    },
+    {
+      id: "anthropic/claude-3.5-sonnet",
+      name: "Claude 3.5 Sonnet (高智能图文)",
+      description: "卓越的逻辑推演与视觉图表解析",
+      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false }
+    },
+    {
+      id: "deepseek/deepseek-chat",
+      name: "DeepSeek-V3 (极速纯文本)",
+      description: "极高性价比纯文本通用模型，支持工具感知",
+      capabilities: { text: true, image: false, tools: true, streaming: true, reasoning: false }
+    },
+    {
+      id: "deepseek/deepseek-r1",
+      name: "DeepSeek-R1 (深度思维链)",
+      description: "满血思维链推理，周期瓶颈与复杂动作力线深度推演",
+      capabilities: { text: true, image: false, tools: false, streaming: true, reasoning: true }
+    },
+    {
+      id: "openai/gpt-4o",
+      name: "GPT-4o (多模态旗舰)",
+      description: "顶级全能多模态旗舰，复杂器械结构与动作高精解析",
+      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false }
+    },
+    {
+      id: "openai/gpt-4o-mini",
+      name: "GPT-4o mini (高性价比主力)",
+      description: "极速且经济，支持图文理解与日常动作记录",
+      capabilities: { text: true, image: true, tools: true, streaming: true, reasoning: false }
+    }
   ]
 };
 
@@ -384,8 +425,6 @@ export const aiSession = reactive({
   apiMessages: []
 });
 
-LEGACY_OPENROUTER_KEYS.forEach((key) => writeStorageValue(key, ""));
-
 export function getActiveProvider() {
   return AI_PROVIDERS.find((item) => item.id === aiSession.activeProvider) || AI_PROVIDERS[0];
 }
@@ -473,7 +512,6 @@ export function clearAIConnection() {
     setProviderModels([], id);
     writeStorageValue(CACHED_MODELS_KEYS[id], "");
   });
-  LEGACY_OPENROUTER_KEYS.forEach((key) => writeStorageValue(key, ""));
   aiSession.connectionState = "idle";
   aiSession.connectionMessage = "";
   clearConversation();

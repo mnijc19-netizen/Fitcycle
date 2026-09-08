@@ -368,6 +368,7 @@ const customModelPlaceholder = computed(() => {
   if (aiSession.activeProvider === "deepseek") return "如 deepseek-chat 或 deepseek-reasoner";
   if (aiSession.activeProvider === "qwen") return "如 qwen2.5-72b-instruct";
   if (aiSession.activeProvider === "vercel_ai_gateway") return "如 google/gemini-2.0-flash 或 openai/gpt-4o";
+  if (aiSession.activeProvider === "openrouter") return "如 anthropic/claude-3.5-sonnet 或 google/gemini-2.0-flash-001";
   return "输入模型 ID (如 custom-model-id)";
 });
 

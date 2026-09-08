@@ -88,11 +88,15 @@ const FRIENDLY_NAMES = {
   "deepseek-chat": "DeepSeek-V3 (通用对话)",
   "deepseek-reasoner": "DeepSeek-R1 (深度思考)",
   "google/gemini-2.0-flash": "Gemini 2.0 Flash (极速识图全能)",
+  "google/gemini-2.0-flash-001": "Gemini 2.0 Flash (极速识图全能)",
   "openai/gpt-4o-mini": "GPT-4o mini (高性价比主力)",
   "openai/gpt-4o": "GPT-4o (多模态旗舰)",
   "anthropic/claude-3-5-sonnet": "Claude 3.5 Sonnet (高智能图文)",
   "deepseek/deepseek-chat": "DeepSeek-V3 (极速纯文本)",
   "deepseek/deepseek-reasoner": "DeepSeek-R1 (深度思维链)",
+  "deepseek/deepseek-r1": "DeepSeek-R1 (深度思维链)",
+  "meta-llama/llama-3.3-70b-instruct": "Llama 3.3 70B (开源顶级)",
+  "mistralai/mistral-large": "Mistral Large (高智能全能)",
   "glm-4.5-air": "GLM-4.5-Air (智能体与深度思考)",
   "glm-4.6v": "GLM-4.6V (多模态视觉旗舰 · 106B)",
   "glm-4.6v-flash": "GLM-4.6V-Flash (极速多模态)",
@@ -176,6 +180,9 @@ export function getModelCreator(model) {
       "deepseek-ai": "DeepSeek",
       "meta-llama": "Meta LLaMA",
       mistralai: "Mistral",
+      cohere: "Cohere",
+      "x-ai": "xAI (Grok)",
+      nousresearch: "NousResearch",
       openbmb: "OpenBMB",
       opengvlab: "OpenGVLab",
       moonshot: "Moonshot",
@@ -190,6 +197,7 @@ export function getModelCreator(model) {
   if (prov === "qwen") return "通义千问";
   if (prov === "moonshot") return "月之暗面 Kimi";
   if (prov === "siliconflow") return "硅基流动";
+  if (prov === "openrouter") return "OpenRouter";
   return "";
 }
 

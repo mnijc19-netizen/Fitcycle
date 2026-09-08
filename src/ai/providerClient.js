@@ -24,6 +24,10 @@ export const PROVIDER_CONFIGS = {
   vercel_ai_gateway: {
     name: "Vercel AI Gateway",
     apiBase: "https://ai-gateway.vercel.sh/v1"
+  },
+  openrouter: {
+    name: "OpenRouter",
+    apiBase: "https://openrouter.ai/api/v1"
   }
 };
 
@@ -42,11 +46,16 @@ function getProviderConfig(provider, overrideBase) {
   return { ...config, apiBase: overrideBase || config.apiBase };
 }
 
-function requestHeaders(apiKey) {
-  return {
+function requestHeaders(apiKey, provider = "") {
+  const headers = {
     Authorization: `Bearer ${apiKey}`,
     "Content-Type": "application/json"
   };
+  if (provider === "openrouter") {
+    headers["HTTP-Referer"] = typeof window !== "undefined" && window.location?.origin ? window.location.origin : "https://fitcycle.app";
+    headers["X-Title"] = "FitCycle";
+  }
+  return headers;
 }
 
 function safeFailure(providerName, status) {
@@ -72,7 +81,7 @@ export async function fetchProviderModels(provider, apiKey, options = {}) {
   let response;
   try {
     response = await fetchImpl(`${config.apiBase}/models`, {
-      headers: requestHeaders(targetKey),
+      headers: requestHeaders(targetKey, targetProvider),
       signal: targetOptions?.signal
     });
   } catch (error) {
@@ -125,7 +134,7 @@ export async function streamProviderChatCompletion(request, options = {}) {
   try {
     response = await fetchImpl(`${config.apiBase}/chat/completions`, {
       method: "POST",
-      headers: requestHeaders(apiKey),
+      headers: requestHeaders(apiKey, provider),
       body: JSON.stringify(body),
       signal
     });
@@ -158,41 +167,39 @@ export async function streamProviderChatCompletion(request, options = {}) {
     const choice = payload?.choices?.[0];
     const delta = choice?.delta || {};
 
-    // 1. Capture reasoning/thinking tokens (DeepSeek R1 / Zhipu GLM / Qwen reasoning stream)
+    if (delta.content) {
+      content += delta.content;
+      onToken?.(delta.content);
+    }
     const reasoningDelta = delta.reasoning_content || delta.reasoning || delta.thought || "";
     if (typeof reasoningDelta === "string" && reasoningDelta.length > 0) {
       reasoningContent += reasoningDelta;
       onReasoning?.(reasoningDelta);
     }
-
-    // 2. Capture regular content stream
-    if (typeof delta.content === "string" && delta.content.length > 0) {
-      content += delta.content;
-      onToken?.(delta.content);
+    if (Array.isArray(delta.tool_calls)) {
+      delta.tool_calls.forEach((call) => mergeToolCall(toolCalls, call));
     }
-    if (Array.isArray(delta.tool_calls)) delta.tool_calls.forEach((toolCall) => mergeToolCall(toolCalls, toolCall));
-    if (choice?.finish_reason) finishReason = choice.finish_reason;
+    if (choice?.finish_reason) {
+      finishReason = choice.finish_reason;
+    }
   };
 
   while (true) {
-    const { value, done } = await reader.read();
+    const { done, value } = await reader.read();
     if (done) break;
     buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split(/\r?\n/);
+    const lines = buffer.split("\n");
     buffer = lines.pop() || "";
-    for (const line of lines) {
-      processLine(line);
-    }
+    lines.forEach(processLine);
   }
-  if (buffer.trim()) {
-    buffer += decoder.decode();
-    const remainingLines = buffer.split(/\r?\n/);
-    for (const line of remainingLines) {
-      processLine(line);
-    }
-  }
+  if (buffer.trim()) processLine(buffer);
 
-  return { content, reasoningContent, toolCalls: toolCalls.filter(Boolean), finishReason };
+  return {
+    content,
+    reasoningContent,
+    toolCalls: toolCalls.filter((c) => c && c.function?.name),
+    finishReason
+  };
 }
 
 export async function testProviderConnection(request, options = {}) {
@@ -217,7 +224,7 @@ export async function testProviderConnection(request, options = {}) {
     try {
       response = await fetchImpl(`${config.apiBase}/chat/completions`, {
         method: "POST",
-        headers: requestHeaders(apiKey),
+        headers: requestHeaders(apiKey, provider),
         body: JSON.stringify(body),
         signal: options.signal
       });
@@ -253,7 +260,7 @@ export async function testProviderConnection(request, options = {}) {
   let response;
   try {
     response = await fetchImpl(`${config.apiBase}/models`, {
-      headers: requestHeaders(apiKey),
+      headers: requestHeaders(apiKey, provider),
       signal: options.signal
     });
   } catch (error) {
