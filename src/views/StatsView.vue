@@ -401,45 +401,45 @@
           </div>
           <div class="min-w-0">
             <div class="flex items-center gap-2">
-              <h3 class="text-xs font-bold text-zinc-100">AI 智能教练</h3>
-              <span class="text-xs px-2 py-0.5 rounded-full border font-mono font-medium"
-                    :class="aiConnected ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-400' : 'border-zinc-700 bg-zinc-950 text-zinc-500'">
+              <h3 class="text-sm sm:text-base font-bold text-zinc-100">AI 智能教练</h3>
+              <span class="text-xs px-2.5 py-0.5 rounded-full border font-mono font-medium"
+                    :class="aiConnected ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-400' : 'border-zinc-700 bg-zinc-950 text-zinc-400'">
                 {{ aiConnected ? '已就绪' : '未连接' }}
               </span>
             </div>
-            <p class="text-xs text-zinc-400 truncate mt-0.5">
+            <p class="text-xs sm:text-sm text-zinc-300 truncate mt-0.5">
               {{ aiConnected ? `${activeAIProvider.name} · ${activeAIModel?.name || getActiveModelId()}` : '点击配置 OpenRouter / DeepSeek / 智谱' }}
             </p>
           </div>
         </div>
-        <div class="text-zinc-500 group-hover:text-zinc-300 text-xs transition-colors pl-2">
+        <div class="text-zinc-400 group-hover:text-zinc-200 text-sm transition-colors pl-2">
           ❯
         </div>
       </div>
 
       <!-- Outer Token & Cost Usage Summary Bar (Directly below AI coach option) -->
-      <div class="bg-zinc-900/60 border border-zinc-800/70 hover:border-zinc-700/90 rounded-xl p-2.5 flex items-center justify-between gap-2 cursor-pointer transition-all text-xs"
+      <div class="bg-zinc-900/60 border border-zinc-800/70 hover:border-zinc-700/90 rounded-xl p-3 flex items-center justify-between gap-2.5 cursor-pointer transition-all text-xs sm:text-sm"
            @click="showAISettingsModal = true"
            data-testid="outer-token-audit-summary"
            title="点击查看详细 Token 用量与消费大盘">
         <div class="flex items-center gap-2 min-w-0 font-mono">
-          <span class="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>
-          <span class="text-[11px] text-zinc-400 truncate">
+          <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+          <span class="text-xs sm:text-sm text-zinc-300 truncate">
             大模型消耗:
-            <strong class="text-zinc-200 font-bold ml-1">{{ tokenAuditState.totalTokens.toLocaleString() }}</strong>
-            <span class="text-[10px] text-zinc-500 ml-0.5">Tokens</span>
+            <strong class="text-zinc-100 font-bold ml-1">{{ tokenAuditState.totalTokens.toLocaleString() }}</strong>
+            <span class="text-xs text-zinc-400 ml-0.5">Tokens</span>
           </span>
         </div>
         
-        <div class="flex items-center gap-1.5 shrink-0 font-mono text-[11px]">
+        <div class="flex items-center gap-2 shrink-0 font-mono text-xs sm:text-sm">
           <span v-if="tokenAuditState.totalCostUSD > 0 || activeAIProvider.id === 'openrouter'" 
-                class="text-emerald-400 font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[10px]">
+                class="text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-xs">
             ${{ formatCostUSD(tokenAuditState.totalCostUSD) }}
           </span>
-          <span v-else class="text-zinc-500 text-[10px] px-1.5 py-0.5 rounded bg-zinc-800/80">
+          <span v-else class="text-zinc-400 text-xs px-2 py-0.5 rounded bg-zinc-800/80">
             {{ activeAIProvider.name }} Token 审计
           </span>
-          <span class="text-zinc-500 text-[10px] hover:text-amber-400 transition-colors">详细大盘 ❯</span>
+          <span class="text-zinc-400 hover:text-amber-400 transition-colors text-xs sm:text-sm font-medium">详细大盘 ❯</span>
         </div>
       </div>
     </div>
@@ -459,11 +459,11 @@
           <header class="flex items-center justify-between px-4 py-3.5 border-b border-zinc-800 bg-zinc-900/98 backdrop-blur-md flex-shrink-0 z-20"
                   style="padding-top: max(env(safe-area-inset-top, 0px), 14px);">
             <div class="flex items-center gap-2">
-              <span class="text-amber-400 font-bold text-sm">✦</span>
-              <h2 class="text-xs sm:text-sm font-bold text-zinc-100 uppercase tracking-wider">AI 智能教练配置</h2>
+              <span class="text-amber-400 font-bold text-base">✦</span>
+              <h2 class="text-sm sm:text-base font-bold text-zinc-100 uppercase tracking-wider">AI 智能教练配置</h2>
             </div>
             <button type="button" @click="showAISettingsModal = false" 
-                    class="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer"
+                    class="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white flex items-center justify-center text-sm transition-colors cursor-pointer"
                     aria-label="关闭 AI 配置">✕</button>
           </header>
 

@@ -949,8 +949,8 @@ button.fixed {
 /* ========================================================================= */
 
 .ai-markdown-content {
-  line-height: 1.65;
-  font-size: 0.8125rem; /* 13px */
+  line-height: 1.7;
+  font-size: 0.9375rem; /* 15px Apple HIG readability standard */
   color: var(--fc-text-primary);
 }
 
@@ -960,28 +960,28 @@ button.fixed {
 .ai-markdown-content h4 {
   font-weight: 800;
   color: var(--fc-text-primary);
-  margin-top: 0.85rem;
-  margin-bottom: 0.4rem;
-  line-height: 1.35;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
 }
 
 .ai-markdown-content h1 {
-  font-size: 1rem;
+  font-size: 1.125rem; /* 18px */
 }
 
 .ai-markdown-content h2 {
-  font-size: 0.9375rem;
+  font-size: 1.0625rem; /* 17px */
   border-bottom: 1px solid var(--fc-border);
-  padding-bottom: 0.3rem;
+  padding-bottom: 0.35rem;
 }
 
 .ai-markdown-content h3 {
-  font-size: 0.875rem;
+  font-size: 1rem; /* 16px */
   color: var(--fc-text-primary);
 }
 
 .ai-markdown-content p {
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.7rem;
 }
 
 .ai-markdown-content p:last-child {
@@ -1033,7 +1033,7 @@ button.fixed {
   width: 100%;
   min-width: 320px;
   border-collapse: collapse;
-  font-size: 0.75rem; /* 12px */
+  font-size: 0.84375rem; /* 13.5px */
   text-align: left;
 }
 
@@ -1041,13 +1041,13 @@ button.fixed {
   background: var(--fc-surface-2);
   color: var(--fc-text-primary);
   font-weight: 700;
-  padding: 0.5rem 0.65rem;
+  padding: 0.55rem 0.75rem;
   border-bottom: 1px solid var(--fc-border);
   white-space: nowrap;
 }
 
 .ai-markdown-content td {
-  padding: 0.5rem 0.65rem;
+  padding: 0.55rem 0.75rem;
   border-bottom: 1px solid var(--fc-border);
   color: var(--fc-text-secondary);
   vertical-align: middle;
@@ -1064,10 +1064,10 @@ button.fixed {
 .ai-markdown-content code {
   background: var(--fc-surface-2);
   color: var(--fc-accent);
-  padding: 0.15rem 0.35rem;
+  padding: 0.15rem 0.4rem;
   border-radius: 0.35rem;
   font-family: ui-monospace, monospace;
-  font-size: 0.75rem;
+  font-size: 0.84375rem;
   border: 1px solid var(--fc-border);
 }
 

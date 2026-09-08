@@ -1,132 +1,132 @@
 <template>
   <div class="space-y-4 pb-12" aria-labelledby="ai-settings-title">
-    <div class="flex items-start justify-between gap-3 bg-zinc-900/80 border border-zinc-800 rounded-2xl p-3.5">
+    <div class="flex items-start justify-between gap-3 bg-zinc-900/80 border border-zinc-800 rounded-2xl p-4">
       <div>
-        <h3 id="ai-settings-title" class="text-xs font-bold text-zinc-200 flex items-center gap-1.5">
+        <h3 id="ai-settings-title" class="text-sm sm:text-base font-bold text-zinc-100 flex items-center gap-1.5">
           <span class="text-amber-400">✦</span> 智能教练设置 (Fitcycle AI)
         </h3>
-        <p class="mt-1 text-xs text-zinc-400 leading-normal">
+        <p class="mt-1 text-xs sm:text-sm text-zinc-300 leading-relaxed">
           官方 API 直连。密钥仅加密存储在当前浏览器会话中，保障数据隐私。
         </p>
       </div>
-      <span class="text-xs px-2.5 py-1 rounded-full border font-mono font-medium flex-shrink-0"
-            :class="connected ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-400' : 'border-zinc-700 bg-zinc-950 text-zinc-500'">
+      <span class="text-xs px-3 py-1 rounded-full border font-mono font-medium flex-shrink-0"
+            :class="connected ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-400' : 'border-zinc-700 bg-zinc-950 text-zinc-400'">
         {{ connected ? '● 已就绪' : '○ 未连接' }}
       </span>
     </div>
 
     <!-- 1. Compact Provider Selection Pills & Auto-Detect Header -->
-    <div class="space-y-2">
-      <div class="flex items-center justify-between text-xs">
-        <div class="flex items-center gap-1.5">
-          <label class="font-bold text-zinc-200">1. 服务商</label>
-          <span v-if="autoDetectedNotice" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-normal animate-in fade-in">
+    <div class="space-y-2.5">
+      <div class="flex items-center justify-between text-sm">
+        <div class="flex items-center gap-2">
+          <label class="font-bold text-zinc-100 text-sm">1. 服务商</label>
+          <span v-if="autoDetectedNotice" class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-medium animate-in fade-in">
             {{ autoDetectedNotice }}
           </span>
         </div>
         <a :href="portalLink" target="_blank" rel="noopener noreferrer" 
-           class="text-xs text-amber-400 hover:text-amber-300 underline flex items-center gap-0.5">
+           class="text-xs sm:text-sm text-amber-400 hover:text-amber-300 underline flex items-center gap-0.5">
           <span>获取 {{ activeProvider.name }} Key</span> <span>↗</span>
         </a>
       </div>
 
       <!-- Horizontal Scrollable Compact Pills (Active provider is placed 1st for instant recognition) -->
-      <div ref="providersScrollRef" class="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none" aria-label="AI 提供商">
+      <div ref="providersScrollRef" class="flex gap-2 overflow-x-auto pb-1 scrollbar-none" aria-label="AI 提供商">
         <button v-for="provider in displayedProviders" :key="provider.id" type="button"
                 :data-testid="`provider-btn-${provider.id}`"
-                class="px-3 py-1.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 flex-shrink-0 active:scale-95 cursor-pointer"
+                class="px-3.5 py-2 rounded-xl border text-sm font-bold transition-all flex items-center gap-2 flex-shrink-0 active:scale-95 cursor-pointer"
                 :class="aiSession.activeProvider === provider.id 
                   ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-sm ring-1 ring-amber-500/40' 
-                  : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'"
+                  : 'bg-zinc-950 border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700'"
                 @click="selectProvider(provider.id)">
-          <span v-if="aiSession.apiKeys[provider.id]" class="w-1.5 h-1.5 rounded-full bg-emerald-400" title="已配置 Key"></span>
+          <span v-if="aiSession.apiKeys[provider.id]" class="w-2 h-2 rounded-full bg-emerald-400" title="已配置 Key"></span>
           <span>{{ provider.name }}</span>
         </button>
       </div>
 
       <!-- Provider Billing Capability Callout (Zero Truncation Guaranteed) -->
-      <div class="p-2.5 rounded-xl border space-y-1.5 text-xs transition-colors"
+      <div class="p-3 rounded-2xl border space-y-2 text-xs sm:text-sm transition-colors"
            :class="activeProvider.billingType === 'tokens_and_cost' 
              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' 
-             : 'bg-zinc-900/60 border-zinc-800 text-zinc-400'"
+             : 'bg-zinc-900/60 border-zinc-800 text-zinc-300'"
            data-testid="provider-billing-notice">
         <div class="flex items-center justify-between gap-2">
-          <span class="font-bold shrink-0 px-1.5 py-0.5 rounded text-[10px] flex items-center gap-1"
-                :class="activeProvider.billingType === 'tokens_and_cost' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-zinc-800 text-zinc-400'">
-            <span class="w-1.5 h-1.5 rounded-full" :class="activeProvider.billingType === 'tokens_and_cost' ? 'bg-emerald-400' : 'bg-zinc-500'"></span>
+          <span class="font-bold shrink-0 px-2 py-0.5 rounded text-xs flex items-center gap-1.5"
+                :class="activeProvider.billingType === 'tokens_and_cost' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-zinc-800 text-zinc-300'">
+            <span class="w-1.5 h-1.5 rounded-full" :class="activeProvider.billingType === 'tokens_and_cost' ? 'bg-emerald-400' : 'bg-zinc-400'"></span>
             <span>{{ activeProvider.billingBadge }}</span>
           </span>
-          <span class="text-[10px] font-mono opacity-80 shrink-0">
+          <span class="text-xs font-mono opacity-85 shrink-0">
             {{ activeProvider.billingType === 'tokens_and_cost' ? '实时计费: Token + 金额' : '实时计费: 仅回传 Token' }}
           </span>
         </div>
-        <p class="text-[11px] leading-relaxed break-words m-0"
-           :class="activeProvider.billingType === 'tokens_and_cost' ? 'text-emerald-400/90' : 'text-zinc-400'">
+        <p class="text-xs sm:text-[13px] leading-relaxed break-words m-0"
+           :class="activeProvider.billingType === 'tokens_and_cost' ? 'text-emerald-400/95' : 'text-zinc-300'">
           {{ activeProvider.billingDesc }}
         </p>
       </div>
     </div>
 
     <!-- 2. Smart API Key Input with Show/Hide Toggle & Proactive Auto-Detection -->
-    <div class="space-y-2 pt-1 border-t border-zinc-800/80">
-      <div class="flex items-center justify-between text-xs">
-        <label for="provider-key" class="font-bold text-zinc-200">2. 粘贴或输入 API Key</label>
-        <span class="text-[10px] text-zinc-500 font-mono">支持智能识别服务商</span>
+    <div class="space-y-2.5 pt-1.5 border-t border-zinc-800/80">
+      <div class="flex items-center justify-between text-sm">
+        <label for="provider-key" class="font-bold text-zinc-100 text-sm">2. 粘贴或输入 API Key</label>
+        <span class="text-xs text-zinc-400 font-mono">支持智能识别服务商</span>
       </div>
       
       <div class="relative">
         <input id="provider-key" v-model="draftKey" :type="showKey ? 'text' : 'password'" autocomplete="off" spellcheck="false"
                :placeholder="`粘贴 ${activeProvider.name} 或任意平台 API Key (自动识别)`"
-               class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3 py-2.5 pr-10 text-xs text-zinc-100 font-mono outline-none transition-colors"
+               class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3.5 py-3 pr-12 text-sm text-zinc-100 placeholder:text-zinc-500 font-mono outline-none transition-colors"
                @input="handleKeyInput"
                @paste="handleKeyPaste" />
         <button type="button" @click="showKey = !showKey" 
-                class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 p-1 text-xs transition-colors">
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200 p-1 text-xs font-semibold transition-colors">
           {{ showKey ? '显示' : '隐藏' }}
         </button>
       </div>
 
       <div class="grid grid-cols-2 gap-2 pt-0.5">
         <button type="button" @click="testConnection" :disabled="loading || !draftKey.trim()"
-                class="py-2.5 rounded-xl bg-amber-500 disabled:bg-zinc-800 disabled:text-zinc-600 text-zinc-950 text-xs font-bold active:scale-95 shadow-md shadow-amber-500/10 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                class="py-3 rounded-xl bg-amber-500 disabled:bg-zinc-800 disabled:text-zinc-600 text-zinc-950 text-sm font-bold active:scale-95 shadow-md shadow-amber-500/10 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 data-testid="test-connection-btn">
-          <span v-if="loading" class="w-3 h-3 rounded-full border-2 border-zinc-950 border-t-transparent animate-spin"></span>
-          <svg v-else class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span v-if="loading" class="w-3.5 h-3.5 rounded-full border-2 border-zinc-950 border-t-transparent animate-spin"></span>
+          <svg v-else class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           <span>{{ loading ? '正在检测与连接…' : (connected ? '测试连接并刷新' : '测试连接并保存') }}</span>
         </button>
         <button type="button" @click="clearConnection" :disabled="loading || !hasAnyConnection"
-                class="py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:bg-zinc-900 disabled:text-zinc-700 text-zinc-300 text-xs font-bold active:scale-95 transition-all cursor-pointer">
+                class="py-3 rounded-xl bg-zinc-950 border border-zinc-800 hover:bg-zinc-900 disabled:text-zinc-700 text-zinc-300 text-sm font-bold active:scale-95 transition-all cursor-pointer">
           清除全部连接
         </button>
       </div>
 
       <!-- Status Notification Message -->
-      <div v-if="statusText" class="p-2.5 rounded-xl text-xs flex items-center gap-2 leading-relaxed" 
+      <div v-if="statusText" class="p-3 rounded-xl text-xs sm:text-sm flex items-center gap-2 leading-relaxed" 
            :class="statusError ? 'bg-red-500/10 border border-red-500/30 text-red-400' : 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'" 
            role="status">
-        <span>{{ statusError ? '✕' : '✓' }}</span>
+        <span class="font-bold">{{ statusError ? '✕' : '✓' }}</span>
         <span>{{ statusText }}</span>
       </div>
     </div>
 
     <!-- 3. High-Visibility Model Selection Section -->
-    <div v-if="connected" class="space-y-3 pt-2 border-t border-zinc-800/80">
+    <div v-if="connected" class="space-y-3.5 pt-2 border-t border-zinc-800/80">
       <div class="flex items-center justify-between flex-wrap gap-2">
         <div class="flex items-center gap-2">
-          <label for="model-search" class="block text-xs font-bold text-zinc-200">
+          <label for="model-search" class="block text-sm font-bold text-zinc-100">
             3. 选择生效对话模型 (共 {{ visibleModels.length }} 款可用)
           </label>
-          <span class="text-[10px] px-2 py-0.5 rounded-full border font-mono font-medium"
+          <span class="text-xs px-2.5 py-0.5 rounded-full border font-mono font-medium"
                 :class="isSyncedFromAPI ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-400' : 'border-zinc-700 bg-zinc-900 text-zinc-400'">
             {{ isSyncedFromAPI ? '● API 实时动态识别' : '○ 基础离线预设' }}
           </span>
         </div>
         <button type="button" @click="testConnection" :disabled="loading || !draftKey.trim()"
-                class="px-2.5 py-1 rounded-xl text-xs font-bold border border-amber-500/40 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 active:scale-95 transition-all flex items-center gap-1 shadow-sm"
+                class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border border-amber-500/40 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 active:scale-95 transition-all flex items-center gap-1.5 shadow-sm"
                 data-testid="refresh-api-models-btn"
                 title="重新向官方接口发送请求，获取最新发布的大模型">
-          <span v-if="loading" class="w-3 h-3 rounded-full border-2 border-amber-400 border-t-transparent animate-spin"></span>
-          <svg v-else class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+          <span v-if="loading" class="w-3.5 h-3.5 rounded-full border-2 border-amber-400 border-t-transparent animate-spin"></span>
+          <svg v-else class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
           <span>{{ loading ? '正在获取…' : '再次获取官方最新模型' }}</span>
         </button>
       </div>
@@ -136,101 +136,101 @@
         <div class="relative">
           <input id="model-search" v-model="modelSearch" type="search" 
                  placeholder="搜索任意大模型 (如 gpt, gemini, claude, deepseek, qwen, glm)..."
-                 class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3.5 py-2.5 pr-8 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition-colors" />
+                 class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-4 py-3 pr-10 text-sm text-zinc-100 placeholder-zinc-500 outline-none transition-colors" />
           <button v-if="modelSearch" type="button" @click="modelSearch = ''"
-                  class="absolute right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-[10px] transition-colors"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors"
                   aria-label="清空搜索">✕</button>
         </div>
 
         <!-- Collapsible Custom Model Input Trigger -->
         <div class="flex items-center justify-between px-0.5">
           <button type="button" @click="showCustomInput = !showCustomInput"
-                  class="text-[11px] text-zinc-400 hover:text-amber-300 flex items-center gap-1.5 transition-colors font-medium cursor-pointer">
+                  class="text-xs sm:text-[13px] text-zinc-400 hover:text-amber-300 flex items-center gap-1.5 transition-colors font-medium cursor-pointer">
             <span class="text-amber-400">✦</span>
             <span>{{ showCustomInput ? '收起自定义模型' : '找不到所需模型？自定义指定模型 ID' }}</span>
-            <span class="text-[10px] text-zinc-500">{{ showCustomInput ? '▲' : '▼' }}</span>
+            <span class="text-xs text-zinc-500">{{ showCustomInput ? '▲' : '▼' }}</span>
           </button>
-          <span v-if="modelSearch && visibleModels.length" class="text-[11px] text-amber-400/90 font-mono">
+          <span v-if="modelSearch && visibleModels.length" class="text-xs text-amber-400 font-mono">
             搜索到 {{ visibleModels.length }} 款
           </span>
         </div>
 
         <!-- Custom Model Input Row (Collapsible) -->
-        <div v-show="showCustomInput" class="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800/90 space-y-1.5 animate-in fade-in duration-150">
-          <div class="flex items-center justify-between text-xs">
-            <span class="font-medium text-zinc-300 flex items-center gap-1">
+        <div v-show="showCustomInput" class="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/90 space-y-2 animate-in fade-in duration-150">
+          <div class="flex items-center justify-between text-xs sm:text-sm">
+            <span class="font-medium text-zinc-200 flex items-center gap-1">
               <span>自定义指定模型 ID</span>
             </span>
-            <span class="text-[10px] text-zinc-500 font-mono">输入后将自动加入模型池</span>
+            <span class="text-xs text-zinc-400 font-mono">输入后将自动加入模型池</span>
           </div>
-          <div class="flex gap-1.5">
+          <div class="flex gap-2">
             <input v-model="customModelInput" type="text"
                    :placeholder="customModelPlaceholder"
-                   class="flex-1 bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-lg px-2.5 py-1.5 text-xs text-zinc-100 font-mono outline-none"
+                   class="flex-1 bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3 py-2 text-sm text-zinc-100 font-mono outline-none"
                    @keyup.enter="handleApplyCustomModel" />
             <button type="button" @click="handleApplyCustomModel" :disabled="!customModelInput.trim()"
-                    class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 disabled:bg-zinc-800 disabled:text-zinc-600 text-zinc-950 text-xs font-bold active:scale-95 transition-all">
+                    class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:bg-zinc-800 disabled:text-zinc-600 text-zinc-950 text-xs sm:text-sm font-bold active:scale-95 transition-all">
               选用
             </button>
           </div>
-          <div v-if="customSuccessMsg" class="text-xs text-emerald-400 flex items-center gap-1">
+          <div v-if="customSuccessMsg" class="text-xs sm:text-sm text-emerald-400 flex items-center gap-1">
             <span>✓</span> <span>{{ customSuccessMsg }}</span>
           </div>
         </div>
       </div>
 
       <!-- 策略筛选分段标签 (Model Strategy Category Selector) -->
-      <div class="space-y-1.5 pt-1">
-        <div class="flex items-center justify-between text-xs">
-          <span class="font-bold text-zinc-300 flex items-center gap-1">
+      <div class="space-y-2 pt-1">
+        <div class="flex items-center justify-between text-sm">
+          <span class="font-bold text-zinc-100 flex items-center gap-1">
             按训练场景策略筛选
           </span>
-          <span class="text-[11px] text-zinc-500 font-mono">{{ visibleModels.length }} 款符合</span>
+          <span class="text-xs text-zinc-400 font-mono">{{ visibleModels.length }} 款符合</span>
         </div>
-        <div class="flex gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
+        <div class="flex gap-2 overflow-x-auto pb-0.5 scrollbar-none">
           <button v-for="strat in MODEL_STRATEGIES" :key="strat.id" type="button"
                   @click="selectedStrategy = strat.id"
-                  class="px-2.5 py-1 rounded-xl text-xs font-bold border transition-all flex items-center gap-1 flex-shrink-0 active:scale-95"
+                  class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border transition-all flex items-center gap-1 flex-shrink-0 active:scale-95"
                   :class="selectedStrategy === strat.id
                     ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-sm'
                     : 'bg-zinc-950/80 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'">
             <span>{{ strat.name }}</span>
-            <span class="text-[10px] opacity-75 font-mono">({{ getStrategyCount(strat.id) }})</span>
+            <span class="text-xs opacity-75 font-mono">({{ getStrategyCount(strat.id) }})</span>
           </button>
         </div>
-        <p class="text-[11px] text-zinc-400 leading-normal bg-zinc-900/50 px-2.5 py-1.5 rounded-xl border border-zinc-800/60">
+        <p class="text-xs sm:text-[13px] text-zinc-300 leading-relaxed bg-zinc-900/50 px-3 py-2 rounded-xl border border-zinc-800/60">
           {{ activeStrategyObj.description }}
         </p>
       </div>
 
       <!-- 宫格卡片式模型选择列表 (2-Column Grid Layout - Clean, No English Descriptions) -->
-      <div v-if="visibleModels.length" data-testid="models-grid" class="grid grid-cols-2 gap-2 max-h-[50vh] sm:max-h-[440px] min-h-[240px] overflow-y-auto pr-1 scrollbar-thin">
+      <div v-if="visibleModels.length" data-testid="models-grid" class="grid grid-cols-2 gap-2.5 max-h-[50vh] sm:max-h-[440px] min-h-[240px] overflow-y-auto pr-1 scrollbar-thin">
         <div v-for="model in visibleModels" :key="model.id"
              @click="selectedModelId = model.id"
-             class="p-3 rounded-2xl border text-left cursor-pointer transition-all flex flex-col justify-between gap-2.5 relative overflow-hidden active:scale-95"
+             class="p-3.5 rounded-2xl border text-left cursor-pointer transition-all flex flex-col justify-between gap-3 relative overflow-hidden active:scale-95"
              :class="selectedModelId === model.id 
                ? 'bg-amber-500/15 border-amber-500 text-white shadow-md ring-1 ring-amber-500/50' 
                : 'bg-zinc-950/80 border-zinc-800 hover:border-zinc-700 text-zinc-300'">
           
-          <div class="space-y-1">
+          <div class="space-y-1.5">
             <div class="flex items-start justify-between gap-1.5">
-              <span class="text-xs font-bold text-zinc-100 font-mono line-clamp-2 leading-snug">{{ model.name || model.id }}</span>
-              <span v-if="selectedModelId === model.id" class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0 animate-pulse mt-0.5"></span>
+              <span class="text-sm font-bold text-zinc-100 font-mono line-clamp-2 leading-snug">{{ model.name || model.id }}</span>
+              <span v-if="selectedModelId === model.id" class="w-2.5 h-2.5 rounded-full bg-amber-400 flex-shrink-0 animate-pulse mt-0.5"></span>
             </div>
-            <div class="flex items-center gap-1 text-[10px] text-zinc-500 font-mono truncate">
-              <span v-if="getModelCreator(model)" class="px-1 py-0.2 rounded bg-zinc-800/80 text-zinc-400 text-[9px] font-sans">{{ getModelCreator(model) }}</span>
+            <div class="flex items-center gap-1.5 text-xs text-zinc-400 font-mono truncate">
+              <span v-if="getModelCreator(model)" class="px-1.5 py-0.5 rounded bg-zinc-800/90 text-zinc-300 text-xs font-sans font-medium">{{ getModelCreator(model) }}</span>
               <span class="truncate">{{ model.id }}</span>
             </div>
           </div>
 
           <!-- Feature & Strategy Badges in Grid Card (Clean Chinese Badges, NO English Text) -->
-          <div class="flex flex-wrap items-center gap-1 text-xs font-mono pt-1 border-t border-zinc-800/50">
-            <span class="px-1.5 py-0.5 rounded border text-[10px] font-bold flex items-center gap-0.5"
+          <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono pt-1.5 border-t border-zinc-800/50">
+            <span class="px-2 py-0.5 rounded border text-xs font-bold flex items-center gap-0.5"
                   :class="getModelStrategy(model, aiSession.activeProvider).badgeClass">
               <span>{{ getModelStrategy(model, aiSession.activeProvider).name }}</span>
             </span>
-            <span v-if="model.capabilities?.tools" class="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300/90 border border-emerald-500/20 text-[10px]">感知</span>
-            <span v-if="!model.capabilities?.image" class="px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-500 border border-zinc-800 text-[10px]">纯文本</span>
+            <span v-if="model.capabilities?.tools" class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 text-xs font-semibold">感知</span>
+            <span v-if="!model.capabilities?.image" class="px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 text-xs">纯文本</span>
           </div>
 
         </div>
@@ -244,19 +244,19 @@
       <!-- Friendly Empty Search State with Recommendations -->
       <div v-if="!visibleModels.length" class="py-6 px-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 text-center space-y-3">
         <div class="space-y-1">
-          <div class="text-xs font-bold text-zinc-200">没有找到与「{{ modelSearch }}」完全匹配的模型</div>
-          <p class="text-[11px] text-zinc-400 leading-normal">
+          <div class="text-sm font-bold text-zinc-100">没有找到与「{{ modelSearch }}」完全匹配的模型</div>
+          <p class="text-xs sm:text-[13px] text-zinc-300 leading-relaxed">
             支持输入模型名或厂商，如 <code class="text-amber-400 font-mono">gpt</code>、<code class="text-amber-400 font-mono">gemini</code>、<code class="text-amber-400 font-mono">claude</code>、<code class="text-amber-400 font-mono">deepseek</code>、<code class="text-amber-400 font-mono">qwen</code>。
           </p>
         </div>
 
         <div v-if="recommendedFallbackModels.length" class="space-y-1.5 pt-1">
-          <div class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">为您推荐以下相关模型：</div>
-          <div class="flex flex-wrap justify-center gap-1.5">
+          <div class="text-xs text-zinc-400 font-bold uppercase tracking-wider">为您推荐以下相关模型：</div>
+          <div class="flex flex-wrap justify-center gap-2">
             <button v-for="rec in recommendedFallbackModels" :key="rec.id" type="button"
                     @click="selectedModelId = rec.id; modelSearch = ''"
-                    class="px-2.5 py-1 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-200 border border-zinc-700 font-mono flex items-center gap-1 active:scale-95 transition-all cursor-pointer">
-              <span>✦</span>
+                    class="px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs sm:text-sm text-zinc-200 border border-zinc-700 font-mono flex items-center gap-1 active:scale-95 transition-all cursor-pointer">
+              <span class="text-amber-400">✦</span>
               <span>{{ rec.name || rec.id }}</span>
             </button>
           </div>
@@ -264,103 +264,53 @@
 
         <div class="pt-2 flex justify-center">
           <button type="button" @click="modelSearch = ''; selectedStrategy = 'all'"
-                  class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold shadow-md shadow-amber-500/10 active:scale-95 transition-all cursor-pointer">
+                  class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs sm:text-sm font-bold shadow-md shadow-amber-500/10 active:scale-95 transition-all cursor-pointer">
             清空搜索，浏览全部 {{ activeModels.length }} 款可用模型
           </button>
         </div>
       </div>
 
-      <!-- Active Model Capability Overview Card -->
-      <div v-if="selectedModel" class="rounded-2xl bg-zinc-950 border border-zinc-800/90 p-3.5 space-y-2.5">
-        <div class="flex items-center justify-between">
-          <div class="text-xs font-bold text-zinc-100 break-words">{{ selectedModel.name }}</div>
-          <span class="text-xs font-mono text-amber-400 font-bold">● 当前生效中</span>
-        </div>
-        <div class="text-xs text-zinc-500 font-mono break-all">{{ selectedModel.id }}</div>
-        
-        <div class="flex flex-wrap gap-1.5 pt-0.5">
-          <span class="capability-badge" :class="getModelStrategy(selectedModel, aiSession.activeProvider).badgeClass">
-            {{ getModelStrategy(selectedModel, aiSession.activeProvider).name }}
-          </span>
-          <span class="capability-badge capability-on">文字对话</span>
-          <span class="capability-badge" :class="selectedModel.capabilities?.image ? 'capability-on' : 'capability-off'">图片识别 {{ selectedModel.capabilities?.image ? '✓' : '×' }}</span>
-          <span class="capability-badge" :class="selectedModel.capabilities?.tools ? 'capability-on' : 'capability-off'">数据感知 {{ selectedModel.capabilities?.tools ? '✓' : '×' }}</span>
-          <span class="capability-badge" :class="selectedModel.capabilities?.streaming ? 'capability-on' : 'capability-off'">流式传输 {{ selectedModel.capabilities?.streaming ? '✓' : '×' }}</span>
-        </div>
-
-        <div class="text-xs text-zinc-300 leading-normal bg-zinc-900/70 p-2.5 rounded-xl border border-zinc-800/70 flex items-start gap-1.5">
-          <span class="text-amber-400 font-bold">策略指引:</span>
-          <span>{{ getModelStrategy(selectedModel, aiSession.activeProvider).hint }}</span>
+      <!-- Model Latency & Features Information Strip -->
+      <div class="p-3 rounded-2xl bg-zinc-900/70 border border-zinc-800/80 space-y-2 text-xs sm:text-sm">
+        <div class="flex items-center justify-between text-zinc-300">
+          <span class="font-medium">当前选用生效：</span>
+          <span class="font-mono text-amber-400 font-bold text-sm">{{ selectedModel?.name || selectedModelId }}</span>
         </div>
         
-        <p v-if="!selectedModel.capabilities?.tools" class="text-xs text-amber-400/90 leading-normal">
-          该模型可用于对话咨询，但不支持自动读取或修改 Fitcycle 训练数据。
-        </p>
-        <p v-if="!selectedModel.capabilities?.image" class="text-xs text-zinc-500 leading-normal">
-          当前选中的模型为纯文本对话模型；如需上传身材或动作图片分析，请选择带有「视觉识图」标识的模型（如 Gemini 2.0 Flash、GLM-4.6V、Qwen-VL-Max）。
-        </p>
-
-        <!-- Model Billing Transparency Box -->
-        <div class="p-2.5 rounded-xl border text-xs flex flex-col gap-1 font-mono"
-             :class="activeProvider.billingType === 'tokens_and_cost' 
-               ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' 
-               : 'bg-zinc-900/60 border-zinc-800 text-zinc-400'"
-             data-testid="model-billing-transparency">
-          <div class="flex items-center justify-between">
-            <span class="font-bold flex items-center gap-1.5 text-[11px]">
-              <span class="w-1.5 h-1.5 rounded-full" :class="activeProvider.billingType === 'tokens_and_cost' ? 'bg-emerald-400' : 'bg-zinc-500'"></span>
-              <span>计费审计模式: {{ activeProvider.billingBadge }}</span>
-            </span>
-            <span v-if="selectedModel.pricing" class="text-[10px] text-emerald-400">
-              入: ${{ (Number(selectedModel.pricing.prompt || 0) * 1000000).toFixed(2) }}/1M · 出: ${{ (Number(selectedModel.pricing.completion || 0) * 1000000).toFixed(2) }}/1M
-            </span>
-            <span v-else class="text-[10px] text-zinc-500 font-sans">
-              物理回传 Token 审计
-            </span>
-          </div>
-          <p class="text-[10px] font-sans leading-normal"
-             :class="activeProvider.billingType === 'tokens_and_cost' ? 'text-emerald-400/90' : 'text-zinc-400'">
-            {{ activeProvider.billingType === 'tokens_and_cost' 
-              ? '已接入 OpenRouter 官方实时计费接口，对话将实时统计 Token 并精确折算扣费金额（USD）。' 
-              : `当前服务商（${activeProvider.name}）官方接口仅回传物理 Token 消耗，不提供第三方实时单价查询。系统真实记录消耗的 Token 总量，具体扣费请参照官方控制台。` }}
-          </p>
-        </div>
-
-        <!-- Model Diagnostic & Connectivity Ping Section -->
-        <div class="pt-2 border-t border-zinc-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <button type="button" @click="testActiveModelPing" :disabled="pingingModel || !connected"
-                  class="px-3 py-1.5 rounded-xl border border-zinc-700 hover:border-amber-500/60 bg-zinc-900 hover:bg-zinc-850 text-zinc-300 hover:text-amber-300 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer shadow-sm w-fit"
+        <div class="flex items-center justify-between flex-wrap gap-2 pt-1 border-t border-zinc-800/60">
+          <button type="button" @click="testActiveModelPing" :disabled="pingingModel"
+                  class="text-xs sm:text-sm text-zinc-300 hover:text-amber-400 flex items-center gap-1.5 py-1 px-2.5 rounded-lg bg-zinc-800/80 hover:bg-zinc-800 active:scale-95 transition-all cursor-pointer font-mono"
                   data-testid="test-active-model-btn"
                   title="向当前生效模型发送极简测试指令，测量实际延迟与连通状态">
-            <span v-if="pingingModel" class="w-3 h-3 rounded-full border-2 border-amber-400 border-t-transparent animate-spin"></span>
-            <svg v-else class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span v-if="pingingModel" class="w-3 h-3 rounded-full border border-amber-400 border-t-transparent animate-spin"></span>
+            <span v-else>⚡</span>
             <span>{{ pingingModel ? '正在测试连通性…' : '测试此模型连通性' }}</span>
           </button>
           
-          <div v-if="pingResult" class="text-xs font-mono flex items-center gap-1.5 px-2.5 py-1 rounded-lg border w-fit animate-in fade-in duration-150"
+          <div v-if="pingResult" class="text-xs sm:text-sm font-mono flex items-center gap-1.5 px-3 py-1 rounded-lg border w-fit animate-in fade-in duration-150"
                :class="pingResult.success ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' : 'border-red-500/30 bg-red-500/10 text-red-400'"
                data-testid="ping-result-msg">
-            <span>{{ pingResult.success ? '✓' : '✕' }}</span>
+            <span class="font-bold">{{ pingResult.success ? '✓' : '✕' }}</span>
             <span>{{ pingResult.text }}</span>
           </div>
         </div>
       </div>
 
       <button type="button" data-testid="open-ai-assistant" @click="handleOpenChat"
-              class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-black shadow-md shadow-amber-500/20 active:scale-95 transition-all">
+              class="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-sm sm:text-base font-black shadow-md shadow-amber-500/20 active:scale-95 transition-all cursor-pointer">
         ✦ 打开 AI 教练对话
       </button>
     </div>
 
     <!-- 4. 大模型 Token 与消费数据审计大盘 (Token & Cost Audit Dashboard) -->
-    <div class="rounded-2xl bg-zinc-950 border border-zinc-800/90 p-3.5 space-y-3" data-testid="token-audit-dashboard">
+    <div class="rounded-2xl bg-zinc-950 border border-zinc-800/90 p-4 space-y-3.5" data-testid="token-audit-dashboard">
       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-1.5">
-          <span class="font-bold text-xs text-zinc-100">4. 用量与消费数据审计大盘</span>
-          <span class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono">官方物理统计</span>
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-sm sm:text-base text-zinc-100">4. 用量与消费数据审计大盘</span>
+          <span class="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">官方物理统计</span>
         </div>
         <button type="button" @click="handleResetAudit" 
-                class="text-[11px] text-zinc-500 hover:text-amber-400 active:scale-95 transition-colors cursor-pointer font-mono"
+                class="text-xs sm:text-sm text-zinc-400 hover:text-amber-400 active:scale-95 transition-colors cursor-pointer font-mono font-medium"
                 title="重置当前所有用量与消费统计记录"
                 data-testid="reset-audit-btn">
           重置统计
@@ -368,72 +318,72 @@
       </div>
 
       <!-- Global & Current Provider Highlights -->
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-2 gap-2.5">
         <!-- Total Tokens Card -->
-        <div class="p-2.5 rounded-xl bg-zinc-900/70 border border-zinc-800/80 space-y-1">
-          <div class="text-[10px] text-zinc-500 font-medium">全平台累计消耗 Token</div>
-          <div class="text-base font-bold font-mono text-zinc-100 flex items-baseline gap-1">
+        <div class="p-3 rounded-xl bg-zinc-900/70 border border-zinc-800/80 space-y-1.5">
+          <div class="text-xs text-zinc-400 font-medium">全平台累计消耗 Token</div>
+          <div class="text-lg sm:text-xl font-black font-mono text-zinc-100 flex items-baseline gap-1">
             <span data-testid="audit-total-tokens">{{ tokenAuditState.totalTokens.toLocaleString() }}</span>
-            <span class="text-[10px] font-normal text-zinc-500">Tokens</span>
+            <span class="text-xs font-normal text-zinc-400">Tokens</span>
           </div>
-          <div class="text-[10px] text-zinc-500 font-mono flex items-center justify-between">
+          <div class="text-xs text-zinc-400 font-mono flex items-center justify-between">
             <span>输入: {{ tokenAuditState.totalPromptTokens.toLocaleString() }}</span>
             <span>输出: {{ tokenAuditState.totalCompletionTokens.toLocaleString() }}</span>
           </div>
         </div>
 
         <!-- Cost Card (or Current Provider Card) -->
-        <div class="p-2.5 rounded-xl bg-zinc-900/70 border border-zinc-800/80 space-y-1">
-          <div class="text-[10px] text-zinc-500 font-medium flex items-center justify-between">
+        <div class="p-3 rounded-xl bg-zinc-900/70 border border-zinc-800/80 space-y-1.5">
+          <div class="text-xs text-zinc-400 font-medium flex items-center justify-between">
             <span>{{ activeProvider.name }} 累计用量</span>
-            <span v-if="activeProvider.id === 'openrouter'" class="text-emerald-400 font-bold font-mono" data-testid="openrouter-total-cost">
+            <span v-if="activeProvider.id === 'openrouter'" class="text-emerald-400 font-bold font-mono text-sm" data-testid="openrouter-total-cost">
               ${{ formatCostUSD(currentProviderStats.totalCostUSD) }}
             </span>
           </div>
-          <div class="text-base font-bold font-mono text-amber-300 flex items-baseline gap-1">
+          <div class="text-lg sm:text-xl font-black font-mono text-amber-300 flex items-baseline gap-1">
             <span data-testid="provider-total-tokens">{{ (currentProviderStats.totalTokens || 0).toLocaleString() }}</span>
-            <span class="text-[10px] font-normal text-zinc-500">Tokens</span>
+            <span class="text-xs font-normal text-zinc-400">Tokens</span>
           </div>
-          <div class="text-[10px] text-zinc-400 font-mono flex items-center justify-between">
+          <div class="text-xs text-zinc-300 font-mono flex items-center justify-between">
             <span>调用: {{ currentProviderStats.callCount || 0 }} 次</span>
-            <span v-if="activeProvider.id === 'openrouter'" class="text-emerald-400 text-[10px]">官方实时计费</span>
-            <span v-else class="text-zinc-500 text-[10px]">仅 Token 审计</span>
+            <span v-if="activeProvider.id === 'openrouter'" class="text-emerald-400 text-xs font-medium">官方实时计费</span>
+            <span v-else class="text-zinc-400 text-xs">仅 Token 审计</span>
           </div>
         </div>
       </div>
 
       <!-- Collapsible Detailed Per-Provider Breakdown Table -->
-      <div class="space-y-1.5">
+      <div class="space-y-2">
         <button type="button" @click="showProviderBreakdown = !showProviderBreakdown"
-                class="w-full py-1 text-[11px] text-zinc-400 hover:text-zinc-200 flex items-center justify-between px-1 cursor-pointer transition-colors"
+                class="w-full py-1.5 text-xs sm:text-sm text-zinc-300 hover:text-white flex items-center justify-between px-1 cursor-pointer transition-colors font-medium"
                 data-testid="toggle-breakdown-btn">
           <span>各服务商详细调用与 Token 分布</span>
-          <span class="font-mono text-[10px]">{{ showProviderBreakdown ? '收起 ▲' : '展开 ▼' }}</span>
+          <span class="font-mono text-xs">{{ showProviderBreakdown ? '收起 ▲' : '展开 ▼' }}</span>
         </button>
         
-        <div v-if="showProviderBreakdown" class="space-y-1 pt-1 border-t border-zinc-800/60 font-mono text-xs animate-in fade-in duration-150" data-testid="provider-breakdown-list">
+        <div v-if="showProviderBreakdown" class="space-y-1.5 pt-1 border-t border-zinc-800/60 font-mono text-xs sm:text-sm animate-in fade-in duration-150" data-testid="provider-breakdown-list">
           <div v-for="prov in AI_PROVIDERS" :key="prov.id"
-               class="p-2 rounded-lg bg-zinc-900/40 border border-zinc-800/80 flex items-center justify-between text-[11px]">
-            <div class="flex items-center gap-1.5">
-              <span class="font-bold text-zinc-300">{{ prov.name }}</span>
-              <span class="text-[9px] px-1 py-0.2 rounded" 
-                    :class="prov.billingType === 'tokens_and_cost' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-zinc-800 text-zinc-500'">
+               class="p-2.5 rounded-xl bg-zinc-900/40 border border-zinc-800/80 flex items-center justify-between text-xs sm:text-sm">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-zinc-200">{{ prov.name }}</span>
+              <span class="text-xs px-2 py-0.5 rounded font-sans" 
+                    :class="prov.billingType === 'tokens_and_cost' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-zinc-800 text-zinc-400'">
                 {{ prov.billingBadge }}
               </span>
             </div>
             <div class="text-right">
-              <span class="font-bold text-zinc-200">{{ (tokenAuditState.providers[prov.id]?.totalTokens || 0).toLocaleString() }} T</span>
+              <span class="font-bold text-zinc-100">{{ (tokenAuditState.providers[prov.id]?.totalTokens || 0).toLocaleString() }} T</span>
               <span v-if="prov.id === 'openrouter' && tokenAuditState.providers[prov.id]?.totalCostUSD" class="text-emerald-400 ml-1.5 font-bold">
                 (${{ formatCostUSD(tokenAuditState.providers[prov.id]?.totalCostUSD) }})
               </span>
-              <span class="text-zinc-500 text-[10px] ml-1.5">({{ tokenAuditState.providers[prov.id]?.callCount || 0 }} 次)</span>
+              <span class="text-zinc-400 text-xs ml-1.5">({{ tokenAuditState.providers[prov.id]?.callCount || 0 }} 次)</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Explanatory note -->
-      <p class="text-[10px] text-zinc-500 leading-normal bg-zinc-900/40 p-2 rounded-xl border border-zinc-800/50">
+      <p class="text-xs text-zinc-400 leading-relaxed bg-zinc-900/40 p-3 rounded-xl border border-zinc-800/50">
         注：Token 数据直接来源于官方 API 每次生成的 usage 统计回执，绝对物理级真实。金额计算严格仅在服务商提供官方实时定价接口时展示（如 OpenRouter），其余国内及直接调用厂商仅记录真实 Token 审计，避免金额偏差。
       </p>
     </div>
