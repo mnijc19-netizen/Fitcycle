@@ -808,6 +808,8 @@ export function finishWorkout(options = {}) {
     };
   });
 
+  const cardioSession = options.cardioSession || store.activeWorkout.cardioSession || null;
+
   const logEntry = {
     id: uid("log"),
     date: store.activeWorkout.date || getInitialDateStr(),
@@ -819,6 +821,7 @@ export function finishWorkout(options = {}) {
     durationSeconds: durationSec,
     totalVolume,
     totalSets: totalCompletedSets,
+    cardioSession,
     completedAt: effectiveEndTime,
     exercises: recordedExercises,
     autoSettled: Boolean(options.autoSettled)
@@ -856,6 +859,24 @@ export function finishWorkout(options = {}) {
   if (store.settings.vibrationEnabled) triggerHaptic("success");
 
   return summary;
+}
+
+/**
+ * 关联练后 Zone 2 有氧会话到当前训练
+ */
+export function attachCardioToActiveWorkout(cardioSession) {
+  if (!store.activeWorkout) return;
+  store.activeWorkout.cardioSession = cardioSession;
+  if (store.settings.vibrationEnabled) triggerHaptic("light");
+}
+
+/**
+ * 移除当前训练已绑定的有氧会话
+ */
+export function removeCardioFromActiveWorkout() {
+  if (!store.activeWorkout) return;
+  store.activeWorkout.cardioSession = null;
+  if (store.settings.vibrationEnabled) triggerHaptic("light");
 }
 
 /**

@@ -439,6 +439,31 @@
                 </div>
               </div>
 
+              <!-- Core Training Goal Selector (增肌塑形 / 刷脂精修 / 力量进阶) -->
+              <div class="space-y-1.5 pt-1">
+                <div class="text-xs font-bold text-zinc-300 flex items-center justify-between">
+                  <span>当前主修目标:</span>
+                  <span class="text-amber-400 font-mono text-xs">{{ form.trainingGoal === 'fat_loss' ? '保肌减脂 / 肌肉精修' : (form.trainingGoal === 'strength' ? '力量举 / 突破极量' : '纯粹肌肥大增肌') }}</span>
+                </div>
+                <div class="grid grid-cols-3 gap-1.5">
+                  <button type="button" @click="form.trainingGoal = 'hypertrophy'"
+                          class="py-2 px-1 rounded-xl border text-xs font-bold transition-all active:scale-95 cursor-pointer text-center flex items-center justify-center gap-1"
+                          :class="form.trainingGoal === 'hypertrophy' ? 'bg-amber-500 text-zinc-950 border-amber-400 font-black shadow-md' : 'bg-zinc-900 border-zinc-800 text-zinc-400'">
+                    <span>💪</span> 增肌塑形
+                  </button>
+                  <button type="button" @click="form.trainingGoal = 'fat_loss'"
+                          class="py-2 px-1 rounded-xl border text-xs font-bold transition-all active:scale-95 cursor-pointer text-center flex items-center justify-center gap-1"
+                          :class="form.trainingGoal === 'fat_loss' ? 'bg-amber-500 text-zinc-950 border-amber-400 font-black shadow-md' : 'bg-zinc-900 border-zinc-800 text-zinc-400'">
+                    <span>🔥</span> 刷脂减重
+                  </button>
+                  <button type="button" @click="form.trainingGoal = 'strength'"
+                          class="py-2 px-1 rounded-xl border text-xs font-bold transition-all active:scale-95 cursor-pointer text-center flex items-center justify-center gap-1"
+                          :class="form.trainingGoal === 'strength' ? 'bg-amber-500 text-zinc-950 border-amber-400 font-black shadow-md' : 'bg-zinc-900 border-zinc-800 text-zinc-400'">
+                    <span>⚡</span> 力量进阶
+                  </button>
+                </div>
+              </div>
+
               <!-- Instant Metabolic & Nutrition Card -->
               <div class="p-3 rounded-2xl border space-y-2 shadow-sm bg-gradient-to-br from-amber-500/10 via-zinc-950 to-zinc-900 border-amber-500/30">
                 <div class="flex items-center justify-between">

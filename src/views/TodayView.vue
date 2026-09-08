@@ -537,6 +537,28 @@
         </button>
       </div>
 
+      <!-- Attached Cardio Session Badge Card (若已完成有氧) -->
+      <div v-if="store.activeWorkout.cardioSession"
+           class="p-3 rounded-2xl border flex items-center justify-between shadow-sm animate-in fade-in duration-200"
+           :class="store.settings.themeMode === 'light' ? 'bg-amber-50 border-amber-300 text-amber-950' : 'bg-amber-500/10 border-amber-500/30 text-amber-300'">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <span class="text-xl flex-shrink-0">🔥</span>
+          <div class="text-xs min-w-0">
+            <div class="font-black flex items-center gap-1.5 flex-wrap">
+              <span>{{ store.activeWorkout.cardioSession.modeName }}</span>
+              <span class="font-mono text-amber-500">({{ store.activeWorkout.cardioSession.durationMinutes }}分钟)</span>
+            </div>
+            <div class="text-zinc-400 font-mono mt-0.5 truncate">
+              消耗 ~{{ store.activeWorkout.cardioSession.calories }} kcal · METs 做工 +{{ store.activeWorkout.cardioSession.equivalentTonnage }} kg
+            </div>
+          </div>
+        </div>
+        <button @click="removeCardioFromActiveWorkout" 
+                class="px-2.5 py-1 rounded-lg text-xs font-semibold border border-rose-500/30 text-rose-400 hover:bg-rose-500/15 cursor-pointer active:scale-95 transition-all flex-shrink-0">
+          移除
+        </button>
+      </div>
+
       <!-- Add Extra Exercise & Machine Finder Quick Entry -->
       <div class="grid grid-cols-2 gap-2">
         <button @click="showAddExerciseModal = true" 
@@ -548,6 +570,18 @@
                 class="py-3 px-2 border rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-1.5 shadow-sm active:scale-98 cursor-pointer border-amber-500/40"
                 :class="store.settings.themeMode === 'light' ? 'bg-amber-50 hover:bg-amber-100 text-amber-950 border-amber-300' : 'bg-zinc-900 hover:bg-zinc-850 text-amber-400 border-zinc-700/80'">
           <span class="text-xs px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">识图</span> 拍照/语音识器械
+        </button>
+      </div>
+
+      <!-- Optional Post-Workout Cardio Quick Entry Bar (非侵入式按需开启) -->
+      <div v-if="!store.activeWorkout.cardioSession">
+        <button @click="showCardioModal = true"
+                type="button"
+                class="w-full py-2.5 px-3 border rounded-2xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-98 cursor-pointer transition-all"
+                :class="store.settings.trainingGoal === 'fat_loss'
+                  ? 'bg-amber-500/15 hover:bg-amber-500/25 border-amber-500/40 text-amber-300'
+                  : (store.settings.themeMode === 'light' ? 'bg-orange-50/70 hover:bg-orange-100 text-orange-950 border-orange-200' : 'bg-zinc-900/90 hover:bg-zinc-850 text-zinc-300 border-zinc-800')">
+          <span>🔥</span> <span>练后低强度刷脂有氧 (Zone 2 可选)</span>
         </button>
       </div>
 
@@ -1305,6 +1339,28 @@
             立即结算保存并查看 AI 战绩
           </button>
 
+          <!-- Zone 2 Post-Workout Cardio Recommendation Card (科学建议：力量后肌糖原已耗尽，衔接有氧直击脂肪氧化) -->
+          <div class="p-3 rounded-2xl border text-left space-y-1.5 transition-all"
+               :class="store.settings.trainingGoal === 'fat_loss'
+                 ? 'bg-amber-500/15 border-amber-500/50 shadow-md shadow-amber-500/10'
+                 : 'bg-zinc-900/90 border-zinc-800'">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black flex items-center gap-1.5 text-amber-400">
+                <span>🔥</span> 练后 Zone 2 刷脂黄金期
+              </span>
+              <span class="text-xs font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                糖原已耗尽
+              </span>
+            </div>
+            <p class="text-xs text-zinc-300 leading-normal">
+              肌糖原已充分消耗，此时接 15~20 分钟低强度有氧（如坡度快走），脂肪氧化效率最高且不损耗肌肉。
+            </p>
+            <button @click="openPostWorkoutCardioFromCelebration"
+                    class="w-full py-2.5 px-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-black text-xs rounded-xl shadow-md active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+              <span>🔥 开启 20min 坡度快走 (Zone 2 燃脂)</span>
+            </button>
+          </div>
+
           <!-- Quick Add-On Workout Chips (小块加练选项) -->
           <div class="pt-1 space-y-2 text-left border-t border-zinc-800/80">
             <div class="text-xs font-bold text-zinc-400 flex items-center gap-1.5">
@@ -1338,6 +1394,13 @@
         </div>
       </div>
     </Teleport>
+
+    <!-- Post-Workout Cardio Zone 2 Companion Modal -->
+    <PostWorkoutCardioModal
+      :visible="showCardioModal"
+      @close="showCardioModal = false"
+      @completed="handleCardioCompleted"
+    />
 
     <!-- 8. Inactivity Auto-Finish Notification Modal (超时未关自动结算提醒弹窗) -->
     <Teleport to="body">
@@ -1428,6 +1491,8 @@ import {
   checkAndHandleWorkoutInactivity,
   clearAutoFinishNotice,
   pruneUntouchedExercisesFromActiveWorkout,
+  attachCardioToActiveWorkout,
+  removeCardioFromActiveWorkout,
   uid
 } from "../store/fitnessStore.js";
 import { calculateSupercompensationStatus } from "../engine/dopamineFeedbackEngine.js";
@@ -1445,6 +1510,7 @@ import StrengthPlacementModal from "../components/StrengthPlacementModal.vue";
 import RulesCodexModal from "../components/RulesCodexModal.vue";
 import WarmupFlowModal from "../components/WarmupFlowModal.vue";
 import StretchFlowModal from "../components/StretchFlowModal.vue";
+import PostWorkoutCardioModal from "../components/PostWorkoutCardioModal.vue";
 import ExerciseImage from "../components/ExerciseImage.vue";
 import { lockBodyScroll, unlockBodyScroll } from "../utils/scrollLock.js";
 import { universalScrollToTop } from "../utils/scrollUtils.js";
@@ -1463,6 +1529,7 @@ const showPlanPicker = ref(false);
 const showSummaryModal = ref(false);
 const latestSummary = ref(null);
 const showAutoFinishModal = ref(false);
+const showCardioModal = ref(false);
 const showHonorModal = ref(false);
 const showBodyModal = ref(false);
 const showRulesModal = ref(false);
@@ -1544,7 +1611,7 @@ function handlePruneUntouched() {
   pruneUntouchedExercisesFromActiveWorkout();
 }
 
-const anyTodayModalOpen = computed(() => showPlanPicker.value || showAutoFinishModal.value || Boolean(store.autoFinishNotice) || showStrengthPlacementModal.value || showWarmupModal.value || showStretchModal.value);
+const anyTodayModalOpen = computed(() => showPlanPicker.value || showAutoFinishModal.value || showCardioModal.value || Boolean(store.autoFinishNotice) || showStrengthPlacementModal.value || showWarmupModal.value || showStretchModal.value);
 watch(anyTodayModalOpen, (isOpen) => {
   if (isOpen) lockBodyScroll();
   else unlockBodyScroll();
@@ -2353,6 +2420,17 @@ function handleFinishWorkout() {
     latestSummary.value = res;
     showSummaryModal.value = true;
   }
+}
+
+function openPostWorkoutCardioFromCelebration() {
+  showAutoFinishModal.value = false;
+  showCardioModal.value = true;
+}
+
+function handleCardioCompleted(session) {
+  attachCardioToActiveWorkout(session);
+  showCardioModal.value = false;
+  handleFinishWorkout();
 }
 
 function quickAddFinalSet() {

@@ -69,6 +69,32 @@
         </div>
       </div>
 
+      <!-- Post-Workout Cardio Session Card (If Performed) -->
+      <div v-if="summary?.cardioSession"
+           class="bg-gradient-to-r from-amber-500/15 via-zinc-800/80 to-amber-500/15 border border-amber-500/40 rounded-2xl p-3 my-3 text-left relative z-10 space-y-2 shadow-sm">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black text-amber-400 flex items-center gap-1.5">
+            <span>🔥</span> 练后 Zone 2 燃脂做工达标
+          </span>
+          <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
+            {{ summary.cardioSession.shortName }} {{ summary.cardioSession.durationMinutes }}分
+          </span>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-center font-mono">
+          <div class="p-2 rounded-xl bg-zinc-950/80 border border-zinc-800">
+            <span class="text-xs text-zinc-400 block font-medium">脂肪氧化消耗</span>
+            <span class="text-sm font-black text-amber-400">{{ summary.cardioSession.calories }} <span class="text-xs font-normal">kcal</span></span>
+          </div>
+          <div class="p-2 rounded-xl bg-zinc-950/80 border border-zinc-800">
+            <span class="text-xs text-zinc-400 block font-medium">METs 等效吨位</span>
+            <span class="text-sm font-black text-emerald-400">+{{ summary.cardioSession.equivalentTonnage }} <span class="text-xs font-normal">kg</span></span>
+          </div>
+        </div>
+        <p class="text-xs text-zinc-400 leading-normal">
+          已按《宪法第二章 METs 归一化模型》将有氧做工折算并合并计入综合做工！
+        </p>
+      </div>
+
       <!-- 0~72h Supercompensation Recovery Timer Countdown -->
       <div class="bg-emerald-950/30 border border-emerald-500/30 rounded-2xl p-3 my-3 text-left relative z-10 space-y-1.5 shadow-sm">
         <div class="flex items-center justify-between gap-1">
