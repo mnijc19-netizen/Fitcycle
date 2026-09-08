@@ -3,7 +3,9 @@ import { mount, flushPromises } from "@vue/test-utils";
 import { nextTick } from "vue";
 import {
   PROVIDER_CONFIGS,
+  detectProviderFromKeyFingerprint,
   fetchProviderModels,
+  probeProviderKey,
   streamProviderChatCompletion,
   testProviderConnection
 } from "../src/ai/providerClient.js";
@@ -278,4 +280,87 @@ describe("UI Integration: AISettingsPanel with OpenRouter", () => {
       globalThis.fetch = originalFetch;
     }
   });
+
+  it("detectProviderFromKeyFingerprint accurately recognizes provider signatures", () => {
+    expect(detectProviderFromKeyFingerprint("sk-or-v1-abcdef123456")).toEqual({
+      provider: "openrouter",
+      name: "OpenRouter",
+      reason: "OpenRouter 专属密钥格式"
+    });
+    expect(detectProviderFromKeyFingerprint("sk-or-simple-key")).toEqual({
+      provider: "openrouter",
+      name: "OpenRouter",
+      reason: "OpenRouter 专属密钥格式"
+    });
+    expect(detectProviderFromKeyFingerprint("4f8a1234567890abcdef.1234567890abcdef")).toEqual({
+      provider: "zhipu",
+      name: "智谱 GLM",
+      reason: "智谱 GLM 专属双段签名"
+    });
+    expect(detectProviderFromKeyFingerprint("v-gw-custom-token-xyz")).toEqual({
+      provider: "vercel_ai_gateway",
+      name: "Vercel AI Gateway",
+      reason: "Vercel 网关专属密钥"
+    });
+    expect(detectProviderFromKeyFingerprint("sk-generic-unknown-key")).toBeNull();
+    expect(detectProviderFromKeyFingerprint("")).toBeNull();
+  });
+
+  it("probeProviderKey discovers working provider via parallel probes", async () => {
+    const mockFetch = vi.fn(async (url) => {
+      if (url.includes("api.deepseek.com")) {
+        return { ok: true, status: 200, json: async () => ({ data: [] }) };
+      }
+      return { ok: false, status: 401 };
+    });
+
+    const result = await probeProviderKey(
+      "sk-ds-valid-token-32chars",
+      ["qwen", "deepseek", "siliconflow"],
+      { fetchImpl: mockFetch }
+    );
+
+    expect(result).toBeDefined();
+    expect(result.provider).toBe("deepseek");
+    expect(result.status).toBe(200);
+  });
+
+  it("AISettingsPanel auto-switches provider and shows auto-detect pill when pasting unique key", async () => {
+    setActiveProvider("deepseek");
+    const wrapper = mount(AISettingsPanel);
+
+    const input = wrapper.find('input[id="provider-key"]');
+    await input.setValue("sk-or-v1-test-openrouter-key-999");
+    await nextTick();
+
+    // Should auto-switch active provider to openrouter
+    expect(aiSession.activeProvider).toBe("openrouter");
+    // Should display auto-detected badge
+    expect(wrapper.text()).toContain("已识别: OpenRouter");
+
+    // Next paste Zhipu key
+    await input.setValue("9876543210abcdef.1234567890fedcba");
+    await nextTick();
+
+    expect(aiSession.activeProvider).toBe("zhipu");
+    expect(wrapper.text()).toContain("已识别: 智谱 GLM");
+
+    wrapper.unmount();
+  });
+
+  it("renders compact space-saving horizontal pills instead of bulky 4-row grid", () => {
+    const wrapper = mount(AISettingsPanel);
+    const container = wrapper.find('[aria-label="AI 提供商"]');
+
+    // Container should use horizontal overflow-x-auto instead of grid-cols-2/3
+    expect(container.classes()).toContain("overflow-x-auto");
+    expect(container.classes()).not.toContain("grid");
+
+    // All 7 providers are rendered as compact pills
+    const pills = container.findAll("button");
+    expect(pills.length).toBe(7);
+
+    wrapper.unmount();
+  });
 });
+

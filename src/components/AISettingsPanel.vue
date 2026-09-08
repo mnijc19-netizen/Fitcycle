@@ -15,39 +15,48 @@
       </span>
     </div>
 
-    <!-- 1. Provider Selection Tabs -->
+    <!-- 1. Compact Provider Selection Pills & Auto-Detect Header -->
     <div class="space-y-2">
-      <label class="block text-xs font-bold text-zinc-200">1. 选择 AI 大模型服务商</label>
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" aria-label="AI 提供商">
-        <button v-for="provider in AI_PROVIDERS" :key="provider.id" type="button"
-                class="py-2.5 px-3 rounded-2xl border text-left transition-all flex flex-col justify-between gap-1 relative overflow-hidden active:scale-95"
-                :class="aiSession.activeProvider === provider.id 
-                  ? 'bg-amber-500/15 border-amber-500 text-amber-300 ring-1 ring-amber-500/50 shadow-md shadow-amber-500/10' 
-                  : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'"
-                @click="selectProvider(provider.id)">
-          <div class="flex items-center justify-between w-full">
-            <span class="font-black text-xs text-white">{{ provider.name }}</span>
-            <span v-if="aiSession.apiKeys[provider.id]" class="w-2 h-2 rounded-full bg-emerald-400" title="已配置 Key"></span>
-          </div>
-          <span class="text-xs opacity-75 truncate leading-tight">{{ provider.tag || provider.id }}</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- 2. API Key Input with Show/Hide Toggle & Quick Portal Link -->
-    <div class="space-y-2 pt-1 border-t border-zinc-800/80">
       <div class="flex items-center justify-between text-xs">
-        <label for="provider-key" class="font-bold text-zinc-200">2. 配置 {{ activeProvider.name }} API Key</label>
+        <div class="flex items-center gap-1.5">
+          <label class="font-bold text-zinc-200">1. 服务商</label>
+          <span v-if="autoDetectedNotice" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-normal animate-in fade-in">
+            {{ autoDetectedNotice }}
+          </span>
+        </div>
         <a :href="portalLink" target="_blank" rel="noopener noreferrer" 
            class="text-xs text-amber-400 hover:text-amber-300 underline flex items-center gap-0.5">
           <span>获取 {{ activeProvider.name }} Key</span> <span>↗</span>
         </a>
       </div>
+
+      <!-- Horizontal Scrollable Compact Pills (Height: only ~34px, saves ~160px space!) -->
+      <div class="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none" aria-label="AI 提供商">
+        <button v-for="provider in AI_PROVIDERS" :key="provider.id" type="button"
+                class="px-3 py-1.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 flex-shrink-0 active:scale-95 cursor-pointer"
+                :class="aiSession.activeProvider === provider.id 
+                  ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-sm ring-1 ring-amber-500/40' 
+                  : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'"
+                @click="selectProvider(provider.id)">
+          <span v-if="aiSession.apiKeys[provider.id]" class="w-1.5 h-1.5 rounded-full bg-emerald-400" title="已配置 Key"></span>
+          <span>{{ provider.name }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. Smart API Key Input with Show/Hide Toggle & Proactive Auto-Detection -->
+    <div class="space-y-2 pt-1 border-t border-zinc-800/80">
+      <div class="flex items-center justify-between text-xs">
+        <label for="provider-key" class="font-bold text-zinc-200">2. 粘贴或输入 API Key</label>
+        <span class="text-[10px] text-zinc-500 font-mono">支持智能识别服务商</span>
+      </div>
       
       <div class="relative">
         <input id="provider-key" v-model="draftKey" :type="showKey ? 'text' : 'password'" autocomplete="off" spellcheck="false"
-               :placeholder="`粘贴您的 ${activeProvider.name} API Key`"
-               class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3 py-2.5 pr-10 text-xs text-zinc-100 font-mono outline-none transition-colors" />
+               :placeholder="`粘贴 ${activeProvider.name} 或任意平台 API Key (自动识别)`"
+               class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500/60 rounded-xl px-3 py-2.5 pr-10 text-xs text-zinc-100 font-mono outline-none transition-colors"
+               @input="handleKeyInput"
+               @paste="handleKeyPaste" />
         <button type="button" @click="showKey = !showKey" 
                 class="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 p-1 text-xs transition-colors">
           {{ showKey ? '显示' : '隐藏' }}
@@ -60,7 +69,7 @@
                 data-testid="test-connection-btn">
           <span v-if="loading" class="w-3 h-3 rounded-full border-2 border-zinc-950 border-t-transparent animate-spin"></span>
           <span v-else>⚡</span>
-          <span>{{ loading ? '正在测试连接…' : (connected ? '测试连接并刷新' : '测试连接并保存') }}</span>
+          <span>{{ loading ? '正在检测与连接…' : (connected ? '测试连接并刷新' : '测试连接并保存') }}</span>
         </button>
         <button type="button" @click="clearConnection" :disabled="loading || !hasAnyConnection"
                 class="py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:bg-zinc-900 disabled:text-zinc-700 text-zinc-300 text-xs font-bold active:scale-95 transition-all cursor-pointer">
@@ -324,7 +333,12 @@ import {
   setSelectedModel,
   setSessionApiKey
 } from "../ai/aiSession.js";
-import { fetchProviderModels, testProviderConnection } from "../ai/providerClient.js";
+import {
+  detectProviderFromKeyFingerprint,
+  fetchProviderModels,
+  probeProviderKey,
+  testProviderConnection
+} from "../ai/providerClient.js";
 import {
   MODEL_STRATEGIES,
   filterModelsByStrategy,
@@ -347,6 +361,8 @@ const showCustomInput = ref(false);
 
 const pingingModel = ref(false);
 const pingResult = ref(null);
+const autoDetectedNotice = ref("");
+const isAutoSwitching = ref(false);
 
 const activeProvider = computed(getActiveProvider);
 const connected = computed(() => Boolean(getActiveApiKey()));
@@ -441,7 +457,9 @@ const recommendedFallbackModels = computed(() => {
 watch(
   () => aiSession.activeProvider,
   () => {
-    draftKey.value = getActiveApiKey();
+    if (!isAutoSwitching.value) {
+      draftKey.value = getActiveApiKey();
+    }
     statusText.value = "";
     statusError.value = false;
     modelSearch.value = "";
@@ -458,6 +476,36 @@ watch(selectedModelId, () => {
 
 function selectProvider(providerId) {
   setActiveProvider(providerId);
+}
+
+function processKeyAutoDetection(rawKey) {
+  const key = String(rawKey || "").trim();
+  if (!key) {
+    autoDetectedNotice.value = "";
+    return;
+  }
+  const detected = detectProviderFromKeyFingerprint(key);
+  if (detected && detected.provider !== aiSession.activeProvider) {
+    isAutoSwitching.value = true;
+    setActiveProvider(detected.provider);
+    draftKey.value = key;
+    autoDetectedNotice.value = `✨ 已识别: ${detected.name}`;
+    setTimeout(() => {
+      isAutoSwitching.value = false;
+      autoDetectedNotice.value = "";
+    }, 4500);
+  }
+}
+
+function handleKeyInput() {
+  processKeyAutoDetection(draftKey.value);
+}
+
+function handleKeyPaste(e) {
+  const pasted = e.clipboardData?.getData("text") || "";
+  if (pasted) {
+    processKeyAutoDetection(pasted);
+  }
 }
 
 function formatModelLabel(model) {
@@ -503,7 +551,7 @@ async function testConnection() {
   statusText.value = "";
   statusError.value = false;
 
-  const targetProvider = aiSession.activeProvider;
+  let targetProvider = aiSession.activeProvider;
   const key = draftKey.value.trim();
 
   if (!key) {
@@ -513,8 +561,48 @@ async function testConnection() {
     return;
   }
 
+  // 1. Fast fingerprint detection
+  const detected = detectProviderFromKeyFingerprint(key);
+  if (detected && detected.provider !== targetProvider) {
+    targetProvider = detected.provider;
+    isAutoSwitching.value = true;
+    setActiveProvider(targetProvider);
+    draftKey.value = key;
+    autoDetectedNotice.value = `✨ 已识别: ${detected.name}`;
+    setTimeout(() => {
+      isAutoSwitching.value = false;
+    }, 1000);
+  }
+
   try {
-    const ping = await testProviderConnection({ provider: targetProvider, apiKey: key });
+    let ping;
+    try {
+      ping = await testProviderConnection({ provider: targetProvider, apiKey: key });
+    } catch (testErr) {
+      // 2. If test fails with 401/403 and key looks like a generic sk- key,
+      // run multi-provider parallel probe to find the actual provider
+      if ((testErr?.status === 401 || testErr?.status === 403) && key.startsWith("sk-")) {
+        const otherCandidates = ["deepseek", "qwen", "siliconflow", "moonshot", "vercel_ai_gateway", "openrouter"]
+          .filter((p) => p !== targetProvider);
+        const probed = await probeProviderKey(key, otherCandidates);
+        if (probed?.provider) {
+          targetProvider = probed.provider;
+          isAutoSwitching.value = true;
+          setActiveProvider(targetProvider);
+          draftKey.value = key;
+          autoDetectedNotice.value = `✨ 探针匹配: ${probed.name}`;
+          setTimeout(() => {
+            isAutoSwitching.value = false;
+          }, 1000);
+          ping = await testProviderConnection({ provider: targetProvider, apiKey: key });
+        } else {
+          throw testErr;
+        }
+      } else {
+        throw testErr;
+      }
+    }
+
     const models = await fetchProviderModels(targetProvider, key);
 
     // Merge defaults so promo models like glm-4.5-air / glm-4.6v aren't lost if remote /models endpoint omits them

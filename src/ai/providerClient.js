@@ -64,6 +64,80 @@ function safeFailure(providerName, status) {
   return `${providerName} 请求失败（HTTP ${status || "网络错误"}）`;
 }
 
+export function detectProviderFromKeyFingerprint(apiKey) {
+  const key = String(apiKey || "").trim();
+  if (!key) return null;
+
+  // 1. OpenRouter keys: always start with sk-or-v1- or sk-or-
+  if (/^sk-or(?:-v1)?-/i.test(key)) {
+    return {
+      provider: "openrouter",
+      name: "OpenRouter",
+      reason: "OpenRouter 专属密钥格式"
+    };
+  }
+
+  // 2. Zhipu GLM keys: standard id.secret (two parts separated by a dot)
+  if (key.includes(".") && key.split(".").length === 2 && !key.startsWith("sk-")) {
+    return {
+      provider: "zhipu",
+      name: "智谱 GLM",
+      reason: "智谱 GLM 专属双段签名"
+    };
+  }
+
+  // 3. Vercel AI Gateway token
+  if (/^v-gw-|^vercel_/i.test(key)) {
+    return {
+      provider: "vercel_ai_gateway",
+      name: "Vercel AI Gateway",
+      reason: "Vercel 网关专属密钥"
+    };
+  }
+
+  return null;
+}
+
+export async function probeProviderKey(apiKey, candidateProviders = ["deepseek", "qwen", "siliconflow", "moonshot", "vercel_ai_gateway", "openrouter"], options = {}) {
+  const key = String(apiKey || "").trim();
+  if (!key) return null;
+  const fetchImpl = options.fetchImpl || fetch;
+  const timeoutMs = options.timeoutMs || 3000;
+
+  const probeSingle = async (providerId) => {
+    const config = getProviderConfig(providerId, options.apiBase);
+    let signal = options.signal;
+    let timeoutId;
+    if (!signal && typeof AbortController !== "undefined") {
+      const controller = new AbortController();
+      signal = controller.signal;
+      timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    }
+
+    try {
+      const res = await fetchImpl(`${config.apiBase}/models`, {
+        headers: requestHeaders(key, providerId),
+        signal
+      });
+      if (timeoutId) clearTimeout(timeoutId);
+      if (res.ok) {
+        return { provider: providerId, name: config.name, status: res.status };
+      }
+      throw new Error(`Status ${res.status}`);
+    } catch (err) {
+      if (timeoutId) clearTimeout(timeoutId);
+      throw err;
+    }
+  };
+
+  try {
+    const result = await Promise.any(candidateProviders.map((p) => probeSingle(p)));
+    return result;
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchProviderModels(provider, apiKey, options = {}) {
   let targetProvider = provider;
   let targetKey = apiKey;
