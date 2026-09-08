@@ -259,6 +259,13 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  html {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     background-color: var(--fc-bg);
     color: var(--fc-text-primary);
@@ -267,11 +274,10 @@
     overflow-x: hidden;
     overflow-x: clip;
     overscroll-behavior-x: none;
-    overscroll-behavior-y: none;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
     min-height: 100vh;
-    min-height: 100dvh;
+    min-height: 100lvh;
     -webkit-overflow-scrolling: touch;
     transition: background-color 200ms ease, color 200ms ease;
   }

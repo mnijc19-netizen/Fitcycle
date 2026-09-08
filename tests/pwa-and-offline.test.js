@@ -42,4 +42,20 @@ describe("FitCycle PWA & Offline Resilience", () => {
     expect(isOnline.value).toBeDefined();
     expect(typeof networkStatusText.value).toBe("string");
   });
+
+  it("verifies mobile fullscreen capsule meta tags and stable viewport architecture", () => {
+    const indexPath = path.resolve(__dirname, "../index.html");
+    const indexContent = fs.readFileSync(indexPath, "utf-8");
+
+    // Fullscreen and minimal capsule meta tags
+    expect(indexContent).toContain('interactive-widget=overlays-content');
+    expect(indexContent).toContain('name="apple-mobile-web-app-capable" content="yes"');
+    expect(indexContent).toContain('name="apple-touch-fullscreen" content="yes"');
+    expect(indexContent).toContain('min-h-[100lvh]');
+
+    // Stable 100lvh in style.css to eliminate scroll resizing
+    const cssPath = path.resolve(__dirname, "../src/style.css");
+    const cssContent = fs.readFileSync(cssPath, "utf-8");
+    expect(cssContent).toContain('min-height: 100lvh');
+  });
 });

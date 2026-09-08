@@ -3,7 +3,7 @@
     :data-skin="store.settings.uiSkin"
     :data-theme="store.settings.themeMode || 'dark'"
     :data-mode="store.settings.themeMode || 'dark'"
-    class="min-h-[100dvh] bg-[var(--fc-bg)] text-[var(--fc-text-primary)] flex flex-col font-sans selection:bg-amber-500 selection:text-zinc-950 transition-colors duration-300"
+    class="min-h-screen min-h-[100lvh] bg-[var(--fc-bg)] text-[var(--fc-text-primary)] flex flex-col font-sans selection:bg-amber-500 selection:text-zinc-950 transition-colors duration-300"
   >
     <!-- Sticky Top Navbar -->
 

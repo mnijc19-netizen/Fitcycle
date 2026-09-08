@@ -76,7 +76,8 @@ Fitcycle 采用严格单向依赖的 5 层洋葱架构，**严禁跨层反向污
                                           ├── 8.2 `src/style.css` (注入 .scrollbar-none, .overscroll-contain, overscroll-behavior-y)
                                           ├── 8.3 `src/components/TabBar.vue` (实现双击/再次点击已激活 Tab 顺滑回顶)
                                           ├── 8.4 各主要弹窗组件 (注入顶部 Grabber 抓手条、背景遮罩速退并挂接 scrollLock)
-                                          └── 8.5 `tests/ergonomics-and-scroll.test.js` (自动化人体工学与防穿透断言)
+                                          ├── 8.5 `src/utils/mobileFullscreen.js` (进页微量位移自动收拢顶底栏为极简胶囊，首触强化)
+                                          └── 8.6 `tests/ergonomics-and-scroll.test.js` (自动化人体工学与防穿透断言)
 
 9. 云端漫游与跨端同步 (Cloud Sync)         ├── 9.1 `src/engine/cloudSyncEngine.js` (导出验证、冲突裁决与 Gist/REST 同步)
                                           ├── 9.2 `src/store/fitnessStore.js` (`updateCloudSyncConfig` 与状态持久化)
@@ -84,10 +85,11 @@ Fitcycle 采用严格单向依赖的 5 层洋葱架构，**严禁跨层反向污
                                           ├── 9.4 `src/views/StatsView.vue` (设置页云端同步管理入口)
                                           └── 9.5 `tests/cloud-sync-engine.test.js` (断言快照结构、时间戳冲突与端点通讯)
 
-10. 离线 PWA 与弱网韧性 (Offline PWA)      ├── 10.1 `public/manifest.webmanifest` & `public/sw.js` (PWA 规范与离线缓存策略)
+10. 离线 PWA 与视口防抖 (Offline & Viewport) ├── 10.1 `public/manifest.webmanifest` & `public/sw.js` (PWA 规范与离线缓存策略)
                                           ├── 10.2 `src/utils/networkStatus.js` (全局响应式网络状态监听)
                                           ├── 10.3 `src/components/Navbar.vue` (离线胶囊提示与状态展示)
-                                          └── 10.4 `tests/pwa-and-offline.test.js` (断言 SW 注册、manifest 规范与离线响应)
+                                          ├── 10.4 `index.html` & `src/style.css` (`interactive-widget=overlays-content` + `100lvh` 彻底消除滑动时视口抖动形变)
+                                          └── 10.5 `tests/pwa-and-offline.test.js` (断言 SW、manifest、全屏胶囊与 100lvh 视口架构)
 
 11. 经典分化与科学周期库 (Periodization)    ├── 11.1 `src/data/trainingTemplates.js` (5 大经典分化结构与动作编排)
                                           ├── 11.2 `src/store/fitnessStore.js` (`applyTrainingTemplate` 状态应用)
