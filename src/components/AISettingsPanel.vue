@@ -68,7 +68,7 @@
                 class="py-2.5 rounded-xl bg-amber-500 disabled:bg-zinc-800 disabled:text-zinc-600 text-zinc-950 text-xs font-bold active:scale-95 shadow-md shadow-amber-500/10 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 data-testid="test-connection-btn">
           <span v-if="loading" class="w-3 h-3 rounded-full border-2 border-zinc-950 border-t-transparent animate-spin"></span>
-          <span v-else>⚡</span>
+          <svg v-else class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           <span>{{ loading ? '正在检测与连接…' : (connected ? '测试连接并刷新' : '测试连接并保存') }}</span>
         </button>
         <button type="button" @click="clearConnection" :disabled="loading || !hasAnyConnection"
@@ -103,7 +103,7 @@
                 data-testid="refresh-api-models-btn"
                 title="重新向官方接口发送请求，获取最新发布的大模型">
           <span v-if="loading" class="w-3 h-3 rounded-full border-2 border-amber-400 border-t-transparent animate-spin"></span>
-          <span v-else>🔄</span>
+          <svg v-else class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
           <span>{{ loading ? '正在获取…' : '再次获取官方最新模型' }}</span>
         </button>
       </div>
@@ -160,7 +160,7 @@
       <div class="space-y-1.5 pt-1">
         <div class="flex items-center justify-between text-xs">
           <span class="font-bold text-zinc-300 flex items-center gap-1">
-            <span>🎯</span> 按训练场景策略筛选
+            按训练场景策略筛选
           </span>
           <span class="text-[11px] text-zinc-500 font-mono">{{ visibleModels.length }} 款符合</span>
         </div>
@@ -171,7 +171,6 @@
                   :class="selectedStrategy === strat.id
                     ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-sm'
                     : 'bg-zinc-950/80 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'">
-            <span>{{ strat.icon }}</span>
             <span>{{ strat.name }}</span>
             <span class="text-[10px] opacity-75 font-mono">({{ getStrategyCount(strat.id) }})</span>
           </button>
@@ -205,7 +204,6 @@
           <div class="flex flex-wrap items-center gap-1 text-xs font-mono pt-1 border-t border-zinc-800/50">
             <span class="px-1.5 py-0.5 rounded border text-[10px] font-bold flex items-center gap-0.5"
                   :class="getModelStrategy(model, aiSession.activeProvider).badgeClass">
-              <span>{{ getModelStrategy(model, aiSession.activeProvider).icon }}</span>
               <span>{{ getModelStrategy(model, aiSession.activeProvider).name }}</span>
             </span>
             <span v-if="model.capabilities?.tools" class="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300/90 border border-emerald-500/20 text-[10px]">感知</span>
@@ -222,7 +220,6 @@
 
       <!-- Friendly Empty Search State with Recommendations -->
       <div v-if="!visibleModels.length" class="py-6 px-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 text-center space-y-3">
-        <div class="text-2xl">🔍</div>
         <div class="space-y-1">
           <div class="text-xs font-bold text-zinc-200">没有找到与「{{ modelSearch }}」完全匹配的模型</div>
           <p class="text-[11px] text-zinc-400 leading-normal">
@@ -260,7 +257,7 @@
         
         <div class="flex flex-wrap gap-1.5 pt-0.5">
           <span class="capability-badge" :class="getModelStrategy(selectedModel, aiSession.activeProvider).badgeClass">
-            {{ getModelStrategy(selectedModel, aiSession.activeProvider).icon }} {{ getModelStrategy(selectedModel, aiSession.activeProvider).name }}
+            {{ getModelStrategy(selectedModel, aiSession.activeProvider).name }}
           </span>
           <span class="capability-badge capability-on">文字对话</span>
           <span class="capability-badge" :class="selectedModel.capabilities?.image ? 'capability-on' : 'capability-off'">图片识别 {{ selectedModel.capabilities?.image ? '✓' : '×' }}</span>
@@ -269,7 +266,7 @@
         </div>
 
         <div class="text-xs text-zinc-300 leading-normal bg-zinc-900/70 p-2.5 rounded-xl border border-zinc-800/70 flex items-start gap-1.5">
-          <span class="text-amber-400 font-bold">💡 策略指引:</span>
+          <span class="text-amber-400 font-bold">策略指引:</span>
           <span>{{ getModelStrategy(selectedModel, aiSession.activeProvider).hint }}</span>
         </div>
         
@@ -287,7 +284,7 @@
                   data-testid="test-active-model-btn"
                   title="向当前生效模型发送极简测试指令，测量实际延迟与连通状态">
             <span v-if="pingingModel" class="w-3 h-3 rounded-full border-2 border-amber-400 border-t-transparent animate-spin"></span>
-            <span v-else>⚡</span>
+            <svg v-else class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
             <span>{{ pingingModel ? '正在测试连通性…' : '测试此模型连通性' }}</span>
           </button>
           
@@ -489,7 +486,7 @@ function processKeyAutoDetection(rawKey) {
     isAutoSwitching.value = true;
     setActiveProvider(detected.provider);
     draftKey.value = key;
-    autoDetectedNotice.value = `✨ 已识别: ${detected.name}`;
+    autoDetectedNotice.value = `已识别: ${detected.name}`;
     setTimeout(() => {
       isAutoSwitching.value = false;
       autoDetectedNotice.value = "";
@@ -568,7 +565,7 @@ async function testConnection() {
     isAutoSwitching.value = true;
     setActiveProvider(targetProvider);
     draftKey.value = key;
-    autoDetectedNotice.value = `✨ 已识别: ${detected.name}`;
+    autoDetectedNotice.value = `已识别: ${detected.name}`;
     setTimeout(() => {
       isAutoSwitching.value = false;
     }, 1000);
@@ -590,7 +587,7 @@ async function testConnection() {
           isAutoSwitching.value = true;
           setActiveProvider(targetProvider);
           draftKey.value = key;
-          autoDetectedNotice.value = `✨ 探针匹配: ${probed.name}`;
+          autoDetectedNotice.value = `探针匹配: ${probed.name}`;
           setTimeout(() => {
             isAutoSwitching.value = false;
           }, 1000);

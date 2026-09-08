@@ -107,7 +107,6 @@
                   @click="quickDrawerStrategy = strat.id"
                   class="px-2 py-0.5 rounded-lg text-[11px] font-bold border whitespace-nowrap transition-all flex items-center gap-1"
                   :class="quickDrawerStrategy === strat.id ? 'bg-amber-500/25 text-amber-300 border-amber-500/50 shadow-sm' : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-zinc-200'">
-            <span>{{ strat.icon }}</span>
             <span>{{ strat.name }}</span>
           </button>
         </div>
@@ -125,7 +124,6 @@
             <div class="flex items-center gap-1 flex-shrink-0">
               <span class="text-[10px] px-1.5 py-0.5 rounded border font-bold flex items-center gap-0.5"
                     :class="getModelStrategy(m, aiSession.activeProvider).badgeClass">
-                <span>{{ getModelStrategy(m, aiSession.activeProvider).icon }}</span>
                 <span>{{ getModelStrategy(m, aiSession.activeProvider).name }}</span>
               </span>
               <span v-if="selectedModelId === m.id" class="text-amber-400 text-xs">✓</span>
@@ -145,7 +143,7 @@
                     data-testid="drawer-refresh-models-btn"
                     title="从当前服务商重新获取最新模型">
               <span v-if="isRefreshingModels" class="w-2.5 h-2.5 rounded-full border border-amber-400 border-t-transparent animate-spin"></span>
-              <span v-else>🔄</span>
+              <svg v-else class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
               <span>{{ isRefreshingModels ? '同步中…' : (refreshStatusMsg || '同步最新模型') }}</span>
             </button>
           </div>

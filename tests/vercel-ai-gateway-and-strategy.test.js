@@ -209,15 +209,16 @@ describe("Model selection strategy rationalization", () => {
     const plain = { id: "basic-text", capabilities: { text: true, image: false, tools: false, reasoning: false } };
 
     expect(getModelStrategy(r1).id).toBe("reasoning");
-    expect(getModelStrategy(r1).icon).toBe("🧠");
+    expect(getModelStrategy(r1).name).toBe("深度思考");
 
     expect(getModelStrategy(vision).id).toBe("vision");
-    expect(getModelStrategy(vision).icon).toBe("👁️");
+    expect(getModelStrategy(vision).name).toBe("视觉识图");
 
     expect(getModelStrategy(speed).id).toBe("speed");
-    expect(getModelStrategy(speed).icon).toBe("⚡");
+    expect(getModelStrategy(speed).name).toBe("极速全能");
 
     expect(getModelStrategy(plain).id).toBe("general");
+    expect(getModelStrategy(plain).name).toBe("通用对话");
   });
 
   it("filters models by strategic scenario", () => {

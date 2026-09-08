@@ -254,10 +254,10 @@ export function getMessageBlockReason({ apiKey, model, text, imageCount = 0 }) {
 }
 
 export const MODEL_STRATEGIES = [
-  { id: "all", name: "全部", icon: "✦", description: "查看所有可用大模型" },
-  { id: "speed", name: "极速全能", icon: "⚡", description: "秒级极速响应，支持动作打卡与训练数据感知，高性价比日常首选" },
-  { id: "vision", name: "视觉识图", icon: "👁️", description: "多模态视觉识别，支持健身房器械拍照、身材体态与饮食分析" },
-  { id: "reasoning", name: "深度思考", icon: "🧠", description: "原生思维链，用于多周力量大周期规划与突破顽固瓶颈" }
+  { id: "all", name: "全部", description: "查看所有可用大模型" },
+  { id: "speed", name: "极速全能", description: "秒级极速响应，支持动作打卡与训练数据感知，高性价比日常首选" },
+  { id: "vision", name: "视觉识图", description: "多模态视觉识别，支持健身房器械拍照、身材体态与饮食分析" },
+  { id: "reasoning", name: "深度思考", description: "原生思维链，用于多周力量大周期规划与突破顽固瓶颈" }
 ];
 
 export function getModelStrategy(model, provider = "") {
@@ -266,7 +266,6 @@ export function getModelStrategy(model, provider = "") {
     return {
       id: "reasoning",
       name: "深度思考",
-      icon: "🧠",
       badgeClass: "bg-purple-500/20 text-purple-300 border-purple-500/30",
       hint: "思维链深度推演，突破训练瓶颈"
     };
@@ -275,7 +274,6 @@ export function getModelStrategy(model, provider = "") {
     return {
       id: "vision",
       name: "视觉识图",
-      icon: "👁️",
       badgeClass: "bg-sky-500/20 text-sky-300 border-sky-500/30",
       hint: "支持拍照器械识别与身材分析"
     };
@@ -284,7 +282,6 @@ export function getModelStrategy(model, provider = "") {
     return {
       id: "speed",
       name: "极速全能",
-      icon: "⚡",
       badgeClass: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
       hint: "超快响应，支持训练数据读写感知"
     };
@@ -292,7 +289,6 @@ export function getModelStrategy(model, provider = "") {
   return {
     id: "general",
     name: "通用对话",
-    icon: "💬",
     badgeClass: "bg-zinc-800 text-zinc-400 border-zinc-700",
     hint: "纯文本健身问答"
   };
