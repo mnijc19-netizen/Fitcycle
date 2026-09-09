@@ -185,7 +185,17 @@
           <span class="font-bold text-zinc-100 flex items-center gap-1">
             按训练场景策略筛选
           </span>
-          <span class="text-xs text-zinc-400 font-mono">{{ visibleModels.length }} 款符合</span>
+          <div class="flex items-center gap-2">
+            <!-- Currency Switcher Toggle -->
+            <button type="button" @click="toggleCurrency"
+                    class="px-2 py-0.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-amber-400 border border-zinc-700/60 text-xs font-mono transition-all cursor-pointer flex items-center gap-1 active:scale-95 shadow-sm"
+                    data-testid="panel-currency-toggle"
+                    :title="'当前计费视角: ' + (store.settings.currency === 'CNY' ? '人民币 (¥)' : '美元 ($)') + '，点击切换'">
+              <span>{{ store.settings.currency === 'CNY' ? '¥ 人民币' : '$ 美元' }}</span>
+              <span class="text-xs text-zinc-400">⇄</span>
+            </button>
+            <span class="text-xs text-zinc-400 font-mono">{{ visibleModels.length }} 款符合</span>
+          </div>
         </div>
         <div class="flex gap-2 overflow-x-auto pb-0.5 scrollbar-none">
           <button v-for="strat in MODEL_STRATEGIES" :key="strat.id" type="button"
@@ -203,34 +213,41 @@
         </p>
       </div>
 
-      <!-- 宫格卡片式模型选择列表 (2-Column Grid Layout - Clean, No English Descriptions) -->
-      <div v-if="visibleModels.length" data-testid="models-grid" class="grid grid-cols-2 gap-2.5 max-h-[50vh] sm:max-h-[440px] min-h-[240px] overflow-y-auto pr-1 scrollbar-thin">
+      <!-- 宫格卡片式模型选择列表 (Responsive Grid Layout - Full Name, No Half-Word Truncation) -->
+      <div v-if="visibleModels.length" data-testid="models-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[52vh] sm:max-h-[460px] min-h-[240px] overflow-y-auto pr-1 scrollbar-thin">
         <div v-for="model in visibleModels" :key="model.id"
              @click="selectedModelId = model.id"
-             class="p-3.5 rounded-2xl border text-left cursor-pointer transition-all flex flex-col justify-between gap-3 relative overflow-hidden active:scale-95"
+             class="p-4 rounded-2xl border text-left cursor-pointer transition-all flex flex-col justify-between gap-3.5 relative overflow-hidden active:scale-98 shadow-sm"
              :class="selectedModelId === model.id 
                ? 'bg-amber-500/15 border-amber-500 text-white shadow-md ring-1 ring-amber-500/50' 
-               : 'bg-zinc-950/80 border-zinc-800 hover:border-zinc-700 text-zinc-300'">
+               : 'bg-zinc-950/80 border-zinc-800 hover:border-zinc-700 text-zinc-200'">
           
-          <div class="space-y-1.5">
-            <div class="flex items-start justify-between gap-1.5">
-              <span class="text-sm font-bold text-zinc-100 font-mono line-clamp-2 leading-snug">{{ model.name || model.id }}</span>
-              <span v-if="selectedModelId === model.id" class="w-2.5 h-2.5 rounded-full bg-amber-400 flex-shrink-0 animate-pulse mt-0.5"></span>
+          <div class="space-y-2">
+            <div class="flex items-start justify-between gap-2">
+              <span class="text-sm sm:text-base font-bold text-zinc-100 font-mono break-words leading-snug">{{ model.name || model.id }}</span>
+              <span v-if="selectedModelId === model.id" class="w-2.5 h-2.5 rounded-full bg-amber-400 flex-shrink-0 animate-pulse mt-1"></span>
             </div>
-            <div class="flex items-center gap-1.5 text-xs text-zinc-400 font-mono truncate">
-              <span v-if="getModelCreator(model)" class="px-1.5 py-0.5 rounded bg-zinc-800/90 text-zinc-300 text-xs font-sans font-medium">{{ getModelCreator(model) }}</span>
-              <span class="truncate">{{ model.id }}</span>
+            <div class="flex items-center gap-1.5 text-xs text-zinc-400 font-mono flex-wrap">
+              <span v-if="getModelCreator(model)" class="px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-200 text-xs font-sans font-semibold">{{ getModelCreator(model) }}</span>
+              <span class="break-all opacity-85">{{ model.id }}</span>
             </div>
           </div>
 
-          <!-- Feature & Strategy Badges in Grid Card (Clean Chinese Badges, NO English Text) -->
-          <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono pt-1.5 border-t border-zinc-800/50">
-            <span class="px-2 py-0.5 rounded border text-xs font-bold flex items-center gap-0.5"
+          <!-- Feature & Strategy Badges in Grid Card (Clear, High Contrast Chinese Badges) -->
+          <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono pt-2 border-t border-zinc-800/60">
+            <span class="px-2 py-0.5 rounded-md border text-xs font-bold flex items-center gap-0.5"
                   :class="getModelStrategy(model, aiSession.activeProvider).badgeClass">
               <span>{{ getModelStrategy(model, aiSession.activeProvider).name }}</span>
             </span>
-            <span v-if="model.capabilities?.tools" class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 text-xs font-semibold">感知</span>
-            <span v-if="!model.capabilities?.image" class="px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800 text-xs">纯文本</span>
+            <!-- Authoritative Model Pricing Badge (when available, e.g. OpenRouter) -->
+            <span v-if="getModelPricingBadge(model)" 
+                  class="px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 border border-amber-500/30 text-xs font-mono font-bold"
+                  :title="`定价视角: ${store.settings.currency === 'CNY' ? '人民币' : '美元'}`"
+                  data-testid="model-pricing-badge">
+              {{ getModelPricingBadge(model).rateText }}
+            </span>
+            <span v-if="model.capabilities?.tools" class="px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs font-bold">感知</span>
+            <span v-if="!model.capabilities?.image" class="px-2 py-0.5 rounded-md bg-zinc-900 text-zinc-400 border border-zinc-800 text-xs">纯文本</span>
           </div>
 
         </div>
@@ -276,6 +293,12 @@
           <span class="font-medium">当前选用生效：</span>
           <span class="font-mono text-amber-400 font-bold text-sm">{{ selectedModel?.name || selectedModelId }}</span>
         </div>
+
+        <!-- Selected Model Authoritative Pricing Row -->
+        <div v-if="getModelPricingBadge(selectedModel)" class="flex items-center justify-between text-xs text-zinc-300 pt-1 border-t border-zinc-800/60 font-mono">
+          <span>官方资费标准 ({{ store.settings.currency === 'CNY' ? '人民币' : '美元' }}):</span>
+          <span class="text-amber-300 font-bold">{{ getModelPricingBadge(selectedModel).rateText }}</span>
+        </div>
         
         <div class="flex items-center justify-between flex-wrap gap-2 pt-1 border-t border-zinc-800/60">
           <button type="button" @click="testActiveModelPing" :disabled="pingingModel"
@@ -307,6 +330,7 @@
         <div class="flex items-center gap-1.5">
           <span>📊</span>
           <span>Token 用量与消费数据已独立建档</span>
+          <span class="text-xs font-mono text-amber-400/90 ml-1.5">({{ store.settings.currency === 'CNY' ? '¥ 人民币视角' : '$ 美元视角' }})</span>
         </div>
         <button type="button" @click="emit('open-audit')" 
                 class="text-amber-400 hover:text-amber-300 font-medium active:scale-95 transition-all cursor-pointer flex items-center gap-0.5"
@@ -372,6 +396,18 @@ import {
   matchesModelSearch,
   normalizeProviderModel
 } from "../ai/modelCapabilities.js";
+import { store, setCurrency } from "../store/fitnessStore.js";
+import { formatModelPricing } from "../ai/tokenTracker.js";
+
+function toggleCurrency() {
+  const next = store.settings.currency === "CNY" ? "USD" : "CNY";
+  setCurrency(next);
+}
+
+function getModelPricingBadge(model) {
+  if (!model || !model.pricing) return null;
+  return formatModelPricing(model.pricing, store.settings.currency, store.settings.usdToCnyRate);
+}
 
 const draftKey = ref(getActiveApiKey());
 const showKey = ref(false);

@@ -42,7 +42,7 @@
       
       <!-- 3D / Category Badge: Only displayed when container is not micro -->
       <span v-if="!isMicro" 
-            class="absolute bottom-1 right-1 px-1.5 py-0.2 rounded text-[9px] font-mono font-bold tracking-tight border"
+            class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-xs font-mono font-bold tracking-tight border"
             :class="store?.settings?.themeMode === 'light'
               ? 'bg-white/90 text-amber-800 border-amber-300/60 shadow-2xs'
               : 'bg-zinc-950/80 text-amber-400 border-amber-500/40 shadow-2xs'">

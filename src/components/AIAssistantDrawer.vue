@@ -65,9 +65,9 @@
                   data-testid="toggle-quick-model-picker"
                   @click="showQuickModelPicker = !showQuickModelPicker"
                   class="inline-flex items-center gap-1.5 px-2.5 py-1 mt-1 rounded-lg bg-zinc-800/80 hover:bg-zinc-800 border border-zinc-700/80 hover:border-amber-500/50 text-xs sm:text-sm text-zinc-200 hover:text-amber-300 transition-all font-mono max-w-full group text-left shadow-sm">
-            <span class="text-[11px] font-bold text-amber-400 bg-amber-500/15 px-1.5 py-0.5 rounded border border-amber-500/30 flex-shrink-0 leading-none">{{ activeProvider.name }}</span>
+            <span class="text-xs font-bold text-amber-400 bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/30 flex-shrink-0 leading-none">{{ activeProvider.name }}</span>
             <span class="truncate font-semibold tracking-tight text-zinc-100 group-hover:text-amber-200">{{ cleanModelTitle(selectedModel) }}</span>
-            <span class="text-[10px] text-amber-400/80 group-hover:text-amber-300 ml-0.5 flex-shrink-0">▼</span>
+            <span class="text-xs text-amber-400/80 group-hover:text-amber-300 ml-0.5 flex-shrink-0">▼</span>
           </button>
         </div>
         <div class="flex items-center gap-2 flex-shrink-0">
@@ -333,7 +333,7 @@
                       :title="`输入: ${message.usage.prompt_tokens || 0} Tokens · 输出: ${message.usage.completion_tokens || 0} Tokens`"
                       data-testid="message-token-badge">
                   <span>{{ message.usage.total_tokens || 0 }} Tokens</span>
-                  <span v-if="message.costUSD" class="text-emerald-400 font-bold">· ${{ formatCostUSD(message.costUSD) }}</span>
+                  <span v-if="message.costUSD" class="text-emerald-400 font-bold">· {{ formatAuthoritativeCost(message.costUSD) }}</span>
                 </span>
               </div>
               <button type="button" 
@@ -551,7 +551,7 @@ import {
 import { store } from "../store/fitnessStore.js";
 import { renderMarkdown, cleanAIMessage, extractReasoningAndContent } from "../utils/aiService.js";
 import { findGymEquipmentVisual, GYM_EQUIPMENT_VISUALS } from "../data/gymEquipmentVisuals.js";
-import { calculateCostUSD, formatCostUSD, recordTokenUsage } from "../ai/tokenTracker.js";
+import { calculateCostUSD, formatCostUSD, formatAuthoritativeCost, recordTokenUsage } from "../ai/tokenTracker.js";
 
 const isTest = typeof process !== "undefined" && (process.env?.NODE_ENV === "test" || Boolean(process.env?.VITEST));
 
@@ -885,13 +885,12 @@ function cleanModelTitle(model) {
     const fallbackId = getActiveModelId();
     if (fallbackId) {
       const fName = formatModelDisplayName(fallbackId);
-      return fName.replace(/\s*\([^)]*\)$/, "").trim();
+      return fName.replace(/^[A-Za-z0-9_\-\.\s]+:\s*/, "").trim();
     }
     return "点击选择模型";
   }
   let name = String(model.name || model.id || "").trim();
   name = name.replace(/^[A-Za-z0-9_\-\.\s]+:\s*/, "").trim();
-  name = name.replace(/\s*\([^)]*\)$/, "").trim();
   return name || model.id;
 }
 const sendDisabledReason = computed(() => getMessageBlockReason({

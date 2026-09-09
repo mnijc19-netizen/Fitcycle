@@ -50,6 +50,11 @@
 [OP-AI-COACH]   调整训练结算 AI 战绩评价        ├── 1. `src/ai/workoutAnalyzer.js` (S~D 级评价与恢复池) npm run test tests/rest-and-ux-upgrades.test.js
                 (如渐进超负荷、补给/恢复语录)   └── 2. `src/components/WorkoutSummaryModal.vue` (卡片排版)
 
+[OP-AI-AUDIT]   AI Token 用量审计与双币种转换  ├── 1. `src/ai/tokenTracker.js` (Token/USD/CNY 权威换算) npm test -- tests/token-and-cost-audit.test.js
+                (OpenRouter 真实物理计费/全局汇率├── 2. `src/components/AITokenAuditPanel.vue` (用量审计大盘)
+                 切换/免虚假计费/外层设置直显)  ├── 3. `src/views/StatsView.vue` (外层用量条与全局币种切换)
+                                                └── 4. `src/utils/themeManager.js` & `store/fitnessStore.js`
+
 [OP-CYCLE]      分化计划模板增减与排期          ├── 1. `src/store/fitnessStore.js` (DEFAULT_CYCLE, PLANS)npm run test tests/compatibility.test.js
                 (如 5分化、上下肢分化、全身)    ├── 2. `src/components/CycleEditorModal.vue` (分化编辑器)
                                                 └── 3. `src/views/TodayView.vue` (今日排期滚动轨道)

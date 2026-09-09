@@ -60,7 +60,9 @@ export const DEFAULT_SETTINGS = {
     customSyncEndpoint: "",
     customSyncApiKey: "",
     lastSyncTime: null
-  }
+  },
+  currency: "USD", // 'USD' | 'CNY' - switchable globally across the entire app
+  usdToCnyRate: 7.25 // Standard benchmark exchange rate (1 USD = 7.25 CNY)
 };
 
 /**
@@ -182,6 +184,14 @@ export function sanitizeSettings(rawSettings) {
   sanitized.cloudSync = (rawSettings.cloudSync && typeof rawSettings.cloudSync === "object")
     ? { ...DEFAULT_SETTINGS.cloudSync, ...rawSettings.cloudSync }
     : { ...DEFAULT_SETTINGS.cloudSync };
+
+  // 7. Sanitize global currency mode and benchmark exchange rate
+  sanitized.currency = ["USD", "CNY"].includes(rawSettings?.currency)
+    ? rawSettings.currency
+    : DEFAULT_SETTINGS.currency;
+  sanitized.usdToCnyRate = (typeof rawSettings?.usdToCnyRate === "number" && rawSettings.usdToCnyRate > 0)
+    ? rawSettings.usdToCnyRate
+    : DEFAULT_SETTINGS.usdToCnyRate;
 
   return sanitized;
 }

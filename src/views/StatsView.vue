@@ -387,8 +387,18 @@
     <!-- AI Coach Entry (Clean Inset Group) -->
     <div class="space-y-1.5">
       <div class="text-xs font-bold text-zinc-400 px-1 flex items-center justify-between">
-        <span>智能教练</span>
-        <span class="text-[10px] font-mono text-zinc-500">大模型物理审计</span>
+        <div class="flex items-center gap-2">
+          <span>智能教练</span>
+          <span class="text-xs font-mono text-zinc-500">大模型物理审计</span>
+        </div>
+        <!-- Currency Switcher Quick Pill (Global Site-wide) -->
+        <button type="button" @click.stop="toggleGlobalCurrency"
+                class="text-xs font-mono px-2.5 py-1 rounded-lg bg-zinc-850 hover:bg-zinc-800 text-amber-400 border border-zinc-700/60 active:scale-95 transition-all cursor-pointer flex items-center gap-1 shadow-sm"
+                data-testid="toggle-global-currency-btn"
+                :title="'当前全局计费视角: ' + (store.settings.currency === 'CNY' ? '人民币 (¥)' : '美元 ($)') + '，点击切换'">
+          <span>{{ store.settings.currency === 'CNY' ? '¥ 人民币' : '$ 美元' }}</span>
+          <span class="text-xs text-zinc-400">⇄</span>
+        </button>
       </div>
 
       <!-- Main AI Settings Button -->
@@ -437,8 +447,9 @@
         
         <div class="flex items-center gap-2 shrink-0 font-mono text-xs sm:text-sm">
           <span v-if="activeAIProvider.id === 'openrouter'" 
-                class="text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-xs">
-            ${{ formatCostUSD(currentProviderCostUSD) }}
+                class="text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-xs"
+                data-testid="active-provider-cost">
+            {{ formatAuthoritativeCost(currentProviderCostUSD) }}
           </span>
           <span v-else class="text-zinc-400 text-xs px-2 py-0.5 rounded bg-zinc-800/80">
             官方 Token 审计
@@ -751,6 +762,7 @@ import {
 import {
   tokenAuditState,
   formatCostUSD,
+  formatAuthoritativeCost,
   getProviderAudit
 } from "../ai/tokenTracker.js";
 import { 
@@ -765,8 +777,14 @@ import {
   getFullHonorProfile,
   toggleDeloadShield,
   setThemeMode,
+  setCurrency,
   STRENGTH_LEVEL_CONFIGS
 } from "../store/fitnessStore.js";
+
+function toggleGlobalCurrency() {
+  const next = store.settings.currency === "CNY" ? "USD" : "CNY";
+  setCurrency(next);
+}
 
 const showHonorModal = ref(false);
 const showBodyModal = ref(false);

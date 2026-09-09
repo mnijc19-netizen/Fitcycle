@@ -1059,6 +1059,25 @@ export function updateCloudSyncConfig(config = {}) {
   if (store.settings.vibrationEnabled) triggerHaptic("light");
 }
 
+// --- CURRENCY & DISPLAY UNIT ACTIONS ---
+export function setCurrency(currency) {
+  if (currency === "USD" || currency === "CNY") {
+    store.settings.currency = currency;
+    if (store.settings.vibrationEnabled) triggerHaptic("light");
+    return true;
+  }
+  return false;
+}
+
+export function setUsdToCnyRate(rate) {
+  const r = Number(rate);
+  if (Number.isFinite(r) && r > 0) {
+    store.settings.usdToCnyRate = r;
+    return true;
+  }
+  return false;
+}
+
 // --- THEME / SKIN ACTIONS ---
 export function setThemeMode(mode) {
   const targetMode = VALID_THEME_MODES.includes(mode) ? mode : "dark";

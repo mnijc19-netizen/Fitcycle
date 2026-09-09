@@ -1,18 +1,37 @@
-﻿<template>
+<template>
   <div class="space-y-4 font-sans" data-testid="token-audit-dashboard">
-    <!-- Header with Action -->
-    <div class="flex items-center justify-between">
+    <!-- Header with Currency Switch & Action -->
+    <div class="flex items-center justify-between flex-wrap gap-2">
       <div class="flex items-center gap-2">
         <span class="text-amber-400 font-bold text-base">📊</span>
         <h3 class="font-bold text-base sm:text-lg text-zinc-100">大模型用量与消费审计大盘</h3>
         <span class="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono">物理回执</span>
       </div>
-      <button type="button" @click="handleResetAudit" 
-              class="text-xs sm:text-sm text-zinc-400 hover:text-amber-400 active:scale-95 transition-colors cursor-pointer font-mono font-medium"
-              title="重置当前所有用量与消费统计记录"
-              data-testid="reset-audit-btn">
-        重置统计
-      </button>
+
+      <div class="flex items-center gap-2">
+        <!-- Global Currency Switcher (CNY vs USD) -->
+        <div class="flex items-center bg-zinc-950 p-0.5 rounded-xl border border-zinc-800 shadow-inner" data-testid="currency-switch-group">
+          <button type="button" @click="setCurrency('USD')"
+                  :class="store.settings.currency === 'USD' ? 'bg-amber-500 text-zinc-950 font-bold shadow-sm' : 'text-zinc-400 hover:text-zinc-200'"
+                  class="px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer"
+                  data-testid="currency-btn-usd">
+            $ 美元
+          </button>
+          <button type="button" @click="setCurrency('CNY')"
+                  :class="store.settings.currency === 'CNY' ? 'bg-amber-500 text-zinc-950 font-bold shadow-sm' : 'text-zinc-400 hover:text-zinc-200'"
+                  class="px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer"
+                  data-testid="currency-btn-cny">
+            ¥ 人民币
+          </button>
+        </div>
+
+        <button type="button" @click="handleResetAudit" 
+                class="text-xs sm:text-sm text-zinc-400 hover:text-amber-400 active:scale-95 transition-colors cursor-pointer font-mono font-medium"
+                title="重置当前所有用量与消费统计记录"
+                data-testid="reset-audit-btn">
+          重置统计
+        </button>
+      </div>
     </div>
 
     <!-- Global & Current Provider Highlights -->
@@ -41,7 +60,7 @@
             <span>当前 [{{ activeProvider.name }}] 累计</span>
           </div>
           <span v-if="activeProvider.id === 'openrouter'" class="text-emerald-400 font-bold font-mono text-sm sm:text-base" data-testid="openrouter-total-cost">
-            ${{ formatCostUSD(currentProviderStats.totalCostUSD) }}
+            {{ formatAuthoritativeCost(currentProviderStats.totalCostUSD) }}
           </span>
           <span v-else class="text-zinc-400 text-xs px-2 py-0.5 rounded bg-zinc-800/80">
             官方 Token 审计
@@ -53,7 +72,10 @@
         </div>
         <div class="text-xs text-zinc-300 font-mono flex items-center justify-between pt-1 border-t border-zinc-800/60">
           <span>已发起 {{ currentProviderStats.callCount || 0 }} 次请求</span>
-          <span v-if="activeProvider.id === 'openrouter'" class="text-emerald-400 text-xs font-medium">官方实时计费</span>
+          <span v-if="activeProvider.id === 'openrouter'" class="text-emerald-400 text-xs font-medium flex items-center gap-1">
+            <span>官方实时计费</span>
+            <span v-if="store.settings.currency === 'CNY'" class="text-zinc-400 text-xs font-normal">(1$≈{{ store.settings.usdToCnyRate }}¥)</span>
+          </span>
           <span v-else class="text-zinc-400 text-xs">无虚假估算金额</span>
         </div>
       </div>
@@ -84,7 +106,7 @@
           <div class="text-right">
             <span class="font-bold text-zinc-100">{{ (tokenAuditState.providers[prov.id]?.totalTokens || 0).toLocaleString() }} T</span>
             <span v-if="prov.id === 'openrouter' && tokenAuditState.providers[prov.id]?.totalCostUSD" class="text-emerald-400 ml-1.5 font-bold">
-              (${{ formatCostUSD(tokenAuditState.providers[prov.id]?.totalCostUSD) }})
+              ({{ formatAuthoritativeCost(tokenAuditState.providers[prov.id]?.totalCostUSD) }})
             </span>
             <span class="text-zinc-400 text-xs ml-1.5 font-sans">({{ tokenAuditState.providers[prov.id]?.callCount || 0 }} 次)</span>
           </div>
@@ -109,6 +131,10 @@
         <strong>3. 切换不同模型后，外层金额会一直定格在那里吗？</strong><br>
         <strong>不会！</strong>外层概览条与当前生效的服务商严格联动：当前选择 OpenRouter 时，展示 OpenRouter 的 Token 与实时金额；切换为 DeepSeek 等模型时，自动切换为“官方 Token 审计”，杜绝把 OpenRouter 的历史金额错误定格在 DeepSeek 后面。
       </p>
+      <p>
+        <strong>4. 货币显示与全站全局生效</strong><br>
+        支持随时在<strong>【美元 ($)】</strong>与<strong>【人民币 (¥)】</strong>之间无缝切换。切换后立即全站全局生效（包括大模型消耗、单次对话回执与模型定价）。人民币折算按透明基准汇率（1 USD ≈ {{ store.settings.usdToCnyRate }} CNY）精确运算，杜绝任何暗箱或臆造。
+      </p>
     </div>
   </div>
 </template>
@@ -119,9 +145,11 @@ import { AI_PROVIDERS, aiSession, getActiveProvider } from "../ai/aiSession.js";
 import {
   tokenAuditState,
   formatCostUSD,
+  formatAuthoritativeCost,
   getProviderAudit,
   resetTokenAudit
 } from "../ai/tokenTracker.js";
+import { store, setCurrency } from "../store/fitnessStore.js";
 
 const emit = defineEmits(["close"]);
 

@@ -156,7 +156,7 @@
               <div class="flex items-center justify-between text-xs mt-1.5 pt-1.5 border-t border-current/15">
                 <span class="text-xs font-semibold flex items-center gap-1">
                   <span>{{ m.statusText }}</span>
-                  <span v-if="m.synergySets > 0" class="text-[10px] opacity-70 font-mono">(+{{ m.synergySets }}协同)</span>
+                  <span v-if="m.synergySets > 0" class="text-xs opacity-75 font-mono">(+{{ m.synergySets }}协同)</span>
                 </span>
                 <div class="w-8 h-1.5 rounded-full bg-current/20 overflow-hidden flex-shrink-0">
                   <div class="h-full bg-current transition-all duration-300" :style="{ width: m.percentage + '%' }"></div>
@@ -180,7 +180,7 @@
                       :class="store.settings.themeMode === 'light' ? 'text-amber-950' : 'text-zinc-100'">
                   聚焦诊断：{{ activeSelectedMuscle.name }}
                 </span>
-                <span class="text-[11px] px-2 py-0.5 rounded-full font-bold font-mono flex-shrink-0"
+                <span class="text-xs px-2 py-0.5 rounded-full font-bold font-mono flex-shrink-0"
                       :class="activeSelectedMuscle.status === 'optimal' 
                         ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
                         : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'">
@@ -191,7 +191,7 @@
               <!-- Quick action to open exercise picker filtered to this category -->
               <button @click="openPickerForTargetMuscle(activeSelectedMuscle)"
                       type="button"
-                      class="text-[11px] font-bold transition-colors flex items-center gap-0.5 flex-shrink-0 cursor-pointer"
+                      class="text-xs font-bold transition-colors flex items-center gap-0.5 flex-shrink-0 cursor-pointer"
                       :class="store.settings.themeMode === 'light' ? 'text-amber-800 hover:text-amber-900' : 'text-amber-400 hover:text-amber-300'">
                 <span>更多动作</span>
                 <span class="text-xs">❯</span>
@@ -207,10 +207,10 @@
             <!-- Specific Recommended Addon Pills for this Selected Muscle -->
             <div v-if="activeSelectedMuscle.specificAddons && activeSelectedMuscle.specificAddons.length > 0"
                  class="space-y-1.5 pt-0.5">
-              <div class="text-[11px] font-bold flex items-center justify-between"
+              <div class="text-xs font-bold flex items-center justify-between"
                    :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
                 <span>推荐添加动作 (点击 1 键加入)：</span>
-                <span class="text-[10px] font-mono text-zinc-500">点击即刻插入并更新诊断</span>
+                <span class="text-xs font-mono text-zinc-500">点击即刻插入并更新诊断</span>
               </div>
 
               <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar overscroll-x-contain touch-pan-x">

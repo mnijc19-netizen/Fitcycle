@@ -264,6 +264,10 @@
     overflow-x: hidden;
     overflow-x: clip;
     -webkit-text-size-adjust: 100%;
+    font-size: 16px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
@@ -280,6 +284,14 @@
     min-height: 100lvh;
     -webkit-overflow-scrolling: touch;
     transition: background-color 200ms ease, color 200ms ease;
+    font-weight: 450;
+    line-height: 1.5;
+  }
+
+  /* Ergonomic mobile font-size baseline: elevate .text-xs to 13px for workout readability */
+  .text-xs {
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
   }
 
   body::-webkit-scrollbar {

@@ -4,6 +4,9 @@ import { nextTick } from "vue";
 import {
   calculateCostUSD,
   formatCostUSD,
+  formatCurrencyCost,
+  formatAuthoritativeCost,
+  formatModelPricing,
   recordTokenUsage,
   getProviderAudit,
   resetTokenAudit,
@@ -11,12 +14,15 @@ import {
 } from "../src/ai/tokenTracker.js";
 import {
   AI_PROVIDERS,
+  DEFAULT_PRESET_MODELS,
   aiSession,
   clearAIConnection,
   setActiveProvider,
+  setProviderModels,
   setSessionApiKey,
   setSelectedModel
 } from "../src/ai/aiSession.js";
+import { store, setCurrency } from "../src/store/fitnessStore.js";
 import AISettingsPanel from "../src/components/AISettingsPanel.vue";
 import AITokenAuditPanel from "../src/components/AITokenAuditPanel.vue";
 import AIAssistantDrawer from "../src/components/AIAssistantDrawer.vue";
@@ -25,6 +31,8 @@ import StatsView from "../src/views/StatsView.vue";
 beforeEach(() => {
   resetTokenAudit();
   clearAIConnection();
+  store.settings.currency = "USD";
+  store.settings.usdToCnyRate = 7.25;
   vi.clearAllMocks();
 });
 
@@ -281,6 +289,104 @@ describe("Token and Cost Audit Engine", () => {
     expect(summaryBar.text()).toContain("5,000");
     expect(summaryBar.text()).toContain("官方 Token 审计");
     expect(summaryBar.find('.text-emerald-400').exists()).toBe(false);
+
+    wrapper.unmount();
+  });
+
+  it("supports switching between USD ($) and CNY (¥) with authoritative rate conversion", () => {
+    // 0.0128 USD at 7.25 rate = 0.0928 CNY
+    expect(formatCurrencyCost(0.0128, "USD", 7.25)).toBe("$0.0128");
+    expect(formatCurrencyCost(0.0128, "CNY", 7.25)).toBe("¥0.0928");
+
+    // Zero costs
+    expect(formatCurrencyCost(0, "USD", 7.25)).toBe("$0.00");
+    expect(formatCurrencyCost(0, "CNY", 7.25)).toBe("¥0.00");
+
+    // Micro amounts (< 0.0001)
+    expect(formatCurrencyCost(0.000005, "USD", 7.25)).toBe("<$0.00001");
+    expect(formatCurrencyCost(0.000005, "CNY", 7.25)).toBe("<¥0.0001");
+
+    // Test formatModelPricing for per-1M tokens
+    const pricing = { prompt: "0.0000001", completion: "0.0000004" }; // Gemini 2.0 Flash
+    const pricingUSD = formatModelPricing(pricing, "USD", 7.25);
+    expect(pricingUSD.rateText).toBe("入 $0.10 · 出 $0.40 /M");
+    expect(pricingUSD.symbol).toBe("$");
+
+    const pricingCNY = formatModelPricing(pricing, "CNY", 7.25);
+    expect(pricingCNY.rateText).toBe("入 ¥0.73 · 出 ¥2.90 /M");
+    expect(pricingCNY.symbol).toBe("¥");
+  });
+
+  it("dynamically and reactively switches currency site-wide across all views and modals", async () => {
+    recordTokenUsage({
+      provider: "openrouter",
+      modelId: "openai/gpt-4o",
+      usage: { prompt_tokens: 2500, completion_tokens: 656, total_tokens: 3156 },
+      pricing: { prompt: "0.0000025", completion: "0.00001" }
+    });
+
+    setActiveProvider("openrouter");
+    store.settings.currency = "USD";
+    const wrapper = mount(StatsView, { attachTo: document.body });
+
+    const summaryBar = wrapper.find('[data-testid="outer-token-audit-summary"]');
+    expect(summaryBar.text()).toContain("$0.0128");
+
+    // 1. Toggle via outer currency button
+    const toggleBtn = wrapper.find('[data-testid="toggle-global-currency-btn"]');
+    expect(toggleBtn.exists()).toBe(true);
+    expect(toggleBtn.text()).toContain("$ 美元");
+
+    await toggleBtn.trigger("click");
+    await nextTick();
+
+    expect(store.settings.currency).toBe("CNY");
+    expect(toggleBtn.text()).toContain("¥ 人民币");
+    expect(summaryBar.text()).toContain("¥0.0929");
+
+    // 2. Open AITokenAuditPanel modal and verify currency segmented buttons
+    await summaryBar.trigger("click");
+    await nextTick();
+    const auditPanel = wrapper.findComponent(AITokenAuditPanel);
+    expect(auditPanel.exists()).toBe(true);
+
+    const usdBtn = auditPanel.find('[data-testid="currency-btn-usd"]');
+    const cnyBtn = auditPanel.find('[data-testid="currency-btn-cny"]');
+    expect(usdBtn.exists()).toBe(true);
+    expect(cnyBtn.exists()).toBe(true);
+
+    // Click USD in audit modal -> switches globally back to USD
+    await usdBtn.trigger("click");
+    await nextTick();
+    expect(store.settings.currency).toBe("USD");
+    expect(summaryBar.text()).toContain("$0.0128");
+
+    wrapper.unmount();
+  });
+
+  it("AISettingsPanel: displays model pricing badges and supports inline currency switching", async () => {
+    setActiveProvider("openrouter");
+    setSessionApiKey("sk-or-test-key", "openrouter");
+    setProviderModels(DEFAULT_PRESET_MODELS.openrouter, "openrouter");
+    store.settings.currency = "USD";
+    const wrapper = mount(AISettingsPanel);
+
+    // In USD mode, model cards render USD per-million badges
+    const pricingBadges = wrapper.findAll('[data-testid="model-pricing-badge"]');
+    expect(pricingBadges.length).toBeGreaterThan(0);
+    expect(pricingBadges[0].text()).toContain("$");
+
+    // Click currency switcher inside AISettingsPanel
+    const currencyToggle = wrapper.find('[data-testid="panel-currency-toggle"]');
+    expect(currencyToggle.exists()).toBe(true);
+    expect(currencyToggle.text()).toContain("$ 美元");
+
+    await currencyToggle.trigger("click");
+    await nextTick();
+
+    expect(store.settings.currency).toBe("CNY");
+    expect(currencyToggle.text()).toContain("¥ 人民币");
+    expect(pricingBadges[0].text()).toContain("¥");
 
     wrapper.unmount();
   });

@@ -1,4 +1,5 @@
 import { reactive } from "vue";
+import { store } from "../store/fitnessStore.js";
 
 const STORAGE_KEY = "fitcycle_ai_token_audit_v1";
 
@@ -104,6 +105,89 @@ export function formatCostUSD(cost) {
     return s.includes(".") && s.split(".")[1].length < 2 ? val.toFixed(2) : s;
   }
   return val.toFixed(4);
+}
+
+/**
+ * Formats cost according to specified or global currency ('USD' or 'CNY') and exchange rate.
+ *
+ * @param {number} costUSD - Raw cost in USD
+ * @param {string|null} [currency] - Optional override 'USD' | 'CNY'
+ * @param {number|null} [rate] - Optional override exchange rate (USD to CNY)
+ * @param {boolean} [includeSymbol=true] - Whether to prepend $ or ¥
+ * @returns {string} Formatted string, e.g. "$0.0128" or "¥0.0928"
+ */
+export function formatCurrencyCost(costUSD, currency = null, rate = null, includeSymbol = true) {
+  const activeCurrency = currency || store?.settings?.currency || "USD";
+  const activeRate = Number(rate || store?.settings?.usdToCnyRate || 7.25);
+  const valUSD = Number(costUSD || 0);
+  const symbol = activeCurrency === "CNY" ? "¥" : "$";
+  const sym = includeSymbol ? symbol : "";
+
+  if (!Number.isFinite(valUSD) || valUSD <= 0) {
+    return `${sym}0.00`;
+  }
+
+  if (activeCurrency === "CNY") {
+    const valCNY = valUSD * activeRate;
+    if (valCNY < 0.0001) return includeSymbol ? "<¥0.0001" : "<0.0001";
+    if (valCNY < 0.01) {
+      const s = valCNY.toFixed(4).replace(/0+$/, "");
+      const res = s.includes(".") && s.split(".")[1].length < 2 ? valCNY.toFixed(2) : s;
+      return `${sym}${res}`;
+    }
+    return `${sym}${valCNY.toFixed(4)}`;
+  }
+
+  // Default USD
+  if (valUSD < 0.00001) return includeSymbol ? "<$0.00001" : "<0.00001";
+  const s = formatCostUSD(valUSD);
+  return `${sym}${s}`;
+}
+
+/**
+ * High-level helper that automatically reads the globally active currency from store and formats with symbol.
+ */
+export function formatAuthoritativeCost(costUSD, includeSymbol = true) {
+  return formatCurrencyCost(costUSD, null, null, includeSymbol);
+}
+
+/**
+ * Formats model per-token pricing (e.g. prompt: 0.0000001, completion: 0.0000004)
+ * into human-readable cost per 1M (1,000,000) tokens in active currency.
+ *
+ * @param {object} pricing - { prompt, completion }
+ * @param {string|null} [currency] - Optional currency override ('USD' | 'CNY')
+ * @param {number|null} [rate] - Optional rate override
+ * @returns {object|null}
+ */
+export function formatModelPricing(pricing, currency = null, rate = null) {
+  if (!pricing || pricing.prompt === undefined || pricing.prompt === null) return null;
+  const activeCurrency = currency || store?.settings?.currency || "USD";
+  const activeRate = Number(rate || store?.settings?.usdToCnyRate || 7.25);
+  const pUSD = Number(pricing.prompt || 0) * 1_000_000;
+  const cUSD = Number(pricing.completion || 0) * 1_000_000;
+
+  if (activeCurrency === "CNY") {
+    const pCNY = (Math.round((pUSD * activeRate + Number.EPSILON) * 100) / 100).toFixed(2);
+    const cCNY = (Math.round((cUSD * activeRate + Number.EPSILON) * 100) / 100).toFixed(2);
+    return {
+      currency: "CNY",
+      symbol: "¥",
+      promptPerMillion: `¥${pCNY}`,
+      completionPerMillion: `¥${cCNY}`,
+      rateText: `入 ¥${pCNY} · 出 ¥${cCNY} /M`
+    };
+  }
+
+  const pFmt = (Math.round((pUSD + Number.EPSILON) * 100) / 100).toFixed(2);
+  const cFmt = (Math.round((cUSD + Number.EPSILON) * 100) / 100).toFixed(2);
+  return {
+    currency: "USD",
+    symbol: "$",
+    promptPerMillion: `$${pFmt}`,
+    completionPerMillion: `$${cFmt}`,
+    rateText: `入 $${pFmt} · 出 $${cFmt} /M`
+  };
 }
 
 /**
