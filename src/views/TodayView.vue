@@ -80,18 +80,18 @@
           </div>
         </div>
 
-        <h2 class="text-base font-black text-white mt-2 leading-snug">
+        <h2 class="text-lg sm:text-xl font-black text-white mt-2 leading-snug">
           {{ store.activeWorkout.planName }}
         </h2>
-        <p v-if="store.activeWorkout.coreTarget" class="text-xs text-zinc-400 mt-1 flex items-center gap-1.5">
+        <p v-if="store.activeWorkout.coreTarget" class="text-sm text-zinc-300 mt-1 flex items-center gap-1.5 font-medium">
           <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
           <span>目标: {{ store.activeWorkout.coreTarget }}</span>
         </p>
 
         <!-- Progress bar -->
-        <div class="mt-3 pt-3 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-400">
-          <span>完成进度: {{ completedSetsCount }}/{{ totalSetsCount }} 组</span>
-          <span class="font-mono text-emerald-400 font-bold text-xs sm:text-sm">已做重量: {{ currentVolume }} kg</span>
+        <div class="mt-3 pt-3 border-t border-zinc-800 flex items-center justify-between text-xs sm:text-sm text-zinc-300 font-medium">
+          <span>完成进度: <strong class="text-zinc-100 font-bold">{{ completedSetsCount }}/{{ totalSetsCount }}</strong> 组</span>
+          <span class="font-mono text-emerald-400 font-black text-sm sm:text-base">做工总重: {{ currentVolume }} kg</span>
         </div>
         <div class="w-full bg-zinc-800 h-1.5 rounded-full mt-1.5 overflow-hidden">
           <div class="bg-emerald-400 h-full rounded-full transition-all duration-300"
@@ -353,8 +353,8 @@
           <!-- Sets Table (Clean, Apple/Hevy-Grade Ergonomic Layout) -->
           <div class="p-2 sm:p-3 space-y-1.5 sm:space-y-2">
             <!-- Table Header -->
-            <div class="grid grid-cols-12 gap-1 sm:gap-1.5 text-xs font-bold px-1.5 sm:px-2 py-1 text-center select-none"
-                 :class="store.settings.themeMode === 'light' ? 'text-slate-500' : 'text-zinc-500'">
+            <div class="grid grid-cols-12 gap-1 sm:gap-1.5 text-xs sm:text-sm font-bold px-1.5 sm:px-2 py-1 text-center select-none"
+                 :class="store.settings.themeMode === 'light' ? 'text-slate-600' : 'text-zinc-400'">
               <span class="col-span-2 text-left">组号</span>
               <span class="col-span-4">重量 (kg)</span>
               <span class="col-span-4">次数</span>
@@ -394,8 +394,8 @@
                   <button @click="adjustSetWeight(exIdx, sIdx, -2.5)" 
                           type="button"
                           title="-2.5kg"
-                          class="w-5.5 sm:w-6 h-full flex items-center justify-center text-sm font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
-                          :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-400 hover:text-white'">
+                          class="w-6 sm:w-7 h-full flex items-center justify-center text-base font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          :class="store.settings.themeMode === 'light' ? 'text-slate-500 hover:text-slate-800' : 'text-zinc-300 hover:text-white'">
                     −
                   </button>
                   <input v-model.number="s.weight" 
@@ -407,8 +407,8 @@
                   <button @click="adjustSetWeight(exIdx, sIdx, 2.5)" 
                           type="button"
                           title="+2.5kg"
-                          class="w-5.5 sm:w-6 h-full flex items-center justify-center text-sm font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
-                          :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-400 hover:text-white'">
+                          class="w-6 sm:w-7 h-full flex items-center justify-center text-base font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          :class="store.settings.themeMode === 'light' ? 'text-slate-500 hover:text-slate-800' : 'text-zinc-300 hover:text-white'">
                     +
                   </button>
                 </div>
@@ -421,8 +421,8 @@
                   <button @click="adjustSetReps(exIdx, sIdx, -1)" 
                           type="button"
                           title="-1次"
-                          class="w-5.5 sm:w-6 h-full flex items-center justify-center text-sm font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
-                          :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-400 hover:text-white'">
+                          class="w-6 sm:w-7 h-full flex items-center justify-center text-base font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          :class="store.settings.themeMode === 'light' ? 'text-slate-500 hover:text-slate-800' : 'text-zinc-300 hover:text-white'">
                     −
                   </button>
                   <input v-model.number="s.reps" 
@@ -434,8 +434,8 @@
                   <button @click="adjustSetReps(exIdx, sIdx, 1)" 
                           type="button"
                           title="+1次"
-                          class="w-5.5 sm:w-6 h-full flex items-center justify-center text-sm font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
-                          :class="store.settings.themeMode === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-400 hover:text-white'">
+                          class="w-6 sm:w-7 h-full flex items-center justify-center text-base font-black active:scale-90 transition-transform cursor-pointer select-none flex-shrink-0"
+                          :class="store.settings.themeMode === 'light' ? 'text-slate-500 hover:text-slate-800' : 'text-zinc-300 hover:text-white'">
                     +
                   </button>
                 </div>
@@ -589,12 +589,12 @@
       <div class="sticky bottom-20 z-20 backdrop-blur-md p-2 rounded-2xl border flex items-center gap-2"
            :class="store.settings.themeMode === 'light' ? 'bg-white/95 border-slate-300 shadow-xl' : 'bg-zinc-950/90 border-zinc-800/80'">
         <button @click="confirmDiscard" 
-                class="w-1/3 py-3 border rounded-xl text-xs sm:text-sm font-bold active:scale-95 transition-all cursor-pointer"
+                class="w-1/3 py-3 border rounded-xl text-sm font-bold active:scale-95 transition-all cursor-pointer"
                 :class="store.settings.themeMode === 'light' ? 'bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 border-slate-300' : 'bg-zinc-900 hover:bg-red-950/40 text-zinc-400 hover:text-red-400 border-zinc-800'">
           放弃训练
         </button>
         <button @click="handleFinishWorkout" 
-                class="w-2/3 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-black rounded-xl text-xs sm:text-sm shadow-lg shadow-amber-500/25 active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                class="w-2/3 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-black rounded-xl text-sm sm:text-base shadow-lg shadow-amber-500/25 active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
           完成并保存训练 ({{ completedSetsCount }}组)
         </button>
       </div>
@@ -675,15 +675,15 @@
         <div class="space-y-2 relative z-10">
           <button v-if="!todayCycle.isRest" 
                   @click="handleStartTodayWorkout"
-                  class="w-full py-4 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-zinc-950 font-black text-sm rounded-2xl shadow-xl shadow-amber-500/25 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer select-none">
-            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  class="w-full py-4 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-zinc-950 font-black text-base sm:text-lg rounded-2xl shadow-xl shadow-amber-500/25 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer select-none">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             <span>立即开练</span>
           </button>
 
           <button v-else 
                   @click="markRestDayCompleted"
-                  class="w-full py-4 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black text-sm rounded-2xl shadow-xl shadow-emerald-500/20 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer">
-            <svg class="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+                  class="w-full py-4 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black text-base sm:text-lg rounded-2xl shadow-xl shadow-emerald-500/20 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <svg class="w-5 h-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
             </svg>
             <span>打卡今日休整</span>

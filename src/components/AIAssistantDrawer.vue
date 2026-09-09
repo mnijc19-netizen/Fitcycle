@@ -119,8 +119,8 @@
                   class="w-full px-3 py-2 rounded-xl text-left text-sm transition-all flex items-center justify-between group"
                   :class="selectedModelId === m.id ? 'bg-amber-500/15 border border-amber-500/40 text-amber-300 font-bold' : 'hover:bg-zinc-800 text-zinc-200 border border-transparent'">
             <div class="min-w-0 flex-1 pr-2">
-              <div class="text-sm font-bold leading-snug break-words">{{ m.name }}</div>
-              <div class="text-xs text-zinc-400 break-all mt-0.5">{{ m.id }}</div>
+              <div class="text-sm sm:text-base font-bold leading-snug break-words text-zinc-100 group-hover:text-amber-300">{{ m.name }}</div>
+              <div class="text-xs text-zinc-400 break-all mt-0.5 font-medium">{{ m.id }}</div>
             </div>
             <div class="flex items-center gap-1.5 flex-shrink-0">
               <span class="text-xs px-2 py-0.5 rounded border font-bold flex items-center gap-0.5"
@@ -214,7 +214,7 @@
           </div>
 
           <!-- User Message Bubble -->
-          <div v-else-if="message.role === 'user'" class="max-w-[85%] rounded-2xl px-4 py-3 text-[15px] leading-relaxed shadow-md bg-amber-500 text-zinc-950 font-medium rounded-tr-xs">
+          <div v-else-if="message.role === 'user'" class="max-w-[85%] rounded-2xl px-4 py-3 text-base leading-relaxed shadow-md bg-amber-500 text-zinc-950 font-medium rounded-tr-xs">
             <div v-if="message.images?.length" class="grid grid-cols-2 gap-1.5 mb-2">
               <img v-for="image in message.images" :key="image.name + image.size" :src="image.dataUrl" :alt="image.name" class="w-full max-h-36 rounded-xl object-cover" />
             </div>
@@ -222,7 +222,7 @@
           </div>
 
           <!-- AI Message Bubble with Thinking Box, Markdown Tables & Copy -->
-          <div v-else class="max-w-[95%] rounded-2xl p-4 text-[15px] leading-relaxed shadow-xl bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-tl-xs space-y-3 relative group">
+          <div v-else class="max-w-[95%] rounded-2xl p-4 text-base leading-relaxed shadow-xl bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-tl-xs space-y-3 relative group">
             
             <!-- 🧠 深度思考过程展示框 (Collapsible Thinking Process Box) -->
             <div v-if="message.reasoning || (message.streaming && message.isThinking)"
@@ -429,7 +429,7 @@
             <input ref="galleryInput" class="hidden" type="file" accept="image/*" multiple @change="handleFiles" />
           </div>
           <textarea v-model="draft" rows="1" enterkeyhint="send" placeholder="询问训练，或让 AI 记录一组…"
-                    class="flex-1 max-h-32 min-h-11 resize-none bg-zinc-950 border border-zinc-700 focus:border-amber-500/60 rounded-xl px-3.5 py-2.5 text-[15px] text-zinc-100 placeholder:text-zinc-500 outline-none leading-relaxed transition-colors"
+                    class="flex-1 max-h-32 min-h-11 resize-none bg-zinc-950 border border-zinc-700 focus:border-amber-500/60 rounded-xl px-3.5 py-2.5 text-base text-zinc-100 placeholder:text-zinc-500 outline-none leading-relaxed transition-colors font-medium"
                     @focus="handleInputFocus"
                     @blur="handleInputBlur"
                     @keydown.enter.exact.prevent="send"></textarea>

@@ -199,7 +199,7 @@
       <!-- 1. 9 大部位与功能视觉导航矩阵 (清晰易懂的新手人话翻译) -->
       <div class="space-y-2">
         <div class="flex items-center justify-between px-1">
-          <h3 class="text-xs font-black uppercase tracking-wider flex items-center gap-1.5"
+          <h3 class="text-sm font-black uppercase tracking-wider flex items-center gap-1.5"
               :class="store.settings.themeMode === 'light' ? 'text-slate-800' : 'text-zinc-300'">
             <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
             <span>动作分类</span>
@@ -224,7 +224,7 @@
             </div>
 
             <div class="mt-2">
-              <div class="font-black text-sm flex items-center gap-1"
+              <div class="font-black text-base flex items-center gap-1"
                    :class="store.settings.themeMode === 'light' ? 'text-slate-900 group-hover:text-amber-700' : 'text-zinc-100 group-hover:text-amber-400'">
                 <span>{{ hub.title }}</span>
                 <span class="text-xs opacity-60">❯</span>
@@ -383,7 +383,7 @@
                     class="text-xs font-black px-2 py-0.5 rounded bg-amber-500 text-zinc-950 shadow-2xs">
                 基石
               </span>
-              <h3 class="font-bold text-sm sm:text-base truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">
+              <h3 class="font-bold text-base sm:text-lg truncate" :class="store.settings.themeMode === 'light' ? 'text-slate-900 font-black' : 'text-zinc-100'">
                 {{ ex.name }}
               </h3>
               <span class="text-xs px-2 py-0.5 rounded border flex-shrink-0"

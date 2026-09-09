@@ -208,7 +208,7 @@
             <span class="text-xs opacity-75 font-mono">({{ getStrategyCount(strat.id) }})</span>
           </button>
         </div>
-        <p class="text-xs sm:text-[13px] text-zinc-300 leading-relaxed bg-zinc-900/50 px-3 py-2 rounded-xl border border-zinc-800/60">
+        <p class="text-xs sm:text-sm text-zinc-200 leading-relaxed bg-zinc-900/60 px-3.5 py-2.5 rounded-xl border border-zinc-800/80 font-medium">
           {{ activeStrategyObj.description }}
         </p>
       </div>
@@ -224,30 +224,30 @@
           
           <div class="space-y-2">
             <div class="flex items-start justify-between gap-2">
-              <span class="text-sm sm:text-base font-bold text-zinc-100 font-mono break-words leading-snug">{{ model.name || model.id }}</span>
+              <span class="text-base sm:text-lg font-bold text-zinc-100 font-mono break-words leading-snug">{{ model.name || model.id }}</span>
               <span v-if="selectedModelId === model.id" class="w-2.5 h-2.5 rounded-full bg-amber-400 flex-shrink-0 animate-pulse mt-1"></span>
             </div>
-            <div class="flex items-center gap-1.5 text-xs text-zinc-400 font-mono flex-wrap">
-              <span v-if="getModelCreator(model)" class="px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-200 text-xs font-sans font-semibold">{{ getModelCreator(model) }}</span>
-              <span class="break-all opacity-85">{{ model.id }}</span>
+            <div class="flex items-center gap-1.5 text-xs text-zinc-300 font-mono flex-wrap">
+              <span v-if="getModelCreator(model)" class="px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-200 text-xs font-sans font-bold">{{ getModelCreator(model) }}</span>
+              <span class="break-all text-zinc-400 font-medium">{{ model.id }}</span>
             </div>
           </div>
 
           <!-- Feature & Strategy Badges in Grid Card (Clear, High Contrast Chinese Badges) -->
           <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono pt-2 border-t border-zinc-800/60">
-            <span class="px-2 py-0.5 rounded-md border text-xs font-bold flex items-center gap-0.5"
+            <span class="px-2.5 py-1 rounded-lg border text-xs font-bold flex items-center gap-0.5"
                   :class="getModelStrategy(model, aiSession.activeProvider).badgeClass">
               <span>{{ getModelStrategy(model, aiSession.activeProvider).name }}</span>
             </span>
             <!-- Authoritative Model Pricing Badge (when available, e.g. OpenRouter) -->
             <span v-if="getModelPricingBadge(model)" 
-                  class="px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 border border-amber-500/30 text-xs font-mono font-bold"
+                  class="px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 text-xs font-mono font-bold"
                   :title="`定价视角: ${store.settings.currency === 'CNY' ? '人民币' : '美元'}`"
                   data-testid="model-pricing-badge">
               {{ getModelPricingBadge(model).rateText }}
             </span>
-            <span v-if="model.capabilities?.tools" class="px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs font-bold">感知</span>
-            <span v-if="!model.capabilities?.image" class="px-2 py-0.5 rounded-md bg-zinc-900 text-zinc-400 border border-zinc-800 text-xs">纯文本</span>
+            <span v-if="model.capabilities?.tools" class="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs font-bold">感知</span>
+            <span v-if="!model.capabilities?.image" class="px-2.5 py-1 rounded-lg bg-zinc-900 text-zinc-300 border border-zinc-800 text-xs font-medium">纯文本</span>
           </div>
 
         </div>
@@ -714,7 +714,7 @@ function clearConnection() {
 
 <style scoped>
 .capability-badge {
-  font-size: 10px;
+  font-size: 13px;
   padding: 2px 8px;
   border-radius: 9999px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;

@@ -411,13 +411,13 @@
           </div>
           <div class="min-w-0">
             <div class="flex items-center gap-2">
-              <h3 class="text-sm sm:text-base font-bold text-zinc-100">AI 智能教练</h3>
+              <h3 class="text-base sm:text-lg font-bold text-zinc-100">AI 智能教练</h3>
               <span class="text-xs px-2.5 py-0.5 rounded-full border font-mono font-medium"
                     :class="aiConnected ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-400' : 'border-zinc-700 bg-zinc-950 text-zinc-400'">
                 {{ aiConnected ? '已就绪' : '未连接' }}
               </span>
             </div>
-            <p class="text-xs sm:text-sm text-zinc-300 truncate mt-0.5">
+            <p class="text-sm text-zinc-300 truncate mt-0.5 font-medium">
               {{ aiConnected ? `${activeAIProvider.name} · ${activeAIModel?.name || getActiveModelId()}` : '点击配置 OpenRouter / DeepSeek / 智谱' }}
             </p>
           </div>
@@ -428,13 +428,13 @@
       </div>
 
       <!-- Outer Token & Cost Usage Summary Bar (Directly below AI coach option) -->
-      <div class="bg-zinc-900/60 border border-zinc-800/70 hover:border-zinc-700/90 rounded-xl p-3 flex items-center justify-between gap-2.5 cursor-pointer transition-all text-xs sm:text-sm"
+      <div class="bg-zinc-900/60 border border-zinc-800/70 hover:border-zinc-700/90 rounded-xl p-3.5 flex items-center justify-between gap-2.5 cursor-pointer transition-all text-sm"
            @click="showTokenAuditModal = true"
            data-testid="outer-token-audit-summary"
            title="点击查看详细 Token 用量与消费审计大盘">
         <div class="flex items-center gap-2 min-w-0 font-mono">
           <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
-          <span class="text-xs sm:text-sm text-zinc-300 truncate">
+          <span class="text-sm text-zinc-300 truncate font-medium">
             大模型消耗:
             <span class="text-zinc-400 font-sans font-medium">[{{ activeAIProvider.name }}]</span>
             <strong class="text-zinc-100 font-bold ml-1">{{ currentProviderTokens.toLocaleString() }}</strong>
