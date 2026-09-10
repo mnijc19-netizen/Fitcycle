@@ -57,6 +57,13 @@ describe('Exercise Library 1-to-1 Accuracy & Alias Search', () => {
     expect(seatedDip.aliases).toContain('器械双杠臂屈伸');
     expect(seatedDip.gifUrl).toBe('./exercises/lever-seated-dip.gif');
 
+    const machineLateralRaise = store.exercises.find(e => e.id === 'ex-machine-lateral-raise');
+    expect(machineLateralRaise).toBeDefined();
+    expect(machineLateralRaise.name).toContain('固定器械坐姿侧平举');
+    expect(machineLateralRaise.aliases).toContain('器械侧平举');
+    expect(machineLateralRaise.aliases).toContain('坐姿侧平举');
+    expect(machineLateralRaise.gifUrl).toBe('./exercises/machine-lateral-raise.gif');
+
     const scissorLat = store.exercises.find(e => e.id === 'ex-diverging-lat-pulldown');
     expect(scissorLat).toBeDefined();
     expect(scissorLat.name).toContain('分动剪刀式高位下拉');
@@ -101,6 +108,10 @@ describe('Exercise Library 1-to-1 Accuracy & Alias Search', () => {
     // Search by gym equipment alias "坐姿三头下压" -> should find machine seated dip
     await searchInput.setValue('坐姿三头下压');
     expect(wrapper.text()).toContain('固定器械坐姿三头下压');
+
+    // Search by gym equipment alias "器械侧平举" -> should find machine lateral raise
+    await searchInput.setValue('器械侧平举');
+    expect(wrapper.text()).toContain('固定器械坐姿侧平举');
   });
 
   it('guarantees all verified exercises have physically present local animation GIFs', () => {

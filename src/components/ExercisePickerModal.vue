@@ -370,6 +370,7 @@ const NOVICE_GOLDEN_IDS = new Set([
   "ex-lat-pulldown",
   "ex-seated-cable-row",
   "ex-cable-lateral-raise",
+  "ex-machine-lateral-raise",
   "ex-seated-dumbbell-shoulder-press",
   "ex-machine-seated-dip",
   "ex-hack-squat",

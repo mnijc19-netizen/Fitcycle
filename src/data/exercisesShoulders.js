@@ -25,6 +25,51 @@ export const SHOULDER_EXERCISES = [
     ]
   },
   {
+    id: "ex-machine-lateral-raise",
+    name: "固定器械坐姿侧平举 (Machine Lateral Raise)",
+    englishName: "Machine Seated Lateral Raise / Lever Lateral Raise",
+    category: "肩部",
+    target: "三角肌中束 / 纯孤立肩宽雕刻 / 告别斜方肌代偿",
+    secondaryMuscles: ["三角肌前束", "冈上肌", "斜方肌"],
+    aliases: [
+      "器械侧平举",
+      "坐姿器械侧平举",
+      "固定器械侧平举",
+      "坐姿侧平举",
+      "器械肩部侧平举",
+      "侧平举机",
+      "侧平举器械",
+      "飞鸟机中束",
+      "三角肌中束机",
+      "中束机",
+      "Machine Lateral Raise",
+      "Lever Lateral Raise",
+      "Seated Lateral Raise Machine"
+    ],
+    gifUrl: "./exercises/machine-lateral-raise.gif",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    defaultWeight: 25,
+    scienceDetail: "健美与运动科学公认的中束纯孤立王牌器械！传统哑铃侧平举在低位缺乏阻力，且极易因小臂握力力竭或耸肩导致斜方肌过度代偿。器械侧平举直接通过手肘靠垫施压阻力，力臂缩短至大臂，彻底解放前臂握力，让张力 100% 贯穿锁定在三角肌中束，安全、精准雕刻饱满外翻的南瓜肩！",
+    tags: ["南瓜肩", "固定器械", "零握力负担", "纯孤立中束"],
+    tips: {
+      prep: "坐上器械，背部贴实靠垫，调节座椅高度使肩关节旋转中心与器械旋转轴心完全对齐，双肘贴紧两侧阻力垫，双手轻握把手。",
+      execution: "沉肩收腹，以手肘为发力引导点，将双侧阻力垫平稳向上向外抬起至大臂与地面接近平行（约80°-90°）。",
+      peak: "在最高点顶峰收缩停顿1-2秒，集中注意力体会三角肌中束宛如燃烧般的极度酸胀与泵感。",
+      negative: "吸气以2-3秒慢速控制离心下放，保持中束全程受张力牵拉，配重块轻触即起，切忌快速下坠。"
+    },
+    commonMistakes: [
+      "耸肩缩颈，导致斜方肌上束大幅代偿抢力",
+      "座椅高度未调节，手肘与机械转轴脱节造成肩袖别扭受压",
+      "借身体前后晃动甩动器械，失去纯孤立离心刺激"
+    ],
+    substitutes: [
+      { name: "绳索侧平举", reason: "全程恒定滑轮张力" },
+      { name: "单臂绳索侧平举", reason: "强化单侧集中度与拉伸行程" },
+      { name: "站姿哑铃侧平举", reason: "经典自由重量随处可练" }
+    ]
+  },
+  {
     id: "ex-cable-lateral-raise",
     name: "绳索侧平举",
     englishName: "Cable Lateral Raise",
