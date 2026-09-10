@@ -120,9 +120,9 @@ export const TRAINING_TEMPLATES = [
     plans: [
       {
         id: "plan-upper-power",
-        name: "上肢力量日 (Upper Power) —— 重载三大项",
+        name: "上肢力量日 (Upper Power) —— 重载复合",
         shortName: "上肢力量",
-        category: "推",
+        category: "上肢",
         color: "sky",
         coreTarget: "大重量杠铃卧推、俯身划船，强化上肢核心力量架构",
         isRest: false,
@@ -137,7 +137,7 @@ export const TRAINING_TEMPLATES = [
         id: "plan-lower-power",
         name: "下肢力量日 (Lower Power) —— 爆发力底盘",
         shortName: "下肢力量",
-        category: "腿",
+        category: "下肢",
         color: "purple",
         coreTarget: "深蹲与罗马尼亚硬拉大重量突破，强化下肢链条",
         isRest: false,
@@ -152,7 +152,7 @@ export const TRAINING_TEMPLATES = [
         id: "plan-upper-hyper",
         name: "上肢肥大日 (Upper Hypertrophy) —— 充血拉伸",
         shortName: "上肢肥大",
-        category: "推",
+        category: "上肢",
         color: "amber",
         coreTarget: "上斜角度推举、高位下拉与侧平举，极限充血膨胀",
         isRest: false,
@@ -167,7 +167,7 @@ export const TRAINING_TEMPLATES = [
         id: "plan-lower-hyper",
         name: "下肢肥大日 (Lower Hypertrophy) —— 泵感雕刻",
         shortName: "下肢肥大",
-        category: "腿",
+        category: "下肢",
         color: "purple",
         coreTarget: "倒蹬推举与腿弯举孤立做工，雕刻腿部线条与核心",
         isRest: false,
@@ -222,7 +222,7 @@ export const TRAINING_TEMPLATES = [
         id: "plan-arnold-cb",
         name: "胸背对抗日 (Chest & Back) —— 打造倒三角铠甲",
         shortName: "胸背日",
-        category: "推",
+        category: "胸背",
         color: "amber",
         coreTarget: "平板卧推与高位下拉超级组泵感，对抗肌同步充血",
         isRest: false,
@@ -237,7 +237,7 @@ export const TRAINING_TEMPLATES = [
         id: "plan-arnold-sa",
         name: "肩臂独立日 (Shoulders & Arms) —— 3D球形肩与麒麟臂",
         shortName: "肩臂日",
-        category: "推",
+        category: "肩臂",
         color: "sky",
         coreTarget: "大重量推举、侧平举轰炸三角肌，三头二头超级组膨胀",
         isRest: false,
@@ -322,19 +322,19 @@ export const TRAINING_TEMPLATES = [
         shortName: "卧推日",
         category: "推",
         color: "amber",
-        coreTarget: "平板卧推 5/3/1 核心组，辅以哑铃卧推与划船做工",
+        coreTarget: "平板卧推 5/3/1 核心组，辅以哑铃卧推与器械三头下压做工",
         isRest: false,
         exercises: [
           { exerciseId: "ex-flat-bb-bench", name: "平板杠铃卧推", setsCount: 3, targetReps: "5/3/1核心组", defaultWeight: 65 },
           { exerciseId: "ex-incline-db-bench", name: "上斜哑铃卧推", setsCount: 4, targetReps: "10-12次 (BBB辅项)", defaultWeight: 20 },
-          { exerciseId: "ex-seated-cable-row", name: "坐姿绳索划船", setsCount: 4, targetReps: "10-12次", defaultWeight: 40 }
+          { exerciseId: "ex-machine-seated-dip", name: "固定器械坐姿三头下压 (Seated Dip)", setsCount: 4, targetReps: "10-12次", defaultWeight: 40 }
         ]
       },
       {
         id: "plan-531-deadlift",
         name: "5/3/1 硬拉核心日 —— 全身后侧链爆发",
         shortName: "硬拉日",
-        category: "腿",
+        category: "拉",
         color: "purple",
         coreTarget: "传统杠铃硬拉 5/3/1 极限做工，辅以罗马尼亚硬拉与腿弯举",
         isRest: false,
@@ -350,12 +350,12 @@ export const TRAINING_TEMPLATES = [
         shortName: "推举日",
         category: "推",
         color: "sky",
-        coreTarget: "站姿杠铃推举 5/3/1 核心做工，辅以哑铃推肩与高位下拉",
+        coreTarget: "站姿杠铃推举 5/3/1 核心做工，辅以哑铃推肩与器械侧平举",
         isRest: false,
         exercises: [
           { exerciseId: "ex-overhead-barbell-press", name: "站姿杠铃推举 (Overhead Press)", setsCount: 3, targetReps: "5/3/1核心组", defaultWeight: 40 },
           { exerciseId: "ex-seated-dumbbell-shoulder-press", name: "坐姿哑铃推肩", setsCount: 4, targetReps: "10-12次 (BBB辅项)", defaultWeight: 18 },
-          { exerciseId: "ex-lat-pulldown", name: "对握/宽握高位下拉", setsCount: 4, targetReps: "10-12次", defaultWeight: 45 }
+          { exerciseId: "ex-machine-lateral-raise", name: "固定器械坐姿侧平举 (Machine Lateral Raise)", setsCount: 4, targetReps: "12-15次", defaultWeight: 25 }
         ]
       },
       {
@@ -400,8 +400,8 @@ export const TRAINING_TEMPLATES = [
       {
         id: "plan-fb-a",
         name: "全身 A (复合深蹲推拉) —— 核心基础",
-        shortName: "全身 A",
-        category: "推",
+        shortName: "全 A",
+        category: "全身",
         color: "amber",
         coreTarget: "深蹲、推胸与背部拉伸基础复合动作",
         isRest: false,
@@ -415,8 +415,8 @@ export const TRAINING_TEMPLATES = [
       {
         id: "plan-fb-b",
         name: "全身 B (后侧链与推举) —— 姿态矫正",
-        shortName: "全身 B",
-        category: "拉",
+        shortName: "全 B",
+        category: "全身",
         color: "sky",
         coreTarget: "臀腿后侧链、肩部推举与上背划船",
         isRest: false,
@@ -430,8 +430,8 @@ export const TRAINING_TEMPLATES = [
       {
         id: "plan-fb-c",
         name: "全身 C (腿胸背泵感) —— 协调充血",
-        shortName: "全身 C",
-        category: "腿",
+        shortName: "全 C",
+        category: "全身",
         color: "purple",
         coreTarget: "上斜胸大肌、腿屈伸与后束面拉",
         isRest: false,
