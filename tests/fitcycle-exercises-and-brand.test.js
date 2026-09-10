@@ -50,6 +50,13 @@ describe('Exercise Library 1-to-1 Accuracy & Alias Search', () => {
     expect(pushdown.name).toContain('站姿绳索三头下压');
     expect(pushdown.aliases).toContain('绳索下压');
 
+    const seatedDip = store.exercises.find(e => e.id === 'ex-machine-seated-dip');
+    expect(seatedDip).toBeDefined();
+    expect(seatedDip.name).toContain('固定器械坐姿三头下压');
+    expect(seatedDip.aliases).toContain('坐姿三头下压');
+    expect(seatedDip.aliases).toContain('器械双杠臂屈伸');
+    expect(seatedDip.gifUrl).toBe('./exercises/lever-seated-dip.gif');
+
     const scissorLat = store.exercises.find(e => e.id === 'ex-diverging-lat-pulldown');
     expect(scissorLat).toBeDefined();
     expect(scissorLat.name).toContain('分动剪刀式高位下拉');
@@ -90,6 +97,10 @@ describe('Exercise Library 1-to-1 Accuracy & Alias Search', () => {
     // Search by popular gym machine nickname "剪刀机" -> should find diverging lat pulldown
     await searchInput.setValue('剪刀机');
     expect(wrapper.text()).toContain('分动剪刀式高位下拉');
+
+    // Search by gym equipment alias "坐姿三头下压" -> should find machine seated dip
+    await searchInput.setValue('坐姿三头下压');
+    expect(wrapper.text()).toContain('固定器械坐姿三头下压');
   });
 
   it('guarantees all verified exercises have physically present local animation GIFs', () => {

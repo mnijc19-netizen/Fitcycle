@@ -85,6 +85,7 @@ export const DEFAULT_PLANS = [
 export const SPLIT_RECOMMENDED_ADDONS = {
   "plan-push": [
     { exerciseId: "ex-seated-dumbbell-shoulder-press", name: "坐姿哑铃推肩", targetReps: "10-12次", defaultWeight: 20, defaultSets: 3, category: "肩部", tag: "复合增肌" },
+    { exerciseId: "ex-machine-seated-dip", name: "固定器械坐姿三头下压", targetReps: "10-12次", defaultWeight: 40, defaultSets: 3, category: "手臂", tag: "三头马蹄铁" },
     { exerciseId: "ex-overhead-cable-ext", name: "过头绳索臂屈伸", targetReps: "12-15次", defaultWeight: 15, defaultSets: 3, category: "手臂", tag: "三头长头" },
     { exerciseId: "ex-pec-deck-fly", name: "蝴蝶机夹胸 (Pec Deck)", targetReps: "12-15次", defaultWeight: 35, defaultSets: 3, category: "胸部", tag: "孤立泵感" }
   ],

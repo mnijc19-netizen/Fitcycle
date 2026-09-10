@@ -1,12 +1,59 @@
 export const ARM_EXERCISES = [
   {
+    id: "ex-machine-seated-dip",
+    name: "固定器械坐姿三头下压 (Seated Dip)",
+    englishName: "Machine Seated Dip / Triceps Press",
+    category: "手臂",
+    target: "肱三头肌整体 / 外侧头与内侧头 / 大重量推力",
+    secondaryMuscles: ["胸大肌下部", "三角肌前束"],
+    aliases: [
+      "坐姿三头下压",
+      "器械三头下压",
+      "坐姿器械三头下压",
+      "坐姿双杠臂屈伸",
+      "器械双杠臂屈伸",
+      "坐姿臂屈伸",
+      "器械坐姿臂屈伸",
+      "三头下压机",
+      "坐姿下压机",
+      "臂屈伸机",
+      "Seated Dip",
+      "Dip Machine",
+      "Machine Dip",
+      "Seated Triceps Press",
+      "Lever Seated Dip"
+    ],
+    gifUrl: "./exercises/lever-seated-dip.gif",
+    defaultSets: 3,
+    defaultReps: "10-12",
+    defaultWeight: 40,
+    scienceDetail: "健身房黄金三头推力器械！相比自由双杠，坐姿固定靠背彻底消除了肩关节过度前伸与拉伤风险。背部贴紧靠垫，能以最稳固的核心底盘加载大重量，垂直向下压到底锁死三头肌，高效雕刻大臂外侧坚硬马蹄铁！",
+    tags: ["大重量手臂", "固定器械", "三头马蹄铁", "安全护肩"],
+    tips: {
+      prep: "坐于器械凳上，背部靠实椅背，调节座椅高度使双手握把时手肘约成90度角，双脚踩实地面。",
+      execution: "大臂保持相对固定微贴体侧，呼气收缩肱三头肌，将双侧握把向下垂直推压到底。",
+      peak: "在最低端手臂完全伸直时，顶峰挤压肱三头肌1-2秒，体会手臂后侧强烈的坚硬充血感。",
+      negative: "吸气控制回放节奏2-3秒，感受三头肌在离心阻力下的充分拉伸，切忌配重块猛烈撞击借力。"
+    },
+    commonMistakes: [
+      "身体剧烈前倾耸肩，导致胸肌与三角肌前束严重借力",
+      "下压到底未完全伸直手臂，损失三头肌顶峰收缩行程",
+      "回放速度过快导致配重块剧烈撞击伤及手肘"
+    ],
+    substitutes: [
+      { name: "站姿绳索三头下压 (Triceps Pushdown)", reason: "绳索恒定张力孤立雕刻" },
+      { name: "过头绳索臂屈伸", reason: "注重长头深度拉伸" },
+      { name: "窄距杠铃卧推", reason: "自由杠铃大重量突破推力" }
+    ]
+  },
+  {
     id: "ex-machine-triceps-pressdown",
     name: "站姿绳索三头下压 (Triceps Pushdown)",
     englishName: "Cable Triceps Pushdown",
     category: "手臂",
     target: "肱三头肌外侧头与长头 / 马蹄铁",
     secondaryMuscles: ["三角肌前束", "胸大肌下部"],
-    aliases: ["器械三头下压", "绳索下压", "直杠下压", "V把下压", "三头下压", "站姿下压", "坐姿三头下压", "坐姿器械三头下压", "坐姿绳索三头下压", "肱三头肌下压", "臂屈伸", "马蹄铁", "Triceps Pushdown", "Pushdown"],
+    aliases: ["绳索下压", "直杠下压", "V把下压", "三头下压", "站姿下压", "站姿绳索下压", "坐姿绳索三头下压", "肱三头肌下压", "臂屈伸", "马蹄铁", "Triceps Pushdown", "Pushdown"],
     gifUrl: "./exercises/machine-triceps-pressdown.gif",
     defaultSets: 3,
     defaultReps: "12-15",

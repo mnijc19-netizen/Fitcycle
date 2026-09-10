@@ -108,15 +108,15 @@ describe('Workout Inactivity Auto-Settlement & UX Improvements', () => {
   });
 
   it('getExerciseDetails resolves seated triceps pushdown variations and custom id objects', () => {
-    // 1. By string name
+    // 1. By string name -> maps to dedicated seated dip machine
     const detailsByName = getExerciseDetails('坐姿三头下压');
     expect(detailsByName).toBeTruthy();
-    expect(detailsByName.gifUrl).toBe('./exercises/machine-triceps-pressdown.gif');
+    expect(detailsByName.gifUrl).toBe('./exercises/lever-seated-dip.gif');
 
     // 2. By alias variations
     const detailsByMachine = getExerciseDetails('坐姿器械三头下压');
     expect(detailsByMachine).toBeTruthy();
-    expect(detailsByMachine.gifUrl).toBe('./exercises/machine-triceps-pressdown.gif');
+    expect(detailsByMachine.gifUrl).toBe('./exercises/lever-seated-dip.gif');
 
     const detailsByCable = getExerciseDetails('坐姿绳索三头下压');
     expect(detailsByCable).toBeTruthy();
@@ -125,12 +125,12 @@ describe('Workout Inactivity Auto-Settlement & UX Improvements', () => {
     // 3. By object with custom exerciseId fallback to name
     const detailsByCustomExId = getExerciseDetails({ exerciseId: 'custom-1788800640', name: '坐姿三头下压' });
     expect(detailsByCustomExId).toBeTruthy();
-    expect(detailsByCustomExId.gifUrl).toBe('./exercises/machine-triceps-pressdown.gif');
+    expect(detailsByCustomExId.gifUrl).toBe('./exercises/lever-seated-dip.gif');
 
     // 4. By object with custom id fallback to name
     const detailsByCustomId = getExerciseDetails({ id: 'custom-1788800640', name: '坐姿三头下压' });
     expect(detailsByCustomId).toBeTruthy();
-    expect(detailsByCustomId.gifUrl).toBe('./exercises/machine-triceps-pressdown.gif');
+    expect(detailsByCustomId.gifUrl).toBe('./exercises/lever-seated-dip.gif');
   });
 
   it('workout review prompt does not match equipment visual card in AI assistant', () => {
